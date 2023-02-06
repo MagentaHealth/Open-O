@@ -3,6 +3,8 @@
 <struts-config>
 	<form-beans>
 	<form-bean name="TDISLabelForm" type="oscar.oscarLab.ca.all.pageUtil.CreateLabelTDISForm"></form-bean>
+		<!-- inboxhub -->
+		<form-bean name="InboxhubForm" type="org.oscarehr.inboxhub.query.InboxhubQuery"/>
 		<!-- inbox manager -->
 		<form-bean name="inboxInputForm" type="org.apache.struts.validator.LazyValidatorForm" />
 
@@ -646,7 +648,13 @@
 		</action>
 		
 		<action path="/admin/oncallClinic" scope="request" parameter="method" type="org.oscarehr.admin.reports.SaveOnCallClinicAction"></action>
-	
+		<!-- Inbox hub -->
+		<action input="/web/inboxhub/InboxhubManager.jsp" name="InboxhubForm" path="/web/inboxhub/InboxhubManager"
+                parameter="method" type="org.oscarehr.inboxhub.display.ManageInboxhubAction" scope="request">
+			<forward name="success" path="/web/inboxhub/InboxhubManager.jsp" />
+			<forward name="unauthorized" path="/securityError.jsp" />
+			<forward name="error" path="/failure.jsp" />
+		</action>
 		<!-- OMD Dashboard Proof of Concept -->
 		<action input="/web/dashboard/admin/DashboardManager.jsp" name="FrmForm" path="/web/dashboard/admin/DashboardManager" 
 			parameter="method" type="org.oscarehr.dashboard.admin.ManageDashboardAction" scope="request" >
