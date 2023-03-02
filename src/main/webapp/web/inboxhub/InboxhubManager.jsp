@@ -32,12 +32,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <head>
     <title><bean:message key="inbox.inboxmanager.title"/></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<%=request.getContextPath() %>/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <script src="<%=request.getContextPath() %>/library/bootstrap/5.0.2/js/bootstrap.min.js"></script>
+    <link href="<%=request.getContextPath()%>/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/library/DataTables-1.13.2/css/jquery.dataTables.css">
+
+    <script src="<%=request.getContextPath()%>/library/bootstrap/5.0.2/js/bootstrap.min.js"></script>
+    <script src="<%=request.getContextPath()%>/library/jQuery-3.6.0/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="<%=request.getContextPath()%>/library/DataTables-1.13.2/js/jquery.dataTables.js"></script>
+
+    <script>
+        //Custom sorting function to move empty cells to the bottom of the inbox datatable.
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "non-empty-string-asc": function (str1, str2) {
+                if (str1 == "")
+                    return 1;
+                if (str2 == "")
+                    return -1;
+                return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+            },
+            "non-empty-string-desc": function (str1, str2) {
+                if (str1 == "")
+                    return 1;
+                if (str2 == "")
+                    return -1;
+                return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+            }
+        });
+
+        $(document).ready(function() {
+            $('#inbox_table').DataTable({
+                paging: false,
+                columnDefs: [
+                    {type: 'non-empty-string', targets: "_all"}
+                ],
+                order: [[0, 'desc']],
+            });
+        });
+    </script>
+
     <%
         List labDocs = (List) request.getAttribute("labDocs");
         InboxhubQuery query = (InboxhubQuery) request.getAttribute("query");
     %>
+
 </head>
 <body>
 <div class="container">
@@ -69,8 +105,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     </div>
                 </form>
         </div>
-        <div class="col-auto offset-4">
-            <table class='table table-bordered table-hover'>
+        <div class="col-auto offset-3">
+            <table table id="inbox_table"  class='table table-bordered table-hover'>
                 <thead>
                 <tr>
                     <th><bean:message key="oscarMDS.index.msgHealthNumber"/></th>
