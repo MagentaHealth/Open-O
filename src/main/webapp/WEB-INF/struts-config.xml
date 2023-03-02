@@ -648,10 +648,10 @@
 		</action>
 		
 		<action path="/admin/oncallClinic" scope="request" parameter="method" type="org.oscarehr.admin.reports.SaveOnCallClinicAction"></action>
-		<!-- Inbox hub -->
-		<action input="/web/inboxhub/InboxhubManager.jsp" name="InboxhubForm" path="/web/inboxhub/InboxhubManager"
-                parameter="method" type="org.oscarehr.inboxhub.display.ManageInboxhubAction" scope="request">
-			<forward name="success" path="/web/inboxhub/InboxhubManager.jsp" />
+		<!-- Inboxhub -->
+		<action input="/web/inboxhub/Inboxhub.jsp" name="InboxhubForm" path="/web/inboxhub/Inboxhub"
+			parameter="method" type="org.oscarehr.inboxhub.display.ManageInboxhubAction" scope="request">
+			<forward name="success" path="/web/inboxhub/Inboxhub.jsp" />
 			<forward name="unauthorized" path="/securityError.jsp" />
 			<forward name="error" path="/failure.jsp" />
 		</action>

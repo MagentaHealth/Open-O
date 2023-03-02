@@ -28,8 +28,10 @@ import org.oscarehr.inboxhub.inboxdata.LabDataController;
 import org.oscarehr.inboxhub.query.InboxhubQuery;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
+import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
 import oscar.oscarLab.ca.on.LabResultData;
+import oscar.oscarMDS.data.CategoryData;
 
 import java.util.*;
 
@@ -46,14 +48,14 @@ public class ManageInboxhubAction extends DispatchAction {
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
             return mapping.findForward("unauthorized");
         }
-
-        InboxhubQuery query = (InboxhubQuery)form;
+        InboxhubQuery query = (InboxhubQuery) form;
         request.setAttribute("query", query);
         if (query.getClearFilters()) {
-            query.reset(mapping,request);
+            query.reset(mapping, request);
         }
-
         ArrayList<LabResultData> labDocs = LabDataController.getLabData(loggedInInfo, query);
+        CategoryData categoryData = LabDataController.getCategoryData(query);
+        request.setAttribute("categoryData", categoryData);
         request.setAttribute("labDocs", labDocs);
         return mapping.findForward("success");
     }

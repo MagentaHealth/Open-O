@@ -1,5 +1,5 @@
 /**
- *Copyright (c) 2023. Magenta Health Inc. All Rights Reserved.
+ * Copyright (c) 2023. Magenta Health Inc. All Rights Reserved.
  *
  * This software is published under the GPL GNU General Public License.
  *
@@ -22,7 +22,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.Objects;
 
 public class InboxhubQuery extends ActionForm {
@@ -30,86 +29,169 @@ public class InboxhubQuery extends ActionForm {
     private Boolean doc;
     private Boolean lab;
     private Boolean hrm;
+    private Boolean unmatched;
     private String abnormal;
+    private String searchAll;
+    private String searchProviderName;
     private String searchProviderNo;
     private String demographicNo;
     private String patientFirstName;
     private String patientLastName;
     private String patientHealthNumber;
     private String status;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 
-    public Boolean getClearFilters() {return clearFilters;}
+    public String getEndDate() {
+        return endDate;
+    }
 
-    public void setClearFilters(Boolean clearFilters) {this.clearFilters = clearFilters;}
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
-    public String getSearchProviderNo() {return searchProviderNo;}
+    public String getStartDate() {
+        return startDate;
+    }
 
-    public void setSearchProviderNo(String searchProviderNo) {this.searchProviderNo = searchProviderNo;}
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 
-    public String getDemographicNo() {return demographicNo;}
+    public Boolean getUnmatched() {
+        return unmatched;
+    }
 
-    public void setDemographicNo(String demographicNo) {this.demographicNo = demographicNo;}
+    public void setUnmatched(Boolean unmatched) {
+        this.unmatched = unmatched;
+    }
 
-    public String getPatientFirstName() {return patientFirstName;}
+    public Boolean getClearFilters() {
+        return clearFilters;
+    }
 
-    public void setPatientFirstName(String patientFirstName) {this.patientFirstName = patientFirstName;}
+    public void setClearFilters(Boolean clearFilters) {
+        this.clearFilters = clearFilters;
+    }
 
-    public String getPatientLastName() {return patientLastName;}
+    public String getSearchProviderNo() {
+        return searchProviderNo;
+    }
 
-    public void setPatientLastName(String patientLastName) {this.patientLastName = patientLastName;}
+    public String getSearchProviderName() {
+        return searchProviderName;
+    }
 
-    public String getPatientHealthNumber() {return patientHealthNumber;}
+    public void setSearchAll(String searchAll) {
+        this.searchAll = searchAll;
+    }
 
-    public void setPatientHealthNumber(String patientHealthNumber) {this.patientHealthNumber = patientHealthNumber;}
+    public String getSearchAll() {
+        return searchAll;
+    }
 
-    public String getStatus() {return status;}
+    public void setSearchProviderName(String searchProviderName) {
+        this.searchProviderName = searchProviderName;
+    }
 
-    public void setStatus(String status) {this.status = status;}
+    public void setSearchProviderNo(String searchProviderNo) {
+        this.searchProviderNo = searchProviderNo;
+    }
 
-    public Date getStartDate() {return startDate;}
+    public String getDemographicNo() {
+        return demographicNo;
+    }
 
-    public void setStartDate(Date startDate) {this.startDate = startDate;}
+    public void setDemographicNo(String demographicNo) {
+        this.demographicNo = demographicNo;
+    }
 
-    public Date getEndDate() {return endDate;}
+    public String getPatientFirstName() {
+        return patientFirstName;
+    }
 
-    public void setEndDate(Date endDate) {this.endDate = endDate;}
+    public void setPatientFirstName(String patientFirstName) {
+        this.patientFirstName = patientFirstName;
+    }
 
-    public Boolean getDoc() {return doc;}
+    public String getPatientLastName() {
+        return patientLastName;
+    }
 
-    public void setDoc(Boolean doc) {this.doc = doc;}
+    public void setPatientLastName(String patientLastName) {
+        this.patientLastName = patientLastName;
+    }
 
-    public Boolean getLab() {return lab;}
+    public String getPatientHealthNumber() {
+        return patientHealthNumber;
+    }
 
-    public void setLab(Boolean lab) {this.lab = lab;}
+    public void setPatientHealthNumber(String patientHealthNumber) {
+        this.patientHealthNumber = patientHealthNumber;
+    }
 
-    public Boolean getHrm() {return hrm;}
+    public String getStatus() {
+        return status;
+    }
 
-    public void setHrm(Boolean hrm) {this.hrm = hrm;}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public String getAbnormal() {return abnormal;}
+    public Boolean getDoc() {
+        return doc;
+    }
 
-    public void setAbnormal(String abnormal) {this.abnormal = abnormal;}
+    public void setDoc(Boolean doc) {
+        this.doc = doc;
+    }
 
-    public Boolean getAbnormalBool(){
+    public Boolean getLab() {
+        return lab;
+    }
+
+    public void setLab(Boolean lab) {
+        this.lab = lab;
+    }
+
+    public Boolean getHrm() {
+        return hrm;
+    }
+
+    public void setHrm(Boolean hrm) {
+        this.hrm = hrm;
+    }
+
+    public String getAbnormal() {
+        return abnormal;
+    }
+
+    public void setAbnormal(String abnormal) {
+        this.abnormal = abnormal;
+    }
+
+    public Boolean getAbnormalBool() {
         return Objects.equals(abnormal, "All") ? null : Objects.equals(abnormal, "Normal") ? false : true;
     }
+
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         this.clearFilters = false;
+        this.searchProviderName = "";
         this.searchProviderNo = "-1";
         this.demographicNo = null;
         this.patientFirstName = "";
         this.patientLastName = "";
         this.patientHealthNumber = "";
         this.status = "N";
-        this.startDate = null;
-        this.endDate = null;
+        this.startDate = "";
+        this.endDate = "";
         this.doc = false;
         this.lab = false;
         this.hrm = false;
+        this.unmatched = false;
         this.abnormal = "All";
+        this.searchAll = "";
         super.reset(mapping, request);
     }
 }

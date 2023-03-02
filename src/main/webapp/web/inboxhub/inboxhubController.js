@@ -1,0 +1,82 @@
+/*
+ *Copyright (c) 2023. Magenta Health Inc. All Rights Reserved.
+ *
+ *This software is published under the GPL GNU General Public License.
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+
+//Data table custom sorting to move empty or null slots on any selected sort to the bottom.
+jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    "non-empty-string-asc": function (str1, str2) {
+        if (str1 == "")
+            return 1;
+        if (str2 == "")
+            return -1;
+        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+    },
+    "non-empty-string-desc": function (str1, str2) {
+        if (str1 == "")
+            return 1;
+        if (str2 == "")
+            return -1;
+        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
+});
+
+$(document).ready(function () {
+    $('#inbox_table').DataTable({
+        autoWidth: false,
+        scrollY: '800px',
+        scrollCollapse: true,
+        paging: false,
+        columnDefs: [
+            {type: 'non-empty-string', targets: "_all"}
+        ],
+        order: [[0, 'asc']],
+    });
+
+    $('#inputStartDate').datepicker({
+        format: "yyyy-mm-dd",
+    }).on("changeDate", function (e) {
+        setTimeout(function () {
+            $("form").submit();
+        });
+    });
+    $("#inputEndDate").datepicker({
+        format: 'yyyy-mm-dd'
+    }).on("changeDate", function (e) {
+        setTimeout(function () {
+            $("form").submit();
+        });
+    });
+});
+//Provider search autocomplete. Grabs a list of active providers based on a 2 or more letter search.
+$(function () {
+    $("#autocompleteprov").autocomplete({
+        source: contextPath + "/provider/SearchProvider.do?method=labSearch",
+        minLength: 2,
+        focus: function (event, ui) {
+            $("#autocompleteprov").val(ui.item.label);
+            return false;
+        },
+        select: function (event, ui) {
+            $("#autocompleteprov").val(ui.item.label);
+            $("#provfind").val(ui.item.value);
+            $(this).closest("form").submit();
+            return false;
+        }
+    })
+});
