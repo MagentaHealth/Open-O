@@ -28,15 +28,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
-<!DOCTYPE html>
-
-<%
-    List labDocs = (List) request.getAttribute("labDocs");
-%>
+<!DOCTYPE html
+<html>
+    <%
+        List labDocs = (List) request.getAttribute("labDocs");
+        List labLinks = (List) request.getAttribute("labLinks");
+    %>
 <script>
     var contextPath = '<%=request.getContextPath()%>'
 </script>
-
 <table table id="inbox_table" class='table table-striped'>
     <thead>
     <tr>
@@ -60,8 +60,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <tr class="<%=(Objects.equals(labResult.resultStatus, "A") ? "table-danger" : "")%>">
         <td><%=labResult.getHealthNumber()%>
         </td>
-        <td><%=labResult.getPatientName()%>
-        </td>
+        <td><a href="javascript:void(0);"
+               onclick="reportWindow('<%=labLinks.get(i).toString()%>',screen.availHeight, screen.availWidth); return false;"><%=labResult.getPatientName()%>
+        </a></td>
         <td><%=labResult.getSex()%>
         </td>
         <td><%=(Objects.equals(labResult.resultStatus, "A") ? "Abnormal" : "")%>

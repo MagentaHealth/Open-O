@@ -55,6 +55,11 @@ public class ManageInboxhubAction extends DispatchAction {
         }
         ArrayList<LabResultData> labDocs = LabDataController.getLabData(loggedInInfo, query);
         CategoryData categoryData = LabDataController.getCategoryData(query);
+        if (labDocs.size() > 0) {
+            ArrayList<String> labLinks = LabDataController.getLabLink(labDocs, query, request);
+            request.setAttribute("labLinks", labLinks);
+        }
+        request.setAttribute("viewMode", query.getViewMode());
         request.setAttribute("categoryData", categoryData);
         request.setAttribute("labDocs", labDocs);
         return mapping.findForward("success");

@@ -49,6 +49,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <title>Inboxhub</title>
 </head>
 <body>
+<%
+    Boolean viewMode = (Boolean) request.getAttribute("viewMode");
+%>
 <div class="container-fluid">
     <div class="row">
         <div class="col-2 offset-lg-0 offset-xl-2">
@@ -58,7 +61,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </div>
         <div class="col-md-8 col-lg-6">
             <div>
-                <jsp:include page="InboxhubTable.jsp"/>
+                <c:choose>
+                    <c:when test="${viewMode}">
+                        <jsp:include page="InboxhubViewMode.jsp"/>
+                    </c:when>
+                    <c:otherwise>
+                        <jsp:include page="InboxhubListMode.jsp"/>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

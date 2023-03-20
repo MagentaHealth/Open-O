@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class InboxhubQuery extends ActionForm {
+    private Boolean viewMode;
     private Boolean clearFilters;
     private Boolean doc;
     private Boolean lab;
@@ -192,6 +193,15 @@ public class InboxhubQuery extends ActionForm {
         this.unmatched = false;
         this.abnormal = "All";
         this.searchAll = "";
+        this.viewMode = false;
         super.reset(mapping, request);
+    }
+
+    public Boolean getViewMode() {
+        return viewMode;
+    }
+
+    public void setViewMode(Boolean viewMode) {
+        this.viewMode = viewMode;
     }
 }

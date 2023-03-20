@@ -17,7 +17,16 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
+//Opens a popup window to a given inbox item.
+function reportWindow(page, height, width) {
+    if (height && width) {
+        windowprops = "height=" + height + ", width=" + width + ", location=no, scrollbars=yes, menubars=no, toolbars=no, resizable=yes, top=0, left=0";
+    } else {
+        windowprops = "height=660, width=960, location=no, scrollbars=yes, menubars=no, toolbars=no, resizable=yes, top=0, left=0";
+    }
+    var popup = window.open(encodeURI(page), "labreport", windowprops);
+    popup.focus();
+}
 //Data table custom sorting to move empty or null slots on any selected sort to the bottom.
 jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     "non-empty-string-asc": function (str1, str2) {

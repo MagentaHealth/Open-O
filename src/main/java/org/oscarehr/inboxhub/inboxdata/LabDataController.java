@@ -19,6 +19,7 @@
 
 package org.oscarehr.inboxhub.inboxdata;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.oscarehr.common.dao.InboxResultsDao;
 import org.oscarehr.inboxhub.query.InboxhubQuery;
 import org.oscarehr.util.LoggedInInfo;
@@ -30,6 +31,7 @@ import oscar.oscarLab.ca.on.LabResultData;
 import oscar.oscarMDS.data.CategoryData;
 import oscar.oscarMDS.data.ProviderData;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -54,15 +56,73 @@ public class LabDataController {
         }
         return null;
     }
+    //Grabs lab link for specific inbox item.
+    public static ArrayList<String> getLabLink(ArrayList<LabResultData> results, InboxhubQuery query, HttpServletRequest request) {
+        ArrayList<String> labLinks = new ArrayList<String>();
+        for (int i = 0; i < results.size(); i++) {
+            StringBuilder url = new StringBuilder(request.getContextPath());
+            LabResultData labResult = results.get(i);
+            //Setting inbox item type:
+            if (labResult.isMDS()) {
+                url.append("/SegmentDisplay.jsp?");
+            }
+            else if (labResult.isCML()) {
+                url.append("/lab/CA/ON/CMLDisplay.jsp?");
+            }
+            else if (labResult.isHL7TEXT()) {
+                String categoryType = labResult.getDiscipline();
+                if ("REF_I12".equals(categoryType)) {
+                    url.append("/oscarEncounter/ViewRequest.do?");
+                }
+                else if (categoryType!=null && categoryType.startsWith("ORU_R01:")) {
+                    url.append("/lab/CA/ALL/viewOruR01.jsp?");
+                }
+                else {
+                    url.append("/lab/CA/ALL/labDisplay.jsp?inWindow=true");
+                    url.append("&showLatest=true");
+                }
+            }
+            else if(labResult.isDocument()) {
+                url.append("/dms/showDocument.jsp?inWindow=true");
+            }
+            else if(labResult.isHRM()) {
+                url.append("/hospitalReportManager/Display.do?");
+                StringBuilder duplicateLabIds=new StringBuilder();
+                for (Integer duplicateLabId : labResult.getDuplicateLabIds())
+                {
+                    if (duplicateLabIds.length()>0) duplicateLabIds.append(',');
+                    duplicateLabIds.append(duplicateLabId);
+                }
+                url.append("&duplicateLabIds=");
+                url.append((duplicateLabIds.toString()));
+            }
+            else {
+                url.append("/lab/CA/BC/labDisplay.jsp?");
+            }
+            url.append("&segmentID=");
+            url.append((labResult.getSegmentID()));
+            url.append("&providerNo=");
+            url.append((query.getSearchProviderNo()));
+            url.append("&searchProviderNo=");
+            url.append((query.getSearchProviderNo()));
+            url.append("&status=");
+            url.append((labResult.resultStatus));
+            url.append("&demoName=");
+            url.append((labResult.getPatientName()));
+            url.append("&isListView=false");
+            labLinks.add(url.toString());
+        }
+        return labLinks;
+    }
     //Gets inbox CategoryData for given query. CategoryData includes document counts for all document types & patient lists.
-    public static CategoryData getCategoryData(InboxhubQuery query){
-        Boolean patientSearch = false;
+    public static CategoryData getCategoryData(InboxhubQuery query) {
         Boolean providerSearch = true;
+        Boolean patientSearch = true;
         if (Objects.equals(query.getSearchProviderNo(), "-1")) {
             providerSearch = false;
         }
-        if (query.getDemographicNo() != null || !Objects.equals(query.getPatientFirstName(), "") || !Objects.equals(query.getPatientLastName(), "") || !Objects.equals(query.getPatientHealthNumber(), "")) {
-            patientSearch = true;
+        if (query.getDemographicNo() == null || Objects.equals(query.getPatientFirstName(), "") || Objects.equals(query.getPatientLastName(), "") || Objects.equals(query.getPatientHealthNumber(), "")) {
+            patientSearch = false;
         }
 
         CategoryData categoryData = new CategoryData(query.getPatientLastName(), query.getPatientFirstName(), query.getPatientHealthNumber(), patientSearch, providerSearch, query.getSearchProviderNo(), query.getStatus(), query.getAbnormal(), query.getStartDate(), query.getEndDate());
@@ -77,6 +137,7 @@ public class LabDataController {
     public static ArrayList<LabResultData> getLabData(LoggedInInfo loggedInInfo, InboxhubQuery query) {
         Integer page = 0;
         Integer pageSize = Integer.MAX_VALUE;
+        //Whether to use the paging functionality. Currently setting this to false does not function and crashes the inbox.
         Boolean isPaged = true;
         Boolean mixLabsAndDocs = true;
         Date startDate = convertDate(query.getStartDate());

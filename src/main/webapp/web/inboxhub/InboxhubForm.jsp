@@ -39,6 +39,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
       id="myForm">
     <div class="form-check">
         <div class="d-grid">
+            <input type="checkbox" class="btn-check" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
+                   id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
+            <label class="btn btn-outline-primary" for="btnViewMode">Preview Mode</label><br>
             <label class="fw-bold text-uppercase mb-2">
                 Total Results: <%=categoryData.getTotalNumDocs()%>
             </label>
