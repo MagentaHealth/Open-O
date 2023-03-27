@@ -36,24 +36,44 @@ import oscar.oscarMDS.data.CategoryData;
 import java.util.*;
 
 public class ManageInboxhubAction extends DispatchAction {
+    int currentDoc ;
+    InboxhubQuery query;
+    ArrayList<LabResultData> labDocs;
     private SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
 
     public ActionForward undefined(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         return mapping.findForward("error");
     }
 
+    public ActionForward displayInboxItem(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+        LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+        if (labDocs.isEmpty()) {
+            return mapping.findForward("error");
+        }
+        else {
+            if (currentDoc < labDocs.size()) {
+                LabResultData result = labDocs.get(currentDoc);
+                request.setAttribute("searchProviderNo", query.getSearchProviderNo());
+                request.setAttribute("labResult", result);
+                currentDoc++;
+                return mapping.findForward("displayItem");
+            }
+        }
+        return null;
+    }
+
     public ActionForward displayInboxForm(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
-
+        currentDoc = 0;
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
             return mapping.findForward("unauthorized");
         }
-        InboxhubQuery query = (InboxhubQuery) form;
+        query = (InboxhubQuery) form;
         request.setAttribute("query", query);
         if (query.getClearFilters()) {
             query.reset(mapping, request);
         }
-        ArrayList<LabResultData> labDocs = LabDataController.getLabData(loggedInInfo, query);
+        labDocs = LabDataController.getLabData(loggedInInfo, query);
         CategoryData categoryData = LabDataController.getCategoryData(query);
         if (labDocs.size() > 0) {
             ArrayList<String> labLinks = LabDataController.getLabLink(labDocs, query, request);

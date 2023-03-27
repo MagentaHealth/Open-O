@@ -652,6 +652,7 @@
 		<action input="/web/inboxhub/Inboxhub.jsp" name="InboxhubForm" path="/web/inboxhub/Inboxhub"
 			parameter="method" type="org.oscarehr.inboxhub.display.ManageInboxhubAction" scope="request">
 			<forward name="success" path="/web/inboxhub/Inboxhub.jsp" />
+			<forward name="displayItem" path="/web/inboxhub/InboxhubItem.jsp" />
 			<forward name="unauthorized" path="/securityError.jsp" />
 			<forward name="error" path="/failure.jsp" />
 		</action>
