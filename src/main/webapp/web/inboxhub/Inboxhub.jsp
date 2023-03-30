@@ -54,6 +54,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 %>
 <div class="container-fluid">
     <div class="row">
+        <div class="d-flex justify-content-center">
+            <jsp:include page="InboxhubTopbar.jsp"/>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-2 offset-lg-0 offset-xl-2">
             <div>
                 <jsp:include page="InboxhubForm.jsp"/>

@@ -18,6 +18,25 @@
  */
 
 //Opens a popup window to a given inbox item.
+function popupPage(vheight,vwidth,varpage) {
+    var page = "" + varpage;
+    windowprops = "height="+vheight+",width="+vwidth+",location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=yes";
+    var popup=window.open(page, "attachment", windowprops);
+    if (popup != null) {
+        if (popup.opener == null) {
+            popup.opener = self;
+        }
+    }
+}
+function popupStart(vheight,vwidth,varpage) {
+    popupStart(vheight,vwidth,varpage,"helpwindow");
+}
+
+function popupStart(vheight,vwidth,varpage,windowname) {
+    var page = varpage;
+    windowprops = "height="+vheight+",width="+vwidth+",location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=yes";
+    var popup=window.open(varpage, windowname, windowprops);
+}
 function reportWindow(page, height, width) {
     if (height && width) {
         windowprops = "height=" + height + ", width=" + width + ", location=no, scrollbars=yes, menubars=no, toolbars=no, resizable=yes, top=0, left=0";

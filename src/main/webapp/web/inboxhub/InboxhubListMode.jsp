@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
-<!DOCTYPE html
+<!DOCTYPE html>
 <html>
     <%
         List labDocs = (List) request.getAttribute("labDocs");
