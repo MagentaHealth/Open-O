@@ -175,6 +175,14 @@ public class InboxhubQuery extends ActionForm {
         return Objects.equals(abnormal, "All") ? null : Objects.equals(abnormal, "Normal") ? false : true;
     }
 
+    public Boolean getViewMode() {
+        return viewMode;
+    }
+
+    public void setViewMode(Boolean viewMode) {
+        this.viewMode = viewMode;
+    }
+
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         this.clearFilters = false;
@@ -197,11 +205,4 @@ public class InboxhubQuery extends ActionForm {
         super.reset(mapping, request);
     }
 
-    public Boolean getViewMode() {
-        return viewMode;
-    }
-
-    public void setViewMode(Boolean viewMode) {
-        this.viewMode = viewMode;
-    }
 }

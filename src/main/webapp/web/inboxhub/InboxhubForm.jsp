@@ -37,35 +37,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
       id="myForm">
-    <div class="form-check">
+    <div>
         <div class="d-grid">
-            <input type="checkbox" class="btn-check" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
+            <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
                    id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary" for="btnViewMode">Preview Mode</label><br>
+            <label class="btn btn-outline-primary btn-sm" for="btnViewMode">Preview Mode</label><br>
             <label class="fw-bold text-uppercase mb-2">
                 Total Results: <%=categoryData.getTotalNumDocs()%>
             </label>
             <input type="checkbox" class="btn-check" name="clearFilters" id="btnClear" autocomplete="off"
                    onchange="this.form.submit()">
-            <label class="btn btn-outline-primary" for="btnClear">Clear Filters</label><br>
+            <label class="btn btn-outline-primary btn-sm" for="btnClear">Clear Filters</label><br>
             <input type="checkbox" class="btn-check" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
                    autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary" for="btnDoc">DOC (<%=categoryData.getTotalDocs()%>)</label><br>
+            <label class="btn btn-outline-primary btn-sm" for="btnDoc">DOC (<%=categoryData.getTotalDocs()%>)</label><br>
             <input type="checkbox" class="btn-check" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
                    autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary" for="btnLab">LAB (<%=categoryData.getTotalLabs()%>)</label><br>
+            <label class="btn btn-outline-primary btn-sm" for="btnLab">LAB (<%=categoryData.getTotalLabs()%>)</label><br>
             <input type="checkbox" class="btn-check" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
                    autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary" for="btnHRM">HRM</label><br>
+            <label class="btn btn-outline-primary btn-sm" for="btnHRM">HRM</label><br>
             <input type="checkbox" class="btn-check" name="unmatched" <% if (query.getUnmatched()) { %> checked <% } %>
                    id="btnUnmatched" autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary" for="btnUnmatched">Unmatched
+            <label class="btn btn-outline-primary btn-sm" for="btnUnmatched">Unmatched
                 (<%=categoryData.getUnmatchedDocs() + categoryData.getUnmatchedLabs()%>)</label><br>
             <label class="fw-bold text-uppercase mb-2">
                 Abnormal Status
             </label>
-            <div class="btn-group" role="group">
-                <input type="radio" class="btn-check" name="abnormal" id="All" value="All"
+            <div class="btn-group btn-sm" role="group">
+                <input type="radio" class="btn-check " name="abnormal" id="All" value="All"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getAbnormal(), "All")) { %>
                        checked <% } %>>
                 <label class="btn btn-outline-primary" for="All">All</label>
@@ -83,7 +83,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <label class="fw-bold text-uppercase mb-2">
                 Report Status
             </label>
-            <div class="btn-group" role="group">
+            <div class="btn-group btn-sm" role="group">
                 <input type="radio" class="btn-check" name="status" id="statusAll" value=""
                        onchange="this.form.submit()" <% if (Objects.equals(query.getStatus(), "")) { %> checked <% } %>>
                 <label class="btn btn-outline-primary" for="statusAll">All</label>
@@ -102,7 +102,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </div>
             <br>
             <label class="fw-bold text-uppercase mb-2">Physician Search Type</label>
-            <div class="btn-group" role="group">
+            <div class="btn-group btn-sm" role="group">
                 <input type="radio" class="btn-check" name="searchAll" id="physicianAll" value="true"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getSearchAll(), "true")) { %>
                        checked <% } %>>
@@ -116,41 +116,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                        checked <% } %>>
                 <label class="btn btn-outline-primary" for="physicianClear">Clear</label>
             </div>
-        </div>
-        <br>
-
-        <div class="accordion" id="dropdown">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-controls="collapseOne">
-                        Search Filters
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                     data-bs-parent="#dropdown">
-                    <div class="accordion-body d-grid">
+            <div class="accordion" id="dropdown">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-controls="collapseOne">
+                            Search Filters
+                        </button>
+                    </h2>
+                    <br><br>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                         data-bs-parent="#dropdown">
                         <div class="accordion-body d-grid">
-                            <label class="text-uppercase mb-2">Search Physician Last Name</label>
-                            <input type="hidden" name="searchProviderNo" id="provfind"
-                                   value="<%=query.getSearchProviderNo()%>"/>
-                            <input type="text" id="autocompleteprov" name="searchProviderName"
-                                   onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
-                            <label for="inputStartDate">Start Date (yyyy-mm-dd)</label>
-                            <input type="text" name="startDate" id="inputStartDate" autocomplete="off"
-                                   value="<%=query.getStartDate()%>"><br>
-                            <label for="inputEndDate">End Date (yyyy-mm-dd)</label>
-                            <input type="text" name="endDate" id="inputEndDate" autocomplete="off"
-                                   value="<%=query.getEndDate()%>"><br>
-                            <label for="inputFirstName">Patient First Name</label>
-                            <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
-                                   value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
-                            <label for="inputLastName">Patient Last Name</label>
-                            <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
-                                   value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
-                            <label for="inputHIN">Patient Health Number</label>
-                            <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
-                                   value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
+                            <div class="accordion-body d-grid">
+                                <label class="text-uppercase mb-2">Search Physician Last Name</label>
+                                <input type="hidden" name="searchProviderNo" id="findProvider"
+                                       value="<%=query.getSearchProviderNo()%>"/>
+                                <input type="text" id="autocompleteProvider" name="searchProviderName"
+                                       onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
+                                <label class="text-uppercase mb-2">Start Date (yyyy-mm-dd)</label>
+                                <input type="text" name="startDate" autocomplete="off"
+                                       value="<%=query.getStartDate()%>"><br>
+                                <label class="text-uppercase mb-2">End Date (yyyy-mm-dd)</label>
+                                <input type="text" name="endDate" autocomplete="off"
+                                       value="<%=query.getEndDate()%>"><br>
+                                <label for="inputFirstName">Patient First Name</label>
+                                <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
+                                       value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
+                                <label for="inputLastName">Patient Last Name</label>
+                                <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
+                                       value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
+                                <label for="inputHIN">Patient Health Number</label>
+                                <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
+                                       value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
+                            </div>
                         </div>
                     </div>
                 </div>

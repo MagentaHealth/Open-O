@@ -63,7 +63,9 @@ public class ManageInboxhubAction extends DispatchAction {
     }
 
     public ActionForward displayInboxForm(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+        LabDataController labDataController = new LabDataController();
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+        String unclaimed = (String) request.getAttribute("unclaimed");
         currentDoc = 0;
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
             return mapping.findForward("unauthorized");
@@ -73,11 +75,17 @@ public class ManageInboxhubAction extends DispatchAction {
         if (query.getClearFilters()) {
             query.reset(mapping, request);
         }
-        labDocs = LabDataController.getLabData(loggedInInfo, query);
-        CategoryData categoryData = LabDataController.getCategoryData(query);
+        labDocs = labDataController.getLabData(loggedInInfo, query);
+        CategoryData categoryData = labDataController.getCategoryData(query);
         if (labDocs.size() > 0) {
-            ArrayList<String> labLinks = LabDataController.getLabLink(labDocs, query, request);
+            ArrayList<String> labLinks = labDataController.getLabLink(labDocs, query, request);
             request.setAttribute("labLinks", labLinks);
+        }
+        if (Objects.equals(unclaimed, "1")) {
+            query.reset(mapping,request);
+            query.setSearchProviderNo("0");
+            query.setStatus("N");
+            request.setAttribute("unclaimed","0");
         }
         request.setAttribute("viewMode", query.getViewMode());
         request.setAttribute("categoryData", categoryData);

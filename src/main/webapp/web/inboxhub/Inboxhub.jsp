@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@page import="org.oscarehr.util.MiscUtils,org.apache.commons.lang.StringEscapeUtils" %>
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
-<%@ page import="oscar.oscarMDS.data.CategoryData" %>
+<%@page import="oscar.oscarMDS.data.CategoryData" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <link href="<%=request.getContextPath()%>/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet"
           media="screen">
     <link rel="stylesheet" type="text/css"
-          href="<%=request.getContextPath()%>/library/DataTables-1.13.2/css/jquery.dataTables.css">
+          href="<%=request.getContextPath()%>/library/DataTables-1.13.2/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/web/css/Inboxhub.css"/>
     <link href="<%=request.getContextPath() %>/css/datepicker.css" rel="stylesheet" type="text/css">
 
@@ -43,29 +43,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <script src="<%=request.getContextPath()%>/library/jQuery-3.6.0/jquery-3.6.0.min.js"></script>
     <script src="<%=request.getContextPath()%>/library/jquery/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript" charset="utf8"
-            src="<%=request.getContextPath()%>/library/DataTables-1.13.2/js/jquery.dataTables.js"></script>
+            src="<%=request.getContextPath()%>/library/DataTables-1.13.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"
+            src="<%=request.getContextPath()%>/library/DataTables-1.13.2/js/dataTables.bootstrap5.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/web/inboxhub/inboxhubController.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath() %>/js/bootstrap-datepicker.js"></script>
     <title>Inboxhub</title>
 </head>
 <body>
+
 <%
     Boolean viewMode = (Boolean) request.getAttribute("viewMode");
 %>
+<script>
+    const contextPath = "<%=request.getContextPath()%>";
+</script>
+<input type="hidden" id="ctx" value="<%=request.getContextPath()%>"/>
+
 <div class="container-fluid">
     <div class="row">
-        <div class="d-flex justify-content-center">
+        <nav class="navbar navbar-light d-flex justify-content-center" style="background-color: #e3f2fd;">
             <jsp:include page="InboxhubTopbar.jsp"/>
-        </div>
+        </nav>
     </div>
     <div class="row">
-        <div class="col-2 offset-lg-0 offset-xl-2">
-            <div>
+        <div class="col-2 offset-lg-0 offset-xl-2" style="z-index: 5">
+            <div class="bg-light text-dark" style="display: inline-block;">
                 <jsp:include page="InboxhubForm.jsp"/>
             </div>
         </div>
-        <div class="col-md-8 col-lg-6">
-            <div>
+        <div class="col-md-8 col-lg-6" style="z-index:100">
+            <div class="bg-light text-dark">
                 <c:choose>
                     <c:when test="${viewMode}">
                         <jsp:include page="InboxhubViewMode.jsp"/>

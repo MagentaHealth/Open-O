@@ -23,21 +23,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ taglib uri="/WEB-INF/security.tld" prefix="security" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<a href="javascript:popupStart(800,1000,'${pageContext.servletContext.contextPath}/lab/CA/ALL/testUploader.jsp')" class="btn btn-primary"><bean:message key="admin.admin.hl7LabUpload"/></a>
+<%
+    String providerNo = (String) session.getAttribute("user");
+    String contextPath = pageContext.getServletContext().getContextPath();
+%>
+<a href="javascript:reportWindow('<%=contextPath%>/oscarMDS/ForwardingRules.jsp?providerNo=<%= providerNo %>');" class="nav-link" >Forwarding Rules</a>
+<a href="javascript:reportWindow('<%=contextPath%>/lab/CA/ALL/testUploader.jsp',800,1000)" class="nav-link"><bean:message key="admin.admin.hl7LabUpload"/></a>
 <% if (OscarProperties.getInstance().getBooleanProperty("legacy_document_upload_enabled", "true")) { %>
-<a href="javascript:popupStart(600,500,'${pageContext.servletContext.contextPath}/dms/html5AddDocuments.jsp')" class="btn btn-primary"><bean:message key="inboxmanager.document.uploadDoc"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/dms/html5AddDocuments.jsp',600,500)" class="nav-link"><bean:message key="inboxmanager.document.uploadDoc"/></a>
 <% }
 else { %>
-<a href="javascript:popupStart(800,1000,'${pageContext.servletContext.contextPath}/dms/documentUploader.jsp')" class="btn btn-primary"><bean:message key="inboxmanager.document.uploadDoc"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/dms/documentUploader.jsp',800,1000)" class="nav-link"><bean:message key="inboxmanager.document.uploadDoc"/></a>
 <% } %>
-
-<a href="javascript:popupStart(700,1100,'../dms/inboxManage.do?method=getDocumentsInQueues')" class="btn btn-primary"><bean:message key="inboxmanager.document.pendingDocs"/></a>
-
-<a href="javascript:popupStart(800,1200,'${pageContext.servletContext.contextPath}/dms/incomingDocs.jsp')" class="btn btn-primary" ><bean:message key="inboxmanager.document.incomingDocs"/></a>
-
-<% if (! OscarProperties.getInstance().isBritishColumbiaBillingRegion()) { %>
-<a href="javascript:popupStart(800,1000, '${pageContext.servletContext.contextPath}/oscarMDS/CreateLab.jsp')" class="btn btn-primary"><bean:message key="global.createLab" /></a>
-<a href="javascript:popupStart(800,1000, '${pageContext.servletContext.contextPath}/olis/Search.jsp')" class="btn btn-primary"><bean:message key="olis.olisSearch" /></a>
-<a href="javascript:popupPage(400, 400,'<html:rewrite page="/hospitalReportManager/hospitalReportManager.jsp"/>')" class="btn btn-primary">HRM Status/Upload</a>
+<a href="javascript:reportWindow('<%=contextPath%>/dms/inboxManage.do?method=getDocumentsInQueues',700,1100)" class="nav-link"><bean:message key="inboxmanager.document.pendingDocs"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/dms/incomingDocs.jsp',800,1200)" class="nav-link"><bean:message key="inboxmanager.document.incomingDocs"/></a>
+<% if (!OscarProperties.getInstance().isBritishColumbiaBillingRegion()) { %>
+<a href="javascript:reportWindow('<%=contextPath%>/oscarMDS/CreateLab.jsp',800,1000)" class="nav-link"><bean:message key="global.createLab" /></a>
+<a href="javascript:reportWindow('<%=contextPath%>/olis/Search.jsp',800,1000)" class="nav-link"><bean:message key="olis.olisSearch" /></a>
+<a href="javascript:reportWindow('<html:rewrite page="/hospitalReportManager/hospitalReportManager.jsp"/>',400, 400)" class="nav-link">HRM Status/Upload</a>
 <% } %>
 

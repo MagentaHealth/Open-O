@@ -18,25 +18,6 @@
  */
 
 //Opens a popup window to a given inbox item.
-function popupPage(vheight,vwidth,varpage) {
-    var page = "" + varpage;
-    windowprops = "height="+vheight+",width="+vwidth+",location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=yes";
-    var popup=window.open(page, "attachment", windowprops);
-    if (popup != null) {
-        if (popup.opener == null) {
-            popup.opener = self;
-        }
-    }
-}
-function popupStart(vheight,vwidth,varpage) {
-    popupStart(vheight,vwidth,varpage,"helpwindow");
-}
-
-function popupStart(vheight,vwidth,varpage,windowname) {
-    var page = varpage;
-    windowprops = "height="+vheight+",width="+vwidth+",location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=yes";
-    var popup=window.open(varpage, windowname, windowprops);
-}
 function reportWindow(page, height, width) {
     if (height && width) {
         windowprops = "height=" + height + ", width=" + width + ", location=no, scrollbars=yes, menubars=no, toolbars=no, resizable=yes, top=0, left=0";
@@ -49,16 +30,16 @@ function reportWindow(page, height, width) {
 //Data table custom sorting to move empty or null slots on any selected sort to the bottom.
 jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     "non-empty-string-asc": function (str1, str2) {
-        if (str1 == "")
+        if (str1.empty())
             return 1;
-        if (str2 == "")
+        if (str2.empty())
             return -1;
         return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
     },
     "non-empty-string-desc": function (str1, str2) {
-        if (str1 == "")
+        if (str1.empty())
             return 1;
-        if (str2 == "")
+        if (str2.empty())
             return -1;
         return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
     }
@@ -67,42 +48,29 @@ jQuery.extend(jQuery.fn.dataTableExt.oSort, {
 $(document).ready(function () {
     $('#inbox_table').DataTable({
         autoWidth: false,
+        searching: false,
         scrollY: '800px',
         scrollCollapse: true,
         paging: false,
         columnDefs: [
-            {type: 'non-empty-string', targets: "_all"}
+            {type: 'non-empty-string', targets: "_all"},
+            {orderable: false, targets: 0}
         ],
-        order: [[0, 'asc']],
-    });
-
-    $('#inputStartDate').datepicker({
-        format: "yyyy-mm-dd",
-    }).on("changeDate", function (e) {
-        setTimeout(function () {
-            $("form").submit();
-        });
-    });
-    $("#inputEndDate").datepicker({
-        format: 'yyyy-mm-dd'
-    }).on("changeDate", function (e) {
-        setTimeout(function () {
-            $("form").submit();
-        });
+        order: [[1, 'asc']],
     });
 });
-//Provider search autocomplete. Grabs a list of active providers based on a 2 or more letter search.
+
 $(function () {
-    $("#autocompleteprov").autocomplete({
+    $("#autocompleteProvider").autocomplete({
         source: contextPath + "/provider/SearchProvider.do?method=labSearch",
         minLength: 2,
         focus: function (event, ui) {
-            $("#autocompleteprov").val(ui.item.label);
+            $("#autocompleteProvider").val(ui.item.label);
             return false;
         },
         select: function (event, ui) {
-            $("#autocompleteprov").val(ui.item.label);
-            $("#provfind").val(ui.item.value);
+            $("#autocompleteProvider").val(ui.item.label);
+            $("#findProvider").val(ui.item.value);
             $(this).closest("form").submit();
             return false;
         }

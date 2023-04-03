@@ -29,59 +29,89 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
 <!DOCTYPE html>
+
 <html>
+<script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>
+<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.theme-1.12.1.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.structure-1.12.1.min.css" />
     <%
         List labDocs = (List) request.getAttribute("labDocs");
         List labLinks = (List) request.getAttribute("labLinks");
     %>
 <script>
-    var contextPath = '<%=request.getContextPath()%>'
+    const searchProviderNo = '<%=session.getAttribute("user")%>';
 </script>
-<table table id="inbox_table" class='table table-striped'>
-    <thead>
-    <tr>
-        <th><bean:message key="oscarMDS.index.msgHealthNumber"/></th>
-        <th><bean:message key="oscarMDS.index.msgPatientName"/></th>
-        <th><bean:message key="oscarMDS.index.msgSex"/></th>
-        <th><bean:message key="oscarMDS.index.msgResultStatus"/></th>
-        <th><bean:message key="oscarMDS.index.msgDateTest"/></th>
-        <th><bean:message key="oscarMDS.index.msgOrderPriority"/></th>
-        <th><bean:message key="oscarMDS.index.msgRequestingClient"/></th>
-        <th><bean:message key="oscarMDS.index.msgDiscipline"/></th>
-        <th><bean:message key="oscarMDS.index.msgReportStatus"/></th>
-        <th>Ack #</th>
-    </tr>
-    </thead>
-    <tbody>
-    <%
-        for (int i = 0; i < labDocs.size(); i++) {
-            LabResultData labResult = (LabResultData) labDocs.get(i);
-    %>
-    <tr class="<%=(Objects.equals(labResult.resultStatus, "A") ? "table-danger" : "")%>">
-        <td><%=labResult.getHealthNumber()%>
-        </td>
-        <td><a href="javascript:void(0);"
-               onclick="reportWindow('<%=labLinks.get(i).toString()%>',screen.availHeight, screen.availWidth); return false;"><%=labResult.getPatientName()%>
-        </a></td>
-        <td><%=labResult.getSex()%>
-        </td>
-        <td><%=(Objects.equals(labResult.resultStatus, "A") ? "Abnormal" : "")%>
-        </td>
-        <td><%=labResult.getDateTime()%>
-        </td>
-        <td><%=labResult.getPriority()%>
-        </td>
-        <td><%=labResult.getRequestingClient()%>
-        </td>
-        <td><%=(Objects.equals(labResult.getDisciplineDisplayString(), "D") ? "" : labResult.getDisciplineDisplayString())%>
-        </td>
-        <td><%=(Objects.equals(labResult.getReportStatus(), "F") ? "Final" : "Partial")%>
-        </td>
-        <td><%=(Objects.equals(labResult.getAcknowledgedStatus(), "Y") ? 1 : 0)%>
-        </td>
-    </tr>
-    <%
-        }
-    %>
-    </tbody>
-</table>
+<input type="hidden" id="ctx" value="<%=request.getContextPath()%>"/>
+<div class="bg-light text-light">
+    <row>
+        <div id="categoryList"></div>
+        <input id="topFBtn" type="button" class="btn btn-primary" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('${ searchProviderNo }')">
+        <input id="topFileBtn" type="button" class="btn btn-primary" value="File" onclick="submitFile('${ searchProviderNo }')"/>
+    </row>
+    <row>
+        <table table id="inbox_table" class='table table-striped'>
+            <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" onclick="checkAllLabs(0);" name="checkA"/>
+                </th>
+                <th><bean:message key="oscarMDS.index.msgHealthNumber"/></th>
+                <th><bean:message key="oscarMDS.index.msgPatientName"/></th>
+                <th><bean:message key="oscarMDS.index.msgSex"/></th>
+                <th><bean:message key="oscarMDS.index.msgResultStatus"/></th>
+                <th><bean:message key="oscarMDS.index.msgDateTest"/></th>
+                <th><bean:message key="oscarMDS.index.msgOrderPriority"/></th>
+                <th><bean:message key="oscarMDS.index.msgRequestingClient"/></th>
+                <th><bean:message key="oscarMDS.index.msgDiscipline"/></th>
+                <th><bean:message key="oscarMDS.index.msgReportStatus"/></th>
+                <th>Ack #</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                for (int i = 0; i < labDocs.size(); i++) {
+                    LabResultData labResult = (LabResultData) labDocs.get(i);
+            %>
+            <tr id="labdoc_<%=labResult.getSegmentID()%>" class="<%=(Objects.equals(labResult.resultStatus, "A") ? "table-danger" : "")%>">
+                <td>
+                    <%
+                        String disabled = "";
+                        if (!labResult.isMatchedToPatient() && !Objects.equals(labResult.labType, "DOC"))
+                        {
+                            disabled = "disabled";
+                        };
+                    %>
+                    <input type="checkbox" name="flaggedLabs" value="<%=labResult.getSegmentID() + ":" + labResult.labType%>" <%= disabled %>>
+                </td>
+                <td><%=labResult.getHealthNumber()%></td>
+                <td><a href="javascript:void(0);"
+                       onclick="reportWindow('<%=labLinks.get(i).toString()%>',window.innerHeight, window.innerWidth); return false;"><%=labResult.getPatientName()%>
+                </a></td>
+                <td><%=labResult.getSex()%>
+                </td>
+                <td><%=(Objects.equals(labResult.resultStatus, "A") ? "Abnormal" : "")%>
+                </td>
+                <td><%=labResult.getDateTime()%>
+                </td>
+                <td><%=labResult.getPriority()%>
+                </td>
+                <td><%=labResult.getRequestingClient()%>
+                </td>
+                <td><%=(Objects.equals(labResult.getDisciplineDisplayString(), "D") ? "" : labResult.getDisciplineDisplayString())%>
+                </td>
+                <td><%=(Objects.equals(labResult.getReportStatus(), "F") ? "Final" : "Partial")%>
+                </td>
+                <td><%=(Objects.equals(labResult.getAcknowledgedStatus(), "Y") ? 1 : 0)%>
+                </td>
+            </tr>
+            <%
+                }
+            %>
+            </tbody>
+        </table>
+    </row>
+</div>
+<script>
+
+</script>

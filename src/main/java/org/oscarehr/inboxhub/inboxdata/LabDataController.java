@@ -42,9 +42,12 @@ import java.util.Objects;
 
 public class LabDataController {
 
+    public LabDataController() {
+    }
+
     //Converts given string date to date object. Returns null if not in yyyy-MM-dd format or blank.
-    public static Date convertDate(String stringDate){
-        if (!Objects.equals(stringDate, "")) {
+    public Date convertDate(String stringDate) {
+        if (!stringDate.isEmpty()) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 Date date = df.parse(stringDate);
@@ -57,7 +60,7 @@ public class LabDataController {
         return null;
     }
     //Grabs lab link for specific inbox item.
-    public static ArrayList<String> getLabLink(ArrayList<LabResultData> results, InboxhubQuery query, HttpServletRequest request) {
+    public ArrayList<String> getLabLink(ArrayList<LabResultData> results, InboxhubQuery query, HttpServletRequest request) {
         ArrayList<String> labLinks = new ArrayList<String>();
         for (int i = 0; i < results.size(); i++) {
             StringBuilder url = new StringBuilder(request.getContextPath());
@@ -74,7 +77,7 @@ public class LabDataController {
                 if ("REF_I12".equals(categoryType)) {
                     url.append("/oscarEncounter/ViewRequest.do?");
                 }
-                else if (categoryType!=null && categoryType.startsWith("ORU_R01:")) {
+                else if (!categoryType.isEmpty() && categoryType.startsWith("ORU_R01:")) {
                     url.append("/lab/CA/ALL/viewOruR01.jsp?");
                 }
                 else {
@@ -115,13 +118,13 @@ public class LabDataController {
         return labLinks;
     }
     //Gets inbox CategoryData for given query. CategoryData includes document counts for all document types & patient lists.
-    public static CategoryData getCategoryData(InboxhubQuery query) {
+    public CategoryData getCategoryData(InboxhubQuery query) {
         Boolean providerSearch = true;
         Boolean patientSearch = true;
         if (Objects.equals(query.getSearchProviderNo(), "-1")) {
             providerSearch = false;
         }
-        if (query.getDemographicNo() == null || Objects.equals(query.getPatientFirstName(), "") || Objects.equals(query.getPatientLastName(), "") || Objects.equals(query.getPatientHealthNumber(), "")) {
+        if (query.getDemographicNo() == null || query.getPatientFirstName().isEmpty() || query.getPatientLastName().isEmpty() || query.getPatientHealthNumber().isEmpty()) {
             patientSearch = false;
         }
 
@@ -134,7 +137,7 @@ public class LabDataController {
         return categoryData;
     }
     //Returns lab data based on the query. If lab, doc, and hrm flags are not set in the query returns all data from all data types.
-    public static ArrayList<LabResultData> getLabData(LoggedInInfo loggedInInfo, InboxhubQuery query) {
+    public ArrayList<LabResultData> getLabData(LoggedInInfo loggedInInfo, InboxhubQuery query) {
         Integer page = 0;
         Integer pageSize = Integer.MAX_VALUE;
         //Whether to use the paging functionality. Currently setting this to false does not function and crashes the inbox.
@@ -163,7 +166,7 @@ public class LabDataController {
         }
 
         //checking unmatched vs matched patient. Setting demographic number to 0 will grab inbox objects with no patient attached. This should overwrite all current patient queries.
-        if (query.getUnmatched()){
+        if (query.getUnmatched()) {
             query.setDemographicNo("0");
             query.setPatientFirstName("");
             query.setPatientLastName("");
