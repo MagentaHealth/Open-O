@@ -31,23 +31,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <!DOCTYPE html>
 
 <html>
-<script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>
 <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.theme-1.12.1.min.css" />
 <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.css" />
 <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.structure-1.12.1.min.css" />
     <%
         List labDocs = (List) request.getAttribute("labDocs");
         List labLinks = (List) request.getAttribute("labLinks");
+        String searchProviderNumber = (String) session.getAttribute("user");
     %>
 <script>
-    const searchProviderNo = '<%=session.getAttribute("user")%>';
+    ctx = '<%=request.getContextPath()%>';
+    const searchProviderNo = '<%=(String) session.getAttribute("user")%>';
 </script>
-<input type="hidden" id="ctx" value="<%=request.getContextPath()%>"/>
 <div class="bg-light text-light">
     <row>
         <div id="categoryList"></div>
-        <input id="topFBtn" type="button" class="btn btn-primary" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('${ searchProviderNo }')">
-        <input id="topFileBtn" type="button" class="btn btn-primary" value="File" onclick="submitFile('${ searchProviderNo }')"/>
+        <input id="topFBtn" type="button" class="btn btn-primary" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('<%=searchProviderNumber%>')">
+        <input id="topFileBtn" type="button" class="btn btn-primary" value="File" onclick="submitFile('<%=searchProviderNumber%>')"/>
     </row>
     <row>
         <table table id="inbox_table" class='table table-striped'>
@@ -112,6 +112,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </table>
     </row>
 </div>
-<script>
-
-</script>
+<script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>
