@@ -1442,11 +1442,11 @@
             </td>
         </tr>
     </table>
-    <table id="scheduleTable" BORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="100%" BGCOLOR="#C0C0C0">
+    <table id="scheduleTable" BGCOLOR="#C0C0C0">
 
         <tr>
             <td colspan="3">
-                <table border="0" cellpadding="0" bgcolor="#486ebd" cellspacing="0" width="100%">
+                <table bgcolor="#486ebd" >
                     <tr>
                         <%
                             int hourCursor = 0, minuteCursor = 0, depth = everyMin; //depth is the period, e.g. 10,15,30,60min.
@@ -1578,7 +1578,7 @@
                         <td valign="top" width="<%=isWeekView?100/7:100/numProvider%>%">
                             <!-- for the first provider's schedule -->
 
-                            <table border="0" cellpadding="0" bgcolor="#486ebd" cellspacing="0" width="100%">
+                            <table bgcolor="#486ebd">
                                 <!-- for the first provider's name -->
                                 <tr>
                                     <td class="infirmaryView" NOWRAP ALIGN="center"
@@ -1666,9 +1666,7 @@
                                             <!-- caisi infirmary view exteion add end ffffffffffffffffff-->
                                             <!-- =============== following block is the original oscar code. -->
                                             <!-- table for hours of day start -->
-                                            <table id="providerSchedule" border="0" cellpadding="0"
-                                                   bgcolor="<%=userAvail?"#486ebd":"silver"%>"
-                                                   cellspacing="0" width="100%">
+                                            <table id="providerSchedule" bgcolor="<%=userAvail?"#486ebd":"silver"%>">
                                                 <%
                                                     bFirstTimeRs = true;
                                                     bFirstFirstR = true;

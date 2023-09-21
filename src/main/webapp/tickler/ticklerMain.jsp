@@ -195,6 +195,10 @@
                 color: grey;
                 background-color: white !important;
             }
+
+            table#tablefoot {
+	            margin-bottom:50px;
+            }
 		</style>
 		<script type="application/javascript">
 
@@ -557,14 +561,8 @@
 
 	<body>
 	<div class="container">
-		<table>
-			<tr class="noprint">
-				<td>
-					<h2><bean:message key="tickler.ticklerMain.msgTickler"/> Manager
-					</h2>
-				</td>
-			</tr>
-		</table>
+
+		<h2><bean:message key="tickler.ticklerMain.msgTickler"/> Manager</h2>
 
 		<form name="serviceform" method="get" action="ticklerMain.jsp" class="form-inline">
 			<input type="hidden" name="Submit" value="">
@@ -689,7 +687,7 @@
 						}
 					%>
 				</div>
-				<div class="pull-right" style="text-align: right; vertical-align: bottom; padding:20px 15px 15px 15px;">
+				<div class="pull-right form-group" style="text-align: right; vertical-align: bottom; padding:20px 15px 15px 15px;">
 					<label for="formSubmitBtn"></label>
 					<input type="button" class="btn btn-primary mbttn noprint" id="formSubmitBtn"
 					       value="<bean:message key="tickler.ticklerMain.btnCreateReport"/>"
@@ -703,7 +701,7 @@
 
 			</c:if>
 			<div class="pull-left" style="margin-bottom:10px;">
-					<label for="ticklerview"></label>
+					<label for="ticklerview">Filter</label>
 				<select id="ticklerview" class="form-control" name="ticklerview">
 					<option value="A" <%=ticklerview.equals("A") ? "selected" : ""%>><bean:message
 							key="tickler.ticklerMain.formActive"/></option>
@@ -832,7 +830,7 @@
 					                                   class="noprint"></td>
 					<td class="<%=cellColour%>">
 						<a href="javascript:void(0)" title="<bean:message key="tickler.ticklerMain.editTickler"/>"
-						   onClick="window.open('../tickler/ticklerEdit.jsp?tickler_no=<%=tickler.getId()%>')">
+						   onClick="window.open('../tickler/ticklerEdit.jsp?tickler_no=<%=tickler.getId()%>', 'edit_tickler', 'width=800, height=650')">
 							<span class="glyphicon glyphicon-pencil"></span>
 						</a>
 					</td>
@@ -984,33 +982,41 @@
 			<%=OscarProperties.getConfidentialityStatement()%>
 		</p>
 
-		<div id="note-form" title="Edit Tickler Note">
+		<div id="note-form" title="Edit Tickler Note" style="display:none;">
 			<form>
+				<input type="hidden" name="tickler_note_demographicNo" id="tickler_note_demographicNo" value=""/>
+				<input type="hidden" name="tickler_note_ticklerNo" id="tickler_note_ticklerNo" value=""/>
+				<input type="hidden" name="tickler_note_noteId" id="tickler_note_noteId" value=""/>
 
-				<table>
-					<tbody>
-					<textarea id="tickler_note" name="tickler_note" style="width:100%;"
+				<table style="width:100%;">
+					<tr>
+						<td>
+						<label for="tickler_note">Tickler Note</label>
+					<textarea class="form-control" id="tickler_note" rows="5" name="tickler_note" style="width:100%;"
 					          oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
 					          onfocus='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
-					<input type="hidden" name="tickler_note_demographicNo" id="tickler_note_demographicNo" value=""/>
-					<input type="hidden" name="tickler_note_ticklerNo" id="tickler_note_ticklerNo" value=""/>
-					<input type="hidden" name="tickler_note_noteId" id="tickler_note_noteId" value=""/>
-					</tbody>
-				</table>
-				<table>
+						</td>
+					</tr>
 					<tr>
 						<td nowrap="nowrap">
-							Date: <span id="tickler_note_obsDate"></span> rev <a id="tickler_note_revision_url"
-							                                                     href="javascript:void(0)"
-							                                                     onClick=""><span
-								id="tickler_note_revision"></span></a><br/>
-							Editor: <span id="tickler_note_editor"></span>
+							<label for="tickler_note_obsDate" >Date:</label>
+							<span id="tickler_note_obsDate"></span>
+
+							<label for="tickler_note_revision_url">Rev:</label>
+							<a id="tickler_note_revision_url" href="javascript:void(0)" onClick="">
+							<span id="tickler_note_revision"></span>
+							</a>
+
+							<label for="tickler_note_editor">Editor:</label>
+							<span id="tickler_note_editor"></span>
 						</td>
 					</tr>
 
 				</table>
+				<div class="pull-right">
 				<button class="btn btn-primary" onclick="saveNoteDialog()">Save</button>
 				<button class="btn btn-danger" onclick="closeNoteDialog()">Exit</button>
+				</div>
 
 			</form>
 		</div>
