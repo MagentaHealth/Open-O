@@ -107,6 +107,7 @@ public class AddEFormAction extends Action {
 		 */
 		String recipient = request.getParameter("recipient");
 		String recipientFaxNumber = request.getParameter("recipientFaxNumber");
+		String letterheadFax = request.getParameter("letterheadFax");
 
 		boolean doDatabaseUpdate = false;
 
@@ -283,6 +284,7 @@ public class AddEFormAction extends Action {
 				 */
 				faxForward.addParameter("recipient", recipient);
 				faxForward.addParameter("recipientFaxNumber", recipientFaxNumber);
+				faxForward.addParameter("letterheadFax", letterheadFax);
 				return faxForward;
 			}
 			
@@ -322,6 +324,7 @@ public class AddEFormAction extends Action {
 				 */
 				faxForward.addParameter("recipient", recipient);
 				faxForward.addParameter("recipientFaxNumber", recipientFaxNumber);
+				faxForward.addParameter("letterheadFax", letterheadFax);
 				return faxForward;
 			}
 			

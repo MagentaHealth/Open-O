@@ -228,6 +228,10 @@ if(!authed) {
 
 %>
 
+<%@page import="org.oscarehr.util.SpringUtils"%>
+<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@ page import="org.owasp.encoder.Encode" %>
+
 <html:html locale="true">
 
 <head>
@@ -844,6 +848,11 @@ function consentClearBtn(radioBtnName)
 	    }
 	}
 }
+</script>
+
+</head>
+<body onLoad="setfocus(); checkONReferralNo(); formatPhoneNum(); checkRosterStatus2();"
+	topmargin="0" leftmargin="0" rightmargin="0" id="demographiceditdemographic">
 <%
        Demographic demographic = demographicDao.getDemographic(demographic_no);
        List<DemographicArchive> archives = demographicArchiveDao.findByDemographicNo(Integer.parseInt(demographic_no));
@@ -857,57 +866,8 @@ function consentClearBtn(radioBtnName)
      		serviceAdmissions = new ArrayList<Admission>();
      	}
 		pageContext.setAttribute("demographic", demographic, PageContext.PAGE_SCOPE);
-
-	if("true".equals(OscarProperties.getInstance().getProperty("iso3166.2.enabled","false"))) {
-		if(Arrays.asList("BC","AB","SK","MB","ON","QC","NB","NS","NL","NS","PE","YT","NT").contains(demographic.getProvince())) {
-			demographic.setProvince("CA-" + demographic.getProvince());
-		}
-		if(Arrays.asList("BC","AB","SK","MB","ON","QC","NB","NS","NL","NS","PE","YT","NT").contains(demographic.getResidentialProvince())) {
-			demographic.setResidentialProvince("CA-" + demographic.getResidentialProvince());
-		}
-	%>
-		jQuery(document).ready(function(){
-			setProvince('<%=StringUtils.trimToEmpty(demographic.getProvince())%>');
-			setResidentialProvince('<%=demographic.getResidentialProvince()%>');
-		});
-	<% } %>
-
-	function validateHC() {
-		var hin = jQuery("#hinBox").val();
-		var ver = jQuery("#verBox").val();
-		var hcType = jQuery("#hcTypeBox").val();
-
-		jQuery.ajax({
-			type: "GET",
-			url:  '<%=request.getContextPath()%>/ws/rs/patientDetailStatusService/validateHC?hin='+hin+'&ver='+ver,
-			dataType:'json',
-			contentType:'application/json',
-			success: function (data) {
-				var responseCode = data.responseCode;
-				var responseDescription = data.responseDescription;
-				var responseAction = data.responseAction;
-				var fName = data.firstName;
-				var lName = data.lastName;
-				var bDate = data.birthDate;
-				var gender  = data.gender;
-				var expDate = data.expiryDate;
-				var issueDate = data.issueDate;
-				var valid = data.valid;
-
-				alert(Jdata.responseDescription);
-			},
-			error: function(data) {
-				alert('An error occured.');
-			}
-		});
-	}
-</script>
-	<script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/oscar-modal-dialog.js"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.css" />
-</head>
-<body onLoad="setfocus(); checkONReferralNo(); formatPhoneNum(); checkRosterStatus2();"
-	topmargin="0" leftmargin="0" rightmargin="0" id="demographiceditdemographic">
-
+%>
+<div id="editDemographicWrapper" style="margin: auto 10px;">
 <table class="MainTable" id="scrollNumber1" name="encounterTable">
 	<tr class="MainTableTopRow">
 		<td class="MainTableTopRowLeftColumn"><bean:message
@@ -1140,13 +1100,13 @@ if(wLReadonly.equals("")){
 					<br>
 					<ul>
 						<li><a href="#" onmouseover='this.style.color="black"' onmouseout='this.style.color="white"' onclick="return add2url('<bean:message key="oscarEncounter.faceToFaceEnc.title"/>');"><bean:message key="oscarEncounter.faceToFaceEnc.title"/>
-						</a><br>
+						</a><br />
 						</li>
 						<li><a href="#" onmouseover='this.style.color="black"' onmouseout='this.style.color="white"' onclick="return add2url('<bean:message key="oscarEncounter.telephoneEnc.title"/>');"><bean:message key="oscarEncounter.telephoneEnc.title"/>
-						</a><br>
+						</a><br />
 						</li>
 						<li><a href="#" onmouseover='this.style.color="black"' onmouseout='this.style.color="white"' onclick="return add2url('<bean:message key="oscarEncounter.noClientEnc.title"/>');"><bean:message key="oscarEncounter.noClientEnc.title"/>
-						</a><br>
+						</a><br />
 						</li>
 						<li><a href="#" onmouseover='this.style.color="black"' onmouseout='this.style.color="white"' onclick="return customReason();"><bean:message key="demographic.demographiceditdemographic.msgCustom"/></a></li>
 						<li id="listCustom" style="display: none;"><input id="txtCustom" type="text" size="16" maxlength="32" onkeypress="return grabEnterCustomReason(event);"></li>
@@ -1310,7 +1270,7 @@ if (iviewTag!=null && !"".equalsIgnoreCase(iviewTag.trim())){
                     </div>
 		<table border=0 width="100%">
 			<tr id="searchTable">
-				<td colspan="4"><%-- log:info category="Demographic">Demographic [<%=demographic_no%>] is viewed by User [<%=userfirstname%> <%=userlastname %>]  </log:info --%>
+				<td><%-- log:info category="Demographic">Demographic [<%=demographic_no%>] is viewed by User [<%=userfirstname%> <%=userlastname %>]  </log:info --%>
 				<jsp:include page="zdemographicfulltitlesearch.jsp"/>
 				</td>
 			</tr>
@@ -1385,7 +1345,7 @@ if(oscarProps.getProperty("new_label_print") != null && oscarProps.getProperty("
 <%if (oscarProps.getProperty("workflow_enhance") != null && oscarProps.getProperty("workflow_enhance").equals("true")) {%>
 					
 					<tr bgcolor="#CCCCFF">
-                        <td colspan="4">
+                        <td>
                         <table border="0" width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td width="30%" valign="top">
@@ -1842,7 +1802,69 @@ if ( Dead.equals(PatStat) ) {%>
 </oscar:oscarPropertiesCheck>	                      
 <%-- END TOGGLE ALL PRIVACY CONSENTS --%>
 
+							<% // customized key + "Has Primary Care Physician" & "Employment Status"
+								String[] propDemoExt = new String[0];
+								String hasPrimaryCarePhysician = "N/A";
+								String employmentStatus = "N/A";
+
+								final String hasPrimary = "Has Primary Care Physician";
+								final String empStatus = "Employment Status";
+								boolean hasDemoExt=false, hasHasPrimary=false, hasEmpStatus=false;
+
+								String demographicExt = oscarProps.getProperty("demographicExt");
+								if (demographicExt!=null && !demographicExt.trim().isEmpty()) {
+									hasDemoExt = true;
+									propDemoExt = demographicExt.split("\\|");
+								}
+								if (oscarProps.isPropertyActive("showPrimaryCarePhysicianCheck")) {
+									hasHasPrimary = true;
+									String key = hasPrimary.replace(" ", "");
+									if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty())
+										hasPrimaryCarePhysician = demoExt.get(key);
+								}
+								if (oscarProps.isPropertyActive("showEmploymentStatus")) {
+									hasEmpStatus = true;
+									String key = empStatus.replace(" ", "");
+									if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty())
+										employmentStatus = demoExt.get(key);
+								}
+
+								if (hasDemoExt || hasHasPrimary || hasEmpStatus) {
+							%>
+							<div id="special" class="demographicSection">
+								<h3>&nbsp;Custom</h3>
+								<ul>
+
+									<%
+										if(propDemoExt != null) {
+											for(String propItem : propDemoExt) {
+												String propValue = StringUtils.trimToEmpty(demoExt.get(propItem.replace(' ', '_')));
+									%>
+									<li>
+										<%= Encode.forHtml( propItem  + ": ") %>
+										<strong><%=	Encode.forHtml( propValue) %></strong>
+									</li>
+									<%	} }
+
+										if (hasHasPrimary) {
+									%>
+									<li>
+										<%=hasPrimary%>: <strong><%=hasPrimaryCarePhysician%></strong>
+									</li>
+									<%	}
+										if (hasEmpStatus) {
+									%>
+									<li>
+										<%=empStatus%>: <strong><%=employmentStatus%></strong>
+									</li>
+									<%	}
+									%>
+								</ul>
+							</div>
 						</div>
+							<%} %>
+
+
 						<div class="rightSection">
 						<div class="demographicSection" id="contactInformation">
 						<h3>&nbsp;<bean:message key="demographic.demographiceditdemographic.msgContactInfo"/></h3>
@@ -2319,53 +2341,9 @@ if ( Dead.equals(PatStat) ) {%>
 <%-- TOGGLED OFF PROGRAM ADMISSIONS --%>
 
 						</div>
-						</div>
 
-						<% // customized key + "Has Primary Care Physician" & "Employment Status"
-						String[] propDemoExt = {};
-						String hasPrimaryCarePhysician = "N/A";
-						String employmentStatus = "N/A";
-						
-						final String hasPrimary = "Has Primary Care Physician";
-						final String empStatus = "Employment Status";
-						boolean hasDemoExt=false, hasHasPrimary=false, hasEmpStatus=false;
-						
-						String demographicExt = oscarProps.getProperty("demographicExt");
-						if (demographicExt!=null && !demographicExt.trim().isEmpty()) {
-							hasDemoExt = true;
-							propDemoExt = demographicExt.split("\\|");
-						}
-						if (oscarProps.isPropertyActive("showPrimaryCarePhysicianCheck")) {
-							hasHasPrimary = true;
-							String key = hasPrimary.replace(" ", "");
-							if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty())
-								hasPrimaryCarePhysician = demoExt.get(key);
-						}
-						if (oscarProps.isPropertyActive("showEmploymentStatus")) {
-							hasEmpStatus = true;
-							String key = empStatus.replace(" ", "");
-							if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty())
-								employmentStatus = demoExt.get(key);
-						}
-						
-						if (hasDemoExt || hasHasPrimary || hasEmpStatus) {
-						%>	<div class="demographicSection" id="special">
-								<h3>&nbsp;Special</h3>
-						<%	for(int k=0; k<propDemoExt.length; k++) {
-						%>		<%=propDemoExt[k]+": <b>" + StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_'))) +"</b>"%>
-								&nbsp;<%=((k+1)%4==0&&(k+1)<propDemoExt.length)?"<br>":""%>
-						<%	}
-							if (hasHasPrimary) {
-						%>		<%=hasPrimary%>: <b><%=hasPrimaryCarePhysician%></b>
-						<%	}
-							if (hasEmpStatus) {
-						%>		<%=empStatus%>: <b><%=employmentStatus%></b>
-						<%	}
-						%>
-							</div>
-						<%} %>
 						</div>
-
+						</div>
 						<!--newEnd-->
 
 						<table width="100%" bgcolor="#EEEEFF" border=0
@@ -3533,7 +3511,78 @@ document.updatedelete.r_doctor_ohip.value = refNo;
 									value="<%= endDay %>"></td>
 							</tr>
 				<%-- END MOVE PATIENT JOINED DATE --%>
-							
+
+							<% // customized key + "Has Primary Care Physician" & "Employment Status"
+								if (hasHasPrimary || hasEmpStatus) {
+							%>							<tr valign="top">
+							<%		if (hasHasPrimary) {
+							%>								<td style="text-align: right;"><b><%=hasPrimary.replace(" ", "&nbsp;")%>:</b></td>
+							<td style="text-align: left;">
+								<select name="<%=hasPrimary.replace(" ", "")%>">
+									<option value="N/A" <%="N/A".equals(hasPrimaryCarePhysician)?"selected":""%>>N/A</option>
+									<option value="Yes" <%="Yes".equals(hasPrimaryCarePhysician)?"selected":""%>>Yes</option>
+									<option value="No" <%="No".equals(hasPrimaryCarePhysician)?"selected":""%>>No</option>
+								</select>
+							</td>
+							<%		}
+								if (hasEmpStatus) {
+							%>								<td style="text-align: right;"><b><%=empStatus.replace(" ", "&nbsp;")%>:</b></td>
+							<td style="text-align: left;">
+								<select name="<%=empStatus.replace(" ", "")%>">
+									<option value="N/A" <%="N/A".equals(employmentStatus)?"selected":""%>>N/A</option>
+									<option value="FULL TIME" <%="FULL TIME".equals(employmentStatus)?"selected":""%>>FULL TIME</option>
+									<option value="ODSP" <%="ODSP".equals(employmentStatus)?"selected":""%>>ODSP</option>
+									<option value="OW" <%="OW".equals(employmentStatus)?"selected":""%>>OW</option>
+									<option value="PART TIME" <%="PART TIME".equals(employmentStatus)?"selected":""%>>PART TIME</option>
+									<option value="UNEMPLOYED" <%="UNEMPLOYED".equals(employmentStatus)?"selected":""%>>UNEMPLOYED</option>
+								</select>
+							</td>
+						</tr>
+							<%		}
+							}
+								if (hasDemoExt) {
+									boolean bExtForm = oscarProps.getProperty("demographicExtForm") != null ? true : false;
+									String [] propDemoExtForm = bExtForm ? (oscarProps.getProperty("demographicExtForm","").split("\\|") ) : null;
+									for(int k=0; k<propDemoExt.length; k=k+2) {
+							%>
+							<tr valign="top">
+								<td align="right"><b><%=Encode.forHtmlContent(propDemoExt[k])%>: </b></td>
+								<td align="left">
+									<% if(bExtForm) {
+										if(propDemoExtForm[k].indexOf("<select")>=0) {
+											out.println(propDemoExtForm[k].replaceAll("value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))+"\"" , "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))+"\"" + " selected") );
+										} else {
+											out.println(propDemoExtForm[k].replaceAll("value=\"\"", "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))+"\"" ) );
+										}
+									} else { %>
+										<input type="text" name="<%= Encode.forHtmlAttribute(propDemoExt[k].replace(' ', '_')) %>" value="<%=Encode.forHtmlAttribute(StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_'))))%>" />
+									<% }  %>
+										<input type="hidden" name="<%=propDemoExt[k].replace(' ', '_')%>Orig"  value="<%=StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))%>" />
+								</td>
+								<% if((k+1)<propDemoExt.length) { %>
+								<td align="right" ><b>
+									<%out.println( Encode.forHtmlContent(propDemoExt[k+1])+":");%> </b></td>
+								<td align="left">
+									<% if(bExtForm) {
+										if(propDemoExtForm[k+1].indexOf("<select")>=0) {
+											out.println(propDemoExtForm[k+1].replaceAll("value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))+"\"" , "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))+"\"" + " selected") );
+										} else {
+											out.println(propDemoExtForm[k+1].replaceAll("value=\"\"", "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))+"\"" ) );
+										}
+									} else { %> <input type="text"
+									                   name="<%=Encode.forHtmlAttribute(propDemoExt[k+1].replace(' ', '_'))%>"
+									                   value="<%=Encode.forHtmlAttribute(StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_'))))%>" />
+									<% }  %> <input type="hidden"
+									                name="<%=Encode.forHtmlAttribute(propDemoExt[k+1].replace(' ', '_'))%>Orig"
+									                value="<%=Encode.forHtmlAttribute(StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_'))))%>" />
+								</td>
+								<% } else {%>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<% }  %>
+							</tr>
+							<% 	}
+							} %>
 
 <%-- TOGGLE PATIENT PRIVACY CONSENT --%>							
 <oscar:oscarPropertiesCheck property="privateConsentEnabled" value="true">
@@ -3680,9 +3729,13 @@ document.updatedelete.r_doctor_ohip.value = refNo;
 														.getProperty("EXTRA_DEMO_FIELDS");
 												fieldJSP += ".jsp";
 							%>
-	<jsp:include page="<%=fieldJSP%>">
-		<jsp:param name="demo" value="<%=demographic_no%>" />
-	</jsp:include>
+							<tr>
+								<td colspan="4">
+									<jsp:include page="<%=fieldJSP%>">
+										<jsp:param name="demo" value="<%=demographic_no%>" />
+									</jsp:include>
+								</td>
+							</tr>
 <%}%>
 
 <%-- END TOGGLE OFF EXTRA DEMO FIELDS (NATIVE HEALTH) --%>	
@@ -3842,81 +3895,11 @@ document.updatedelete.r_doctor_ohip.value = refNo;
 
 </oscar:oscarPropertiesCheck>
 <%-- END TOGGLE OFF PROGRAM ADMISSIONS --%>							
-							
-<% // customized key + "Has Primary Care Physician" & "Employment Status"
-	if (hasHasPrimary || hasEmpStatus) {
-%>							<tr valign="top" bgcolor="#CCCCFF">
-<%		if (hasHasPrimary) {
-%>								<td><b><%=hasPrimary.replace(" ", "&nbsp;")%>:</b></td>
-								<td>
-									<select name='<%=hasPrimary.replace(" ", "")%>' >
-										<option value="N/A" <%="N/A".equals(hasPrimaryCarePhysician)?"selected":""%>>N/A</option>
-										<option value="Yes" <%="Yes".equals(hasPrimaryCarePhysician)?"selected":""%>>Yes</option>
-										<option value="No" <%="No".equals(hasPrimaryCarePhysician)?"selected":""%>>No</option>
-									</select> 
-								</td>
-<%		}
-		if (hasEmpStatus) {
-%>								<td><b><%=empStatus.replace(" ", "&nbsp;")%>:</b></td>
-								<td>
-									<select name='<%=empStatus.replace(" ", "")%>' >
-										<option value="N/A" <%="N/A".equals(employmentStatus)?"selected":""%>>N/A</option>
-										<option value="FULL TIME" <%="FULL TIME".equals(employmentStatus)?"selected":""%>>FULL TIME</option>
-										<option value="ODSP" <%="ODSP".equals(employmentStatus)?"selected":""%>>ODSP</option>
-										<option value="OW" <%="OW".equals(employmentStatus)?"selected":""%>>OW</option>
-										<option value="PART TIME" <%="PART TIME".equals(employmentStatus)?"selected":""%>>PART TIME</option>
-										<option value="UNEMPLOYED" <%="UNEMPLOYED".equals(employmentStatus)?"selected":""%>>UNEMPLOYED</option>
-									</select> 
-								</td>
-							</tr>
-<%		}
-	}
-if (hasDemoExt) {
-    boolean bExtForm = oscarProps.getProperty("demographicExtForm") != null ? true : false;
-    String [] propDemoExtForm = bExtForm ? (oscarProps.getProperty("demographicExtForm","").split("\\|") ) : null;
-	for(int k=0; k<propDemoExt.length; k=k+2) {
-%>
-							<tr valign="top" bgcolor="#CCCCFF">
-								<td align="right" nowrap><b><%=propDemoExt[k]%>: </b></td>
-								<td align="left">
-								<% if(bExtForm) {
-                                  	if(propDemoExtForm[k].indexOf("<select")>=0) {
-                                		out.println(propDemoExtForm[k].replaceAll("value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))+"\"" , "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))+"\"" + " selected") );
-                                  	} else {
-                              			out.println(propDemoExtForm[k].replaceAll("value=\"\"", "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))+"\"" ) );
-                                  	}
-                              	 } else { %> <input type="text"
-									name="<%=propDemoExt[k].replace(' ', '_')%>"
-									value="<%=StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))%>" />
-								<% }  %> <input type="hidden"
-									name="<%=propDemoExt[k].replace(' ', '_')%>Orig"
-									value="<%=StringUtils.trimToEmpty(demoExt.get(propDemoExt[k].replace(' ', '_')))%>" />
-								</td>
-								<% if((k+1)<propDemoExt.length) { %>
-								<td align="right" nowrap><b>
-								<%out.println(propDemoExt[k+1]+":");%> </b></td>
-								<td align="left">
-								<% if(bExtForm) {
-                                  	if(propDemoExtForm[k+1].indexOf("<select")>=0) {
-                                		out.println(propDemoExtForm[k+1].replaceAll("value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))+"\"" , "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))+"\"" + " selected") );
-                                  	} else {
-                              			out.println(propDemoExtForm[k+1].replaceAll("value=\"\"", "value=\""+StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))+"\"" ) );
-                                  	}
-                              	 } else { %> <input type="text"
-									name="<%=propDemoExt[k+1].replace(' ', '_')%>"
-									value="<%=StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))%>" />
-								<% }  %> <input type="hidden"
-									name="<%=propDemoExt[k+1].replace(' ', '_')%>Orig"
-									value="<%=StringUtils.trimToEmpty(demoExt.get(propDemoExt[k+1].replace(' ', '_')))%>" />
-								</td>
-								<% } else {%>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<% }  %>
-							</tr>
-							<% 	}
+
+<%
+if(oscarProps.getProperty("demographicExtJScript") != null) {
+	out.println(Encode.forJavaScript(oscarProps.getProperty("demographicExtJScript")));
 }
-if(oscarProps.getProperty("demographicExtJScript") != null) { out.println(oscarProps.getProperty("demographicExtJScript")); }
 %>
 
 
@@ -3994,7 +3977,7 @@ if(oscarProps.getProperty("demographicExtJScript") != null) { out.println(oscarP
 <%-- END PATIENT NOTES MODULE --%>	
 <%-- BOTTOM TOOLBAR  --%>				
 					<tr class="darkPurple">
-						<td colspan="4">
+						<td>
 						<table border="0" width="100%" cellpadding="0" cellspacing="0">
 							<tr>
 								<td width="30%" valign="top">
@@ -4105,7 +4088,7 @@ if(oscarProps.getProperty("demographicExtJScript") != null) { out.println(oscarP
 		<td class="MainTableBottomRowRightColumn"></td>
 	</tr>
 </table>
-
+</div>
 <oscar:oscarPropertiesCheck property="DEMOGRAPHIC_WAITING_LIST" value="true">
 <script type="text/javascript">
 Calendar.setup({ inputField : "waiting_list_referral_date", ifFormat : "%Y-%m-%d", showsTime :false, button : "referral_date_cal", singleClick : true, step : 1 });

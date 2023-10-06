@@ -108,12 +108,13 @@ public class ConvertToEdoc {
 		String eformString = eform.getFormData();	
 		String demographicNo = eform.getDemographicId() + "";
 		String filename = buildFilename( eform.getFormName(), demographicNo );
+		String eDocDescription = "".equals(eform.getSubject().trim()) ? eform.getFormName() : eform.getSubject();
 		EDoc edoc = null;		
 		Path path = execute( eformString, filename );
 		
 		if(Files.isReadable(path)) {
 			edoc = buildEDoc( path.getFileName().toString(),
-					eform.getSubject(), 
+					eDocDescription, 
 					null,
 					eform.getProviderNo(), 
 					demographicNo, 

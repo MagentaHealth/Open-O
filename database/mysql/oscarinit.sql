@@ -8822,7 +8822,8 @@ CREATE TABLE IF NOT EXISTS `casemgmt_note_link` (
   `note_id` int(10) NOT NULL,
   `other_id` varchar(25),
   PRIMARY KEY  (`id`),
-  KEY `note_idIndex` (`note_id`)
+  KEY `note_idIndex` (`note_id`),
+  KEY `casemgmt_note_link_table_table_name_index` (`table_name`, `table_id`, `other_id`)
 );
 
 

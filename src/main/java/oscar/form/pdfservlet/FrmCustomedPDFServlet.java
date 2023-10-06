@@ -422,7 +422,7 @@ public class FrmCustomedPDFServlet extends HttpServlet {
 
 				StringBuilder patientHeading = new StringBuilder(this.patientName);
 				if (showPatientDOB) {
-					patientHeading.append("   ").append(geti18nTagValue(locale, "RxPreview.msgDOB")).append(":").append(this.patientDOB);
+					patientHeading.append(newline).append(geti18nTagValue(locale, "RxPreview.msgDOB")).append(": ").append(this.patientDOB);
 				}
 				patientHeading.append(newline).append(this.patientAddress).append(newline).append(this.patientCityPostal).append(newline).append(this.patientPhone);
 

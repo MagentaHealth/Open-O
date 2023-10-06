@@ -194,6 +194,7 @@ public class FaxAction extends DispatchAction {
 		 */
 		String recipient 				= (String) faxActionForm.get("recipient");
 		String recipientFaxNumber 		= (String) faxActionForm.get("recipientFaxNumber");
+		String letterheadFax			= (String) faxActionForm.get("letterheadFax");
 		Integer demographicNo			= (Integer)faxActionForm.get("demographicNo");
 		Integer transactionId 			= (Integer)faxActionForm.get("transactionId");
 		TransactionType transactionType	= TransactionType.valueOf(faxActionForm.getString("transactionType").toUpperCase());		
@@ -222,6 +223,7 @@ public class FaxAction extends DispatchAction {
 			request.setAttribute("transactionType", transactionType.name());
 			request.setAttribute("transactionId", transactionId);
 			request.setAttribute("faxFilePath", pdfPath);
+			request.setAttribute("letterheadFax", letterheadFax);
 			request.setAttribute("professionalSpecialistName", recipient);
 			request.setAttribute("fax", recipientFaxNumber);
 			actionForward = mapping.findForward("preview");

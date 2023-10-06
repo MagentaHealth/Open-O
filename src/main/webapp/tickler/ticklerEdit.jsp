@@ -30,7 +30,7 @@
 <%@page import="java.util.Calendar"%>
 <%@page import="java.text.DateFormat" %>
 <%@page import="java.text.SimpleDateFormat" %>
-
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@page import="org.oscarehr.common.dao.TicklerTextSuggestDao"%>
 <%@page import="org.oscarehr.util.LocaleUtils"%>
 <%@page import="org.oscarehr.common.dao.TicklerTextSuggestDao"%>
@@ -73,13 +73,13 @@
 %>
 
 <%
-    Boolean caisiEnabled = OscarProperties.getInstance().isPropertyActive("caisi");
+    boolean caisiEnabled = OscarProperties.getInstance().isPropertyActive("caisi");
 	String ticklerNoStr = request.getParameter("tickler_no");    
     
     Integer ticklerNo = null;
     try {
         ticklerNo = Integer.valueOf(ticklerNoStr);
-    }catch (NumberFormatException e) {}
+    }catch (NumberFormatException ignored) {}
     
     
     Tickler t = null;
@@ -112,6 +112,13 @@
 <html:html locale="true">
     <head>
         <style>
+            .tickler-comment-row:nth-child(odd) td {
+                background-color:whitesmoke;
+            }
+            .tickler-comment-row:nth-child(even) td {
+                background-color:white;
+            }
+
             *:not(h2) {
                 line-height: 1 !important;
                 font-size: 12px !important;
@@ -123,24 +130,29 @@
 				width: 270px;
 			}
 
-			.grid a {
+			.grid a, .today-button {
 				background-color: #E6E6FA;
 				text-align: center;
 				width: auto;
 				height: auto;
-                padding: 2px;
+				padding: 2px;
 				margin: 1px;
 				display: flex;
 				justify-content: center;
 				text-decoration: none;
 				color: black;
 				font-size: 11px !important;
-				border-radius: 20%;
+				border-radius: 3px;
 			}
 
-			.grid a:hover {
+			.grid a:hover, .today-button:hover {
 				background-color: #EE82EE;
 				color: white;
+			}
+
+			.today-button {
+				width: 125px;
+				cursor: pointer;
 			}
         </style>
         <title><bean:message key="tickler.ticklerEdit.title"/></title>
@@ -192,8 +204,7 @@
 				const year = currentDate.getFullYear();
 				const month = String(currentDate.getMonth() + 1).padStart(2, '0');
 				const day = String(currentDate.getDate()).padStart(2, '0');
-				const newDate = year + "-" + month + "-" + day;
-				document.serviceform.xml_appointment_date.value = newDate;
+				document.serviceform.xml_appointment_date.value = year + "-" + month + "-" + day;
 			}
             
             function DateAdd(startDate, numDays, numMonths, numYears){
@@ -246,7 +257,7 @@
     }	
 
 	function validateDate() {
-		if (document.serviceform.xml_appointment_date.value == "" || !IsDate(document.serviceform.xml_appointment_date.value)) {
+		if (document.serviceform.xml_appointment_date.value === "" || !IsDate(document.serviceform.xml_appointment_date.value)) {
             document.getElementById("error").insertAdjacentText("beforeend","<bean:message key="tickler.ticklerAdd.msgMissingDate"/>");
             document.getElementById("error").style.display='block';
 			return false;
@@ -271,21 +282,23 @@
 
                 <tr>
                     <th style="background-color: #EEEEFF"><bean:message key="tickler.ticklerEdit.demographicName"/></th>                           
-                    <td><a href="javascript:void(0)" onClick="popupPage(600,800,'<%=request.getContextPath() %>/demographic/demographiccontrol.jsp?demographic_no=<%=d.getDemographicNo()%>&displaymode=edit&dboperation=search_detail')"><%=d.getLastName()%>,<%=d.getFirstName()%></a></td>
+                    <td><a href="javascript:void(0)" onClick="popupPage(600,800,'<%=request.getContextPath() %>/demographic/demographiccontrol.jsp?demographic_no=<%=d.getDemographicNo()%>&displaymode=edit&dboperation=search_detail')">
+                        <%=Encode.forHtmlContent(d.getLastName())%>,<%=Encode.forHtmlContent(d.getFirstName())%>
+                    </a></td>
                     <th style="background-color: #EEEEFF"><bean:message key="tickler.ticklerEdit.primaryPhone"/></th>                           
-                    <td><%=d.getPhone()%></td> 
+                    <td><%=Encode.forHtmlContent(d.getPhone())%></td>
                 </tr>
                 <tr>
                     <th style="background-color: #EEEEFF"><bean:message key="tickler.ticklerEdit.chartNo"/></th>                           
                     <td><%=d.getChartNo()%></td>
                     <th style="background-color: #EEEEFF"><bean:message key="tickler.ticklerEdit.secondaryPhone"/></th>
-                    <td><%=d.getPhone2()%></td>
+                    <td><%=Encode.forHtmlContent(d.getPhone2())%></td>
                 </tr>
                 <tr>
                     <th style="background-color: #EEEEFF"><bean:message key="tickler.ticklerEdit.age"/></th>                           
                     <td><%=d.getAge()%>(<%=d.getFormattedDob()%>)</td> 
                     <th style="background-color: #EEEEFF"><bean:message key="tickler.ticklerEdit.email"/></th>
-                    <td><%=d.getEmail()%></td>
+                    <td><%=Encode.forHtmlContent(d.getEmail())%></td>
                 </tr>                
 
                 <tr>
@@ -296,54 +309,45 @@
                     <th style="background-color: #336666;color:white;"><bean:message key="tickler.ticklerEdit.addedBy"/>
                     <th style="background-color: #336666;color:white;"><bean:message key="tickler.ticklerEdit.updateDate"/>
                 </tr>
-                
-                <%
-                                	String cellColour = "lilac";
-                                %>
-                
-                <tr>
-                    <td colspan="2" class="<%=cellColour%>" style="font-weight: bold"><%=t.getMessage()%></td>
-                    <td class="<%=cellColour%>" style="font-weight: bold"><%=t.getProvider().getLastName()%>,<%=t.getProvider().getFirstName()%></td>
-                    <td class="<%=cellColour%>" style="font-weight: bold"><%=t.getUpdateDate()%></td>
-                </tr>
-                
+
+                    <tr>
+                        <td colspan="2" style="font-weight: bold; white-space:pre-wrap;"><%=Encode.forHtmlContent(t.getMessage())%></td>
+                        <td style="font-weight: bold"><%=Encode.forHtmlContent(t.getProvider().getLastName())%>,<%=Encode.forHtmlContent(t.getProvider().getFirstName())%></td>
+                        <td style="font-weight: bold"><%=t.getUpdateDate()%></td>
+                    </tr>
+
                     <%
-                                    	Set<TicklerComment> tComments = t.getComments(); 
-                                                          for (TicklerComment tc : tComments) { 
-                                                               if (cellColour.equals("lilac")) {
-                                                                    cellColour = "white";
-                                                                }else{
-                                                                    cellColour = "lilac"; 
-                                                                }
-                                    %>
-               <tr>
-                    <td colspan="2" class="<%=cellColour%>"><%=tc.getMessage()%></td>
-                    <td class="<%=cellColour%>"><%=tc.getProvider().getLastName()%>,<%=tc.getProvider().getFirstName()%></td>
-                    <td class="<%=cellColour%>"><%=tc.getUpdateDateTime(vLocale)%></td>
-                </tr>
+                        Set<TicklerComment> tComments = t.getComments();
+                            for (TicklerComment tc : tComments) {
+                    %>
+                       <tr class="tickler-comment-row" >
+                            <td colspan="2" style="white-space:pre-wrap;"><%=Encode.forHtmlContent(tc.getMessage())%></td>
+                            <td> <%=Encode.forHtmlContent(tc.getProvider().getLastName())%>,<%=Encode.forHtmlContent(tc.getProvider().getFirstName())%></td>
+                            <td> <%=tc.getUpdateDateTime(vLocale)%></td>
+                        </tr>
                     <%}%>
 
                 <tr><td colspan="4" style="padding-top:1em;"></td></tr>
                 <tr>
                     <th colspan="2" style="background-color: #666699;color:white;"><bean:message key="tickler.ticklerEdit.newMessage"/></th>
-                    <th colspan="2" style="background-color: #666699;color:white;"><bean:message key="tickler.ticklerEdit.status"/></th>
+                    <th colspan="2" style="background-color: #666699;color:white;"><label for="status"><bean:message key="tickler.ticklerEdit.status"/></label></th>
                 </tr>
                 <tr>
-                    <td><a href="javascript:void(0)" onclick="openBrWindow('./ticklerSuggestedText.jsp','tickler_suggested_text','width=680,height=400')" style="font-weight:bold">
-                        <bean:message key="tickler.ticklerEdit.suggestedText"/></a>:</td>
+                    <td><label for="suggestedText"><a href="javascript:void(0)" onclick="openBrWindow('./ticklerSuggestedText.jsp','tickler_suggested_text','width=680,height=400')" style="font-weight:bold">
+                        <bean:message key="tickler.ticklerEdit.suggestedText"/></a>:</label></td>
                     <td>
-                        <select class="form-control" name="suggestedText">
+                        <select class="form-control" name="suggestedText" id="suggestedText">
                             <option value="">---</option>
                             <%   
                                 TicklerTextSuggestDao ticklerTextSuggestDao = (TicklerTextSuggestDao) SpringUtils.getBean("ticklerTextSuggestDao");
                                 for (TicklerTextSuggest tTextSuggest : ticklerTextSuggestDao. getActiveTicklerTextSuggests()) { %>
-                                <option><%=tTextSuggest.getSuggestedText()%></option>
+                                <option><%=Encode.forHtmlContent(tTextSuggest.getSuggestedText())%></option>
                             <% } %>
                         </select>
                     </td>
                     
                     <td colspan="2">
-                        <select class="form-control" name="status">
+                        <select class="form-control" name="status" id="status">
                             <% if (t.getStatusDesc(vLocale).equals(stActive)){selected="selected";}else{selected="";}%>
                             <option <%=selected%> value="A"><bean:message key="tickler.ticklerMain.stActive"/></option>
                             <% if (t.getStatusDesc(vLocale).equals(stComplete)){selected="selected";}else{selected="";}%>
@@ -355,17 +359,17 @@
                 </tr>                
                 <tr>
                     <td colspan="2" style="border: none;"><label for="newMessage"><bean:message key="tickler.ticklerEdit.messageText"/>:</label></td>
-                    <th colspan="2" style="background-color: #666699;color:white;"><bean:message key="tickler.ticklerEdit.priority"/></th>
+                    <th colspan="2" style="background-color: #666699;color:white;"><label for="priority"><bean:message key="tickler.ticklerEdit.priority"/></label></th>
                 </tr>
                 
                 <tr>
                     <td colspan="2" rowspan="7" style="border: none;">
-                        <textarea class="form-control" rows="22" style="width:100%;" id="newMessage" name="newMessage"></textarea>
+                        <textarea class="form-control" rows="23" style="width:100%;" id="newMessage" name="newMessage"></textarea>
                         <input type="button" class="btn" name="pasteMessage" onclick="pasteMessageText()" value="<bean:message key="tickler.ticklerEdit.pasteMessage"/>"/>
                     </td>
 
                     <td colspan="2">
-                        <select class="form-control" name="priority">
+                        <select class="form-control" name="priority" id="priority">
                             <% if (t.getPriorityWeb().equals(prHigh)){selected="selected";}else{selected="";}%>
                             <option <%=selected%> value="<bean:message key="tickler.ticklerMain.priority.high"/>"><bean:message key="tickler.ticklerMain.priority.high"/></option>
                             <% if (t.getPriorityWeb().equals(prNormal)){selected="selected";}else{selected="";}%>
@@ -378,12 +382,12 @@
                 
                 <tr>
                     <th colspan="2" style="background-color: #666699;color:white;">
-                        <bean:message key="tickler.ticklerEdit.assignedTo"/>
+                        <label for="assignedToProviders"><bean:message key="tickler.ticklerEdit.assignedTo"/></label>
                     </th>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <select class="form-control" name="assignedToProviders">
+                        <select class="form-control" name="assignedToProviders" id="assignedToProviders">
                             <%
                                 ProviderDao providerDao = (ProviderDao)SpringUtils.getBean("providerDao");
                                 List<Provider> providers = providerDao.getActiveProviders(); 
@@ -396,7 +400,7 @@
                                         selected = "";
                                     }
                             %>
-                            <option <%=selected%> value="<%=p.getProviderNo()%>"><%=p.getLastName()%>,<%=p.getFirstName()%></option>
+                            <option <%=selected%> value="<%=p.getProviderNo()%>"><%=Encode.forHtmlContent(p.getLastName())%>,<%=Encode.forHtmlContent(p.getFirstName())%></option>
                             <%  } %>
                         </select>
                     </td>
@@ -424,6 +428,8 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border: none;">
+                        <!-- Today button placed before the grid -->
+                        <div id="todayButton" class="today-button" onclick="addTime(0, 'days')">Today</div>
                         <div id="quickPickDateOptions" class="grid" >
                             <!-- Quick pick will be added here using JavaScript -->
                         </div>

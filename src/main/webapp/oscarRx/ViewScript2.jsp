@@ -321,6 +321,10 @@ function printIframe(){
 		}
 		else
 		{
+			if ('function' === typeof window.onbeforeunload) {
+				window.onbeforeunload = null;
+			}
+
 			preview.focus();
 			preview.print();
 

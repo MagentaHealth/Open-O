@@ -51,7 +51,8 @@ input#searchHealthCareTeamInput:focus {
 body#demographiceditdemographic table#demographicPatientNotes,
 body#demographiceditdemographic table#waitingListTable,
 body#demographiceditdemographic table#privacyConsentTable,
-body#demographiceditdemographic table#rxinteractionTable {
+body#demographiceditdemographic table#rxinteractionTable,
+body#demographiceditdemographic table#firstnationsdatatable{
   background-color:white !important;
   border-collapse: collapse !important;
   border-bottom:thin solid #CCCCFF !important;

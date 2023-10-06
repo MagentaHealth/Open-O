@@ -684,10 +684,14 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 
 				if ( props.getBooleanProperty("printPDF_referring_prac", "yes") ) {
 					table.addCell( setFooterCell(cell, getResource("msgAssociated2"), reqFrm.getProviderName(reqFrm.providerNo) + ((getlen(ohipNo) > 0) ? " (" + ohipNo + ")" : "")));
+				} else {
+					table.addCell(setFooterCell(cell, "", ""));
 				}
 
 				if ( props.getBooleanProperty("mrp_model", "yes") ) {
 					table.addCell(setFooterCell(cell, getResource("msgFamilyDoc2"), reqFrm.getFamilyDoctor() + ((getlen(famDocOhipNo) > 0) ? " (" + famDocOhipNo + ")" : "")));
+				} else {
+					table.addCell(setFooterCell(cell, "", ""));
 				}
 				
 				addTable( pdfPTable, table );
@@ -730,7 +734,8 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 	 * the data in a normal font on the same line.
 	 */
 	private PdfPCell setFooterCell(PdfPCell cell, String info, String data) {
-		return setInfoCell( cell, String.format("%s %s %s", info, getlen(data) > 0 ? ":" : "", data) );
+		String suffix = (getlen(data) > 0 && data.endsWith(":")) ? ":" : "";
+		return setInfoCell( cell, String.format("%s%s %s", info, suffix, data) );
 	}
 
 	/**

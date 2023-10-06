@@ -2533,7 +2533,7 @@
 			) AS 'labvalues'
 			FROM (
 			SELECT
-			RANK() OVER (PARTITION BY m.type ORDER BY m.dateObserved DESC, m.id DESC) AS ranking,
+			RANK() OVER (PARTITION BY me.val ORDER BY m.dateObserved DESC, m.id DESC) AS ranking,
 			m.id,
 			m.type,
 			TRIM(REGEXP_REPLACE(m.dataField, '[^[:alnum:]^\.]+', ' '))AS datafield,
@@ -2546,7 +2546,6 @@
 			WHERE m.demographicNo = ${demographic}
 			AND me.id IS NOT NULL
 			AND me.keyval = "identifier"
-			AND m.type IS NOT NULL AND m.type != ''
 			) latest
 			LEFT JOIN measurementsExt unit
 			ON (unit.measurement_id = latest.id AND unit.keyval LIKE "unit")

@@ -61,7 +61,7 @@
 		
 			   		<button type="button" class="btn btn-default" id="remoteSaveEdocumentButton" name="saveEdocumentButton" value="eDocument" title="Save and then save as PDF" onclick="remoteEdocument()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-import"></i></span>
-			   			eDocument
+			   			Add to Documents
 			   		</button>
 			   		<button type="button" class="btn btn-danger " id="remoteCloseEformWindow" name="closeEformWindow" value="Close" title="Close this eForm" onclick="remoteClose()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-remove-circle"></i></span>

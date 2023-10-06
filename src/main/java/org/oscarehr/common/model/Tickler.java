@@ -183,6 +183,9 @@ public class Tickler extends AbstractModel<Integer> {
 	}
 
 	public String getMessage() {
+		if(message == null) {
+			return "";
+		}
 		return message;
 	}
 

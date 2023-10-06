@@ -25,11 +25,13 @@
 package org.oscarehr.managers;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import org.apache.logging.log4j.Logger;
@@ -52,6 +54,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.sf.json.JSONObject;
+import oscar.OscarProperties;
 import oscar.dms.EDocUtil;
 import oscar.form.util.FormTransportContainer;
 import oscar.log.LogAction;
@@ -292,6 +295,11 @@ public class FaxManager {
 		String recipientFaxNumber = (String) faxJobMap.get("recipientFaxNumber");
 		String senderFaxNumber = (String) faxJobMap.get("senderFaxNumber");
 		Integer demographicNo = (Integer) faxJobMap.get("demographicNo");
+
+		//Checking if a file is saved in a temporary directory, then copying it to a permanent directory (/var/lib/OscarDocument/...).
+		if (faxFilePath.contains("/temp/")) {
+			faxFilePath = copyFileToOscarDocuments(faxFilePath);
+		}
 		recipientFaxNumber = recipientFaxNumber.replaceAll("\\D", "");
 		//TODO not sure how to make this happen yet.
 
@@ -305,7 +313,7 @@ public class FaxManager {
 		/*
 		 * Build the foundation of a faxJob
 		 */
-		faxJob.setFile_name(faxDocument.toString());
+		faxJob.setFile_name(faxDocument.getFileName().toString());
 		faxJob.setNumPages(EDocUtil.getPDFPageCount(faxDocument.toString()));
 		faxJob.setFax_line(faxConfig.getFaxNumber());
 		faxJob.setStamp(new Date());
@@ -350,6 +358,22 @@ public class FaxManager {
 
 		return faxJob;
 
+	}
+
+	private String copyFileToOscarDocuments(String tempFilePath) {
+		String destinationDir = OscarProperties.getInstance().getProperty("DOCUMENT_DIR");
+		if (!destinationDir.endsWith(File.separator)) {
+			destinationDir += File.separator;
+		}
+
+		File tempFile = new File(tempFilePath);
+		Path destinationFilePath = Paths.get(destinationDir, tempFile.getName());
+		try {
+			Files.copy(tempFile.toPath(), destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			logger.error("An error occurred while moving the PDF file", e);
+		}
+		return destinationFilePath.toString();
 	}
 
 	/**

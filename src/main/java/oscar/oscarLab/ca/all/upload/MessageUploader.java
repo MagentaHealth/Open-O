@@ -39,8 +39,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.oscarehr.PMmodule.dao.ProviderDao;
@@ -884,7 +886,7 @@ public final class MessageUploader {
 				String[] labelArray = mergedLabel.split("\\s?\\|\\s?");
 				for (String labelItem : labelArray) {
 					if(! labelItem.isEmpty()) {
-						String regex = labelItem + "\\s?\\|?\\s?";
+						String regex = Pattern.quote(labelItem) + "\\s?\\|?\\s?";
 						currentLabel = currentLabel.replaceAll(regex, "");
 					}
 				}

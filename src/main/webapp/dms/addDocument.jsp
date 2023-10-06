@@ -269,10 +269,10 @@ function newDocTypeLink(){
 </script>
 <div class="topplane">
 <div class="docHeading" style="background-color: silver;">
-    <a id="plusminusAddDocA" href="javascript: showhide('addDocDiv', 'plusminusAddDocA');"> <i class="icon-plus"></i>&nbsp;</a><bean:message key="dms.addDocument.msgAddDocument"/>
+    <a id="plusminusAddDocA" href="javascript: showhide('addDocDiv', 'plusminusAddDocA');"> <i class="icon-plus"></i>&nbsp;<bean:message key="dms.addDocument.msgAddDocument"/> </a>
     <%-- a id="plusminusAddDocA" href="undocumentReport2.jsp"> <i class="icon-plus"></i>&nbsp;</a><bean:message key="dms.addDocument.msgManageUploadDocument"/> --%>
-    <a id="plusminusLinkA" href="javascript: showhide('addLinkDiv', 'plusminusLinkA')"> <i class="icon-plus"></i>&nbsp;</a><bean:message key="dms.addDocument.AddLink"/>
-    <a href="javascript:;" onclick="popup(450, 600, 'addedithtmldocument.jsp?function=<%=module%>&functionid=<%=moduleid%>&mode=addHtml', 'addhtml')"><i class="icon-plus"></i>&nbsp</a><bean:message key="dms.addDocument.AddHTML"/>
+    <a id="plusminusLinkA" href="javascript: showhide('addLinkDiv', 'plusminusLinkA')"> <i class="icon-plus"></i>&nbsp;<bean:message key="dms.addDocument.AddLink"/> </a>
+    <a href="javascript:;" onclick="popup(450, 600, 'addedithtmldocument.jsp?function=<%=module%>&functionid=<%=moduleid%>&mode=addHtml', 'addhtml')"><i class="icon-plus"></i>&nbsp<bean:message key="dms.addDocument.AddHTML"/> </a>
 </div>
 <div id="addDocDiv" class="addDocDiv"
 	style="background-color: silver; display: none;"><html:form

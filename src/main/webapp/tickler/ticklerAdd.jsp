@@ -327,7 +327,7 @@
 				width: 270px;
 			}
 
-			.grid a {
+			.grid a, .today-button {
 				background-color: #E6E6FA;
 				text-align: center;
 				width: auto;
@@ -339,12 +339,17 @@
 				text-decoration: none;
 				color: black;
 				font-size: 11px !important;
-				border-radius: 20%;
+				border-radius: 3px;
 			}
 
-			.grid a:hover {
+			.grid a:hover, .today-button:hover {
 				background-color: #EE82EE;
 				color: white;
+			}
+
+			.today-button {
+				width: 128px;
+				cursor: pointer;
 			}
 		</style>
 	</head>
@@ -443,6 +448,8 @@
 					<td><input type="date" class="form-control" name="xml_appointment_date"
 					           value="<%=xml_appointment_date%>">
 						<font color="#003366" size="1" face="Verdana, Arial, Helvetica, sans-serif">
+							<!-- Today button placed before the grid -->
+							<div id="todayButton" class="today-button" onclick="addTime(0, 'days')">Today</div>
 							<div id="quickPickDateOptions" class="grid" >
 								<!-- Quick pick will be added here using JavaScript -->
 							</div>

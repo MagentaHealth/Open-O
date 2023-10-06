@@ -55,6 +55,10 @@ if(demographic_no != null){
 if(demoExt == null) demoExt = new HashMap<String,String>();
 
 %>
+<table id="firstnationsdatatable" style="width:100%;">
+	<tr class="category_table_heading">
+		<th colspan="4" style="text-align: left;">First Nation</th>
+	</tr>
 <tr>
 	<td align="right"><b>Status #:</b></td>
 	<td align="left" >
@@ -117,6 +121,7 @@ if(demoExt == null) demoExt = new HashMap<String,String>();
 		value="<%=StringUtils.trimToEmpty(demoExt.get("area"))%>"></td>
 
 </tr>
+</table>
 <%!
     String getSel(String s, String s2){
         if (s != null && s2 != null && s.equals(s2)){

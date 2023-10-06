@@ -76,7 +76,7 @@
 
 <%
 	String labReqVer = oscar.OscarProperties.getInstance().getProperty("onare_labreqver", "07");
-	if (labReqVer.equals("")) {
+	if (labReqVer.isEmpty()) {
 		labReqVer = "07";
 	}
 
@@ -177,6 +177,24 @@
 		      type="text/css"/>
 
 		<style>
+
+            table tr.comment-row td:nth-of-type(3) {
+                color:transparent;
+            }
+
+            table tr:not(tr.comment-row, table#tablefoot *) td:last-of-type {
+                border-right: lightgrey inset thin !important;
+            }
+
+            table tr:not(tr.comment-row, table#tablefoot *) td:first-of-type {
+                border-left: lightgrey inset thin !important;
+            }
+
+            table tr:not(tr.comment-row, table#tablefoot *) td {
+                border-top: lightgrey outset thin !important;
+                border-bottom: lightgrey outset thin !important;
+            }
+
             tr.error td {
                 color: red !important;
             }
@@ -404,7 +422,7 @@
 				var len = ml.elements.length;
 				for (var i = 0; i < len; i++) {
 					var e = ml.elements[i];
-					if (e.name == "checkbox") {
+					if (e.name === "checkbox") {
 						Check(e);
 					}
 				}
@@ -416,7 +434,7 @@
 				var len = ml.elements.length;
 				for (var i = 0; i < len; i++) {
 					var e = ml.elements[i];
-					if (e.name == "checkbox") {
+					if (e.name === "checkbox") {
 						Clear(e);
 					}
 				}
@@ -431,9 +449,9 @@
 					r = e.parentElement.parentElement;
 				}
 				if (r) {
-					if (r.className == "msgnew") {
+					if (r.className === "msgnew") {
 						r.className = "msgnews";
-					} else if (r.className == "msgold") {
+					} else if (r.className === "msgold") {
 						r.className = "msgolds";
 					}
 				}
@@ -447,9 +465,9 @@
 					r = e.parentElement.parentElement;
 				}
 				if (r) {
-					if (r.className == "msgnews") {
+					if (r.className === "msgnews") {
 						r.className = "msgnew";
-					} else if (r.className == "msgolds") {
+					} else if (r.className === "msgolds") {
 						r.className = "msgold";
 					}
 				}
@@ -800,7 +818,6 @@
 						ticklers = ticklerManager.getTicklers(loggedInInfo, filter);
 					}
 
-					String rowColour = "white";
 					String numDaysUntilWarn = OscarProperties.getInstance().getProperty("tickler_warn_period");
 					if(numDaysUntilWarn == null || numDaysUntilWarn.isEmpty()) {
 						numDaysUntilWarn = "0";
@@ -822,7 +839,7 @@
 							warning = true;
 						}
 
-						String cellColour = rowColour + warnColour;
+						String cellColour = warnColour;
 				%>
 
 				<tr <%=warning ? "class='error'" : ""%> >
@@ -850,7 +867,7 @@
 					</td>
 					<td class="<%=cellColour%>"><%=tickler.getStatusDesc(locale)%>
 					</td>
-					<td class="<%=cellColour%>"><%=Encode.forHtmlContent(tickler.getMessage())%>
+					<td class="<%=cellColour%>"><span style="white-space:pre-wrap"><%=Encode.forHtmlContent(tickler.getMessage())%></span>
 
 						<%
 							List<TicklerLink> linkList = ticklerLinkDao.getLinkByTickler(tickler.getId().intValue());
@@ -862,27 +879,27 @@
 						<%
 							if (LabResultData.isMDS(type)) {
 						%>
-						<a href="javascript:reportWindow('SegmentDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')">ATT</a>
+						<a title="View attachment" href="javascript:reportWindow('SegmentDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')"><i class="glyphicon glyphicon-paperclip"></i></a>
 						<%
 						} else if (LabResultData.isCML(type)) {
 						%>
-						<a href="javascript:reportWindow('../lab/CA/ON/CMLDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')">ATT</a>
+						<a title="View attachment" href="javascript:reportWindow('../lab/CA/ON/CMLDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')"><i class="glyphicon glyphicon-paperclip"></i></a>
 						<%
 						} else if (LabResultData.isHL7TEXT(type)) {
 						%>
-						<a href="javascript:reportWindow('../lab/CA/ALL/labDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')">ATT</a>
+						<a title="View attachment" href="javascript:reportWindow('../lab/CA/ALL/labDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')"><i class="glyphicon glyphicon-paperclip"></i></a>
 						<%
 						} else if (LabResultData.isDocument(type)) {
 						%>
-						<a href="javascript:reportWindow('../dms/ManageDocument.do?method=display&doc_no=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')">ATT</a>
+						<a title="View attachment" href="javascript:reportWindow('../dms/ManageDocument.do?method=display&doc_no=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')"><i class="glyphicon glyphicon-paperclip"></i></a>
 						<%
 						} else if (LabResultData.isHRM(type)) {
 						%>
-						<a href="javascript:reportWindow('../hospitalReportManager/Display.do?id=<%=tl.getTableId()%>&segmentID=<%=tl.getTableId()%>')">ATT</a>
+						<a title="View attachment" href="javascript:reportWindow('../hospitalReportManager/Display.do?id=<%=tl.getTableId()%>&segmentID=<%=tl.getTableId()%>')"><i class="glyphicon glyphicon-paperclip"></i></a>
 						<%
 						} else {
 						%>
-						<a href="javascript:reportWindow('../lab/CA/BC/labDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')">ATT</a>
+						<a title="View attachment" href="javascript:reportWindow('../lab/CA/BC/labDisplay.jsp?segmentID=<%=tl.getTableId()%>&providerNo=<%=user_no%>&searchProviderNo=<%=user_no%>&status=')"><i class="glyphicon glyphicon-paperclip"></i></a>
 						<%
 							}
 						%>
@@ -927,7 +944,7 @@
 					</td>
 					<td></td>
 					<td></td>
-					<td class="no sort"><%=Encode.forHtmlContent(tc.getMessage())%>
+					<td class="no sort" style="white-space:pre-wrap"><%=Encode.forHtmlContent(tc.getMessage())%>
 					</td>
 					<td></td>
 					<td><%=tickler.getId()%>

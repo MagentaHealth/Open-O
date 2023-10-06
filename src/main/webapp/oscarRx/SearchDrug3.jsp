@@ -2185,21 +2185,28 @@ function updateQty(element){
                     $(durationStr).innerHTML=json.duration;
                 }
                 $(durationUnitStr).innerHTML=json.durationUnit;
-                $(quantityStr).innerHTML=json.calQuantity;
                 if(json.unitName!=null && json.unitName!="null" && json.unitName!="NULL" && json.unitName!="Null"){
                     $(unitNameStr).innerHTML=json.unitName;
                 }else{
                     $(unitNameStr).innerHTML='';
                 }
+                if (json.calQuantity != 0) {
+                    //this is oftentimes zero when re-prescribing a drug where the unitName != null.  
+                    //Until a more reliable calculated quantity is being returned, don't update if the calculated quantity is 0
+                    //silently changing to 0 can be problematic in situations where the quantity has already been set
+                    //to an appropriate value.                 
+                    $(quantityStr).innerHTML=json.calQuantity; 
+                    if($(unitNameStr).innerHTML!='')
+                        $(quantity).value=$(quantityStr).innerHTML+" "+$(unitNameStr).innerHTML;
+                    else
+                        $(quantity).value=$(quantityStr).innerHTML;
+                    
+                }                
                 if(json.prn){
                     $(prnStr).innerHTML="prn";$(prnVal).value=true;
                 } else{
                     $(prnStr).innerHTML="";$(prnVal).value=false;
                 }
-            if($(unitNameStr).innerHTML!='')
-                $(quantity).value=$(quantityStr).innerHTML+" "+$(unitNameStr).innerHTML;
-            else
-                $(quantity).value=$(quantityStr).innerHTML;
             }});
         return true;
     }
