@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <link href="<%=request.getContextPath() %>/css/datepicker.css" rel="stylesheet" type="text/css">
 
     <script src="<%=request.getContextPath()%>/library/bootstrap/5.0.2/js/bootstrap.min.js"></script>
-    <script src="<%=request.getContextPath()%>/library/jQuery-3.6.0/jquery-3.6.0.min.js"></script>
+    <script src="<%=request.getContextPath()%>/library/jquery/jquery-3.6.4.min.js"></script>
     <script src="<%=request.getContextPath()%>/library/jquery/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript" charset="utf8"
             src="<%=request.getContextPath()%>/library/DataTables-1.13.2/js/jquery.dataTables.min.js"></script>
