@@ -1423,6 +1423,7 @@
                         <validHeader>utils/headers/uvic.txt</validHeader>
                         <validHeader>utils/headers/kai.txt</validHeader>
                         <validHeader>utils/headers/ubcfps.txt</validHeader>
+						<validHeader>utils/headers/well_emr.txt</validHeader>
                 </validHeaders>
                 <includes>
                     <include>src/main/java/**/*.java</include>

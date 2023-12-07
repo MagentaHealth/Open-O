@@ -50,6 +50,10 @@
 			   			<span class="btn-label"><i class="glyphicon glyphicon-print"></i></span>
 			   			Print
 			   		</button>
+					<button type="button" class="btn btn-default" id="remoteDownloadButton" name="DownloadButton" value="Download" title="Save and Download" onclick="remoteDownload()">
+			   			<span class="btn-label"><i class="glyphicon glyphicon-download"></i></span>
+			   			Download
+			   		</button>
 							
 					<c:if test="${ faxActive }">
 						<button type="button" class="btn btn-default" id="remoteFaxButton" name="FaxButton" title="Save and then send by fax" onclick="remoteFax()">

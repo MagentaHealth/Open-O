@@ -118,6 +118,15 @@ public class EctConsultationFormRequestPrintAction2 extends Action {
 			streams.add(bis);
 			alist.add(bis);
 
+			// attached eForms
+			List<EFormData> eForms = consultationManager.getAttachedEForms(reqId);
+
+			for(EFormData eFormItem : eForms) {
+				Path attachedForm = faxManager.renderFaxDocument(loggedInInfo, FaxManager.TransactionType.EFORM, eFormItem.getId(), eFormItem.getDemographicId());
+				alist.add(Files.newInputStream(attachedForm));
+			}
+
+			//attached docs
 			for (int i = 0; i < docs.size(); i++) {
 				EDoc doc = docs.get(i);  
 				if (doc.isPrintable()) {
@@ -168,6 +177,19 @@ public class EctConsultationFormRequestPrintAction2 extends Action {
 				tempLabPDF.delete();
 			}
 
+			// attached HRMs
+			ArrayList<HashMap<String,? extends Object>> attachedHRMDocuments = consultationManager.getAttachedHRMDocuments(loggedInInfo, demoNo, reqId);
+			for (HashMap<String,? extends Object> attachedHRMDocument : attachedHRMDocuments) {
+				bos = new ByteOutputStream();
+				HRMPDFCreator hrmPdf = new HRMPDFCreator(bos, (Integer)attachedHRMDocument.get("id"), loggedInInfo);
+				hrmPdf.printPdf();
+				buffer = bos.getBytes();
+				bis = new ByteInputStream(buffer, bos.getCount());
+				bos.close();
+				streams.add(bis);
+				alist.add(bis);
+			}
+
 			// attached forms
 			List<EctFormData.PatientForm> forms = consultationManager.getAttachedForms(loggedInInfo, Integer.parseInt(reqId), Integer.parseInt(demoNo));
 
@@ -187,27 +209,6 @@ public class EctConsultationFormRequestPrintAction2 extends Action {
 				formTransportContainer.setRealPath( getServlet().getServletContext().getRealPath( File.separator ) );
 				Path attachedForm = faxManager.renderFaxDocument(loggedInInfo, FaxManager.TransactionType.FORM, formTransportContainer);
 				alist.add(Files.newInputStream(attachedForm));
-			}
-
-			// attached eForms
-			List<EFormData> eForms = consultationManager.getAttachedEForms(reqId);
-
-			for(EFormData eFormItem : eForms) {
-				Path attachedForm = faxManager.renderFaxDocument(loggedInInfo, FaxManager.TransactionType.EFORM, eFormItem.getId(), eFormItem.getDemographicId());
-				alist.add(Files.newInputStream(attachedForm));
-			}
-
-			// attached HRMs
-			ArrayList<HashMap<String,? extends Object>> attachedHRMDocuments = consultationManager.getAttachedHRMDocuments(loggedInInfo, demoNo, reqId);
-			for (HashMap<String,? extends Object> attachedHRMDocument : attachedHRMDocuments) {
-				bos = new ByteOutputStream();
-				HRMPDFCreator hrmPdf = new HRMPDFCreator(bos, (Integer)attachedHRMDocument.get("id"), loggedInInfo);
-				hrmPdf.printPdf();
-				buffer = bos.getBytes();
-				bis = new ByteInputStream(buffer, bos.getCount());
-				bos.close();
-				streams.add(bis);
-				alist.add(bis);
 			}
 
 			if (alist.size() > 0) {

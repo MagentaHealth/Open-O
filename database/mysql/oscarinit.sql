@@ -7388,7 +7388,8 @@ CREATE TABLE IF NOT EXISTS radetail (
   error_code char(2) NOT NULL default '',
   billtype char(3) NOT NULL default '',
   claim_no varchar(12) not null default '',
-  PRIMARY KEY  (radetail_no)
+  PRIMARY KEY  (radetail_no),
+  KEY `service_date_index`(`service_date`)
 ) ;
 
 --
@@ -8194,7 +8195,8 @@ CREATE TABLE IF NOT EXISTS measurementsExt(
 	measurement_id int(10) NOT NULL,
 	keyval varchar(20) NOT NULL,
 	val text NOT NULL,
-	INDEX(measurement_id)
+	INDEX(measurement_id),
+  INDEX measurements_ext_keyval_val (keyval, val(100))
 );
 
 CREATE TABLE IF NOT EXISTS measurementMap(
@@ -10965,11 +10967,13 @@ CREATE TABLE IF NOT EXISTS `fax_config` (
   `url` varchar(255),
   `siteUser` varchar(255),
   `passwd` varchar(255),
+  `gatewayName` varchar(255),
   `faxUser` varchar(255),
   `faxPasswd` varchar(255),
   `queue` varchar(255),
   `active` tinyint(1),
   `faxNumber` varchar(10),
+  `faxReply` varchar(10),
   `senderEmail` varchar(255),
   `accountName` varchar(55),
   `download` tinyint(1),

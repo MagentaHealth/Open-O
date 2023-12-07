@@ -55,7 +55,7 @@ table {
 
  table#firstTable {
     width:100%;
-    position: sticky;
+    position: fixed;
     top: 0;
     left:0;
     right:0;
@@ -215,6 +215,10 @@ div.appt-container div.navigation-tag {
 	border-right: #486ebd 2px solid;
     width: 5%;
 	min-width:5%;
+}
+
+table#scheduleTable {
+	margin-top: 49px;
 }
 
 .scheduleTimeNot00 a, .scheduleTime00 a {

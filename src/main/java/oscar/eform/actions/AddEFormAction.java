@@ -25,10 +25,11 @@
 
 package oscar.eform.actions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +48,7 @@ import org.oscarehr.common.model.Demographic;
 import org.oscarehr.managers.DemographicManager;
 
 import org.oscarehr.managers.EformDataManager;
+import org.oscarehr.managers.FaxManager;
 import org.oscarehr.managers.FaxManager.TransactionType;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.match.IMatchManager;
@@ -90,6 +92,7 @@ public class AddEFormAction extends Action {
 		boolean fax = "true".equals(request.getParameter("faxEForm"));
 		boolean print = "true".equals(request.getParameter("print"));
 		boolean saveAsEdoc = "true".equals( request.getParameter("saveAsEdoc") );
+		boolean isDownloadEForm = "true".equals(request.getParameter("saveAndDownloadEForm"));
 
 		@SuppressWarnings("unchecked")
 		Enumeration<String> paramNamesE = request.getParameterNames();
@@ -293,6 +296,23 @@ public class AddEFormAction extends Action {
 				return(mapping.findForward("print"));
 			}
 
+			else if (isDownloadEForm) {
+				/*
+				 * For now, this download code is added here and will be moved to the appropriate place after refactoring is done.
+				 */
+				ActionForward printForward = mapping.findForward("download");
+				String path = printForward.getPath() + "?fdid=" + fdid + "&parentAjaxId=eforms";
+				printForward = new ActionForward(path);
+
+				String fileName = generateFileName(loggedInInfo, Integer.parseInt(demographic_no));
+				String pdfBase64 = getEFormPDF(loggedInInfo, Integer.parseInt(demographic_no), Integer.parseInt(fdid));
+
+				request.setAttribute("eFormPDF", pdfBase64);
+				request.setAttribute("eFormPDFName", fileName);
+
+				return printForward;
+			}
+
 			else {
 				//write template message to echart
 				String program_no = new EctProgram(se).getProgram(providerNo);
@@ -332,6 +352,23 @@ public class AddEFormAction extends Action {
 				request.setAttribute("fdid", prev_fdid);
 				return(mapping.findForward("print"));
 			}
+
+			else if (isDownloadEForm) {
+				/*
+				 * For now, this download code is added here and will be moved to the appropriate place after refactoring is done.
+				 */
+				ActionForward printForward = mapping.findForward("download");
+				String path = printForward.getPath() + "?fdid=" + prev_fdid + "&parentAjaxId=eforms";
+				printForward = new ActionForward(path);
+
+				String fileName = generateFileName(loggedInInfo, Integer.parseInt(demographic_no));
+				String pdfBase64 = getEFormPDF(loggedInInfo, Integer.parseInt(demographic_no), Integer.parseInt(prev_fdid));
+
+				request.setAttribute("eFormPDF", pdfBase64);
+				request.setAttribute("eFormPDFName", fileName);
+
+				return printForward;
+			}
 			
 			if( saveAsEdoc ) {
 				eformDataManager.saveEformDataAsEDoc( loggedInInfo, prev_fdid ); 
@@ -351,6 +388,31 @@ public class AddEFormAction extends Action {
 		
 
 		return(mapping.findForward("close"));
+	}
+
+	private String getEFormPDF(LoggedInInfo loggedInInfo, int demographicNo, int fdid) {
+		FaxManager faxManager = SpringUtils.getBean(FaxManager.class);
+		Path eFormPDFPath = faxManager.renderFaxDocument(loggedInInfo, FaxManager.TransactionType.EFORM, fdid, demographicNo);
+		String pdfBase64 = null;
+		try {
+			byte[] pdfBytes = Files.readAllBytes(eFormPDFPath);
+			pdfBase64 = Base64.getEncoder().encodeToString(pdfBytes);
+		} catch (IOException e) {
+			logger.error("Error reading the file", e);
+		}
+
+		return pdfBase64;
+	}
+	
+	private String generateFileName(LoggedInInfo loggedInInfo, int demographicNo) {
+		DemographicManager demographicManager = SpringUtils.getBean(DemographicManager.class);
+		String demographicLastName = demographicManager.getDemographicFormattedName(loggedInInfo, demographicNo).split(", ")[0];
+
+		Date currentDate = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
+		String formattedDate = dateFormat.format(currentDate);
+
+		return formattedDate + "_" + demographicLastName + ".pdf";
 	}
 
 }

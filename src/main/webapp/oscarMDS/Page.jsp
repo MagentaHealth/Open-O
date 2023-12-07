@@ -419,15 +419,20 @@ String curUser_no = (String) session.getAttribute("user");
 				  id: 'dateOfTest',
 				  is: function(s) {return false;},
 				  format: function(s) {
-				    return s.indexOf("/")!=-1?s.substr(s.indexOf("/")+2,10):s;
+                    //this code assumes the following:
+                    //in this scenario (2023-09-21 / 2023-09-21), use the 10 characters following the /
+                    //in this scenario (2023-09-19 12:53:00 ), use the first 10 characters 
+                    //in this scenario (2023-09-21 17:39:05.0), use the first 10 characters
+                    //in any other scenario, just use the original string
+				    return s.indexOf("/")!=-1?s.substr(s.indexOf("/")+2,10):(s.indexOf(" ")!=-1?s.substr(0,10):s);
 				  },
 				  type: 'text'
 			});
 		
 			jQuery("#summaryView").tablesorter({
-					sortList:[4,1],
+					sortList:[5,1],
 					headers:{
-						4:{
+						5:{
 							sorter:'dateOfTest'
 						}
 					}

@@ -99,6 +99,34 @@
 		return false;
 
 	}
+
+	/**
+	 * Adds a hidden input field into the eForm form with instructions to 
+	 * open 'Save as' window dialog
+	 */
+	function remoteDownload() {
+		ShowSpin(true);
+		const newElement = document.createElement("input");
+		newElement.setAttribute("id", "saveAndDownloadEForm");
+		newElement.setAttribute("name", "saveAndDownloadEForm");
+		newElement.setAttribute("value", "true");
+		newElement.setAttribute("type", "hidden");
+		document.forms[0].appendChild(newElement);
+
+		remoteSave();
+	}
+
+	function downloadEForm() {
+		if (eFormPDF !== 'null' && eFormPDFName !== 'null') {
+			const pdfData = new Uint8Array(atob(eFormPDF).split('').map(char => char.charCodeAt(0)));
+			const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
+			const downloadLink = document.createElement('a');
+			downloadLink.href = URL.createObjectURL(pdfBlob);
+			downloadLink.download = eFormPDFName;
+			downloadLink.click();
+			URL.revokeObjectURL(downloadLink.href);
+		}
+	}
 	
 	/**
 	 * Adds a hidden input field into the eForm form with instructions to 

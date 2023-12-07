@@ -781,8 +781,7 @@ function checkServiceDate(s) {
 		bWrongDate = true;
 	}
 	if(bWrongDate) {
-		alert("You may have a wrong Service/admission Date!" + " Wrong " + sMsg);
-		return false;
+		return confirm("Warning: the inputted service or admission date is in the future.\r\n\r\nClick OK to continue, Cancel to edit.");		
 	} else {
 		return true;
 	}

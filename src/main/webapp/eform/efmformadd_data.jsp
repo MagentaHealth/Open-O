@@ -34,6 +34,7 @@
 
 <script type="text/javascript" src="${ pageContext.servletContext.contextPath }/eform/eformFloatingToolbar/eform_floating_toolbar.js" ></script>
 
+<jsp:include page="../images/spinner.jsp" flush="true"/>
 
 <c:if test="${ not empty reqestScope.page_errors }">
 	<script type='text/javascript'>

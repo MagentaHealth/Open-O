@@ -2021,7 +2021,7 @@
 		<action input="/eform/efmformadd_data.jsp" path="/eform/addEForm" scope="request" type="oscar.eform.actions.AddEFormAction">
 			<forward name="close" path="/eform/efmclosewindow.jsp" />
 			<forward name="fax" path="/fax/faxAction.do" />
-			<forward name="print" path="/eform/efmformprint.do" />
+			<forward name="download" path="/eform/efmshowform_data.jsp"/>
 		</action>
 		<action input="/eform/efmformadd_data.jsp" path="/eform/efmformprint" scope="request" type="oscar.eform.actions.PrintAction">
 			<forward name="close" path="/eform/efmclosewindow.jsp" />

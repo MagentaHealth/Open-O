@@ -45,6 +45,7 @@ if(!authed) {
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/rewrite-tag.tld" prefix="rewrite"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/WEB-INF/special_tag.tld" prefix="special" %>
 <!-- end -->
 <%@ taglib uri="/WEB-INF/oscar-tag.tld" prefix="oscar"%>
@@ -84,6 +85,7 @@ if(!authed) {
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="org.oscarehr.common.model.EFormData" %>
 <%@ page import="oscar.eform.EFormUtil" %>
+<%@ page import="oscar.oscarLab.ca.all.Hl7textResultsData" %>
 
 <jsp:useBean id="displayServiceUtil" scope="request" class="oscar.oscarEncounter.oscarConsultationRequest.config.pageUtil.EctConDisplayServiceUtil" />
 <!DOCTYPE html>
@@ -198,8 +200,28 @@ if(!authed) {
 		List<EFormData> attachedEForms = consultationManager.getAttachedEForms(requestId);
 		ArrayList<HashMap<String,? extends Object>> attachedHRMDocuments = consultationManager.getAttachedHRMDocuments(loggedInInfo, demo, requestId);
 
+		Collections.sort(attachedLabs);
+		List<LabResultData> attachedLabsSortedByVersions = new ArrayList<>();
+		for (LabResultData attachedLab1 : attachedLabs) {
+			if (attachedLabsSortedByVersions.contains(attachedLab1)) { continue; }
+			String[] matchingLabIds = Hl7textResultsData.getMatchingLabs(attachedLab1.getSegmentID()).split(",");
+			if (matchingLabIds.length == 1) {
+				attachedLabsSortedByVersions.add(attachedLab1);
+				continue;
+			}
+			for (int i = matchingLabIds.length - 1; i >= 0; i--) {
+				for (LabResultData attachedLab2 : attachedLabs) {
+					if (!attachedLab2.getSegmentID().equals(matchingLabIds[i])) { continue; }
+					String labTitle = "v" + (i+1);
+					attachedLab2.setDescription(labTitle);
+					attachedLabsSortedByVersions.add(attachedLab2);
+					break;
+				}
+			}
+		}
+
         pageContext.setAttribute("attachedDocuments", attachedDocuments);
-        pageContext.setAttribute("attachedLabs", attachedLabs);
+        pageContext.setAttribute("attachedLabs", attachedLabsSortedByVersions);
 		pageContext.setAttribute("attachedForms", attachedForms);
 		pageContext.setAttribute("attachedEForms", attachedEForms);
 		pageContext.setAttribute("attachedHRMDocuments", attachedHRMDocuments);
@@ -537,6 +559,7 @@ font-size: 10pt;
 
 .consultDemographicData input, .consultDemographicData select, .consultDemographicData textarea {
     width: 100% !important;
+	box-sizing: border-box;
 }
 
 input#referalDate, input#appointmentDate, input#followUpDate {
@@ -557,6 +580,7 @@ input#referalDate, input#appointmentDate, input#followUpDate {
 
 textarea {
     width: 100%;
+	box-sizing: border-box;
 }
 
 .controlPanel {
@@ -1275,6 +1299,7 @@ function showSignatureImage()
 {
 	if (document.getElementById('signatureImg') != null && document.getElementById('signatureImg').value.length > 0) {
 		document.getElementById('signatureImgTag').src = "<%=storedImgUrl %>" + document.getElementById('signatureImg').value;
+		document.getElementById('newSignature').value = "false";
 
 		<% if (OscarProperties.getInstance().getBooleanProperty("topaz_enabled", "true")) { 
 		  //this is empty
@@ -1594,35 +1619,65 @@ function updateFaxButton() {
 							<% } %>
 
 							</td>
-						</tr>	
-							<tr><td><table id="attachedDocumentsTable">
-									<tr>
-										<td><h3>Documents</h3></td>
-									</tr>
-								<c:forEach items="${ attachedDocuments }" var="attachedDocument">
-									<tr id="entry_docNo${ attachedDocument.docId }">
-										<td> 
-											<c:out value="${ attachedDocument.description }" />
-											<input name="docNo" value="${ attachedDocument.docId }" id="delegate_docNo${ attachedDocument.docId }" class="delegateAttachment" type="hidden">
-										</td>
-									</tr>
-								</c:forEach>
-							</table></td></tr>
+						</tr>
 
-							<tr><td><table id="attachedLabsTable">
-								<tr>
-									<td><h3>Labs</h3></td>
+						<tr><td><table id="attachedEFormsTable">
+							<tr>
+								<td><h3>eForms</h3></td>
+							</tr>
+							<c:forEach items="${ attachedEForms }" var="attachedEForm">
+								<tr id="entry_eFormNo${ attachedEForm.id }">
+									<td>
+										<c:out value="${ attachedEForm.formName }" />
+										<input name="eFormNo" value="${ attachedEForm.id }" id="delegate_eFormNo${ attachedEForm.id }" class="delegateAttachment" type="hidden">
+									</td>
 								</tr>
-								<c:forEach items="${ attachedLabs }" var="attachedLab">
-									<tr id="entry_labNo${ attachedLab.segmentID }">
-										<td> 
-											<c:out value="${ attachedLab.discipline }" />
-											<c:out value="${ attachedLab.dateTime }" />
-											<input name="labNo" value="${ attachedLab.segmentID }" id="delegate_labNo${ attachedLab.segmentID }" class="delegateAttachment" type="hidden">
-										</td>
-									</tr>
-								</c:forEach>
-							</table></td></tr>
+							</c:forEach>
+						</table></td></tr>	
+
+						<tr><td><table id="attachedDocumentsTable">
+							<tr>
+								<td><h3>Documents</h3></td>
+							</tr>
+							<c:forEach items="${ attachedDocuments }" var="attachedDocument">
+								<tr id="entry_docNo${ attachedDocument.docId }">
+									<td> 
+										<c:out value="${ attachedDocument.description }" />
+										<input name="docNo" value="${ attachedDocument.docId }" id="delegate_docNo${ attachedDocument.docId }" class="delegateAttachment" type="hidden">
+									</td>
+								</tr>
+							</c:forEach>
+						</table></td></tr>
+
+						<tr><td><table id="attachedLabsTable">
+							<tr>
+								<td><h3>Labs</h3></td>
+							</tr>
+							<c:forEach items="${ attachedLabs }" var="attachedLab">
+								<tr id="entry_labNo${ attachedLab.segmentID }">
+									<td> 
+										<c:set var="labName" value="${ fn:trim(attachedLab.label) != '' ? attachedLab.label : attachedLab.discipline}" />
+										<c:if test="${empty labName}"><c:set var="labName" value="UNLABELLED" /></c:if>
+										<c:out value="${attachedLab.description} ${ labName }" />
+										<input name="labNo" value="${ attachedLab.segmentID }" id="delegate_labNo${ attachedLab.segmentID }" class="delegateAttachment" type="hidden">
+									</td>
+								</tr>
+							</c:forEach>
+						</table></td></tr>
+
+						<tr><td><table id="attachedHRMDocumentsTable">
+							<tr>
+								<td><h3>HRM</h3></td>
+							</tr>
+							<c:forEach items="${ attachedHRMDocuments }" var="attachedHrm">
+								<tr id="entry_hrmNo${ attachedHrm['id'] }">
+									<td>
+										<c:out value="${ attachedHrm['name'] }" />
+										<input name="hrmNo" value="${ attachedHrm['id'] }" id="delegate_hrmNo${ attachedHrm['id'] }" class="delegateAttachment" type="hidden">
+									</td>
+								</tr>
+							</c:forEach>
+						</table></td></tr>
 
 						<tr><td><table id="attachedFormsTable">
 							<tr>
@@ -1632,36 +1687,7 @@ function updateFaxButton() {
 								<tr id="entry_formNo${ attachedForm.formId }" data-formName="${ attachedForm.formName }" data-formDate="${ attachedForm.getEdited() }">
 									<td>
 										<c:out value="${ attachedForm.formName }" />
-
 										<input name="formNo" value="${ attachedForm.formId }" id="delegate_formNo${ attachedForm.formId }" class="delegateAttachment" type="hidden">
-									</td>
-								</tr>
-							</c:forEach>
-						</table></td></tr>
-						<tr><td><table id="attachedEFormsTable">
-							<tr>
-								<td><h3>eForms</h3></td>
-							</tr>
-							<c:forEach items="${ attachedEForms }" var="attachedEForm">
-								<tr id="entry_eFormNo${ attachedEForm.id }">
-									<td>
-										<c:out value="${ attachedEForm.formName }" />
-
-										<input name="eFormNo" value="${ attachedEForm.id }" id="delegate_eFormNo${ attachedEForm.id }" class="delegateAttachment" type="hidden">
-									</td>
-								</tr>
-							</c:forEach>
-						</table></td></tr>
-						<tr><td><table id="attachedHRMDocumentsTable">
-							<tr>
-								<td><h3>HRM</h3></td>
-							</tr>
-							<c:forEach items="${ attachedHRMDocuments }" var="attachedHrm">
-								<tr id="entry_hrmNo${ attachedHrm['id'] }">
-									<td>
-										<c:out value="${ attachedHrm['name'] }" />
-
-										<input name="hrmNo" value="${ attachedHrm['id'] }" id="delegate_hrmNo${ attachedHrm['id'] }" class="delegateAttachment" type="hidden">
 									</td>
 								</tr>
 							</c:forEach>

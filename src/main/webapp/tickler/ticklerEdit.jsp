@@ -28,6 +28,7 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
+<%@page import="java.util.Locale"%>
 <%@page import="java.text.DateFormat" %>
 <%@page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.owasp.encoder.Encode" %>
@@ -107,6 +108,11 @@
     int curYear = now.get(Calendar.YEAR);
     int curMonth = (now.get(Calendar.MONTH)+1);
 	int curDay = now.get(Calendar.DAY_OF_MONTH); 
+
+    Locale locale = request.getLocale();
+    DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+    DateFormat dateOnlyFormat = new SimpleDateFormat("yyyy-MM-dd", locale);
+    DateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss", locale);
 %>
 <!DOCTYPE html>
 <html:html locale="true">
@@ -307,13 +313,13 @@
                 <tr>
                     <th colspan="2" style="background-color: #336666;color:white;"><bean:message key="tickler.ticklerEdit.messages"/></th>
                     <th style="background-color: #336666;color:white;"><bean:message key="tickler.ticklerEdit.addedBy"/>
-                    <th style="background-color: #336666;color:white;"><bean:message key="tickler.ticklerEdit.updateDate"/>
+                    <th style="background-color: #336666;color:white;"><bean:message key="tickler.ticklerEdit.dateAdded"/>
                 </tr>
 
                     <tr>
                         <td colspan="2" style="font-weight: bold; white-space:pre-wrap;"><%=Encode.forHtmlContent(t.getMessage())%></td>
                         <td style="font-weight: bold"><%=Encode.forHtmlContent(t.getProvider().getLastName())%>,<%=Encode.forHtmlContent(t.getProvider().getFirstName())%></td>
-                        <td style="font-weight: bold"><%=t.getUpdateDate()%></td>
+                        <td style="font-weight: bold"><%=datetimeFormat.format(t.getCreateDate())%></td>
                     </tr>
 
                     <%
@@ -323,7 +329,7 @@
                        <tr class="tickler-comment-row" >
                             <td colspan="2" style="white-space:pre-wrap;"><%=Encode.forHtmlContent(tc.getMessage())%></td>
                             <td> <%=Encode.forHtmlContent(tc.getProvider().getLastName())%>,<%=Encode.forHtmlContent(tc.getProvider().getFirstName())%></td>
-                            <td> <%=tc.getUpdateDateTime(vLocale)%></td>
+                            <td> <%=datetimeFormat.format(tc.getUpdateDate())%></td>
                         </tr>
                     <%}%>
 

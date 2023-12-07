@@ -323,6 +323,14 @@ public class LabResultData implements Comparable<LabResultData> {
 		return this.dateTimeObr;
 	}
 
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public void setDateObj(Date d){
 		this.dateTimeObr = d;
 	}

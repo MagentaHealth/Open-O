@@ -848,8 +848,15 @@ function consentClearBtn(radioBtnName)
 	    }
 	}
 }
-</script>
 
+</script>
+	<script type="application/javascript">
+<%
+		if(oscarProps.getProperty("demographicExtJScript") != null) {
+			out.println(oscarProps.getProperty("demographicExtJScript"));
+		}
+	%>
+							</script>
 </head>
 <body onLoad="setfocus(); checkONReferralNo(); formatPhoneNum(); checkRosterStatus2();"
 	topmargin="0" leftmargin="0" rightmargin="0" id="demographiceditdemographic">
@@ -1819,14 +1826,16 @@ if ( Dead.equals(PatStat) ) {%>
 								if (oscarProps.isPropertyActive("showPrimaryCarePhysicianCheck")) {
 									hasHasPrimary = true;
 									String key = hasPrimary.replace(" ", "");
-									if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty())
+									if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty()) {
 										hasPrimaryCarePhysician = demoExt.get(key);
+									}
 								}
 								if (oscarProps.isPropertyActive("showEmploymentStatus")) {
 									hasEmpStatus = true;
 									String key = empStatus.replace(" ", "");
-									if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty())
+									if (demoExt.get(key)!=null && !demoExt.get(key).trim().isEmpty()) {
 										employmentStatus = demoExt.get(key);
+									}
 								}
 
 								if (hasDemoExt || hasHasPrimary || hasEmpStatus) {
@@ -1861,9 +1870,9 @@ if ( Dead.equals(PatStat) ) {%>
 									%>
 								</ul>
 							</div>
-						</div>
 							<%} %>
 
+						</div> <!-- end of left section -->
 
 						<div class="rightSection">
 						<div class="demographicSection" id="contactInformation">
@@ -3895,13 +3904,6 @@ document.updatedelete.r_doctor_ohip.value = refNo;
 
 </oscar:oscarPropertiesCheck>
 <%-- END TOGGLE OFF PROGRAM ADMISSIONS --%>							
-
-<%
-if(oscarProps.getProperty("demographicExtJScript") != null) {
-	out.println(Encode.forJavaScript(oscarProps.getProperty("demographicExtJScript")));
-}
-%>
-
 
 <tr valign="top">
 <td colspan="4">

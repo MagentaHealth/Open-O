@@ -31,6 +31,7 @@
 	Fax and eDocument functions.
 --%>
 	<script type="text/javascript" src="${ pageContext.servletContext.contextPath }/eform/eformFloatingToolbar/eform_floating_toolbar.js" ></script>
+    <jsp:include page="../images/spinner.jsp" flush="true"/>
 
 <%
 	String id = request.getParameter("fid");
@@ -61,6 +62,12 @@
       out.print(eForm.getFormHtml());
   }
 %>
+
+<script type="text/javascript">
+    const eFormPDFName = '<%=request.getAttribute("eFormPDFName")%>';
+    const eFormPDF = '<%=request.getAttribute("eFormPDF")%>';
+    downloadEForm(eFormPDFName, eFormPDF);
+</script>
 
 <c:if test="${ sessionScope.useIframeResizing }" >
 	<script type="text/javascript" src="${ pageContext.servletContext.contextPath }/library/pym.js"></script>

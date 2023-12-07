@@ -248,7 +248,7 @@
 					if (writeToEncounter) {
 						form.action = "dbTicklerAdd.jsp?writeToEncounter=true";
 					} else {
-						form.action = "dbTicklerAdd.jsp";
+						form.action = "dbTicklerAdd.jsp?updateTicklerNav=true";
 					}
 					form.submit();
 				}

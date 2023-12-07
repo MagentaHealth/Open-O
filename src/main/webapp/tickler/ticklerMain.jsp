@@ -749,8 +749,7 @@
 						<bean:message key="tickler.ticklerMain.msgDate"/>
 					</th>
 					<th>
-						<bean:message key="tickler.ticklerMain.msgUpdateDate"/>
-<%--						<bean:message key="tickler.ticklerMain.msgCreationDate"/>--%>
+						<bean:message key="tickler.ticklerMain.msgDateofMsg"/>
 					</th>
 
 					<th>
@@ -765,7 +764,7 @@
 						<bean:message key="tickler.ticklerMain.status"/>
 					</th>
 					<th>
-						Comment
+						<bean:message key="tickler.ticklerMain.msgMessage"/>
 					</th>
 					<th></th>
 					<th></th>
@@ -777,7 +776,9 @@
 					String dateEnd = xml_appointment_date;
 
 					String vGrantdate = "1980-01-07 00:00:00.0";
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:ss:mm", locale);
+					DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+					DateFormat dateOnlyFormat = new SimpleDateFormat("yyyy-MM-dd", locale);
+					DateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss", locale);
 
 					if (dateEnd.compareTo("") == 0) {
 						dateEnd = MyDateFormat.getMysqlStandardDate(curYear, curMonth, curDay);
@@ -857,9 +858,9 @@
 					</a></td>
 					<td class="<%=cellColour%>"><%=tickler.getProvider() == null ? "N/A" : Encode.forHtmlContent(tickler.getProvider().getFormattedName())%>
 					</td>
-					<td class="<%=cellColour%>"><%=tickler.getServiceDate()%>
+					<td class="<%=cellColour%>"><%=dateOnlyFormat.format(tickler.getServiceDate())%>
 					</td>
-					<td class="<%=cellColour%>"><%=tickler.getUpdateDate()%>
+					<td class="<%=cellColour%>"><%=datetimeFormat.format(tickler.getCreateDate())%>
 					</td>
 					<td class="<%=cellColour%>"><%=tickler.getPriority()%>
 					</td>
@@ -929,14 +930,14 @@
 					</td>
 					<td class="no sort"><%=Encode.forHtmlContent(tc.getProvider().getFormattedName())%>
 					</td>
-					<td><%=tickler.getServiceDate()%>
+					<td><%=dateOnlyFormat.format(tickler.getServiceDate())%>
 					</td>
 
 					<td class="no-sort">
 						<% if (tc.isUpdateDateToday()) { %>
-						<%=tc.getUpdateTime(locale)%>
+						<%=timeOnlyFormat.format(tc.getUpdateDate())%>
 						<% } else { %>
-						<%=tc.getUpdateDate(locale)%>
+						<%=datetimeFormat.format(tc.getUpdateDate())%>
 						<% } %>
 					</td>
 

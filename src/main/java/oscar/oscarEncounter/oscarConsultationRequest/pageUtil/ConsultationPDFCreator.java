@@ -175,10 +175,13 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 		// Creating a table with details for the consultation request.
 		addTable( border, createConsultDetailTable() );
 		
-		// Add the providers signature.
+		// Add the provider's signature.
 		if ( getlen( reqFrm.signatureImg ) > 0 ) {
-			addSignature( loggedInInfo, border );
+			addSignature( border );
 		}
+
+		// Add referring practitioner and mrp details
+		addTable(border, createReferringPracAndMRPDetailTable(loggedInInfo));
 	
 		return border;
 	}
@@ -642,36 +645,23 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 		return infoTable;
 	}
 
-	private void addSignature( LoggedInInfo loggedInInfo, PdfPTable pdfPTable ) {
-		
-		ProviderDao proDAO = (ProviderDao) SpringUtils.getBean("providerDao");
-		org.oscarehr.common.model.Provider pro = proDAO.getProvider(reqFrm.providerNo);
-		String ohipNo = pro.getOhipNo();
-		DemographicManager demographicManager = SpringUtils.getBean(DemographicManager.class);
-		Demographic demo = demographicManager.getDemographic( loggedInInfo, Integer.parseInt( reqFrm.demoNo ) );
-		String famDocOhipNo = "";		
+	private void addSignature( PdfPTable pdfPTable ) {
 		float[] tableWidths = new float[]{ 0.55f, 2.75f };
-		PdfPCell cell = new PdfPCell( new Phrase( getResource("msgSignature") ) );
 		PdfPTable table = new PdfPTable( tableWidths );
-		
-		if(demo.getProviderNo()!=null && !demo.getProviderNo().equals("")) {
-			pro = proDAO.getProvider(demo.getProviderNo());
-			famDocOhipNo = pro.getOhipNo();
-		}
-		
-		cell.setBorder(0);
-		cell.setPadding(0);	
-		cell.setPaddingTop(10f);
-		cell.setHorizontalAlignment(PdfPCell.ALIGN_BOTTOM);
-		cell.setVerticalAlignment( PdfPCell.ALIGN_LEFT );
-		
-		table.addCell(cell);
-		
-		try {
-			DigitalSignatureDao digitalSignatureDao = (DigitalSignatureDao) SpringUtils.getBean("digitalSignatureDao");
-			DigitalSignature digitalSignature = digitalSignatureDao.find(Integer.parseInt(reqFrm.signatureImg));
-			if (digitalSignature != null) {
-				
+		PdfPCell cell = new PdfPCell();
+
+		DigitalSignatureDao digitalSignatureDao = (DigitalSignatureDao) SpringUtils.getBean("digitalSignatureDao");
+		DigitalSignature digitalSignature = digitalSignatureDao.find(Integer.parseInt(reqFrm.signatureImg));
+		if (digitalSignature != null) {
+			cell.setPhrase(new Phrase( getResource("msgSignature")));
+			cell.setBorder(0);
+			cell.setPadding(0);
+			cell.setPaddingTop(10f);
+			cell.setHorizontalAlignment(PdfPCell.ALIGN_BOTTOM);
+			cell.setVerticalAlignment( PdfPCell.ALIGN_LEFT );
+			table.addCell(cell);
+
+			try {
 				Image image = Image.getInstance(digitalSignature.getSignatureImage());
 				image.scalePercent(80f);
 				image.setBorder(0);
@@ -679,27 +669,44 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 				cell.setBorder(0);
 				cell.setPadding(0);
 				cell.setPaddingTop(10f);
-				
 				table.addCell(cell);
-
-				if ( props.getBooleanProperty("printPDF_referring_prac", "yes") ) {
-					table.addCell( setFooterCell(cell, getResource("msgAssociated2"), reqFrm.getProviderName(reqFrm.providerNo) + ((getlen(ohipNo) > 0) ? " (" + ohipNo + ")" : "")));
-				} else {
-					table.addCell(setFooterCell(cell, "", ""));
-				}
-
-				if ( props.getBooleanProperty("mrp_model", "yes") ) {
-					table.addCell(setFooterCell(cell, getResource("msgFamilyDoc2"), reqFrm.getFamilyDoctor() + ((getlen(famDocOhipNo) > 0) ? " (" + famDocOhipNo + ")" : "")));
-				} else {
-					table.addCell(setFooterCell(cell, "", ""));
-				}
-				
-				addTable( pdfPTable, table );
+			} catch (BadElementException | IOException e) {
+				logger.error("An error occurred while trying to create an image from the signature", e);
 			}
-		} catch (Exception e) {
-			logger.error("Unexpected error.", e);
 		}
+
+		addTable( pdfPTable, table );
 	}
+
+	private PdfPTable createReferringPracAndMRPDetailTable(LoggedInInfo loggedInInfo) {
+		ProviderDao proDAO = (ProviderDao) SpringUtils.getBean("providerDao");
+		org.oscarehr.common.model.Provider pro = proDAO.getProvider(reqFrm.providerNo);
+		DemographicManager demographicManager = SpringUtils.getBean(DemographicManager.class);
+		Demographic demo = demographicManager.getDemographic( loggedInInfo, Integer.parseInt( reqFrm.demoNo ) );
+		String ohipNo = pro.getOhipNo();
+		String famDocOhipNo = "";
+		if(demo.getProviderNo()!=null && !demo.getProviderNo().equals("")) {
+			pro = proDAO.getProvider(demo.getProviderNo());
+			famDocOhipNo = pro.getOhipNo();
+		}
+
+		PdfPTable table = new PdfPTable(new float[]{1.0f, 1.0f});
+		PdfPCell cell = new PdfPCell();
+		if ( props.getBooleanProperty("printPDF_referring_prac", "yes") ) {
+			table.addCell( setFooterCell(cell, getResource("msgAssociated2"), reqFrm.getProviderName(reqFrm.providerNo) + ((getlen(ohipNo) > 0) ? " (" + ohipNo + ")" : "")));
+		} else {
+			table.addCell(setFooterCell(cell, "", ""));
+		}
+
+		if ( props.getBooleanProperty("mrp_model", "yes") ) {
+			table.addCell(setFooterCell(cell, getResource("msgFamilyDoc2"), reqFrm.getFamilyDoctor() + ((getlen(famDocOhipNo) > 0) ? " (" + famDocOhipNo + ")" : "")));
+		} else {
+			table.addCell(setFooterCell(cell, "", ""));
+		}
+
+		return table;
+	}
+
 	/**
 	 * Formats a cell to display information
 	 * @param cell the cell to format
