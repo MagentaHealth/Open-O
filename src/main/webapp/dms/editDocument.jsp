@@ -49,10 +49,12 @@ String userlastname = (String) session.getAttribute("userlastname");
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/oscar-tag.tld" prefix="oscar" %>
+<%@ taglib prefix="csrf" uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" %>
 <%@ page
-	import="java.util.*, java.io.*, java.sql.*, oscar.*, oscar.util.*, java.net.*,oscar.MyDateFormat, oscar.dms.*, oscar.dms.data.*, oscar.oscarProvider.data.ProviderData, org.oscarehr.util.SpringUtils, org.oscarehr.common.dao.CtlDocClassDao"%>
+	import="java.util.*, oscar.util.*,oscar.dms.*, oscar.dms.data.*, oscar.oscarProvider.data.ProviderData, org.oscarehr.util.SpringUtils, org.oscarehr.common.dao.CtlDocClassDao"%>
 <%@ page import="org.oscarehr.common.model.DocumentExtraReviewer"%>
 <%@ page import="org.oscarehr.common.dao.DocumentExtraReviewerDao"%>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%
 	DocumentExtraReviewerDao documentExtraReviewerDao = SpringUtils.getBean(DocumentExtraReviewerDao.class);
 	List<DocumentExtraReviewer> extraReviewers = new ArrayList<DocumentExtraReviewer>();
@@ -137,14 +139,11 @@ for (String reportClass : reportClasses) {
 }
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 
 <html>
 <head>
-<script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>
 <title>Edit Document</title>
-<script type="text/javascript" src="../share/javascript/Oscar.js"></script>
 <script type="text/javascript" src="../share/javascript/prototype.js"></script>
 <script type="text/javascript" src="../share/javascript/scriptaculous.js"></script>
 
@@ -152,7 +151,7 @@ for (String reportClass : reportClasses) {
 	href="../share/css/niftyCorners.css" />
 <link rel="stylesheet" type="text/css"
 	href="../share/css/OscarStandardLayout.css" />
-<link rel="stylesheet" type="text/css" href="dms.css" />
+
 <link rel="stylesheet" type="text/css"
 	href="../share/css/niftyPrint.css" media="print" />
 <script type="text/javascript" src="../share/javascript/nifty.js"></script>
@@ -222,16 +221,16 @@ for (String reportClass : reportClasses) {
 <% } %>
             ];
         </script>
-<link rel="stylesheet" type="text/css" media="all" href="../share/css/extractedFromPages.css"  />
 </head>
 <body class="mainbody">
 <div class="maindiv">
-<div class="maindivheading">&nbsp;&nbsp;&nbsp; Edit Document</div>
+<div class="maindivheading">Edit Document</div>
 <%-- Lists docerrors --%> <% for (Enumeration errorkeys = docerrors.keys(); errorkeys.hasMoreElements();) {%>
 <font class="warning">Error: <bean:message
 	key="<%=(String) docerrors.get(errorkeys.nextElement())%>" /></font><br />
 <% } %> <html:form action="/dms/addEditDocument" method="POST"
 	enctype="multipart/form-data" onsubmit="return submitUpload(this);">
+	<input type="hidden" name="<csrf:tokenname />" value="<csrf:tokenvalue />"/>
 	<input type="hidden" name="function"
 		value="<%=formdata.getFunction()%>" size="20" />
 	<input type="hidden" name="functionId"
@@ -247,7 +246,7 @@ for (String reportClass : reportClasses) {
 	
 	<table class="layouttable">
 		<tr>
-			<td>Type:</td>
+			<td><label for="docType">Type:</label> </td>
 			<td><select name="docType" id="docType"
 				<% if (docerrors.containsKey("typemissing")) {%> class="warning"
 				<%}%>>
@@ -255,8 +254,8 @@ for (String reportClass : reportClasses) {
 					key="dms.addDocument.formSelect" /></option>
 				<%for (int i=0; i<doctypes.size(); i++) {
                              String doctype = (String) doctypes.get(i); %>
-				<option value="<%= doctype%>"
-					<%=(formdata.getDocType().equals(doctype))?" selected":""%>><%= doctype%></option>
+				<option value="<%=Encode.forHtmlAttribute(doctype)%>"
+					<%=(formdata.getDocType().equals(doctype))?" selected":""%>><%= Encode.forHtmlContent(doctype)%></option>
 				<%}%>
 			</select></td>
 		</tr>
@@ -272,14 +271,14 @@ for (String reportClass : reportClasses) {
         consultShown = true;
     }
 %>
-                                <option value="<%=reportClass%>" <%=reportClass.equals(formdata.getDocClass())?"selected":""%>><%=reportClass%></option>
+                                <option value="<%=Encode.forHtmlAttribute(reportClass)%>" <%=reportClass.equals(formdata.getDocClass())?"selected":""%>><%=Encode.forHtmlContent(reportClass)%></option>
 <% } %>
                             </select>
                         </td>
 		</tr>
                 <tr>
                         <td><bean:message key="dms.addDocument.msgDocSubClass"/>:</td>
-                        <td><input type="text" name="docSubClass" id="docSubClass" value="<%=formdata.getDocSubClass()%>" style="width:330px">
+                        <td><input type="text" name="docSubClass" id="docSubClass" value="<%=Encode.forHtmlAttribute(formdata.getDocSubClass())%>" style="width:330px">
                             <div class="autocomplete_style" id="docSubClass_list"></div>
                         </td>
 		</tr>
@@ -287,19 +286,19 @@ for (String reportClass : reportClasses) {
 			<td>Description:</td>
 			<td><input <% if (docerrors.containsKey("descmissing")) {%>
 				class="warning" <%}%> type="text" name="docDesc" size="30"
-				value="<%=formdata.getDocDesc()%>">
+				value="<%=Encode.forHtmlAttribute(formdata.getDocDesc())%>">
 			<td>
 		</tr>
 		<tr>
 			<td>Observation Date:</td>
 			<td><input id="observationDate" name="observationDate"
-				type="text" value="<%=formdata.getObservationDate()%>"><a
+				type="text" value="<%=Encode.forHtmlAttribute(formdata.getObservationDate())%>"><a
 				id="obsdate"><img title="Calendar" src="../images/cal.gif"
 				alt="Calendar" border="0" /></a></td>
 		</tr>
 		<tr>
 			<td>Added By:</td>
-			<td><%=EDocUtil.getProviderName(formdata.getDocCreator())%></td>
+			<td><%=Encode.forHtmlAttribute(EDocUtil.getProviderName(formdata.getDocCreator()))%></td>
 		</tr>
 		<tr>
 			<td>Responsible Provider:</td>
@@ -310,50 +309,50 @@ for (String reportClass : reportClasses) {
 			String selected = "";
 			if (formdata.getResponsibleId().equals(pd.get("providerNo"))) selected = "selected";
 			%>
-				<option value="<%=pd.get("providerNo")%>" <%=selected%>><%=pd.get("lastName")%>, <%=pd.get("firstName")%></option>
+				<option value="<%=pd.get("providerNo")%>" <%=selected%>><%=Encode.forHtmlContent(pd.get("lastName"))%>, <%=Encode.forHtmlContent(pd.get("firstName"))%></option>
 		<% } %>
 			    </select>
 			</td>
 		</tr>
 		<tr>
 			<td>Date Added/Updated:</td>
-			<td><%=lastUpdate%></td>
+			<td><%=Encode.forHtmlContent(lastUpdate)%></td>
 		</tr>
                 <tr>
 			<td><bean:message key="dms.addDocument.formContentAddedUpdated"/>:</td>
-			<td><%=formdata.getContentDateTime()%></td>
+			<td><%=Encode.forHtmlContent(formdata.getContentDateTime())%></td>
 		</tr>
 		<tr>
-			<td>Source Author:</td>
-			<td><input type="text" name="source" size="15" value="<%=StringUtils.trimToEmpty(formdata.getSource())%>"/></td>
+			<td><label for="source">Source Author:</label></td>
+			<td><input type="text" id="source" name="source" size="15" value="<%=Encode.forHtmlAttribute(StringUtils.trimToEmpty(formdata.getSource()))%>"/></td>
 		</tr>
 		<tr>
 			<td>Source Facility:</td>
-			<td><input type="text" name="sourceFacility" size="15" value="<%=StringUtils.trimToEmpty(formdata.getSourceFacility())%>"/></td>
+			<td><input type="text" name="sourceFacility" size="15" value="<%=Encode.forHtmlAttribute(StringUtils.trimToEmpty(formdata.getSourceFacility()))%>"/></td>
 		</tr>
 		<% if (module.equals("provider")) {%>
 		<tr>
 			<td>Public?</td>
 			<td><input type="checkbox" name="docPublic"
-				<%=formdata.getDocPublic() + " "%> value="checked"></td>
+				<%=Encode.forHtmlAttribute(formdata.getDocPublic() + " ")%> value="checked"></td>
 		</tr>
 		<%}%>
                 <tr>
 			<td>File Name:</td>
 			<td>
-			<div style="width: 300px; overflow: hidden; text-overflow: ellipsis;"><%=fileName%></div>
+			<div style="width: 300px; overflow: hidden; text-overflow: ellipsis;"><%=Encode.forHtmlContent(fileName)%></div>
 		</tr>
 		<tr>
 			<td>Restricted to program:</td>
 			<td>
-				<%=formdata.isRestrictToProgram() %>
+				<%=formdata.isRestrictToProgram()%>
 			</td>
 		</tr>
 		
 		<tr>
 			<td>Date Received:</td>
 			<td><input id="receivedDate" name="receivedDate"
-				type="text" value="<%=formdata.getReceivedDate()%>"><a
+				type="text" value="<%=Encode.forHtmlAttribute(formdata.getReceivedDate())%>"><a
 				id="rdate"><img title="Calendar" src="../images/cal.gif"
 				alt="Calendar" border="0" /></a></td>
 		</tr>
@@ -361,7 +360,7 @@ for (String reportClass : reportClasses) {
 		<tr>
 			<td>Abnormal Result(s):</td>
 			<td><input type="checkbox" name="abnormal"
-				<%=formdata.getAbnormal() + " "%> value="checked"></td>
+				<%=Encode.forHtmlAttribute(formdata.getAbnormal() + " ")%> value="checked"></td>
 		</tr>
 		
 		<tr>
@@ -392,7 +391,7 @@ for (String reportClass : reportClasses) {
 					reviewedByMe=true;
 				}
 			%>
-			Reviewed: &nbsp; <%=EDocUtil.getProviderName(formdata.getReviewerId())%>
+			Reviewed: &nbsp; <%=Encode.forHtmlContent(EDocUtil.getProviderName(formdata.getReviewerId()))%>
 			&nbsp; [<%=formdata.getReviewDateTime()%>]
 			<% } %>
 			<% 
@@ -402,7 +401,7 @@ for (String reportClass : reportClasses) {
 				}
 			%>
 				<br/>
-				Reviewed: &nbsp; <%=EDocUtil.getProviderName(der.getReviewerProviderNo())%>
+				Reviewed: &nbsp; <%=Encode.forHtmlContent(EDocUtil.getProviderName(der.getReviewerProviderNo()))%>
 			&nbsp; [<%=der.getReviewDateTime()%>]
 			<% } %>
 			
