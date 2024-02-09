@@ -1,0 +1,192 @@
+/*
+ *Copyright (c) 2023. Magenta Health Inc. All Rights Reserved.
+ *
+ *This software is published under the GPL GNU General Public License.
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+package org.oscarehr.inboxhub.inboxdata;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.oscarehr.common.dao.InboxResultsDao;
+import org.oscarehr.inboxhub.query.InboxhubQuery;
+import org.oscarehr.util.LoggedInInfo;
+import org.oscarehr.util.MiscUtils;
+import org.oscarehr.util.SpringUtils;
+import oscar.oscarLab.ca.on.CommonLabResultData;
+import oscar.oscarLab.ca.on.HRMResultsData;
+import oscar.oscarLab.ca.on.LabResultData;
+import oscar.oscarMDS.data.CategoryData;
+import oscar.oscarMDS.data.ProviderData;
+
+import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
+
+public class LabDataController {
+
+    public LabDataController() {
+    }
+
+    //Converts given string date to date object. Returns null if not in yyyy-MM-dd format or blank.
+    public Date convertDate(String stringDate) {
+        if (!stringDate.isEmpty()) {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date date = df.parse(stringDate);
+                return date;
+            } catch (ParseException e) {
+                MiscUtils.getLogger().error(e);
+                return null;
+            }
+        }
+        return null;
+    }
+    //Grabs lab link for specific inbox item.
+    public ArrayList<String> getLabLink(ArrayList<LabResultData> results, InboxhubQuery query, HttpServletRequest request) {
+        ArrayList<String> labLinks = new ArrayList<String>();
+        for (int i = 0; i < results.size(); i++) {
+            StringBuilder url = new StringBuilder(request.getContextPath());
+            LabResultData labResult = results.get(i);
+            //Setting inbox item type:
+            if (labResult.isMDS()) {
+                url.append("/SegmentDisplay.jsp?");
+            }
+            else if (labResult.isCML()) {
+                url.append("/lab/CA/ON/CMLDisplay.jsp?");
+            }
+            else if (labResult.isHL7TEXT()) {
+                String categoryType = labResult.getDiscipline();
+                if ("REF_I12".equals(categoryType)) {
+                    url.append("/oscarEncounter/ViewRequest.do?");
+                }
+                else if (!categoryType.isEmpty() && categoryType.startsWith("ORU_R01:")) {
+                    url.append("/lab/CA/ALL/viewOruR01.jsp?");
+                }
+                else {
+                    url.append("/lab/CA/ALL/labDisplay.jsp?inWindow=true");
+                    url.append("&showLatest=true");
+                }
+            }
+            else if(labResult.isDocument()) {
+                url.append("/dms/showDocument.jsp?inWindow=true");
+            }
+            else if(labResult.isHRM()) {
+                url.append("/hospitalReportManager/Display.do?");
+                StringBuilder duplicateLabIds=new StringBuilder();
+                for (Integer duplicateLabId : labResult.getDuplicateLabIds())
+                {
+                    if (duplicateLabIds.length()>0) duplicateLabIds.append(',');
+                    duplicateLabIds.append(duplicateLabId);
+                }
+                url.append("&duplicateLabIds=");
+                url.append((duplicateLabIds.toString()));
+            }
+            else {
+                url.append("/lab/CA/BC/labDisplay.jsp?");
+            }
+            url.append("&segmentID=");
+            url.append((labResult.getSegmentID()));
+            url.append("&providerNo=");
+            url.append((query.getSearchProviderNo()));
+            url.append("&searchProviderNo=");
+            url.append((query.getSearchProviderNo()));
+            url.append("&status=");
+            url.append((labResult.resultStatus));
+            url.append("&demoName=");
+            url.append((labResult.getPatientName()));
+            url.append("&isListView=false");
+            labLinks.add(url.toString());
+        }
+        return labLinks;
+    }
+    //Gets inbox CategoryData for given query. CategoryData includes document counts for all document types & patient lists.
+    public CategoryData getCategoryData(InboxhubQuery query) {
+        Boolean providerSearch = true;
+        Boolean patientSearch = true;
+        if (Objects.equals(query.getSearchProviderNo(), "-1")) {
+            providerSearch = false;
+        }
+        if (query.getDemographicNo() == null || query.getPatientFirstName().isEmpty() || query.getPatientLastName().isEmpty() || query.getPatientHealthNumber().isEmpty()) {
+            patientSearch = false;
+        }
+
+        CategoryData categoryData = new CategoryData(query.getPatientLastName(), query.getPatientFirstName(), query.getPatientHealthNumber(), patientSearch, providerSearch, query.getSearchProviderNo(), query.getStatus(), query.getAbnormal(), query.getStartDate(), query.getEndDate());
+        try {
+            categoryData.populateCountsAndPatients();
+        } catch (SQLException e) {
+            MiscUtils.getLogger().error(e);
+        }
+        return categoryData;
+    }
+    //Returns lab data based on the query. If lab, doc, and hrm flags are not set in the query returns all data from all data types.
+    public ArrayList<LabResultData> getLabData(LoggedInInfo loggedInInfo, InboxhubQuery query) {
+        Integer page = 0;
+        Integer pageSize = Integer.MAX_VALUE;
+        //Whether to use the paging functionality. Currently setting this to false does not function and crashes the inbox.
+        Boolean isPaged = true;
+        Boolean mixLabsAndDocs = true;
+        Date startDate = convertDate(query.getStartDate());
+        Date endDate= convertDate(query.getEndDate());
+        String loggedInProviderNo = (String) loggedInInfo.getSession().getAttribute("user");
+        String loggedInName = ProviderData.getProviderName(loggedInProviderNo);
+        CommonLabResultData comLab = new CommonLabResultData();
+        InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean("inboxResultsDao");
+        ArrayList<LabResultData> labDocs = new ArrayList<LabResultData>();
+
+        //Checking unclaimed vs claimed physician. If no searchAll/provider search filter is provided reset search to logged in provider.
+        if (Objects.equals(query.getSearchAll(), "true")) {//All
+            query.setSearchProviderNo("-1");
+            query.setSearchProviderName("");
+        }
+        else if (Objects.equals(query.getSearchAll(), "false")) {
+            query.setSearchProviderNo("0");
+            query.setSearchProviderName("");
+        }
+        else if (Objects.equals(query.getSearchProviderNo(), "0") || Objects.equals(query.getSearchProviderNo(), "-1")) {
+            query.setSearchProviderNo(loggedInProviderNo);
+            query.setSearchProviderName(loggedInName);
+        }
+
+        //checking unmatched vs matched patient. Setting demographic number to 0 will grab inbox objects with no patient attached. This should overwrite all current patient queries.
+        if (query.getUnmatched()) {
+            query.setDemographicNo("0");
+            query.setPatientFirstName("");
+            query.setPatientLastName("");
+            query.setPatientHealthNumber("");
+        }
+
+        Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
+        if (query.getDoc() || all) {
+            labDocs.addAll(inboxResultsDao.populateDocumentResultsData(query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
+                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));
+        }
+        if (query.getLab() || all) {
+            labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
+                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
+        }
+        if (query.getHrm() || all) {
+            HRMResultsData hrmResult = new HRMResultsData();
+            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, query.getSearchProviderNo(), query.getPatientFirstName(),
+                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getDemographicNo(), query.getStatus(), startDate, endDate, isPaged, page, pageSize));
+        }
+        return labDocs;
+    }
+}

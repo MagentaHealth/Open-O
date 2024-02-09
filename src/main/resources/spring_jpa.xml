@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="
+	   xsi:schemaLocation="
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
@@ -29,11 +29,11 @@
 		<!-- bug in the connector 3.11 driver which prevents this from being used, we need to upgrade drivers before re-enabling -->
 		<property name="poolPreparedStatements" value="false" />
 		<!-- abandoned features are deprecated and have no effect, don't expect the below to do anything -->
-		
+
 		<property name="removeAbandoned" value="${db_remove_abandoned}" />
 		<property name="removeAbandonedTimeout" value="${db_remove_abandoned_timeout}" />
 		<property name="logAbandoned" value="${db_log_abandoned}" />
-		 
+
 	</bean>
 
 	<!-- JPA -->

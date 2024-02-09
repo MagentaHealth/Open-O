@@ -44,10 +44,6 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/share/yui/js/autocomplete-min.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/demographicProviderAutocomplete.js"></script>
 
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/share/yui/css/fonts-min.css"/>
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/share/yui/css/autocomplete.css"/>
-        <link rel="stylesheet" type="text/css" media="all" href="${pageContext.request.contextPath}/share/css/demographicProviderAutocomplete.css"  />
-
 </head>
 
 <script type="text/javascript">

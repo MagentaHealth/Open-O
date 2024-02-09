@@ -924,13 +924,13 @@
                                         <c:if test="${doctorLinkRights}">
                                         <li>
                                             <a HREF="#"
-                                               ONCLICK="popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=<%=loggedInInfo1.getLoggedInProviderNo()%>', 'Lab');return false;"
+                                               onclick="popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm');return false;"
                                                TITLE='<bean:message key="provider.appointmentProviderAdminDay.viewLabReports"/>'>
                                                 <span id="oscar_new_lab"><bean:message key="global.lab"/></span>
                                             </a>
                                             <oscar:newUnclaimedLab>
                                                 <a id="unclaimedLabLink" class="tabalert" HREF="javascript:void(0)"
-                                                   onclick="popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=0&searchProviderNo=0&status=N&lname=&fname=&hnum=&pageNum=1&startIndex=0', 'Lab');return false;"
+                                                   onclick="popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm&unclaimed=1');return false;"
                                                    title='<bean:message key="provider.appointmentProviderAdminDay.viewLabReports"/>'>U</a>
                                             </oscar:newUnclaimedLab>
                                         </li>
@@ -1466,11 +1466,11 @@
             </td>
         </tr>
     </table>
-    <table id="scheduleTable" BGCOLOR="#C0C0C0">
+    <table id="scheduleTable" BORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="100%" BGCOLOR="#C0C0C0">
 
         <tr>
             <td colspan="3">
-                <table bgcolor="#486ebd" >
+                <table border="0" cellpadding="0" bgcolor="#486ebd" cellspacing="0" width="100%">
                     <tr>
                         <%
                             int hourCursor = 0, minuteCursor = 0, depth = everyMin; //depth is the period, e.g. 10,15,30,60min.
@@ -1602,7 +1602,7 @@
                         <td valign="top" width="<%=isWeekView?100/7:100/numProvider%>%">
                             <!-- for the first provider's schedule -->
 
-                            <table bgcolor="#486ebd">
+                            <table border="0" cellpadding="0" bgcolor="#486ebd" cellspacing="0" width="100%">
                                 <!-- for the first provider's name -->
                                 <tr>
                                     <td class="infirmaryView" NOWRAP ALIGN="center"
@@ -1690,7 +1690,9 @@
                                             <!-- caisi infirmary view exteion add end ffffffffffffffffff-->
                                             <!-- =============== following block is the original oscar code. -->
                                             <!-- table for hours of day start -->
-                                            <table id="providerSchedule" bgcolor="<%=userAvail?"#486ebd":"silver"%>">
+                                            <table id="providerSchedule" border="0" cellpadding="0"
+                                                   bgcolor="<%=userAvail?"#486ebd":"silver"%>"
+                                                   cellspacing="0" width="100%">
                                                 <%
                                                     bFirstTimeRs = true;
                                                     bFirstFirstR = true;
@@ -2178,7 +2180,7 @@
                                                                 {
                                                                 %>
                                                     &#124; <a href=#
-                                                              onClick='popupPage(755,1200, "../billing.do?billRegion=<%=URLEncoder.encode(prov)%>&billForm=<%=URLEncoder.encode(oscarVariables.getProperty("default_view"))%>&hotclick=<%=URLEncoder.encode("")%>&appointment_no=<%=appointment.getId()%>&demographic_name=<%=URLEncoder.encode(name)%>&status=<%=status%>&demographic_no=<%=demographic_no%>&providerview=<%=curProvider_no[nProvider]%>&user_no=<%=loggedInInfo1.getLoggedInProviderNo()%>&apptProvider_no=<%=curProvider_no[nProvider]%>&xml_provider=<%=curProvider_no[nProvider]%>&appointment_date=<%=year+"-"+month+"-"+day%>&start_time=<%=start_time%>&bNewForm=1");return false;'
+                                                              onClick='popupPage(755,1200, "../billing.do?billRegion=<%=URLEncoder.encode(prov)%>&billForm=<%=URLEncoder.encode(oscarVariables.getProperty("default_view"))%>&hotclick=<%=URLEncoder.encode("")%>&appointment_no=<%=appointment.getId()%>&demographic_name=<%=URLEncoder.encode(name)%>&status=<%=status%>&demographic_no=<%=demographic_no%>&providerview=<%=curProvider_no[nProvider]%>&user_no=<%=loggedInInfo1.getLoggedInProviderNo()%>&apptProvider_no=<%=curProvider_no[nProvider]%>&appointment_date=<%=year+"-"+month+"-"+day%>&start_time=<%=start_time%>&bNewForm=1");return false;'
                                                               title="<bean:message key="global.billingtag"/>"><bean:message
                                                         key="provider.appointmentProviderAdminDay.btnB"/></a>
                                                             <%
