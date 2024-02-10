@@ -45,19 +45,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <label class="fw-bold text-uppercase mb-2">
                 <bean:message key="inbox.inboxmanager.msgTotalResults"/>: <%=categoryData.getTotalNumDocs()%>
             </label>
-            <input type="checkbox" class="btn-check" name="clearFilters" id="btnClear" autocomplete="off"
+            <input type="checkbox" class="btn-check btn-sm" name="clearFilters" id="btnClear" autocomplete="off"
                    onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnClear">Clear Filters</label><br>
-            <input type="checkbox" class="btn-check" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
+            <input type="checkbox" class="btn-check btn-sm" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
                    autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnDoc">DOC (<%=categoryData.getTotalDocs()%>)</label><br>
-            <input type="checkbox" class="btn-check" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
+            <input type="checkbox" class="btn-check btn-sm" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
                    autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnLab">LAB (<%=categoryData.getTotalLabs()%>)</label><br>
-            <input type="checkbox" class="btn-check" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
+            <input type="checkbox" class="btn-check btn-sm" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
                    autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnHRM">HRM</label><br>
-            <input type="checkbox" class="btn-check" name="unmatched" <% if (query.getUnmatched()) { %> checked <% } %>
+            <input type="checkbox" class="btn-check btn-sm" name="unmatched" <% if (query.getUnmatched()) { %> checked <% } %>
                    id="btnUnmatched" autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnUnmatched"><bean:message key="inbox.inboxmanager.msgUnmatched"/>
                 (<%=categoryData.getUnmatchedDocs() + categoryData.getUnmatchedLabs()%>)</label><br>
@@ -65,61 +65,61 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <bean:message key="inbox.inboxmanager.msgAbnormalStatus"/>
             </label>
             <div class="btn-group btn-sm" role="group">
-                <input type="radio" class="btn-check " name="abnormal" id="All" value="All"
+                <input type="radio" class="btn-check btn-sm" name="abnormal" id="All" value="All"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getAbnormal(), "All")) { %>
                        checked <% } %>>
                 <label class="btn btn-outline-primary" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
-                <input type="radio" class="btn-check" name="abnormal" id="Abnormal" value="Abnormal"
+                <input type="radio" class="btn-check btn-sm" name="abnormal" id="Abnormal" value="Abnormal"
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getAbnormal(), "Abnormal")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="Abnormal"><bean:message key="global.abnormal"/> (<%=categoryData.getAbnormalCount()%>
+                <label class="btn btn-outline-primary btn-sm" for="Abnormal"><bean:message key="global.abnormal"/> (<%=categoryData.getAbnormalCount()%>
                     )</label>
-                <input type="radio" class="btn-check" name="abnormal" id="Normal" value="Normal"
+                <input type="radio" class="btn-check btn-sm" name="abnormal" id="Normal" value="Normal"
                        onchange="this.form.submit()"<% if (Objects.equals(query.getAbnormal(), "Normal")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/> (<%=categoryData.getNormalCount()%>)</label>
+                <label class="btn btn-outline-primary btn-sm" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/> (<%=categoryData.getNormalCount()%>)</label>
             </div>
             <br>
             <label class="fw-bold text-uppercase mb-2">
                 <bean:message key="oscarMDS.index.msgReportStatus"/>
             </label>
             <div class="btn-group btn-sm" role="group">
-                <input type="radio" class="btn-check" name="status" id="statusAll" value=""
+                <input type="radio" class="btn-check btn-sm" name="status" id="statusAll" value=""
                        onchange="this.form.submit()" <% if (Objects.equals(query.getStatus(), "")) { %> checked <% } %>>
                 <label class="btn btn-outline-primary" for="statusAll"><bean:message key="inbox.inboxmanager.msgAll"/></label>
-                <input type="radio" class="btn-check" name="status" id="statusNew" value="N"
+                <input type="radio" class="btn-check btn-sm" name="status" id="statusNew" value="N"
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getStatus(), "N")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="statusNew">New</label>
-                <input type="radio" class="btn-check" name="status" id="statusAcknowledged" value="A"
+                <label class="btn btn-outline-primary btn-sm" for="statusNew">New</label>
+                <input type="radio" class="btn-check btn-sm" name="status" id="statusAcknowledged" value="A"
                        onchange="this.form.submit()"<% if (Objects.equals(query.getStatus(), "A")) { %> checked <% } %>>
-                <label class="btn btn-outline-primary" for="statusAcknowledged">Acknowledged</label>
-                <input type="radio" class="btn-check" name="status" id="statusFiled" value="F"
+                <label class="btn btn-outline-primary btn-sm" for="statusAcknowledged">Acknowledged</label>
+                <input type="radio" class="btn-check btn-sm" name="status" id="statusFiled" value="F"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getStatus(), "F")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
+                <label class="btn btn-outline-primary btn-sm" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
                 <br>
             </div>
             <br>
             <label class="fw-bold text-uppercase mb-2"><bean:message key="inbox.inboxmanager.msgPhysicianSearchType"/></label>
             <div class="btn-group btn-sm" role="group">
-                <input type="radio" class="btn-check" name="searchAll" id="physicianAll" value="true"
+                <input type="radio" class="btn-check btn-sm" name="searchAll" id="physicianAll" value="true"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getSearchAll(), "true")) { %>
                        checked <% } %>>
                 <label class="btn btn-outline-primary" for="physicianAll"><bean:message key="inbox.inboxmanager.msgAllPhysicians"/></label>
-                <input type="radio" class="btn-check" name="searchAll" id="physicianUnclaimed" value="false"
+                <input type="radio" class="btn-check btn-sm" name="searchAll" id="physicianUnclaimed" value="false"
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getSearchAll(), "false")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="physicianUnclaimed"><bean:message key="inbox.inboxmanager.msgUnclaimedPhysicians"/></label>
-                <input type="radio" class="btn-check" name="searchAll" id="physicianClear" value=""
+                <label class="btn btn-outline-primary btn-sm" for="physicianUnclaimed"><bean:message key="inbox.inboxmanager.msgUnclaimedPhysicians"/></label>
+                <input type="radio" class="btn-check btn-sm" name="searchAll" id="physicianClear" value=""
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getSearchAll(), "")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="physicianClear">Clear</label>
+                <label class="btn btn-outline-primary btn-sm" for="physicianClear">Clear</label>
             </div>
             <div class="accordion" id="dropdown">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        <button class="accordion-button btn-sm" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-controls="collapseOne">
                             <bean:message key="inbox.inboxmanager.msgSearchFilter"/>
                         </button>
