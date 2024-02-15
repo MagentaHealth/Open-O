@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     ctx = '<%=request.getContextPath()%>';
     const searchProviderNo = '<%=(String) session.getAttribute("user")%>';
 </script>
-<div class="bg-light text-light">
+<div class="bg-light text-light btn-sm">
     <row>
         <div id="categoryList"></div>
         <input id="topFBtn" type="button" class="btn btn-primary" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('<%=searchProviderNumber%>')">
