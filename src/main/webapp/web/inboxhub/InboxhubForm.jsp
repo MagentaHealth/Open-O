@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
                    id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnViewMode">Preview Mode</label><br>
-            <label class="fw-bold text-uppercase mb-2">
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgTotalResults"/>: <%=categoryData.getTotalNumDocs()%>
             </label>
             <input type="checkbox" class="btn-check btn-sm" name="clearFilters" id="btnClear" autocomplete="off"
@@ -61,14 +61,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                    id="btnUnmatched" autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnUnmatched"><bean:message key="inbox.inboxmanager.msgUnmatched"/>
                 (<%=categoryData.getUnmatchedDocs() + categoryData.getUnmatchedLabs()%>)</label><br>
-            <label class="fw-bold text-uppercase mb-2">
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgAbnormalStatus"/>
             </label>
             <div class="btn-group btn-sm" role="group">
                 <input type="radio" class="btn-check btn-sm" name="abnormal" id="All" value="All"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getAbnormal(), "All")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
+                <label class="btn btn-outline-primary btn-sm" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
                 <input type="radio" class="btn-check btn-sm" name="abnormal" id="Abnormal" value="Abnormal"
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getAbnormal(), "Abnormal")) { %>
                        checked <% } %>>
@@ -86,7 +86,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="btn-group btn-sm" role="group">
                 <input type="radio" class="btn-check btn-sm" name="status" id="statusAll" value=""
                        onchange="this.form.submit()" <% if (Objects.equals(query.getStatus(), "")) { %> checked <% } %>>
-                <label class="btn btn-outline-primary" for="statusAll"><bean:message key="inbox.inboxmanager.msgAll"/></label>
+                <label class="btn btn-outline-primary btn-sm" for="statusAll"><bean:message key="inbox.inboxmanager.msgAll"/></label>
                 <input type="radio" class="btn-check btn-sm" name="status" id="statusNew" value="N"
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getStatus(), "N")) { %>
                        checked <% } %>>
@@ -101,12 +101,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <br>
             </div>
             <br>
-            <label class="fw-bold text-uppercase mb-2"><bean:message key="inbox.inboxmanager.msgPhysicianSearchType"/></label>
+            <label class="fw-bold text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgPhysicianSearchType"/></label>
             <div class="btn-group btn-sm" role="group">
                 <input type="radio" class="btn-check btn-sm" name="searchAll" id="physicianAll" value="true"
                        onchange="this.form.submit()" <% if (Objects.equals(query.getSearchAll(), "true")) { %>
                        checked <% } %>>
-                <label class="btn btn-outline-primary" for="physicianAll"><bean:message key="inbox.inboxmanager.msgAllPhysicians"/></label>
+                <label class="btn btn-outline-primary btn-sm" for="physicianAll"><bean:message key="inbox.inboxmanager.msgAllPhysicians"/></label>
                 <input type="radio" class="btn-check btn-sm" name="searchAll" id="physicianUnclaimed" value="false"
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getSearchAll(), "false")) { %>
                        checked <% } %>>
@@ -116,10 +116,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                        checked <% } %>>
                 <label class="btn btn-outline-primary btn-sm" for="physicianClear">Clear</label>
             </div>
-            <div class="accordion" id="dropdown">
+            <div class="accordion " id="dropdown">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button btn-sm" type="button" data-bs-toggle="collapse"
+                        <button class="accordion-button " type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-controls="collapseOne">
                             <bean:message key="inbox.inboxmanager.msgSearchFilter"/>
                         </button>
@@ -128,24 +128,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                          data-bs-parent="#dropdown">
                         <div class="accordion-body d-grid">
                             <div class="accordion-body d-grid">
-                                <label class="text-uppercase mb-2"><bean:message key="inbox.inboxmanager.msgSearchPhysician"/></label>
+                                <label class="text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgSearchPhysician"/></label>
                                 <input type="hidden" name="searchProviderNo" id="findProvider"
                                        value="<%=query.getSearchProviderNo()%>"/>
                                 <input type="text" id="autocompleteProvider" name="searchProviderName"
                                        onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
-                                <label class="text-uppercase mb-2"><bean:message key="inbox.inboxmanager.msgStartDate"/></label>
+                                <label class="text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgStartDate"/></label>
                                 <input type="text" name="startDate" autocomplete="off"
                                        value="<%=query.getStartDate()%>"><br>
-                                <label class="text-uppercase mb-2"><bean:message key="inbox.inboxmanager.msgEndDate"/> (yyyy-mm-dd)</label>
+                                <label class="text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgEndDate"/> (yyyy-mm-dd)</label>
                                 <input type="text" name="endDate" autocomplete="off"
                                        value="<%=query.getEndDate()%>"><br>
-                                <label for="inputFirstName"><bean:message key="oscarMDS.search.formPatientFirstName"/></label>
+                                <label class="mb-2 btn-sm" for="inputFirstName"><bean:message key="oscarMDS.search.formPatientFirstName"/></label>
                                 <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
                                        value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
-                                <label for="inputLastName"><bean:message key="oscarMDS.search.formPatientLastName"/></label>
+                                <label class="mb-2 btn-sm" for="inputLastName"><bean:message key="oscarMDS.search.formPatientLastName"/></label>
                                 <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
                                        value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
-                                <label for="inputHIN"><bean:message key="oscarMDS.search.formPatientHealthNumber"/></label>
+                                <label class="mb-2 btn-sm" for="inputHIN"><bean:message key="oscarMDS.search.formPatientHealthNumber"/></label>
                                 <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
                                        value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
                             </div>
