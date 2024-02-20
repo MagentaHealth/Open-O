@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (result.isDocument()) {
 %>
 <div id="document_<%=segmentID%>">
-    <jsp:include page="/dms/showDocument.jsp" flush="true">
+    <jsp:include page="/documentManager/showDocument.jsp" flush="true">
         <jsp:param name="segmentID" value="<%=segmentID%>"/>
         <jsp:param name="demoName" value="<%=demoName%>"/>
         <jsp:param name="providerNo" value="<%=providerNo%>"/>

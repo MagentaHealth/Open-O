@@ -86,7 +86,7 @@ public class LabDataController {
                 }
             }
             else if(labResult.isDocument()) {
-                url.append("/dms/showDocument.jsp?inWindow=true");
+                url.append("/documentManager/showDocument.jsp?inWindow=true");
             }
             else if(labResult.isHRM()) {
                 url.append("/hospitalReportManager/Display.do?");

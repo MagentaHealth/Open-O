@@ -30,13 +30,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <a href="javascript:reportWindow('<%=contextPath%>/oscarMDS/ForwardingRules.jsp?providerNo=<%= providerNo %>');" class="nav-link" >Forwarding Rules</a>
 <a href="javascript:reportWindow('<%=contextPath%>/lab/CA/ALL/testUploader.jsp',800,1000)" class="nav-link"><bean:message key="admin.admin.hl7LabUpload"/></a>
 <% if (OscarProperties.getInstance().getBooleanProperty("legacy_document_upload_enabled", "true")) { %>
-<a href="javascript:reportWindow('<%=contextPath%>/dms/html5AddDocuments.jsp',600,500)" class="nav-link"><bean:message key="inboxmanager.document.uploadDoc"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/documentManager/html5AddDocuments.jsp',600,500)" class="nav-link"><bean:message key="inboxmanager.document.uploadDoc"/></a>
 <% }
 else { %>
-<a href="javascript:reportWindow('<%=contextPath%>/dms/documentUploader.jsp',800,1000)" class="nav-link"><bean:message key="inboxmanager.document.uploadDoc"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/documentManager/documentUploader.jsp',800,1000)" class="nav-link"><bean:message key="inboxmanager.document.uploadDoc"/></a>
 <% } %>
-<a href="javascript:reportWindow('<%=contextPath%>/dms/inboxManage.do?method=getDocumentsInQueues',700,1100)" class="nav-link"><bean:message key="inboxmanager.document.pendingDocs"/></a>
-<a href="javascript:reportWindow('<%=contextPath%>/dms/incomingDocs.jsp',800,1200)" class="nav-link"><bean:message key="inboxmanager.document.incomingDocs"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/documentManager/inboxManage.do?method=getDocumentsInQueues',700,1100)" class="nav-link"><bean:message key="inboxmanager.document.pendingDocs"/></a>
+<a href="javascript:reportWindow('<%=contextPath%>/documentManager/incomingDocs.jsp',800,1200)" class="nav-link"><bean:message key="inboxmanager.document.incomingDocs"/></a>
 <% if (!OscarProperties.getInstance().isBritishColumbiaBillingRegion()) { %>
 <a href="javascript:reportWindow('<%=contextPath%>/oscarMDS/CreateLab.jsp',800,1000)" class="nav-link"><bean:message key="global.createLab" /></a>
 <a href="javascript:reportWindow('<%=contextPath%>/olis/Search.jsp',800,1000)" class="nav-link"><bean:message key="olis.olisSearch" /></a>
