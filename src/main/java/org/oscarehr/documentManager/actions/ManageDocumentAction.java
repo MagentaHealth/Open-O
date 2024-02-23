@@ -25,39 +25,17 @@
 
 package org.oscarehr.documentManager.actions;
 
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import com.itextpdf.text.pdf.PdfReader;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import net.sf.json.JSONObject;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.io.RandomAccessFile;
+import org.apache.pdfbox.io.ScratchFile;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -68,7 +46,6 @@ import org.jpedal.fonts.FontMappings;
 import org.oscarehr.PMmodule.caisi_integrator.CaisiIntegratorManager;
 import org.oscarehr.PMmodule.caisi_integrator.IntegratorFallBackManager;
 import org.oscarehr.PMmodule.model.ProgramProvider;
-
 import org.oscarehr.caisi_integrator.ws.CachedDemographicDocument;
 import org.oscarehr.caisi_integrator.ws.CachedDemographicDocumentContents;
 import org.oscarehr.caisi_integrator.ws.DemographicWs;
@@ -76,18 +53,13 @@ import org.oscarehr.caisi_integrator.ws.FacilityIdIntegerCompositePk;
 import org.oscarehr.casemgmt.model.CaseManagementNote;
 import org.oscarehr.casemgmt.model.CaseManagementNoteLink;
 import org.oscarehr.casemgmt.service.CaseManagementManager;
-import org.oscarehr.common.dao.CtlDocumentDao;
-import org.oscarehr.common.dao.DocumentDao;
-import org.oscarehr.common.dao.PatientLabRoutingDao;
-import org.oscarehr.common.dao.ProviderInboxRoutingDao;
-import org.oscarehr.common.dao.SecRoleDao;
-import org.oscarehr.common.model.CtlDocument;
-import org.oscarehr.common.model.Document;
-import org.oscarehr.common.model.PatientLabRouting;
-import org.oscarehr.common.model.Provider;
-import org.oscarehr.common.model.SecRole;
-import org.oscarehr.managers.SecurityInfoManager;
+import org.oscarehr.common.dao.*;
+import org.oscarehr.common.model.*;
+import org.oscarehr.documentManager.EDoc;
+import org.oscarehr.documentManager.EDocUtil;
+import org.oscarehr.documentManager.IncomingDocUtil;
 import org.oscarehr.managers.ProgramManager2;
+import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.sharingcenter.SharingCenterUtil;
 import org.oscarehr.sharingcenter.model.DemographicExport;
 import org.oscarehr.util.LoggedInInfo;
@@ -95,16 +67,31 @@ import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import org.oscarehr.documentManager.EDoc;
-import org.oscarehr.documentManager.EDocUtil;
-import org.oscarehr.documentManager.IncomingDocUtil;
+import oscar.OscarProperties;
 import oscar.log.LogAction;
 import oscar.log.LogConst;
 import oscar.oscarDemographic.data.DemographicData;
 import oscar.oscarEncounter.data.EctProgram;
 import oscar.oscarLab.ca.on.LabResultData;
 import oscar.util.UtilDateUtilities;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.*;
 
 /**
  * @author jaygallagher
@@ -117,6 +104,9 @@ public class ManageDocumentAction extends DispatchAction {
 	private final CtlDocumentDao ctlDocumentDao = SpringUtils.getBean(CtlDocumentDao.class);
 	private final ProviderInboxRoutingDao providerInboxRoutingDAO = SpringUtils.getBean(ProviderInboxRoutingDao.class);
 	private final SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
+
+	private static final String DOCUMENT_DIR = OscarProperties.getInstance().getDocumentDirectory();
+	private static final String DOCUMENT_CACHE_DIR = OscarProperties.getInstance().getDocumentCacheDirectory();
 	
 	public ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		return null;
@@ -412,8 +402,14 @@ public class ManageDocumentAction extends DispatchAction {
 	 * private void savePatientLabRouting(String demog,String docId,String docType){ CommonLabResultData.updatePatientLabRouting(docId, demog, docType); }
 	 */
 
+	private static String getDocumentCacheDir() {
+		if (DOCUMENT_CACHE_DIR != null && !DOCUMENT_CACHE_DIR.isEmpty()) {
+			return DOCUMENT_CACHE_DIR;
+		}
+		return getDocumentCacheDir(DOCUMENT_DIR).getAbsolutePath();
+	}
+
 	private static File getDocumentCacheDir(String docdownload) {
-		// File cacheDir = new File(docdownload+"_cache");
 		File docDir = new File(docdownload);
 		String documentDirName = docDir.getName();
 		File parentDir = docDir.getParentFile();
@@ -427,50 +423,48 @@ public class ManageDocumentAction extends DispatchAction {
 	}
 
 	private File hasCacheVersion2(Document d, Integer pageNum) {
-		File documentCacheDir = getDocumentCacheDir(oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR"));
-		File outfile = new File(documentCacheDir, d.getDocfilename() + "_" + pageNum + ".png");
-		if (!outfile.exists()) {
-			outfile = null;
+		Path outFile = Paths.get(getDocumentCacheDir(), d.getDocfilename() + "_" + pageNum + ".png");
+		if( ! Files.exists(outFile) ) {
+			return null;
 		}
-		return outfile;
+		return outFile.toFile();
 	}
 
 	public static void deleteCacheVersion(Document d, int pageNum) {
-		File documentCacheDir = getDocumentCacheDir(oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR"));
-		//pageNum=pageNum-1;
-		File outfile = new File(documentCacheDir,d.getDocfilename()+"_"+pageNum+".png");
-		if (outfile.exists()){
-			outfile.delete();
+		Path documentCacheDir = Paths.get(getDocumentCacheDir(), d.getDocfilename()+"_"+pageNum+".png");
+		if(Files.exists(documentCacheDir)) {
+			try {
+				Files.delete(documentCacheDir);
+			} catch (IOException e) {
+				MiscUtils.getLogger().error("Failed to delete cache file: " + documentCacheDir.getFileName(), e);
+			}
 		}
 	}
 
 	private File hasCacheVersion(Document d, int pageNum){
-		File documentCacheDir = getDocumentCacheDir(oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR"));
-		//pageNum= pageNum-1;
-		File outfile = new File(documentCacheDir,d.getDocfilename()+"_"+pageNum+".png");
-		if (!outfile.exists()){
-			outfile = null;
-		}
-		return outfile;
+		return hasCacheVersion2(d, pageNum);
 	}
 
 	public byte[] createCacheVersion2(Document d, Integer pageNum) {
-		String docdownload = oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR");
-		Path pdfPath = Paths.get(docdownload, d.getDocfilename());
-		Path pngFile = getDocumentCacheDir(docdownload).toPath().resolve(d.getDocfilename() + "_" + pageNum + ".png");
+		Path pdfPath = Paths.get(DOCUMENT_DIR, d.getDocfilename());
+		Path pngFile = Paths.get(getDocumentCacheDir(), d.getDocfilename() + "_" + pageNum + ".png");
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()){
-			PDFParser parser = new PDFParser(new RandomAccessFile(pdfPath.toFile(), "rw"));
+			PDFParser parser = new PDFParser(new RandomAccessFile(pdfPath.toFile(), "rw"), new ScratchFile(MemoryUsageSetting.setupTempFileOnly()));
 			parser.parse();
 			PDDocument pdf = parser.getPDDocument();
 
 			PDFRenderer rend = new PDFRenderer(pdf);
 			//Page index starts at 0, subtracts 1 to account for that
-			BufferedImage image = rend.renderImageWithDPI(pageNum - 1, 144f);
+			BufferedImage image = rend.renderImageWithDPI(pageNum - 1, 90, ImageType.RGB);
 
 			// write cache file
 			ImageIO.write(image, "png", pngFile.toFile());
 			ImageIO.write(image, "png", baos);
+
+			pdf.close();
+			image.flush();
+
 			return baos.toByteArray();
 		} catch (Exception e) {
 			log.error("Error decoding pdf file " + d.getDocfilename(), e);
@@ -572,7 +566,7 @@ public class ManageDocumentAction extends DispatchAction {
 		String doc_no = request.getParameter("doc_no");
 		String pageNum = request.getParameter("curPage");
 		if (pageNum == null) {
-			pageNum = "0";
+			pageNum = "1";
 		}
 		Integer pn = Integer.parseInt(pageNum);
 		log.debug("Document No :" + doc_no);
@@ -742,27 +736,23 @@ public class ManageDocumentAction extends DispatchAction {
 				LogAction.addLog((String) request.getSession().getAttribute("user"), LogConst.READ, LogConst.CON_DOCUMENT, doc_no, request.getRemoteAddr());
 			}
 
-			String docdownload = oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR");
-
-			File documentDir = new File(docdownload);
-		
 			Document d = documentDao.getDocument(doc_no);
 
 			log.debug("Document Name :" + d.getDocfilename());
 
 			docxml = d.getDocxml();
 			contentType = d.getContenttype();
-
-			File file = new File(documentDir, d.getDocfilename());
 			filename = d.getDocfilename();
 
-			if (file.exists()) {
-				contentBytes = FileUtils.readFileToByteArray(file);
+			Path file = Paths.get(DOCUMENT_DIR, filename);
+
+			if (Files.exists(file)) {
+				contentBytes = Files.readAllBytes(file);
 			} else {
 				if (docxml==null || docxml.trim().equals("")){
 					// Only throw exception if the file does not exist and the docxml is null/empty to serve HTML files that were uploaded in OSCAR 12,
 					// where HTML file uploads contents were stored in the docxml field of the document table, and the file was never saved.
-					throw new IllegalStateException("Local document doesn't exist for eDoc (ID " + d.getId() + "): " + file.getAbsolutePath());
+					throw new IllegalStateException("Local document doesn't exist for eDoc (ID " + d.getId() + "): " + file.getFileName());
 				}
 			}
 		} else // remote document

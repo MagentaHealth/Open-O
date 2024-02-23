@@ -103,7 +103,9 @@ public class DemographicConverter extends AbstractConverter<Demographic, Demogra
 		d.setGenderId(t.getGenderId());
 		d.setPronoun(t.getPronoun());
 		d.setPronounId(t.getPronounId());
-		
+		d.setCellPhone(t.getCellPhone());
+		d.setPhoneComment(t.getPhoneComment());
+
 		DemographicExt[] exts = new DemographicExt[t.getExtras().size()];
 		for (int i = 0; i < t.getExtras().size(); i++) {
 			exts[i] = demoExtConverter.getAsDomainObject(loggedInInfo,t.getExtras().get(i));
@@ -184,6 +186,8 @@ public class DemographicConverter extends AbstractConverter<Demographic, Demogra
 		t.setGenderId(d.getGenderId());
 		t.setPronoun(d.getPronoun());
 		t.setPronounId(d.getPronounId());
+		t.setCellPhone(d.getCellPhone());
+		t.setPhoneComment(d.getPhoneComment());
 
 		
 		if (d.getExtras() != null) {

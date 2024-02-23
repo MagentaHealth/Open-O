@@ -66,11 +66,8 @@
 <link rel="stylesheet" href="<c:out value="${ctx}"/>/css/encounterStyles.css" type="text/css">
 	<link rel="stylesheet" type="text/css" href="<c:out value="${ctx}"/>/css/print.css" media="print">
 
-<!-- 
-<script src="<c:out value="${ctx}/js/jquery.js"/>"></script>
- -->
  <script src="<c:out value="${ctx}/js/jquery-1.7.1.min.js"/>"></script>
-<script language="javascript">
+<script type="text/javascript">
      jQuery.noConflict();
 </script>
 
@@ -354,9 +351,8 @@ LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
         elements[elements.length] = document.getElementById(caseNote);
 
         // Start the spell checker
-        startSpellCheck(ctx+'/jspspellcheck/',elements);
-
-    }
+        startSpellCheck(ctx + '\/jspspellcheck\/', elements);
+	}
 </script>
 
 <!-- set size of window if customized in preferences -->
@@ -392,8 +388,7 @@ LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 <oscar:customInterface section="cme" />
 
 <html:base />
-<title><bean:message key="oscarEncounter.Index.title" /> -
-	<oscar:nameage demographicNo="<%=request.getParameter(\"demographicNo\")%>" /></title>
+<title><bean:message key="oscarEncounter.Index.title" /></title>
 <script type="text/javascript">
     	ctx = "<c:out value="${ctx}"/>";
     	demographicNo = "<c:out value="${demographicNo}"/>";

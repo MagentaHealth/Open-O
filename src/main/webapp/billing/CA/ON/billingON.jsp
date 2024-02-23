@@ -24,7 +24,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/oscar-tag.tld" prefix="oscar"%>
-<%@ page errorPage="errorpage.jsp"%>
+<%@ page errorPage="/errorpage.jsp"%>
 
 <%@page import="java.util.*,java.net.*,java.sql.*,oscar.*,oscar.util.*,oscar.appt.*"%>
 <%@page import="oscar.oscarBilling.ca.on.data.*"%>

@@ -100,7 +100,10 @@ public class DemographicTo1 implements Serializable {
 	private String pronoun;
 	private Integer genderId;
 	private Integer pronounId;
-	
+
+	private String cellPhone;
+	private String phoneComment;
+
 	private List<DemographicContactFewTo1> demoContacts = new ArrayList<DemographicContactFewTo1>();
 	private List<DemographicContactFewTo1> demoContactPros = new ArrayList<DemographicContactFewTo1>();
 	private List<DemographicExtTo1> extras = new ArrayList<DemographicExtTo1>();
@@ -711,5 +714,21 @@ public class DemographicTo1 implements Serializable {
 
 	public void setPronounId(Integer pronounId) {
 		this.pronounId = pronounId;
+	}
+
+	public String getCellPhone() {
+		return cellPhone;
+	}
+
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
+	}
+
+	public String getPhoneComment() {
+		return phoneComment;
+	}
+
+	public void setPhoneComment(String phoneComment) {
+		this.phoneComment = phoneComment;
 	}
 }

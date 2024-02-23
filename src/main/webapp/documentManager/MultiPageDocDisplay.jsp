@@ -52,12 +52,13 @@
 <%@page import="org.springframework.web.context.WebApplicationContext,org.oscarehr.common.dao.*,org.oscarehr.common.model.*, org.oscarehr.PMmodule.dao.ProviderDao"%>
 <%@ page import="org.oscarehr.documentManager.EDocUtil" %>
 <%@ page import="org.oscarehr.documentManager.EDoc" %>
+<%@ page import="org.oscarehr.util.SpringUtils" %>
+<%!
+            ProviderInboxRoutingDao providerInboxRoutingDao = SpringUtils.getBean(ProviderInboxRoutingDao.class);
+            ProviderDao providerDao = SpringUtils.getBean(ProviderDao.class);
+            DemographicDao demographicDao = SpringUtils.getBean(DemographicDao.class);
+%>
 <%
-            WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-            ProviderInboxRoutingDao providerInboxRoutingDao = (ProviderInboxRoutingDao) ctx.getBean("providerInboxRoutingDAO");
-            ProviderDao providerDao = (ProviderDao) ctx.getBean("providerDao");
-            DemographicDao demographicDao = (DemographicDao)ctx.getBean("demographicDao");
-
             String demoName, documentNo,providerNo,searchProviderNo,status;
 
              demoName=(String)request.getAttribute("demoName");

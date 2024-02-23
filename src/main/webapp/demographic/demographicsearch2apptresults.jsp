@@ -60,7 +60,7 @@
 <%@page import="org.oscarehr.caisi_integrator.ws.MatchingDemographicTransferScore"%>
 <%@page import="org.oscarehr.casemgmt.service.CaseManagementManager"%>
 
-<%@ page import="java.util.*, java.sql.*,java.net.*, oscar.*" errorPage="errorpage.jsp"%>
+<%@ page import="java.util.*, java.sql.*,java.net.*, oscar.*" errorPage="/errorpage.jsp"%>
 
 <%@page import="org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.common.model.Demographic"%>

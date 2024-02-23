@@ -23,16 +23,27 @@
  */
 package org.oscarehr.documentManager;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import com.lowagie.text.DocumentException;
+import io.woo.htmltopdf.HtmlToPdf;
+import io.woo.htmltopdf.HtmlToPdfObject;
+import io.woo.htmltopdf.PdfPageSize;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Logger;
+import org.oscarehr.common.model.EFormData;
+import org.oscarehr.managers.NioFileManager;
+import org.oscarehr.util.MiscUtils;
+import org.oscarehr.util.PDFGenerationException;
+import org.oscarehr.util.SpringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
+import org.xhtmlrenderer.layout.SharedContext;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xml.sax.SAXException;
+import oscar.OscarProperties;
+import oscar.form.util.FormTransportContainer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,27 +57,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import io.woo.htmltopdf.*;
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.Logger;
-import org.oscarehr.common.model.EFormData;
-import org.oscarehr.managers.NioFileManager;
-import org.oscarehr.util.MiscUtils;
-import org.oscarehr.util.PDFGenerationException;
-import org.oscarehr.util.SpringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import org.w3c.tidy.Tidy;
-import org.xhtmlrenderer.layout.SharedContext;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xml.sax.SAXException;
-
-import com.lowagie.text.DocumentException;
-import oscar.OscarProperties;
-import oscar.form.util.FormTransportContainer;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * A utility that converts HTML into a PDF and returns an Oscar eDoc object.
@@ -336,6 +332,7 @@ public class ConvertToEdoc {
 		){
 			IOUtils.copy(inputStream, os);
 		} catch (Exception e) {
+			logger.error("Document conversion exception thrown, attempting with alternate conversion library.", e);
 			ITextRenderer renderer = new ITextRenderer();
 			SharedContext sharedContext = renderer.getSharedContext();
 			sharedContext.setPrint(true);
@@ -345,7 +342,6 @@ public class ConvertToEdoc {
 			renderer.setDocument( getDocument(document),null);
 			renderer.layout();
 			renderer.createPDF( os, true );
-			logger.error("Document conversion exception thrown, attempting with alternate conversion library.", e);
 		}
 	}
 

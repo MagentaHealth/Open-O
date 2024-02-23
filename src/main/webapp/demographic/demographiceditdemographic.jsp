@@ -270,8 +270,8 @@ if(!authed) {
 <script language="javascript" src="<%=request.getContextPath() %>/hcHandler/hcHandler.js"></script>
 <script language="javascript" src="<%=request.getContextPath() %>/hcHandler/hcHandlerUpdateDemographic.js"></script>
 <link rel="stylesheet" href="<%=request.getContextPath() %>/hcHandler/hcHandler.css" type="text/css" />
-<link rel="stylesheet" href="<%=request.getContextPath() %>/demographic/demographiceditdemographic.css" type="text/css" />
 <% } %>
+	<link rel="stylesheet" href="<%=request.getContextPath() %>/demographic/demographiceditdemographic.css" type="text/css" />
 
 <!-- main calendar program -->
 <script type="text/javascript" src="../share/calendar/calendar.js"></script>
@@ -1949,14 +1949,14 @@ if ( Dead.equals(PatStat) ) {%>
                                                         <span class="info"><%=StringUtils.trimToEmpty(demoExt.get("demo_cell"))%></span></li>
                                                     <li><span class="label"><bean:message
                                                             key="demographic.demographicaddrecordhtm.formPhoneComment" />:</span>
-                                                        <span class="info"><%=StringUtils.trimToEmpty(demoExt.get("phoneComment"))%></span></li>
+                                                        <span class="info"><%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demoExt.get("phoneComment")))%></span></li>
                                                     <li><span class="label"><bean:message
                                                             key="demographic.demographiceditdemographic.formAddr" />(<span class="popup"  onmouseover="nhpup.popup(addressHistory);" title="Address History">History</span>):</span>
-                                                        <span class="info"><%=StringUtils.trimToEmpty(demographic.getAddress())%></span>
+                                                        <span class="info"><%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demographic.getAddress()))%></span>
 							</li>
                                                     <li><span class="label"><bean:message
                                                             key="demographic.demographiceditdemographic.formCity" />:</span>
-                                                        <span class="info"><%=StringUtils.trimToEmpty(demographic.getCity())%></span>
+                                                        <span class="info"><%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demographic.getCity()))%></span>
                                                     </li>
                                                     <li><span class="label">
 							<% if(oscarProps.getProperty("demographicLabelProvince") == null) { %>
@@ -1977,11 +1977,11 @@ if ( Dead.equals(PatStat) ) {%>
 
                                                     <li><span class="label"><bean:message
                                                             key="demographic.demographiceditdemographic.formResidentialAddr" />:</span>
-                                                        <span class="info"><%=StringUtils.trimToEmpty(demographic.getResidentialAddress())%></span>
+                                                        <span class="info"><%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demographic.getResidentialAddress()))%></span>
 							</li>
                                                     <li><span class="label"><bean:message
                                                             key="demographic.demographiceditdemographic.formResidentialCity" />:</span>
-                                                        <span class="info"><%=StringUtils.trimToEmpty(demographic.getResidentialCity())%></span>
+                                                        <span class="info"><%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demographic.getResidentialCity()))%></span>
                                                     </li>
                                                     <li><span class="label">
 														<bean:message key="demographic.demographiceditdemographic.formResidentialProvince" />:</span>
@@ -2530,7 +2530,7 @@ if ( Dead.equals(PatStat) ) {%>
 								<td align="right"><b><bean:message
 									key="demographic.demographiceditdemographic.formAddr" />: </b></td>
 								<td align="left"><input type="text" name="address" <%=getDisabled("address")%>
-									size="30" value="<%=StringUtils.trimToEmpty(demographic.getAddress())%>">
+									size="30" value="<%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demographic.getAddress()))%>">
 								</td>
 								<td align="right"><b><bean:message
 									key="demographic.demographiceditdemographic.formCity" />: </b></td>
@@ -2655,7 +2655,7 @@ if ( Dead.equals(PatStat) ) {%>
 								<td align="right"><b><bean:message
 									key="demographic.demographiceditdemographic.formResidentialAddr" />: </b></td>
 								<td align="left"><input type="text" name="residentialAddress" <%=getDisabled("residentialAddress")%>
-									size="30" value="<%=StringUtils.trimToEmpty(demographic.getResidentialAddress())%>">
+									size="30" value="<%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demographic.getResidentialAddress()))%>">
 								</td>
 								<td align="right"><b><bean:message
 									key="demographic.demographiceditdemographic.formResidentialCity" />: </b></td>
@@ -2811,8 +2811,8 @@ if ( Dead.equals(PatStat) ) {%>
 										key="demographic.demographicaddrecordhtm.formPhoneComment" />: </b></td>
 								<td align="left" colspan="3">
 								<input type="hidden" name="phoneCommentOrig"
-									value="<%=StringUtils.trimToEmpty(demoExt.get("phoneComment"))%>" />
-										<textarea rows="2" cols="30" name="phoneComment"><%=StringUtils.trimToEmpty(demoExt.get("phoneComment"))%></textarea>
+									value="<%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demoExt.get("phoneComment")))%>" />
+										<textarea rows="2" cols="30" name="phoneComment"><%=StringEscapeUtils.escapeHtml(StringUtils.trimToEmpty(demoExt.get("phoneComment")))%></textarea>
 								</td>
 							</tr>							
 							<tr valign="top">

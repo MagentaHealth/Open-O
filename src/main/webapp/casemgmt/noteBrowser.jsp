@@ -569,6 +569,12 @@
                             %>
                                 <option value="<%=curNote.getNoteId()%>"><%=DateUtils.getDate(MyDateFormat.getCalendar(curNote.getObservationDate()).getTime(), "yyyy-MM-dd  HH:mm ", request.getLocale())%> <%=curNote.getProviderName()%></option>
                             <%          
+                                    } 
+                                    
+                                    if (curNote.isExternalNote()) {
+                            %>
+                                <option value="<%=curNote.getNoteId()%>"><%=DateUtils.getDate(MyDateFormat.getCalendar(curNote.getObservationDate()).getTime(), "yyyy-MM-dd  HH:mm ", request.getLocale())%> <%=curNote.getProviderName()%></option>
+                            <%            
                                     }
                                 }  
                         %>                   

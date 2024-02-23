@@ -734,13 +734,13 @@ function showEdit(e,title, noteId, editors, date, revision, note, url, container
 
     $("noteEditTxt").value = note;
 
-    var editorUl = "<ul style='list-style: none outside none; margin:0px;'>";
+    var editorUl = "<ul style='list-style: none outside none; margin:0;'>";
 
     if( editors.length > 0 ) {
         var editorArray = editors.split(";");
         var idx;
         for( idx = 0; idx < editorArray.length; ++idx ) {
-            if( idx % 2 == 0 )
+            if( idx % 2 === 0 )
                 editorUl += "<li>" + editorArray[idx];
             else
                 editorUl += "; " + editorArray[idx] + "</li>";
@@ -751,23 +751,24 @@ function showEdit(e,title, noteId, editors, date, revision, note, url, container
     }
     editorUl += "</ul>";
 
-    var noteIssueUl = "<ul id='issueIdList' style='list-style: none outside none; margin:0px;'>";
+    var noteIssueUl = "<ul id='issueIdList' style='list-style: none; margin:0;'>";
 
     if( noteIssues.length > 0 ) {
         var issueArray = noteIssues.split(";");
         var idx,rows;
 	var cppDisplay = "";
         for( idx = 0,rows=0; idx < issueArray.length; idx+=3, ++rows ) {
-            if( rows % 2 == 0 )
-                noteIssueUl += "<li><input type='checkbox' id='issueId' name='issue_id' checked value='" + issueArray[idx] + "'>" + issueArray[idx+2];
-            else
-                noteIssueUl += "&nbsp; <input type='checkbox' id='issueId' name='issue_id' checked value='" + issueArray[idx] + "'>" + issueArray[idx+2] + "</li>";
-
-	    if (cppDisplay=="") cppDisplay = getCPP(issueArray[idx+1]);
+            if( rows % 2 === 0 ) {
+	            noteIssueUl += "<li><input type='checkbox' id='issueId' name='issue_id' checked value='" + issueArray[idx] + "'>" + issueArray[idx + 2];
+            } else {
+	            noteIssueUl += "&nbsp; <input type='checkbox' id='issueId' name='issue_id' checked value='" + issueArray[idx] + "'>" + issueArray[idx + 2] + "</li>";
+            }
+	        if (cppDisplay=="") cppDisplay = getCPP(issueArray[idx+1]);
         }
 
-        if( rows % 2 == 0 )
-            noteIssueUl += "</li>";
+        if( rows % 2 === 0 ) {
+	        noteIssueUl += "</li>";
+        }
     }
     noteIssueUl += "</ul>";
 
@@ -782,7 +783,6 @@ function showEdit(e,title, noteId, editors, date, revision, note, url, container
 
     $(editElem).style.right = right + "px";
     $(editElem).style.top = top + "px";
-    $("showIntegratedNote").style.display = "none";
     if( Prototype.Browser.IE ) {
         //IE6 bug of showing select box
         $("channel").style.visibility = "hidden";
@@ -803,7 +803,7 @@ function showEdit(e,title, noteId, editors, date, revision, note, url, container
     var numNotes = $F(elementNum);
     var positionElement = containerDiv + noteId;
     var position;
-    if( noteId == "" ) {
+    if( noteId === "" ) {
         position = 0;
     }
     else {

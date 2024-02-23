@@ -35,18 +35,18 @@ public class FaxConfig extends AbstractModel<Integer> {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer Id;
 	
-	private String url;
-	private String siteUser;
-	private String passwd;
-	private String faxUser;
-	private String faxPasswd;
-	private String faxNumber;
-	private String senderEmail;
+	private String url = "";
+	private String siteUser = "";
+	private String passwd = "";
+	private String faxUser = "";
+	private String faxPasswd = "";
+	private String faxNumber = "";
+	private String senderEmail = "";
 
 	@Column(columnDefinition = "boolean default false")
 	private boolean active;
-	private Integer queue;
-	private String accountName;
+	private Integer queue = 0;
+	private String accountName = "";
 
 	@Column(columnDefinition = "boolean default true")
 	private boolean download;
