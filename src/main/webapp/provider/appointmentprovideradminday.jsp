@@ -923,14 +923,11 @@
 
                                         <c:if test="${doctorLinkRights}">
                                         <li>
-                                            <a HREF="#"
-                                               onclick="popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm');return false;"
-                                               TITLE='<bean:message key="provider.appointmentProviderAdminDay.viewLabReports"/>'>
+                                       <a HREF="#" id="inboxLink"
                                                 <span id="oscar_new_lab"><bean:message key="global.lab"/></span>
                                             </a>
                                             <oscar:newUnclaimedLab>
                                                 <a id="unclaimedLabLink" class="tabalert" HREF="javascript:void(0)"
-                                                   onclick="popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm&unclaimed=1');return false;"
                                                    title='<bean:message key="provider.appointmentProviderAdminDay.viewLabReports"/>'>U</a>
                                             </oscar:newUnclaimedLab>
                                         </li>
@@ -2492,3 +2489,26 @@
     }
 %>
 
+<script>
+    var originalInboxLinkClickEvent = "popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=<%=loggedInInfo1.getLoggedInProviderNo()%>', 'Lab');return false;";
+    var newInboxLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm');return false;";
+
+    var originalUnclaimedLabLinkClickEvent = "popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=0&searchProviderNo=0&status=N&lname=&fname=&hnum=&pageNum=1&startIndex=0', 'Lab');return false;"
+    var newUnclaimedLabLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm&unclaimed=1');return false;"
+
+    document.getElementById("inboxLink").addEventListener("mouseup", function(event) {
+        if(event.ctrlKey) {
+            document.getElementById("inboxLink").setAttribute("onclick", newInboxLinkClickEvent);
+        } else {
+            document.getElementById("inboxLink").setAttribute("onclick", originalInboxLinkClickEvent);
+        }
+    });
+
+    document.getElementById("unclaimedLabLink").addEventListener("mouseup", function(event) {
+        if(event.ctrlKey) {
+            document.getElementById("unclaimedLabLink").setAttribute("onclick", newUnclaimedLabLinkClickEvent);
+        } else {
+            document.getElementById("unclaimedLabLink").setAttribute("onclick", originalUnclaimedLabLinkClickEvent);
+        }
+    });
+</script>
