@@ -85,9 +85,6 @@
 <script src="<c:out value="${ctx}"/>/share/javascript/popupmenu.js" type="text/javascript"></script>
 <script src="<c:out value="${ctx}"/>/share/javascript/menutility.js" type="text/javascript"></script>
 
-<!-- library for rounded elements -->
-<link rel="stylesheet" type="text/css" href="<c:out value="${ctx}/share/css/niftyCorners.css" />">
-<script type="text/javascript" src="<c:out value="${ctx}/share/javascript/nifty.js"/>"></script>
 
 <!-- calendar stylesheet -->
 <link rel="stylesheet" type="text/css" media="all" href="<c:out value="${ctx}"/>/share/calendar/calendar.css" title="win2k-cold-1">
@@ -466,12 +463,12 @@ function init() {
 
     Element.observe(window, "resize", monitorNavBars);
     
-    if(!NiftyCheck()) {
-        return;
-    }
-
-    Rounded("div.showEdContent","all","transparent","#CCCCCC","big border #000000");
-    Rounded("div.printOps","all","transparent","#CCCCCC","big border #000000");
+    // if(!NiftyCheck()) {
+    //     return;
+    // }
+	//
+    // Rounded("div.showEdContent","all","transparent","#CCCCCC","big border #000000");
+    // Rounded("div.printOps","all","transparent","#CCCCCC","big border #000000");
     Calendar.setup({ inputField : "printStartDate", ifFormat : "%d-%b-%Y", showsTime :false, button : "printStartDate_cal", singleClick : true, step : 1 });
     Calendar.setup({ inputField : "printEndDate", ifFormat : "%d-%b-%Y", showsTime :false, button : "printEndDate_cal", singleClick : true, step : 1 });
 
@@ -541,7 +538,7 @@ window.onbeforeunload = onClosing;
 			<input type="hidden" id="issueChange" name="issueChange" value="">
 			<input type="hidden" id="archived" name="archived" value="false">
 			<input type="hidden" id="annotation_attrib" name="annotation_attrib">
-			<div id="winTitle"></div>
+			<h3 id="winTitle"></h3>
 			<textarea style="margin: 10px;" cols="50" rows="15" id="noteEditTxt"
 				name="value"></textarea>
 			<br>
@@ -895,7 +892,7 @@ if (OscarProperties.getInstance().getBooleanProperty("note_program_ui_enabled", 
                             <tr>
                                 <td colspan="2">
                                     <input id="submitResident" value="Continue" name="submitResident" type="submit" onclick="return subResident();"/>
-                                    <input id="submitResident" value="Return to Chart" name="submitResident" type="submit" onclick="return cancelResident();"/>                                
+                                    <input id="submitResidentReturn" value="Return to Chart" name="submitResident" type="submit" onclick="return cancelResident();"/>
                                 </td>                                
                             </tr>
                         </table>

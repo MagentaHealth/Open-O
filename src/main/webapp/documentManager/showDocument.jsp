@@ -682,6 +682,7 @@
         
 
 </script>
+<jsp:include page="/images/spinner.jsp" />
 <c:if test="${param.inWindow eq 'true'}">
 </body>
 </html>

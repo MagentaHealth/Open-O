@@ -24,14 +24,6 @@
 
 package org.oscarehr.documentManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.logging.log4j.Logger;
@@ -41,12 +33,14 @@ import org.oscarehr.common.model.CtlDocumentPK;
 import org.oscarehr.common.model.Document;
 import org.oscarehr.common.model.Provider;
 import org.oscarehr.util.MiscUtils;
-
 import oscar.MyDateFormat;
 import oscar.OscarProperties;
 import oscar.oscarTags.TagObject;
 import oscar.util.ConversionUtils;
 import oscar.util.UtilDateUtilities;
+
+import java.io.*;
+import java.util.Date;
 
 public class EDoc extends TagObject implements Comparable<EDoc> {
 	private static final Logger logger = MiscUtils.getLogger();
@@ -267,6 +261,12 @@ public class EDoc extends TagObject implements Comparable<EDoc> {
 	}
 
 	public String getDescription() {
+		if(description == null || description.isEmpty()) {
+			description = getType();
+		}
+		if(description == null || description.isEmpty()) {
+			description = getFileName();
+		}
 		return description;
 	}
 

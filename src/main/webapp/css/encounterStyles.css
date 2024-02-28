@@ -30,6 +30,40 @@
 		#FF8C00 = darkorange
 */
 
+.noteRounded, .showEdContent {
+
+	background-color: #ffffff;
+	border: 1px solid #cccccc !important;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.showEdContent {
+	padding:5px 10px;
+}
+
+*:not(h1,h2,#encounterHeaderCenterColumn) {
+	font-size: 12px !important;
+}
+
+#rightNavBar h3 a, #leftNavBar h3 a, #cppBoxes h3 a {
+	padding:3px 2px;
+}
+
+#encounterHeaderCenterColumn span, #encounterHeaderCenterColumn a {
+	font-size: 14px !important;
+	font-weight: bold;
+}
+#encounterHeaderCenterColumn span.label{
+	font-size: 12px !important;
+}
+
+* {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 
 .pull-right {
 	float:right !important;
@@ -48,7 +82,6 @@ input {
 } 
 
 BODY {
-	font-family: Arial, Verdana, Tahoma, Helvetica, sans-serif;
 	padding:0 !important;
 	margin:0 !important;
 }
@@ -77,7 +110,7 @@ h3 {
 }
 
 h3 a, .pull-right a  { 
-		font-size: x-small !important;
+		/*font-size: x-small !important;*/
 	display: inline-block !important;
 	padding-left: 5px !important;
 
@@ -327,7 +360,7 @@ table#encounterHeader td#encounterHeaderLeftColumn h1 {
 	padding-left:7px !important;
 	padding-top:7px !important;
 	display: block !important;
-	font-size: larger !important;
+	/*font-size: larger !important;*/
 	color: white !important;
 
 }
@@ -353,11 +386,11 @@ table#encounterHeader span.label {
 	margin: 0 5px !important;
 	padding: 0px !important;
 	font-weight: normal !important;
-	font-size: x-small !important;
+	/*font-size: x-small !important;*/
 }
 
 table#encounterHeader span.HelpAboutLogout a {
-	font-size: x-small !important;
+	/*font-size: x-small !important;*/
 	color: white !important;
 	float: right !important;
 	padding: 0 3px !important;
@@ -380,16 +413,15 @@ div#encounterTools fieldset {
 
 
 div#topContent {
-	font-size: 8pt;
-	padding: 0px !important;
-	margin: 0px !important;
+	/*font-size: 8pt;*/
+	padding: 0 !important;
+	margin: 0 !important;
 }
 
 div#encMainDiv div.note {
-	margin: 0px !important;
-	padding: 0px !important;
+	padding: 0 !important;
 	margin: 3px 5px 3px 5px !important;
-	font-size: 80% !important;
+	/*font-size: 80% !important;*/
 	color: #3366CC !important;
 }
 
@@ -399,7 +431,7 @@ div#encMainDiv div.note div div [id*="txt"] {
 }
 
 .doctorInfo {
-	font-size: x-small;
+	/*font-size: x-small;*/
 	font-weight: bold;
 	background-color: #A39FC4;
 }
@@ -409,19 +441,19 @@ div#encMainDiv div.note div div [id*="txt"] {
 }
 
 .patientInfo {
-	font-size: small;
+	/*font-size: small;*/
 	font-weight: bold;
 	background-color: #CBC9E0;
 }
 
-.ControlTextarea {
-	font-family: Verdana, Tahoma, Arial, sans-serif;
-	font-size: 100%;
-}
+/*.ControlTextarea {*/
+
+/*	font-size: 100%;*/
+/*}*/
 
 .ControlSelect {
-	font-family: Verdana, Tahoma, Arial, sans-serif;
-	font-size: 80%;
+
+	/*font-size: 80%;*/
 	width: 100%;
 }
 
@@ -444,7 +476,7 @@ div#encMainDiv div.note div div [id*="txt"] {
 	padding-left: 0;
 	padding-right: 0;
 	width: 100%;
-	font-size: 80%;
+	/*font-size: 80%;*/
 }
 
 .MainTableTopRowLeftColumn {
@@ -454,7 +486,7 @@ div#encMainDiv div.note div div [id*="txt"] {
 	border-top: 2px solid #A9A9A9;
 	height: 34px;
 	max-width: 130px;
-	font-size: 110%;
+	/*font-size: 110%;*/
 	font-weight: bold;
 	color: #FFFFFF;
 }
@@ -537,7 +569,7 @@ div.demographicSection {
 
 div.demographicSection h3 {
 	background-color: #ccccff;
-	font-size: 8pt;
+	/*font-size: 8pt;*/
 	font-weight: bold;
 	margin-top: 0px;
 	padding-top: 0px;
@@ -612,7 +644,7 @@ div.demographicWrapper {
 	border-right: 3px solid black;
 	padding: 3px;
 	z-index: 10;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	width: 25em;
 }
 
@@ -637,42 +669,42 @@ div.label {
 
 .Title {
 	font-weight: bold;
-	font-size: 110%;
+	/*font-size: 110%;*/
 	color: white;
 	background-color: #6699cc;
 }
 
 .fieldBox {
-	font-family: tahoma, helvetica;
+
 	background-color: #ddddff;
 }
 
 .data {
 	background-color: #F7F7F7;
-	font-size: 80%;
+	/*font-size: 80%;*/
 }
 
 .data2 {
 	background-color: #F7F7F7;
 	color: #3366CC;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 .data3 {
 	color: #15120B;
-	font-size: 11px;
+	/*font-size: 11px;*/
 }
 
 .data4 {
 	background-color: #F7F7F7;
 	color: #3366CC;
-	font-size: 12px;
+	/*font-size: 12px;*/
 }
 
 .data5 {
 	background-color: #FDFEC7;
 	color: #3366CC;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 div.leftBox {
@@ -695,7 +727,7 @@ div.leftBox h3 a {
 div.leftBox h3 {
 	margin:0px !important;
 	background-color: #6699cc;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	color: white;
 	font-weight: bold;
 	padding-left: 5px;
@@ -704,7 +736,7 @@ div.leftBox h3 {
 div.leftBox ul { 
 	padding:0px !important;
 	margin: 0px !important;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	list-style: none;
 	list-style-type: none;
 	list-style-position: outside;
@@ -728,7 +760,7 @@ div.leftBox li {
 	border-right: 3px solid black;
 	padding: 3px;
 	z-index: 101;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 .menuItemright {
@@ -758,7 +790,7 @@ div.leftBox li {
 .links {
 	color: blue;
 	text-decoration: none;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 .linkhover {
@@ -769,19 +801,19 @@ div.leftBox li {
 .editBtn {
 	float: right;
 	margin-right: 5px;
-	font-size: 8px;
+	/*font-size: 8px;*/
 }
 
 .caseNote_date {
 	float: left;
-	font-size: 1.0em;
+	/*font-size: 1.0em;*/
 	width: 25%;
 	font-weight: bold;
 }
 
 .caseNote_content {
 	float: left;
-	font-size: 1.0em;
+	/*font-size: 1.0em;*/
 	width: 60%;
 }
 
@@ -789,7 +821,7 @@ div.leftBox li {
 	background-color: #CCCCFF;
 	color: #000000;
 	width: 100%;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 .observation,.observationEdit,.showEditDate {
@@ -807,26 +839,26 @@ div.leftBox li {
 .topLinks {
 	color: black;
 	text-decoration: none;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 .topLinkhover {
 	color: blue;
 	text-decoration: underline;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 div.newNote {
 	color: #000000;
-	font-family: arial, sans-serif;
-	font-size: 0.8em;
+	/*font-family: arial, sans-serif;*/
+	/*font-size: 0.8em;*/
 	margin: 5px 0px 5px 5px;
 	float: left;
 }
 
 div.newNote pre {
 	color: #000000;
-	font-family: arial, sans-serif;
+	/*font-family: arial, sans-serif;*/
 	margin: 0px 3px 0px 3px;
 	width: 100%;
 	clear: left;
@@ -864,7 +896,7 @@ ul#issueIdList {
 .showEdContent {
 	/*border: thin ridge black;*/
 	background-color: #CCCCFF;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	position: absolute;
 	display: none;
 	z-index: 200;
@@ -899,7 +931,7 @@ div#issueNoteAssign {
 .enTemplate_name_auto_complete {
 	width: 350px;
 	background: #fff;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	text-align: left;
 }
 
@@ -942,7 +974,7 @@ p.passwdErr {
 	border: 1px solid black;
 	border-radius: 3px 3px 3px 3px;
 	box-shadow: 2px 2px 4px;
-	font-size: 12px;
+	/*font-size: 12px;*/
 	padding: 4px;
 	text-align: center;
 	width: 130px;
@@ -957,7 +989,7 @@ p.passwdErr {
 li.cpp {
 	text-indent: 5px;
 	color: #000000;
-	font-family: arial, sans-serif;
+	/*font-family: arial, sans-serif;*/
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
@@ -965,8 +997,8 @@ li.cpp {
 /*Note format */
 div.newNote {
 	color: #000000;
-	font-family: arial, sans-serif;
-	font-size: 0.8em;
+	/*font-family: arial, sans-serif;*/
+	/*font-size: 0.8em;*/
 	margin: 5px 0px 5px 5px;
 	float: left;
 	width: 98%;
@@ -974,7 +1006,7 @@ div.newNote {
 
 div.newNote pre {
 	color: #000000;
-	font-family: arial, sans-serif;
+	/*font-family: arial, sans-serif;*/
 	margin: 0px 3px 0px 3px;
 	width: 100%;
 	clear: left;
@@ -982,7 +1014,7 @@ div.newNote pre {
 
 div.note {
 	color: #000000;
-	font-family: arial, sans-serif;
+	/*font-family: arial, sans-serif;*/
 	margin: 3px 0px 3px 5px;
 	float: left;
 	width: 98%;
@@ -990,7 +1022,7 @@ div.note {
 
 div.note pre {
 	color: #000000;
-	font-family: arial, sans-serif;
+	/*font-family: arial, sans-serif;*/
 	margin: 0px 3px 0px 3px;
 	width: 100%;
 	clear: left;
@@ -1001,18 +1033,18 @@ div.note pre {
 	background-color: #EEEEEE !important;
 	color: #111111 !important;
 	width: 100% !important;
-	font-size: x-small !important;
+	/*font-size: x-small !important;*/
 	border-top:#CCCCCC thin solid !important;
 }
 
 .txtArea {
-	font-family: arial, sans-serif;
-	font-size: 1.0em;
+	/*font-family: arial, sans-serif;*/
+	/*font-size: 1.0em;*/
 	width: 99%;
 	rows: 10;
 	overflow: hidden;
 	border: none;
-	font-family: arial, sans-serif;
+	/*font-family: arial, sans-serif;*/
 	margin: 0px 3px 0px 3px;
 }
 
@@ -1041,7 +1073,7 @@ span.measureCol3 {
 .links {
 	color: blue;
 	text-decoration: none;
-	font-size: 9px;
+	/*font-size: 9px;*/
 }
 
 .linkhover {
@@ -1053,7 +1085,7 @@ span.measureCol3 {
 .enTemplate_name_auto_complete {
 	width: 350px;
 	background: #fff;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	text-align: left;
 }
 
@@ -1091,7 +1123,7 @@ div.autocomplete {
 	border: 1px solid #ccc;
 	margin: 0px;
 	padding: 0px;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	text-align: left;
 	max-height: 200px;
 	overflow: auto;
@@ -1117,8 +1149,8 @@ div.autocomplete ul li {
 
 .encTypeCombo {
 	margin: 0px;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 9px;
+	/*font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;*/
+	/*font-size: 9px;*/
 	width: 200px;
 	text-align: left;
 	vertical-align: middle;
@@ -1133,7 +1165,7 @@ div.autocomplete ul li {
 
 .printOps {
 	background-color: #CCCCFF;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	position: absolute;
 	display: none;
 	z-index: 1;
@@ -1149,7 +1181,7 @@ div.autocomplete ul li {
 	right: 100px;
 	bottom: 200px;
 	background-color: transparent;
-	font-size: 8px;
+	/*font-size: 8px;*/
 	text-align: center;
 }
 
@@ -1160,7 +1192,7 @@ div.autocomplete ul li {
 
 .showEdContent {
 	background-color: #CCCCFF;
-	font-size: 9px;
+	/*font-size: 9px;*/
 	position: absolute;
 	display: none;
 	z-index: 200;
@@ -1172,7 +1204,7 @@ div.autocomplete ul li {
 /* Imported from casemgmt.css */
 
 .blueText {
-	font-size: 9pt;
+	/*font-size: 9pt;*/
 	vertical-align: top;
 }
 
@@ -1191,7 +1223,7 @@ div.autocomplete ul li {
 .subject {
 	background-color: #003399;
 	color: #FFFFFF;
-	font-size: 14pt;
+	/*font-size: 14pt;*/
 	font-weight: bold;
 	text-align: center;
 }
@@ -1270,10 +1302,10 @@ div.autocomplete ul li {
 
 div.tabs th,div.tabs td,s,#rightcol div.help,.colbar,.tasknav,body.docs div#toc,#leftcol,.legend,.bars
 	{
-	font-size: xx-small;
+	/*font-size: xx-small;*/
 	voice-family: "\"}\"";
 	voice-family: inherit;
-	font-size: x-small;
+	/*font-size: x-small;*/
 }
 
 .tabs td,.tabs th,dt,.tasknav .selfref,#login .username,.selection {

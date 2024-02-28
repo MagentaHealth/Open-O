@@ -25,28 +25,20 @@
 
 package oscar.oscarBilling.ca.bc.pageUtil;
 
-import java.io.IOException;
-import java.util.List;
+import org.apache.logging.log4j.Logger;
+import org.apache.struts.action.*;
+import org.oscarehr.billing.Clinicaid.util.ClinicaidCommunication;
+import org.oscarehr.decisionSupport.model.DSConsequence;
+import org.oscarehr.util.LoggedInInfo;
+import org.oscarehr.util.MiscUtils;
+import oscar.oscarBilling.ca.bc.decisionSupport.BillingGuidelines;
+import oscar.util.plugin.OscarProperties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.oscarehr.decisionSupport.model.DSConsequence;
-import org.oscarehr.util.LoggedInInfo;
-import org.oscarehr.util.MiscUtils;
-import org.oscarehr.billing.Clinicaid.util.ClinicaidCommunication;
-
-//import oscar.oscarBilling.ca.bc.MSP.ServiceCodeValidationLogic;
-import oscar.oscarBilling.ca.bc.decisionSupport.BillingGuidelines;
-import oscar.util.plugin.OscarProperties;
+import java.io.IOException;
+import java.util.List;
 //import oscar.util.SqlUtils;
 
 public final class BillingAction extends Action {

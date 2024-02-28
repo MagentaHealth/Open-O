@@ -231,26 +231,30 @@ function showPDF(docid,cp) {
 
 function removeFirstPage(id) {
 	jQuery("#removeFirstPagebtn_" + id).attr('disabled', 'disabled');
-        var displayDocumentAs=$('displayDocumentAs_'+id).value;
+	ShowSpin(true);
 
-	new Ajax.Request(contextpath + "/documentManager/SplitDocument.do", {method: 'post', parameters: "method=removeFirstPage&document=" + id, onSuccess: function(data) {
-		jQuery("#removeFirstPagebtn_" + id).removeAttr('disabled');
-                if(displayDocumentAs=="PDF") {
-                    showPDF(id,contextpath);
-                } else {
-                    jQuery("#docImg_" + id).attr('src', contextpath + "/documentManager/ManageDocument.do?method=viewDocPage&doc_no=" + id + "&curPage=1&rand=" + (new Date().getTime()));
-                }
-		var numPages = parseInt(jQuery("#numPages_" + id).text())-1;
-		jQuery("#numPages_" + id).text("" + numPages);
+	if(confirm("!! This is a destructive action that can cause loss of document data !! \n Click OK to delete the first page of this document, or Cancel to abort.")) {
+		var displayDocumentAs = $('displayDocumentAs_' + id).value;
 
+		new Ajax.Request(contextpath + "/documentManager/SplitDocument.do", {
+			method: 'post', parameters: "method=removeFirstPage&document=" + id, onSuccess: function (data) {
+				if (displayDocumentAs == "PDF") {
+					showPDF(id, contextpath);
+				} else {
+					jQuery("#docImg_" + id).attr('src', contextpath + "/documentManager/ManageDocument.do?method=viewDocPage&doc_no=" + id + "&curPage=1&rand=" + (new Date().getTime()));
+				}
+				var numPages = parseInt(jQuery("#numPages_" + id).text()) - 1;
+				jQuery("#numPages_" + id).text("" + numPages);
 
-
-		if (numPages <= 1) {
-			jQuery("#numPages_" + id).removeClass("multiPage");
-			jQuery("#removeFirstPagebtn_" + id).remove();
-		}
-
-	}});
+				if (numPages <= 1) {
+					jQuery("#numPages_" + id).removeClass("multiPage");
+					jQuery("#removeFirstPagebtn_" + id).remove();
+				}
+				jQuery("#removeFirstPagebtn_" + id).removeAttr('disabled');
+				HideSpin();
+			}
+		});
+	}
 }
 
 
@@ -2352,5 +2356,6 @@ Event.observe(window,'scroll',function(){//check for scrolling
 
 
 </script>
+    <jsp:include page="/images/spinner.jsp" />
     </body>
 </html>

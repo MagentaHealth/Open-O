@@ -286,79 +286,87 @@ public class RenalAction extends DispatchAction {
 		return null;
 	}
 	
+	/*
+	* This method is no longer supported as it directly utilizes JavaMailSender.
+	* Currently, a new email feature (EmailManager.java) is in production.
+    * 
+    * TODO: Once the new emailing feature is fully implemented, refactor and update this method to make it compatible with the latest email handling in EmailManager.java.
+    */
+	@Deprecated
 	public ActionForward sendPatientLetterAsEmail(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
+		throw new UnsupportedOperationException("This method is no longer supported.");
+		// LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 
-		String demographicNo = request.getParameter("demographic_no");
-		String error = "";
-		boolean success=true;
-		JSONObject json = new JSONObject();
+		// String demographicNo = request.getParameter("demographic_no");
+		// String error = "";
+		// boolean success=true;
+		// JSONObject json = new JSONObject();
 		
-		final Demographic d = demographicDao.getDemographic(demographicNo);
+		// final Demographic d = demographicDao.getDemographic(demographicNo);
         
-		if(d == null) {
-			error = "Patient not found.";
-			success=false;
-		}
-		if(d.getEmail() == null || d.getEmail().length() == 0 || d.getEmail().indexOf("@") == -1) {
-			error = "No valid email address found for patient.";
-			success=false;
-		}
+		// if(d == null) {
+		// 	error = "Patient not found.";
+		// 	success=false;
+		// }
+		// if(d.getEmail() == null || d.getEmail().length() == 0 || d.getEmail().indexOf("@") == -1) {
+		// 	error = "No valid email address found for patient.";
+		// 	success=false;
+		// }
 		
-		if(success) {
+		// if(success) {
 		
-			try {
-				String documentDir = oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR","");
-				File f = new File(documentDir,"orn_patient_letter.txt");
-		        String template=IOUtils.toString(new FileInputStream(f));
+		// 	try {
+		// 		String documentDir = oscar.OscarProperties.getInstance().getProperty("DOCUMENT_DIR","");
+		// 		File f = new File(documentDir,"orn_patient_letter.txt");
+		//         String template=IOUtils.toString(new FileInputStream(f));
 		        
-		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		//         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
-		        VelocityContext velocityContext=VelocityUtils.createVelocityContextWithTools();            
-		        velocityContext.put("patient", d);
-		        velocityContext.put("currentDate", sdf.format(new Date()));
-		        Provider mrp = null;
-		        if(d.getProviderNo() != null && d.getProviderNo().length()>0) {
-		        	mrp = providerDao.getProvider(d.getProviderNo());	
-		        } else {
-		        	mrp = providerDao.getProvider(OscarProperties.getInstance().getProperty("orn.default_mrp",""));
-		        }
-		        velocityContext.put("mrp", mrp);
+		//         VelocityContext velocityContext=VelocityUtils.createVelocityContextWithTools();            
+		//         velocityContext.put("patient", d);
+		//         velocityContext.put("currentDate", sdf.format(new Date()));
+		//         Provider mrp = null;
+		//         if(d.getProviderNo() != null && d.getProviderNo().length()>0) {
+		//         	mrp = providerDao.getProvider(d.getProviderNo());	
+		//         } else {
+		//         	mrp = providerDao.getProvider(OscarProperties.getInstance().getProperty("orn.default_mrp",""));
+		//         }
+		//         velocityContext.put("mrp", mrp);
 		       
-		        final String mrp1 = mrp.getFullName();
+		//         final String mrp1 = mrp.getFullName();
 		        
-		       final String letter=VelocityUtils.velocityEvaluate(velocityContext, template);
+		//        final String letter=VelocityUtils.velocityEvaluate(velocityContext, template);
 		       
-		       JavaMailSender mailSender = (JavaMailSender) SpringUtils.getBean("mailSender");
+		//        JavaMailSender mailSender = (JavaMailSender) SpringUtils.getBean("mailSender");
 		       
-		       MimeMessagePreparator preparator = new MimeMessagePreparator() {
-		           public void prepare(MimeMessage mimeMessage) throws Exception {
-		              MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-		              message.setTo(d.getEmail());
-		              message.setSubject(OscarProperties.getInstance().getProperty("orn.email.subject", "Important Message from " +  mrp1));
-		              message.setFrom(OscarProperties.getInstance().getProperty("orn.email.from","no-reply@oscarmcmaster.org"));         
-		              message.setText(letter, true);
-		           }
-		        };
-		        mailSender.send(preparator);
+		//        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+		//            public void prepare(MimeMessage mimeMessage) throws Exception {
+		//               MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+		//               message.setTo(d.getEmail());
+		//               message.setSubject(OscarProperties.getInstance().getProperty("orn.email.subject", "Important Message from " +  mrp1));
+		//               message.setFrom(OscarProperties.getInstance().getProperty("orn.email.from","no-reply@oscarmcmaster.org"));         
+		//               message.setText(letter, true);
+		//            }
+		//         };
+		//         mailSender.send(preparator);
 		       
-			}catch(IOException e) {
-				MiscUtils.getLogger().error("Error",e);
-				success=false;
-				error=e.getMessage();
-			} finally {
-				OscarAuditLogger.getInstance().log(loggedInInfo, "create", "CkdPatientLetter", Integer.valueOf(demographicNo), "");
-				OscarAuditLogger.getInstance().log(loggedInInfo, "email", "CkdPatientLetter", Integer.valueOf(demographicNo), "");
-			}
-		}
-		json.put("success", String.valueOf(success));
-		json.put("error", error);
-		try {
-			json.write(response.getWriter());
-		}catch(IOException e) {
-			MiscUtils.getLogger().error("error",e);
-		}
-		return null;
+		// 	}catch(IOException e) {
+		// 		MiscUtils.getLogger().error("Error",e);
+		// 		success=false;
+		// 		error=e.getMessage();
+		// 	} finally {
+		// 		OscarAuditLogger.getInstance().log(loggedInInfo, "create", "CkdPatientLetter", Integer.valueOf(demographicNo), "");
+		// 		OscarAuditLogger.getInstance().log(loggedInInfo, "email", "CkdPatientLetter", Integer.valueOf(demographicNo), "");
+		// 	}
+		// }
+		// json.put("success", String.valueOf(success));
+		// json.put("error", error);
+		// try {
+		// 	json.write(response.getWriter());
+		// }catch(IOException e) {
+		// 	MiscUtils.getLogger().error("error",e);
+		// }
+		// return null;
 	}
 	
 	public ActionForward submitPreimplementationReport(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)  {

@@ -58,6 +58,13 @@ import oscar.service.MessageMailer;
  * @author mweston4
  */
 
+/*
+ * New emailing feature (EmailManager) is in production, utilizing JavaMailSender.
+ * This method will be updated to use EmailManager for sending emails in the future.
+ * 
+ * TODO: Update the deprecated code to use the EmailManager once the new emailing feature is fully implemented.
+ */
+@Deprecated
 public class AppointmentMailer implements MessageMailer{
     
     private static final Logger logger=MiscUtils.getLogger();
@@ -239,43 +246,44 @@ public class AppointmentMailer implements MessageMailer{
     
     @Override
     public void send() throws Exception {
-        try {
-            boolean doSend = false;
+        throw new UnsupportedOperationException("This method is no longer supported.");
+        // try {
+        //     boolean doSend = false;
             
-            if ((mailSender != null) && (this.message != null)) {
+        //     if ((mailSender != null) && (this.message != null)) {
                    
-                if ((this.message.getText() != null) && (this.message.getFrom() != null) && (this.message.getSubject() != null)) {
-                    String[] toAddrs = this.message.getTo();
-                    if (toAddrs.length > 0) {
-                        boolean toValid = true;
-                        for (String addr : toAddrs) {
-                            if (addr.isEmpty()) {
-                                toValid = false;
-                            }
-                        }
-                        if (toValid) {
-                            doSend=true;
-                        }
-                    }        
-                }
-            }
+        //         if ((this.message.getText() != null) && (this.message.getFrom() != null) && (this.message.getSubject() != null)) {
+        //             String[] toAddrs = this.message.getTo();
+        //             if (toAddrs.length > 0) {
+        //                 boolean toValid = true;
+        //                 for (String addr : toAddrs) {
+        //                     if (addr.isEmpty()) {
+        //                         toValid = false;
+        //                     }
+        //                 }
+        //                 if (toValid) {
+        //                     doSend=true;
+        //                 }
+        //             }        
+        //         }
+        //     }
             
-            if (doSend) {
-                mailSender.send(this.message);
+        //     if (doSend) {
+        //         mailSender.send(this.message);
                 
-                //Update appt history accordingly      
-                Appointment appt = dao.find(this.apptNo);
-                if(appt != null) {
-                	appt.setRemarks(appt.getRemarks() + "Emailed:" + DateUtils.getCurrentDateOnlyStr("-") +"\n");
-                	dao.merge(appt);
-                }
-            }
-            else {
-                logger.error("MailSender is not instantiated or MailMessage is not prepared");
-            }
-        }
-        catch(Exception e) {
-            logger.error("An error occurred", e);
-        }
+        //         //Update appt history accordingly      
+        //         Appointment appt = dao.find(this.apptNo);
+        //         if(appt != null) {
+        //         	appt.setRemarks(appt.getRemarks() + "Emailed:" + DateUtils.getCurrentDateOnlyStr("-") +"\n");
+        //         	dao.merge(appt);
+        //         }
+        //     }
+        //     else {
+        //         logger.error("MailSender is not instantiated or MailMessage is not prepared");
+        //     }
+        // }
+        // catch(Exception e) {
+        //     logger.error("An error occurred", e);
+        // }
     }
 }

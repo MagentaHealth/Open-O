@@ -216,9 +216,12 @@
                 }
 
                 function submitForm(methodName) {
-                    if (methodName=="email"){
-                        document.invoiceForm.method.value="sendListEmail";
-                    } else if (methodName=="print") {
+                    // The sendListEmail() method in BillingInvoiceAction.java is not supported. For more details, please refer to the sendListEmail() method.
+                    // if (methodName=="email"){
+                    //     document.invoiceForm.method.value="sendListEmail";
+                    // } else 
+                    
+                    if (methodName=="print") {
                         document.invoiceForm.method.value="getListPrintPDF";
                     }
                     document.invoiceForm.submit();
@@ -939,9 +942,9 @@
                                     <a href="#" onClick="submitForm('print')">
                                         <bean:message key="billing.billingStatus.print"/>
                                     </a>
-                                    <a href="#" onClick="submitForm('email')">
+                                    <%-- <a href="#" onClick="submitForm('email')">
                                         <bean:message key="billing.billingStatus.email"/>
-                                    </a>
+                                    </a> --%>
                                 </td>
                             </tr>
                     </table><!-- inner -->

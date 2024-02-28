@@ -260,6 +260,10 @@
            <property name="taskExecutor" ref="taskExecutor" />
         </bean>
 
+		<!--
+			TODO: This mailing configuration will not be needed anymore as the new email feature (EmailManager)
+			will store and fetch configurations directly from the database.
+		-->
         <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
             <property name="host" value="${email.host}"/>
             <property name="port" value="${email.port}" />

@@ -224,9 +224,12 @@ boolean isMulitSites = oscarProp.getBooleanProperty("multisites", "on");
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>
 <script type="text/javascript">
     function submitForm(methodName) {
-        if (methodName=="email"){
-            document.forms[0].method.value="sendEmail";
-        } else if (methodName=="print") {            
+        // The sendEmail() method in BillingInvoiceAction.java is not supported. For more details, please refer to the sendEmail() method.
+        // if (methodName=="email"){
+        //     document.forms[0].method.value="sendEmail";
+        // } else 
+
+        if (methodName=="print") {            
             document.forms[0].method.value="getPrintPDF";
         }
         document.forms[0].submit();
@@ -247,7 +250,7 @@ boolean isMulitSites = oscarProp.getBooleanProperty("multisites", "on");
             <div class="titleBar">
                 <input type="button" name="printInvoice" value="<bean:message key="billing.billing3rdInv.printPDF"/>" onClick="submitForm('print')"/>
                 <input type="button" name="printHtml" value="Print" onclick="window.print();">
-                <input type="button" name="emailInvoice" value="<bean:message key="billing.billing3rdInv.email"/>" onClick="submitForm('email')"/>
+                <%-- <input type="button" name="emailInvoice" value="<bean:message key="billing.billing3rdInv.email"/>" onClick="submitForm('email')"/> --%>
             </div>
         </div>
     </form>

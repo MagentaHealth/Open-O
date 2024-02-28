@@ -46,9 +46,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.safety.Safelist;
 import org.oscarehr.PMmodule.model.ProgramProvider;
 import org.oscarehr.PMmodule.service.AdmissionManager;
 import org.oscarehr.PMmodule.service.ProgramManager;
@@ -345,7 +342,6 @@ public class NotesService extends AbstractServiceImpl {
 		String noteTxt = note.getNote();
 		noteTxt = org.apache.commons.lang.StringUtils.trimToNull(noteTxt);
 		if (noteTxt == null || noteTxt.equals("")) return null;
-		noteTxt = extractHtmlWithLineBreaks(noteTxt);
 
 		caseMangementNote.setNote(noteTxt);
 		
@@ -1708,17 +1704,6 @@ public class NotesService extends AbstractServiceImpl {
 		 
 		
 		return new GenericRESTResponse();
-	}
-
-	private String extractHtmlWithLineBreaks(String strNote) {
-		Document jsoupDoc = Jsoup.parse(strNote);
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
-		outputSettings.prettyPrint(false);
-		jsoupDoc.outputSettings(outputSettings);
-		jsoupDoc.select("br").before("\\n");
-		jsoupDoc.select("p").before("\\n");
-		String str = jsoupDoc.html().replaceAll("\\\\n", "\n");
-		return Jsoup.clean(str, "", Safelist.none(), outputSettings);
 	}
 
 	

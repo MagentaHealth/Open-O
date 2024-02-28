@@ -275,10 +275,10 @@ function grabEnter(id, event) {
     return true;
 }
 function setupNotes(){
-    if(!NiftyCheck())
-        return;
+    <%--if(!NiftyCheck())--%>
+    <%--    return;--%>
 
-    Rounded("div.noteRounded","all","transparent","#CCCCCC","big border #000000");
+    <%--Rounded("div.noteRounded","all","transparent","#CCCCCC","big border #000000");--%>
 
     //need to set focus after rounded is called
     adjustCaseNote();
@@ -287,12 +287,12 @@ function setupNotes(){
     $(caseNote).focus();
 }
 
-function setupOneNote(note) {
-	if (!NiftyCheck())
-		return;
+<%--function setupOneNote(note) {--%>
+<%--	if (!NiftyCheck())--%>
+<%--		return;--%>
 
-	Rounded("div#nc" + note, "all", "transparent", "#CCCCCC", "big border #000000");
-}
+<%--	Rounded("div#nc" + note, "all", "transparent", "#CCCCCC", "big border #000000");--%>
+<%--}--%>
 
 var minDelta =  0.93;
 var minMain;

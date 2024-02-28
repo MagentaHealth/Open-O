@@ -61,7 +61,6 @@ import org.oscarehr.common.model.TicklerComment;
 import org.oscarehr.common.model.TicklerLink;
 import org.oscarehr.common.model.TicklerTextSuggest;
 import org.oscarehr.common.model.TicklerUpdate;
-import org.oscarehr.util.EmailUtilsOld;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
@@ -474,44 +473,52 @@ public class TicklerManager {
 		}
 	}
 	
-	   public void sendNotification(LoggedInInfo loggedInInfo, Tickler t) throws EmailException, IOException {
-	    	checkPrivilege(loggedInInfo, PRIVILEGE_READ);
-	    	
-	        if (t == null) {
-	            throw new IllegalArgumentException("Tickler object required to send tickler email");
-	        }
-	        
-	        boolean ticklerEditEnabled = Boolean.parseBoolean(OscarProperties.getInstance().getProperty("tickler_edit_enabled"));        
-	        boolean ticklerEmailEnabled = Boolean.parseBoolean(OscarProperties.getInstance().getProperty("tickler_email_enabled")); 
-	        
-	        if (ticklerEditEnabled & ticklerEmailEnabled) {
-	            String emailTo = t.getDemographic().getEmail();
-	            if (EmailUtilsOld.isValidEmailAddress(emailTo)) { 
+	/*
+    * This method is deprecated because EmailUtilOld.java has been removed.
+    * Currently, a new email feature (EmailManager.java) is in production.
+    * 
+    * TODO: Once the new emailing feature is fully implemented, refactor and update this method to make it compatible with the latest email handling in EmailManager.java.
+    */
+	@Deprecated
+	public void sendNotification(LoggedInInfo loggedInInfo, Tickler t) throws EmailException, IOException {
+		throw new UnsupportedOperationException("This method is no longer supported.");
+		// checkPrivilege(loggedInInfo, PRIVILEGE_READ);
+		
+		// if (t == null) {
+		// 	throw new IllegalArgumentException("Tickler object required to send tickler email");
+		// }
+		
+		// boolean ticklerEditEnabled = Boolean.parseBoolean(OscarProperties.getInstance().getProperty("tickler_edit_enabled"));        
+		// boolean ticklerEmailEnabled = Boolean.parseBoolean(OscarProperties.getInstance().getProperty("tickler_email_enabled")); 
+		
+		// if (ticklerEditEnabled & ticklerEmailEnabled) {
+		// 	String emailTo = t.getDemographic().getEmail();
+		// 	if (EmailUtilsOld.isValidEmailAddress(emailTo)) { 
 
-	                InputStream is = TicklerManager.class.getResourceAsStream(TICKLER_EMAIL_TEMPLATE_FILE);
-	                String emailTemplate=IOUtils.toString(is);
-	                String emailSubject=OscarProperties.getInstance().getProperty("tickler_email_subject");
-	                String emailFrom=OscarProperties.getInstance().getProperty("tickler_email_from_address");
+		// 		InputStream is = TicklerManager.class.getResourceAsStream(TICKLER_EMAIL_TEMPLATE_FILE);
+		// 		String emailTemplate=IOUtils.toString(is);
+		// 		String emailSubject=OscarProperties.getInstance().getProperty("tickler_email_subject");
+		// 		String emailFrom=OscarProperties.getInstance().getProperty("tickler_email_from_address");
 
-	                ClinicDAO clinicDao = (ClinicDAO)SpringUtils.getBean("clinicDAO");
-	                Clinic c = clinicDao.getClinic();
+		// 		ClinicDAO clinicDao = (ClinicDAO)SpringUtils.getBean("clinicDAO");
+		// 		Clinic c = clinicDao.getClinic();
 
-	                VelocityContext velocityContext=VelocityUtils.createVelocityContextWithTools();            
-	                velocityContext.put("tickler", t);
-	                velocityContext.put("clinic", c);
+		// 		VelocityContext velocityContext=VelocityUtils.createVelocityContextWithTools();            
+		// 		velocityContext.put("tickler", t);
+		// 		velocityContext.put("clinic", c);
 
-	                String mergedSubject=VelocityUtils.velocityEvaluate(velocityContext, emailSubject);
-	                String mergedBody=VelocityUtils.velocityEvaluate(velocityContext, emailTemplate);
+		// 		String mergedSubject=VelocityUtils.velocityEvaluate(velocityContext, emailSubject);
+		// 		String mergedBody=VelocityUtils.velocityEvaluate(velocityContext, emailTemplate);
 
-	                EmailUtilsOld.sendEmail(emailTo, null, emailFrom, null, mergedSubject, mergedBody, null);
-	                
-	                //--- log action ---
-	    			LogAction.addLogSynchronous(loggedInInfo, "TicklerManager.sendNotification", "ticklerId="+t.getId());
-	            }else {
-	                throw new EmailException("Email Address is invalid");
-	            }
-	        }
-	    }
+		// 		EmailUtilsOld.sendEmail(emailTo, null, emailFrom, null, mergedSubject, mergedBody, null);
+				
+		// 		//--- log action ---
+		// 		LogAction.addLogSynchronous(loggedInInfo, "TicklerManager.sendNotification", "ticklerId="+t.getId());
+		// 	}else {
+		// 		throw new EmailException("Email Address is invalid");
+		// 	}
+		// }
+	}
 	
 	public void completeTickler(LoggedInInfo loggedInInfo, Integer tickler_id, String provider) {
     	checkPrivilege(loggedInInfo, PRIVILEGE_UPDATE);
