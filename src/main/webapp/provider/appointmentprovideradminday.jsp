@@ -2497,7 +2497,7 @@
     var newUnclaimedLabLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm&unclaimed=1');return false;"
 
     document.getElementById("inboxLink").addEventListener("mouseup", function(event) {
-        if(event.ctrlKey) {
+        if(event.altKey) {
             document.getElementById("inboxLink").setAttribute("onclick", newInboxLinkClickEvent);
         } else {
             document.getElementById("inboxLink").setAttribute("onclick", originalInboxLinkClickEvent);
@@ -2505,7 +2505,7 @@
     });
 
     document.getElementById("unclaimedLabLink").addEventListener("mouseup", function(event) {
-        if(event.ctrlKey) {
+        if(event.altKey) {
             document.getElementById("unclaimedLabLink").setAttribute("onclick", newUnclaimedLabLinkClickEvent);
         } else {
             document.getElementById("unclaimedLabLink").setAttribute("onclick", originalUnclaimedLabLinkClickEvent);
