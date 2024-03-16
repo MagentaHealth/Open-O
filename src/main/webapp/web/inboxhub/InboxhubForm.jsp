@@ -35,6 +35,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     InboxhubQuery query = (InboxhubQuery) request.getAttribute("query");
 %>
 
+<!-- calendar -->
+<link rel="stylesheet" type="text/css" media="all" href="../../share/calendar/calendar.css" title="win2k-cold-1" />
+<script type="text/javascript" src="../../share/calendar/calendar.js"></script>
+<script type="text/javascript" src="../../share/calendar/lang/<bean:message key="global.javascript.calendar"/>"></script>
+<script type="text/javascript" src="../../share/calendar/calendar-setup.js"></script>
+
 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
       id="myForm">
     <div>
@@ -128,26 +134,64 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                          data-bs-parent="#dropdown">
                         <div class="accordion-body d-grid">
                             <div class="accordion-body d-grid">
-                                <label class="text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgSearchPhysician"/></label>
-                                <input type="hidden" name="searchProviderNo" id="findProvider"
-                                       value="<%=query.getSearchProviderNo()%>"/>
-                                <input type="text" id="autocompleteProvider" name="searchProviderName"
-                                       onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
-                                <label class="text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgStartDate"/></label>
-                                <input type="text" name="startDate" autocomplete="off"
-                                       value="<%=query.getStartDate()%>"><br>
-                                <label class="text-uppercase mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgEndDate"/> (yyyy-mm-dd)</label>
-                                <input type="text" name="endDate" autocomplete="off"
-                                       value="<%=query.getEndDate()%>"><br>
-                                <label class="mb-2 btn-sm" for="inputFirstName"><bean:message key="oscarMDS.search.formPatientFirstName"/></label>
-                                <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
-                                       value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
-                                <label class="mb-2 btn-sm" for="inputLastName"><bean:message key="oscarMDS.search.formPatientLastName"/></label>
-                                <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
-                                       value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
-                                <label class="mb-2 btn-sm" for="inputHIN"><bean:message key="oscarMDS.search.formPatientHealthNumber"/></label>
-                                <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
-                                       value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
+                                 <!-- Any Provider -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" />
+                                    <label class="form-check-label" for="anyProvider">Any Provider</label>
+                                </div>
+                                <!-- No Provier -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" />
+                                    <label class="form-check-label" for="noProvider">No Provier</label>
+                                 </div>
+                                <!-- Specific Provider -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked/>
+                                    <label class="form-check-label" for="specificProvider">Specific Provider</label>
+                                    <label class="mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgSearchPhysician"/></label>
+                                    <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
+                                    <input type="text" id="autocompleteProvider" name="searchProviderName"
+                                    onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
+                                </div>
+                                <hr>
+                                <!-- All Patients (including unmatched) -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option1" id="allPatients" checked/>
+                                    <label class="form-check-label" for="allPatients">All Patients (including unmatched)</label>
+                                </div>
+                                <!-- Unmatched to Existing Patient -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option2" id="unmatchedPatients" />
+                                    <label class="form-check-label" for="unmatchedPatients">Unmatched to Existing Patient</label>
+                                    </div>
+                                <!-- Specific Patient(s) -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option3" id="specificPatients"/>
+                                    <label class="form-check-label" for="specificPatients">Specific Patient(s)</label>
+                                    <label class="mb-2 btn-sm" for="inputFirstName"><bean:message key="oscarMDS.search.formPatientFirstName"/></label>
+                                    <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
+                                           value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
+                                    <label class="mb-2 btn-sm" for="inputLastName"><bean:message key="oscarMDS.search.formPatientLastName"/></label>
+                                    <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
+                                           value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
+                                    <label class="mb-2 btn-sm" for="inputHIN"><bean:message key="oscarMDS.search.formPatientHealthNumber"/></label>
+                                    <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
+                                           value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
+                                </div>
+                                <hr>
+                                <label class="form-check-label">Date Range:</label>
+                                <div>
+                                    <label class="mb-2 btn-sm">Start:</label>
+                                    <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
+                                    <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
+                                    <img src="../../images/close.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
+                                </div>
+                                <div>
+                                    <label class="mb-2 btn-sm">End:</label>
+                                    <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
+                                    <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
+                                    <img src="../../images/close.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -156,3 +200,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </div>
     </div>
 </form>
+<script>
+    Calendar.setup({ inputField : "startDate", ifFormat : "%d/%m/%Y", showsTime :false, button : "startDate_cal", singleClick : true, step : 1 });
+    Calendar.setup({ inputField : "endDate", ifFormat : "%d/%m/%Y", showsTime :false, button : "endDate_cal", singleClick : true, step : 1 });
+
+    function resetDateUsingID(id) {
+        const inputField = document.getElementById(id);
+        if( inputField.value.length > 0 ) {
+            inputField.value = "";
+        }
+}
+</script>
