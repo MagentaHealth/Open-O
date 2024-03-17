@@ -122,7 +122,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                        checked <% } %>>
                 <label class="btn btn-outline-primary btn-sm" for="physicianClear">Clear</label>
             </div>
-            <div class="accordion " id="dropdown">
+            <div class="accordion" id="dropdown">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button " type="button" data-bs-toggle="collapse"
@@ -132,23 +132,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                          data-bs-parent="#dropdown">
-                        <div class="accordion-body d-grid">
-                            <div class="accordion-body d-grid">
+                        <div class="accordion-body d-grid btn-sm">
+                            <div class="accordion-body d-grid btn-sm">
                                  <!-- Any Provider -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" />
-                                    <label class="form-check-label" for="anyProvider">Any Provider</label>
+                                    <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
                                 </div>
                                 <!-- No Provier -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" />
-                                    <label class="form-check-label" for="noProvider">No Provier</label>
+                                    <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formAllProvider"/></label>
                                  </div>
                                 <!-- Specific Provider -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked/>
-                                    <label class="form-check-label" for="specificProvider">Specific Provider</label>
-                                    <label class="mb-2 btn-sm"><bean:message key="inbox.inboxmanager.msgSearchPhysician"/></label>
+                                    <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
+                                    <label class="mb-2 btn-sm">Provider:</label>
                                     <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
                                     <input type="text" id="autocompleteProvider" name="searchProviderName"
                                     onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
@@ -157,24 +157,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <!-- All Patients (including unmatched) -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="PatientsRadios" value="option1" id="allPatients" checked/>
-                                    <label class="form-check-label" for="allPatients">All Patients (including unmatched)</label>
+                                    <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
                                 </div>
                                 <!-- Unmatched to Existing Patient -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="PatientsRadios" value="option2" id="unmatchedPatients" />
-                                    <label class="form-check-label" for="unmatchedPatients">Unmatched to Existing Patient</label>
-                                    </div>
+                                    <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
+                                </div>
                                 <!-- Specific Patient(s) -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="PatientsRadios" value="option3" id="specificPatients"/>
-                                    <label class="form-check-label" for="specificPatients">Specific Patient(s)</label>
-                                    <label class="mb-2 btn-sm" for="inputFirstName"><bean:message key="oscarMDS.search.formPatientFirstName"/></label>
+                                    <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label>
+                                    <label class="mb-2 btn-sm" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
                                     <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
                                            value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
-                                    <label class="mb-2 btn-sm" for="inputLastName"><bean:message key="oscarMDS.search.formPatientLastName"/></label>
+                                    <label class="mb-2 btn-sm" for="inputLastName"><bean:message key="admin.provider.formLastName"/></label>
                                     <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
                                            value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
-                                    <label class="mb-2 btn-sm" for="inputHIN"><bean:message key="oscarMDS.search.formPatientHealthNumber"/></label>
+                                    <label class="mb-2 btn-sm" for="inputHIN"><bean:message key="oscarMDS.index.msgHealthNumber"/></label>
                                     <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
                                            value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
                                 </div>
