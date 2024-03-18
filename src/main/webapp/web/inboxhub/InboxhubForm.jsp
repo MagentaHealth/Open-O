@@ -192,6 +192,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                     <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
                                     <img src="../../images/close.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
                                 </div>
+                                <center><input type="submit" class="btn btn-primary" value=" <bean:message key="oscarMDS.search.btnSearch"/> "></center>
                             </div>
                         </div>
                     </div>
