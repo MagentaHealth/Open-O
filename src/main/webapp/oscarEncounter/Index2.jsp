@@ -950,13 +950,13 @@ function navBarLoader() {
      *if not, set max lines to 0
      */
     if( $("rightNavBar") != undefined ) {
-        $("rightNavBar").style.height = $("notCPP").getHeight();
+        // $("rightNavBar").style.height = $("notCPP").getHeight();
         this.maxRightNumLines = Math.floor($("rightNavBar").getHeight() / 14);
     }
     else
         this.rightNumLines = 0;
 
-    $("leftNavbar").style.height = "660px";
+    // $("leftNavbar").style.height = "660px";
     this.maxLeftNumLines = Math.floor($("leftNavbar").getHeight() / 14);
     this.arrLeftDivs = new Array();
     this.arrRightDivs = new Array();

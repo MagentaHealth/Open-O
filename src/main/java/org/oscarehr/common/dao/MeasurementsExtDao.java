@@ -23,6 +23,7 @@
  */
 package org.oscarehr.common.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -46,6 +47,17 @@ public class MeasurementsExtDao extends AbstractDao<MeasurementsExt>{
 		List<MeasurementsExt> rs = q.getResultList();
 
 		return rs;
+	}
+
+	public HashMap<String, MeasurementsExt> getMeasurementsExtMapByMeasurementId(Integer measurementId) {
+		HashMap<String, MeasurementsExt> measurementsExtHashMap = new HashMap<String, MeasurementsExt>();
+		List<MeasurementsExt> rs = getMeasurementsExtByMeasurementId(measurementId);
+		
+		for (MeasurementsExt measurementsExt : rs) {
+			measurementsExtHashMap.put(measurementsExt.getKeyVal(), measurementsExt);
+		}
+
+		return measurementsExtHashMap;
 	}
 
 	public List<MeasurementsExt> getMeasurementsExtListByMeasurementIdList(List<Integer> measurementIdList) {
@@ -93,6 +105,49 @@ public class MeasurementsExtDao extends AbstractDao<MeasurementsExt>{
 		List<MeasurementsExt> rs = q.getResultList();
 		
 		return rs;
+	}
+
+	public Integer getMeasurementIdByLabNoAndTestName(String labNo, String testName) {
+		//TODO: consider replacing this with a simpler query.   This approach was taken because a self join such as the following was resulting in hibernate errors and in the interests in time
+		//a procedural approach was taken
+		/*
+		 * SELECT DISTINCT a.measurementId
+		 * FROM MeasurementsExt a
+		 * JOIN MeasurementsExt b ON a.measurementId = b.measurementId 
+		 * WHERE a.keyval = 'lab_no' and a.val = ?1
+		 * AND b.keyval = 'name' and b.val = ?2;
+		 */
+
+		String queryStr = "SELECT distinct m.measurementId FROM MeasurementsExt m " + "WHERE m.keyVal = 'lab_no' and m.val = ?1";
+					
+		Query q = entityManager.createQuery(queryStr);
+		q.setParameter(1, labNo);
+
+		@SuppressWarnings("unchecked")
+		List<Integer> rs = q.getResultList();
+		
+		if (!rs.isEmpty()) { 
+			String mIds = "";	
+			for (int i = 0;i < rs.size(); i++){
+				mIds += rs.get(i);
+				if (i <= rs.size()-2){
+					mIds += ",";
+				}
+			}
+			queryStr = "SELECT distinct m.measurementId FROM MeasurementsExt m " + "WHERE m.measurementId in (" + mIds + ") and m.keyVal = 'name' and m.val = ?1";
+
+			q = entityManager.createQuery(queryStr);
+			q.setParameter(1, testName);
+
+			@SuppressWarnings("unchecked")
+			List<Integer> rs2 = q.getResultList();
+
+			if (!rs2.isEmpty()) { 
+				return rs2.get(0);
+			}
+			return null;
+		}
+		return null;		
 	}
 
 	/**

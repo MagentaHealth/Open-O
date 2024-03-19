@@ -127,6 +127,7 @@ String endDate = (String) request.getAttribute("endDate");
 </head>
 
 <body vlink="#0000FF" >
+<jsp:include page="/images/spinner.jsp" />
 <div id="inbox_wrapper">
     <form name="reassignForm" method="post" action="ReportReassign.do" id="lab_form">
         <table>
@@ -590,8 +591,8 @@ String endDate = (String) request.getAttribute("endDate");
 		    	break;
 		    }
 	
-			if (oldestLab != null) {
-				query += "&newestDate=" + encodeURIComponent(oldestLab);
+			if (oldestLab) {
+				query += "&newestDate=" + oldestLab;
 			}
 			
 			return query;

@@ -57,6 +57,7 @@
     String encTimeMandatoryValue = OscarProperties.getInstance().getProperty("ENCOUNTER_TIME_MANDATORY","false");
 
 %>
+<!DOCTYPE html>
 <html:html locale="true">
 <head>
 	<title>
@@ -84,7 +85,6 @@
 <%-- for popup menu of forms --%>
 <script src="<c:out value="${ctx}"/>/share/javascript/popupmenu.js" type="text/javascript"></script>
 <script src="<c:out value="${ctx}"/>/share/javascript/menutility.js" type="text/javascript"></script>
-
 
 <!-- calendar stylesheet -->
 <link rel="stylesheet" type="text/css" media="all" href="<c:out value="${ctx}"/>/share/calendar/calendar.css" title="win2k-cold-1">
@@ -123,6 +123,7 @@ var Colour = {
 	messages: '<%=Colour.getInstance().messages%>',
 	measurements: '<%=Colour.getInstance().measurements%>',
 	consultation: '<%=Colour.getInstance().consultation%>',
+	hrmDocuments: '<%=Colour.getInstance().hrmDocuments%>',
 	allergy: '<%=Colour.getInstance().allergy%>',
 	rx: '<%=Colour.getInstance().rx%>',
 	omed: '<%=Colour.getInstance().omed%>',
@@ -131,7 +132,8 @@ var Colour = {
 	unresolvedIssues: '<%=Colour.getInstance().unresolvedIssues%>',
 	resolvedIssues: '<%=Colour.getInstance().resolvedIssues%>',
 	episode: '<%=Colour.getInstance().episode%>',
-	pregancies: '<%=Colour.getInstance().episode%>'
+	pregancies: '<%=Colour.getInstance().episode%>',
+	contacts: '<%=Colour.getInstance().contacts%>'
 };
 </script>
 
@@ -159,7 +161,7 @@ LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 
 <script type="text/javascript">
 
-    jQuery(document).ready(function() {
+    jQuery(document).on("ready", function() {
            <%
   if( loggedInInfo.getLoggedInProvider().getProviderType().equals("resident"))  {
 %>    
@@ -354,35 +356,19 @@ LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 
 <!-- set size of window if customized in preferences -->
 <%
-	UserPropertyDAO uPropDao = (UserPropertyDAO)SpringUtils.getBean("UserPropertyDAO");
-	
+	UserPropertyDAO uPropDao = SpringUtils.getBean(UserPropertyDAO.class);
 	String providerNo=loggedInInfo.getLoggedInProviderNo();
 	UserProperty widthP = uPropDao.getProp(providerNo, "encounterWindowWidth");
 	UserProperty heightP = uPropDao.getProp(providerNo, "encounterWindowHeight");
 	UserProperty maximizeP = uPropDao.getProp(providerNo, "encounterWindowMaximize");
 
-	if(maximizeP != null && maximizeP.getValue().equals("yes")) {
-		%><script> jQuery(document).ready(function(){window.resizeTo(screen.width,screen.height);});</script>
-<%
-	} else if(widthP != null && widthP.getValue().length()>0 && heightP != null && heightP.getValue().length()>0) {
+	if(maximizeP != null && maximizeP.getValue().equals("yes")) {%>
+		<script> jQuery(window).load(function(){window.resizeTo(screen.width,screen.height);});</script>
+	<% } else if(widthP != null && widthP.getValue().length()>0 && heightP != null && heightP.getValue().length()>0) {
 		String width = widthP.getValue();
-		String height = heightP.getValue();
-		%>
-<script> jQuery(document).ready(function(){
-    
-    window.resizeTo(<%=width%>,<%=height%>);
-
-        
-   }   
-);
-
-    		
-
-</script>
-<%
-	}
-%>
-<oscar:customInterface section="cme" />
+		String height = heightP.getValue();%>
+		<script> jQuery(window).load(function(){window.resizeTo(<%=width%>,<%=height%>)}) </script>;
+	<% } %>
 
 <html:base />
 <title><bean:message key="oscarEncounter.Index.title" /></title>
@@ -451,24 +437,18 @@ LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
         month[10] = "<bean:message key="share.CalendarPopUp.msgNov"/>";
         month[11] = "<bean:message key="share.CalendarPopUp.msgDec"/>";
 
-function init() {
-	//scrollDownInnerBar();
+jQuery(window).on("load", function() {
+
 	viewFullChart(false);
     showIssueNotes();
 
     var navBars = new navBarLoader();
     navBars.load();
 
-    monitorNavBars(null);
+    // monitorNavBars(null);
 
-    Element.observe(window, "resize", monitorNavBars);
-    
-    // if(!NiftyCheck()) {
-    //     return;
-    // }
-	//
-    // Rounded("div.showEdContent","all","transparent","#CCCCCC","big border #000000");
-    // Rounded("div.printOps","all","transparent","#CCCCCC","big border #000000");
+    // Element.observe(window, "resize", monitorNavBars);
+
     Calendar.setup({ inputField : "printStartDate", ifFormat : "%d-%b-%Y", showsTime :false, button : "printStartDate_cal", singleClick : true, step : 1 });
     Calendar.setup({ inputField : "printEndDate", ifFormat : "%d-%b-%Y", showsTime :false, button : "printEndDate_cal", singleClick : true, step : 1 });
 
@@ -483,12 +463,12 @@ function init() {
     <nested:notEmpty name="DateError">
         alert("<nested:write name="DateError"/>");
     </nested:notEmpty>
-}
+
+})
 
 function doscroll(){
-	x=document.body.scrollHeight;
-	x=x+99999
-	window.scrollTo(0,x);
+	let bodyScroll = document.body.scrollHeight + 99999;
+	window.scrollTo(0,bodyScroll);
 }
 	
 window.onbeforeunload = onClosing;
@@ -497,26 +477,13 @@ window.onbeforeunload = onClosing;
 </script>
 </head>
 <body id="body">
-<div id="newEncounterLayoutWrapper">
-	<%--
-	<caisi:isModuleLoad moduleName="eaaps.enabled">
-		<div id="eaaps" style="display: none;">
-			  <div id="basic-template">
-		      <a class="ui-notify-cross ui-notify-close" href="#">x</a>
-		      <h1>TITLE</h1>
-		      <p>text</p>
-	   </div>
+<div id="header" >
+	<tiles:insert attribute="header" />
+</div>
 
-			<!-- jsp : include page="/eaaps/status.jsp">< / jsp : include -->
-		</div>
-	</caisi:isModuleLoad>
-	--%>
-	 
-	<div id="header" class="row">
-		<tiles:insert attribute="header" />
-	</div>
+<%--<div id="newEncounterLayoutWrapper">--%>
 
-	<div id="navigation-layout" class="row">
+	<div id="navigation-layout" >
 		<div id="rightNavBar">
 			<tiles:insert attribute="rightNavigation" />
 		</div>
@@ -539,11 +506,12 @@ window.onbeforeunload = onClosing;
 			<input type="hidden" id="archived" name="archived" value="false">
 			<input type="hidden" id="annotation_attrib" name="annotation_attrib">
 			<h3 id="winTitle"></h3>
-			<textarea style="margin: 10px;" cols="50" rows="15" id="noteEditTxt"
-				name="value"></textarea>
+
+			<textarea  cols="50" rows="15" id="noteEditTxt"
+				name="value" class="boxsizingBorder"></textarea>
 			<br>
 
-			<table>
+			<table style="text-align: left; width:100%;">
 				<tr id="Itemproblemdescription">
 					<td><bean:message
 							key="oscarEncounter.problemdescription.title" />:</td>
@@ -634,9 +602,11 @@ window.onbeforeunload = onClosing;
 					</select></td>
 				</tr>
 			</table>
+			<div class="control-panel">
 			<input type="hidden" id="startTag" value='<bean:message key="oscarEncounter.Index.startTime"/>'>
 			<input type="hidden" id="endTag" value='<bean:message key="oscarEncounter.Index.endTime"/>'>
-			<br> <span style="float: right; margin-right: 10px;"> <input
+			<br> <span style="float: right; margin-right: 10px;">
+				<input
 				type="image"
 				src="<c:out value="${ctx}/oscarEncounter/graphics/copy.png"/>"
 				title='<bean:message key="oscarEncounter.Index.btnCopy"/>'
@@ -657,25 +627,31 @@ window.onbeforeunload = onClosing;
 				title='<bean:message key="global.btnExit"/>'
 				onclick="this.focus();$('channel').style.visibility ='visible';$('showEditNote').style.display='none';return false;">
 			</span>
+				<label for="position">
 			<bean:message key="oscarEncounter.Index.btnPosition" />
+				</label>
 			<select id="position" name="position"><option id="popt0"
 					value="0">1</option>
 			</select>
-			<div id="issueNoteInfo" style="clear: both; text-align: left;"></div>
+			</div>
+			<div id="issueNoteInfo"></div>
 			<div id="issueListCPP"
 				style="background-color: #FFFFFF; height: 200px; width: 350px; position: absolute; z-index: 1; display: none; overflow: auto;">
 				<div class="enTemplate_name_auto_complete"
 					id="issueAutocompleteListCPP"
-					style="position: relative; left: 0px; display: none;"></div>
+					style="position: relative; left: 0; display: none;"></div>
 			</div>
+			<div class="add-issues">
+			<label for="issueAutocompleteCPP">
 			<bean:message key="oscarEncounter.Index.assnIssue" />
+			</label>
 			&nbsp;<input tabindex="100" type="text" id="issueAutocompleteCPP"
 				name="issueSearch" style="z-index: 2;" size="25">&nbsp; <span
 				id="busy2" style="display: none"><img
 				style="position: absolute;"
 				src="<c:out value="${ctx}/oscarEncounter/graphics/busy.gif"/>"
 				alt="<bean:message key="oscarEncounter.Index.btnWorking"/>"></span>
-
+			</div>
 		</form>
 	</div>
 	<div id="printOps" class="printOps">
@@ -829,7 +805,7 @@ if (OscarProperties.getInstance().getBooleanProperty("note_program_ui_enabled", 
 %>
 		</form>
 	</div>
-</div>
+<%--</div>--%>
 <div id="encounterModal" ></div>
 <%
     String apptNo = request.getParameter("appointmentNo");

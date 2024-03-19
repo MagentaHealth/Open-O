@@ -24,18 +24,6 @@
 
 package org.oscarehr.managers;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-
-import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.Logger;
 import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
@@ -46,6 +34,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import oscar.OscarProperties;
 
+import javax.servlet.ServletContext;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 /**
  * the NioFileManager handles all file input and output of all OscarDocument files
  * by providing several convenience utilities.
@@ -54,7 +50,7 @@ import oscar.OscarProperties;
  * in every single page of OSCAR code.
  */
 @Service
-public final class NioFileManager {
+public final class NioFileManager implements Serializable {
 	
 	@Autowired
 	private ServletContext context;
@@ -67,6 +63,8 @@ public final class NioFileManager {
 	public static final String DOCUMENT_DIRECTORY = OscarProperties.getInstance().getProperty("DOCUMENT_DIR");
 	private static final String TEMP_PDF_DIRECTORY = "tempPDF";
 	private static final String DEFAULT_FILE_SUFFIX = "pdf";
+
+	private static final String DEFAULT_GENERIC_TEMP = "tempDirectory";
 	private static final String BASE_DOCUMENT_DIR = oscar.OscarProperties.getInstance().getProperty("BASE_DOCUMENT_DIR");
 	
 	public Path hasCacheVersion2(LoggedInInfo loggedInInfo, String filename, Integer pageNum) {
@@ -196,8 +194,14 @@ public final class NioFileManager {
 		return Files.write(file, os.toByteArray());
 	}
 	
-	public final Path saveTempFile(final String fileName, ByteArrayOutputStream os) throws IOException {
+	public Path saveTempFile(final String fileName, ByteArrayOutputStream os) throws IOException {
 		return saveTempFile(fileName, os, null);
+	}
+
+	public Path createTempFile(final String fileName, ByteArrayOutputStream os) throws IOException {
+		Path directory = Files.createTempDirectory(DEFAULT_GENERIC_TEMP + System.currentTimeMillis());
+		Path file = Files.createFile( Paths.get(directory.toString(), fileName) );
+		return Files.write(file, os.toByteArray());
 	}
 	
 	/**

@@ -23,7 +23,7 @@
 
 
 /************init global data methods*****************/
-var oldestLab = null;
+let oldestLab;
 
 function  updateDocStatusInQueue(docid){//change status of queue document link row to I=inactive
     console.log('in updateDocStatusInQueue, docid '+docid);
@@ -444,13 +444,13 @@ function FileSelectedRows(files, searchProviderNo, status) {
 //            }
 //        });
 //    }
-	var filelabs = { "flaggedLabs" : "{\"files\" : " + JSON.stringify(files) + "}" };
-	var url = ctx + "/oscarMDS/FileLabs.do";
+	let filelabs = { "flaggedLabs" : "{\"files\" : " + JSON.stringify(files) + "}" };
+	let url = ctx + "/oscarMDS/FileLabs.do";
     bulkInboxAction(url, filelabs);
 }
 
 function submitFile(searchProviderNo, status){
-	var files = [];
+	let files = [];
 	jQuery("input[name='flaggedLabs']:checkbox:checked").each(function(key, value){
 		files[key] = value.value;
 	})
@@ -458,7 +458,7 @@ function submitFile(searchProviderNo, status){
         alert("Select documents to be filed.");
         return;
     }
-
+	console.log("File lab from: oscarMDSIndex.js Status: " + status + " Provider: " + searchProviderNo + " Files: " + files);
 	FileSelectedRows(files, searchProviderNo, status);
 }
 
@@ -484,10 +484,10 @@ function bulkInboxAction(url, filelabs) {
         success: function (data) {
          if(data.success)
          {
-             var files = data.files;
-             var file;
-             var fileId;
-             for(var i = 0; i < files.length; i++)
+             let files = data.files;
+             let file;
+             let fileId;
+             for(let i = 0; i < files.length; i++)
              {
                  // remove the filed lab from the DOM
                  file = files[i];

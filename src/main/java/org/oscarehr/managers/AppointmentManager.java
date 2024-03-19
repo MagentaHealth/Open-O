@@ -23,27 +23,24 @@
  */
 package org.oscarehr.managers;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.oscarehr.common.dao.AppointmentArchiveDao;
 import org.oscarehr.common.dao.AppointmentStatusDao;
 import org.oscarehr.common.dao.LookupListDao;
 import org.oscarehr.common.dao.OscarAppointmentDao;
-import org.oscarehr.common.model.Appointment;
-import org.oscarehr.common.model.AppointmentArchive;
-import org.oscarehr.common.model.AppointmentStatus;
-import org.oscarehr.common.model.LookupList;
-import org.oscarehr.common.model.LookupListItem;
+import org.oscarehr.common.model.*;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import oscar.log.LogAction;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class AppointmentManager {
@@ -303,6 +300,26 @@ public class AppointmentManager {
 		}
 		
 		return results;
+	}
+
+	public String getNextAppointmentDate(Integer demographicNo) {
+		Date nextApptDate = null;
+		String appointmentString = "";
+
+		Appointment appointment = appointmentDao.findNextAppointment(demographicNo);
+		if(appointment != null) {
+			nextApptDate = appointment.getAppointmentDate();
+		}
+
+		if (nextApptDate != null) {
+			try {
+				Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+				appointmentString = formatter.format(nextApptDate);
+			} catch (Exception e) {
+				MiscUtils.getLogger().error("Could not parse appointment date " + nextApptDate, e);
+			}
+		}
+		return appointmentString;
 	}
 	
 }

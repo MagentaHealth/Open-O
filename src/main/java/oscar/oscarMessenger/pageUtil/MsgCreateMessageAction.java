@@ -24,16 +24,8 @@
 
 
 package oscar.oscarMessenger.pageUtil;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -48,9 +40,15 @@ import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
-
 import oscar.oscarMessenger.data.ContactIdentifier;
 import oscar.oscarMessenger.data.MsgProviderData;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class MsgCreateMessageAction extends Action {
 
@@ -113,7 +111,8 @@ public class MsgCreateMessageAction extends Action {
              * This message will not send until the non-consenting patient has consented -or- is removed 
              * from the message.
              */
-            if(demographic_no != null 
+            if(demographic_no != null
+		            && userPropertyDao.getProp( UserProperty.INTEGRATOR_PATIENT_CONSENT ) != null
             		&& ("1".equals( userPropertyDao.getProp( UserProperty.INTEGRATOR_PATIENT_CONSENT ).getValue()) 
             				|| "1".equals( userPropertyDao.getProp( UserProperty.INTEGRATOR_DEMOGRAPHIC_CONSENT ).getValue())))
             {

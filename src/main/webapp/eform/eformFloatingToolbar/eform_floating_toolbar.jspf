@@ -41,21 +41,21 @@
 			<div class="input-group pull-left">			
 		  		<input type="text" class="form-control" aria-label="Subject" name="remote_eform_subject" id="remote_eform_subject" placeholder="Subject" required/>
 		  		<div class="input-group-btn">
-		  			<button type="button" class="btn btn-primary" value="Save" name="SubmitButton" title="Save only" id="remoteSubmitButton" onclick="remoteSave()" >
+		  			<button type="button" class="btn btn-primary" value="Save" name="remoteSubmitButton" title="Save only" id="remoteSubmitButton" onclick="remoteSave()" >
 		  				<span class="btn-label"><i class="glyphicon glyphicon-save"></i></span>
 		  				Save
 		  			</button>
-			   		<button type="button" class="btn btn-default" id="remotePrintButton" name="PrintButton" value="Print" title="Save and then print" onclick="remotePrint()">
+			   		<button type="button" class="btn btn-default" id="remotePrintButton" name="remotePrintButton" value="Print" title="Save and then print" onclick="remotePrint()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-print"></i></span>
 			   			Print (eForm Only)
 			   		</button>
-					<button type="button" class="btn btn-default" id="remoteDownloadButton" name="DownloadButton" value="Download" title="Save and Download" onclick="remoteDownload()">
+					<button type="button" class="btn btn-default" id="remoteDownloadButton" name="remoteDownloadButton" value="Download" title="Save and Download" onclick="remoteDownload()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-download"></i></span>
 			   			Download
 			   		</button>
 							
 					<c:if test="${ faxActive }">
-						<button type="button" class="btn btn-default" id="remoteFaxButton" name="FaxButton" title="Save and then send by fax" onclick="remoteFax()">
+						<button type="button" class="btn btn-default" id="remoteFaxButton" name="remoteFaxButton" title="Save and then send by fax" onclick="remoteFax()">
 							<span class="btn-label"><i class="glyphicon glyphicon-send"></i></span>
 							Fax
 						</button>

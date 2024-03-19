@@ -321,7 +321,7 @@
 		<h2>
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 			     class="bi bi-file-earmark" viewBox="0 0 16 16">
-				<path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+				<path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"></path>
 			</svg>
 			<bean:message key="dms.documentReport.msgDocuments"/> Manager
 		</h2>
@@ -498,7 +498,7 @@
 									%>
                                     <a <%=curdoc.getStatus() == 'D' ? "style='text-decoration:line-through'" : ""%>
 										href="javascript:void(0);" title="<%=Encode.forHtmlAttribute(curdoc.getDescription())%>"
-										style="display: block;width: 150px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"
+										style="display: block;overflow-wrap: anywhere;word-break: break-all;overflow: hidden;text-overflow: ellipsis;text-decoration: none;"
 										onclick="popupFocusPage(500,700,'<%=url%>','demographic_document');">
                                         <%=Encode.forHtml(curdoc.getDescription())%>
 								    </a>
@@ -519,14 +519,14 @@
 								</td>
 								<td><%=Encode.forHtml(reviewerName)%>
 								</td>
-								<td>
-									<div class="btn-group" role="group">
+								<td style="text-align: right;">
+									<div style="white-space: nowrap;">
 										<%
 											if (curdoc.getRemoteFacilityId() == null) {
 												if (curdoc.getCreatorId().equalsIgnoreCase(user_no)) {
 													if (curdoc.getStatus() == 'D') { %>
                                                         <a href="documentReport.jsp?undelDocumentNo=<%=curdoc.getDocId()%>&function=<%=module%>&functionid=<%=moduleid%>&viewstatus=<%=viewstatus%>"
-                                                           class="btn btn-link" style="padding: 3px 6px;"
+                                                           class="btn btn-link" style="padding:0;"
                                                            title="<bean:message key="dms.documentReport.btnUnDelete"/>">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                  fill="currentColor" class="bi bi-arrow-counterclockwise"
@@ -538,7 +538,7 @@
                                                         <%
                                                         } else { // curdoc get status
                                                         %>
-                                                        <a style="color:red;padding: 3px 6px;"
+                                                        <a style="color:red; padding:0;"
                                                            href="javascript: checkDelete('documentReport.jsp?delDocumentNo=<%=curdoc.getDocId()%>&function=<%=module%>&functionid=<%=moduleid%>&viewstatus=<%=viewstatus%>','<%=StringEscapeUtils.escapeJavaScript(curdoc.getDescription())%>')"
                                                            class="btn btn-link" title="Delete">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -554,7 +554,7 @@
                                                         <% if (curdoc.getStatus() == 'D') {%>
                                                                 <a href="documentReport.jsp?undelDocumentNo=<%=curdoc.getDocId()%>&function=<%=module%>&functionid=<%=moduleid%>&viewstatus=<%=viewstatus%>"
                                                                    title="<bean:message key="dms.documentReport.btnUnDelete"/>"
-                                                                   class="btn btn-link" style="padding: 3px 6px;">
+                                                                   class="btn btn-link" style="padding:0;" >
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                          fill="currentColor" class="bi bi-arrow-counterclockwise"
                                                                          viewBox="0 0 16 16">
@@ -564,7 +564,7 @@
                                                                     </svg>
                                                                 </a>
                                                         <% } else { // curdoc get status %>
-                                                                <a style="color:red;padding: 3px 6px;"
+                                                                <a style="color:red;padding:0;"
                                                                    href="javascript: checkDelete('documentReport.jsp?delDocumentNo=<%=curdoc.getDocId()%>&function=<%=module%>&functionid=<%=moduleid%>&viewstatus=<%=viewstatus%>','<%=StringEscapeUtils.escapeJavaScript(curdoc.getDescription())%>')"
                                                                    class="btn btn-link" title="Delete">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -583,7 +583,7 @@
                                                             <a href="javascript:void(0)"
                                                                onclick="popup1(450, 600, 'addedithtmldocument.jsp?editDocumentNo=<%=curdoc.getDocId()%>&function=<%=module%>&functionid=<%=moduleid%>', 'EditDoc')"
                                                                title="<bean:message key="dms.documentReport.btnEdit"/>"
-                                                               class="btn btn-link" style="padding: 3px 6px;">
+                                                               class="btn btn-link" style="padding:0;">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                      fill="currentColor" class="bi bi-pencil-square"
                                                                      viewBox="0 0 16 16">
@@ -596,7 +596,7 @@
                                                             <a href="javascript:void(0)"
                                                                onclick="popup1(350, 500, 'editDocument.jsp?editDocumentNo=<%=curdoc.getDocId()%>&function=<%=module%>&functionid=<%=moduleid%>', 'EditDoc')"
                                                                title="<bean:message key="dms.documentReport.btnEdit"/>"
-                                                               class="btn btn-link" style="padding: 3px 6px;">
+                                                               class="btn btn-link" style="padding:0;">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                          fill="currentColor" class="bi bi-pencil-square"
                                                                          viewBox="0 0 16 16">
@@ -612,7 +612,7 @@
                                                 <% if(module.equals("demographic")){%>
                                                     <a href="javascript:void(0)" title="Annotation"
                                                        onclick="window.open('${ pageContext.request.contextPath }/annotation/annotation.jsp?display=<%=annotation_display%>&table_id=<%=curdoc.getDocId()%>&demo=<%=moduleid%>','anwin','width=400,height=500');"
-                                                       class="btn btn-link" style="padding: 3px 6px;">
+                                                       class="btn btn-link" style="padding:0">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                              fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
                                                             <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"></path>
@@ -624,7 +624,7 @@
 
                                                     String tickler_url = request.getContextPath()+"/tickler/ForwardDemographicTickler.do?docType=DOC&docId="+curdoc.getDocId()+"&demographic_no="+moduleid;
                                                     %>
-                                                        <a href="javascript:void(0);" title="Tickler" class="btn btn-link" style="padding: 3px 6px;"
+                                                        <a href="javascript:void(0);" title="Tickler" class="btn btn-link" style="padding: 0;"
                                                                      onclick="popup1(450,600,'<%=tickler_url%>','tickler')">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                  fill="currentColor" class="bi bi-feather" viewBox="0 0 16 16">

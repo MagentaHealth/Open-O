@@ -128,6 +128,7 @@ function checkSelected() {
 }
 
 function submitFile(){
+	console.log("File from: previewDocHL7Inbox.jsp");
    aBoxIsChecked = false;
     if (document.reassignForm.flaggedLabs.length == undefined) {
         if (document.reassignForm.flaggedLabs.checked == true) {

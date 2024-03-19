@@ -3,8 +3,8 @@
 	<groupId>org.oscarehr</groupId>
 	<artifactId>oscar</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.0-SNAPSHOT</version>
-	<name>oscar</name>
+	<version>v24.02.0</version>
+	<name>OpenOSCAR</name>
 	<description>OSCAR McMaster is a web-based electronic medical record (EMR) system initially developed for academic primary care clinics. It has grown into a comprehensive EMR and billing system used by many doctor's offices and private medical clinics in Canada and other parts of the world. The name is derived from where it was created and an acronym; OSCAR stands for Open Source Clinical Application and Resource and McMaster refers to McMaster University, where it was developed. It enables the delivery of evidence resources at the point of care.</description>
 	<issueManagement>
 		<system>SourceForge Tracker</system>
@@ -876,7 +876,7 @@
 		<dependency>
 		    <groupId>com.github.jtidy</groupId>
 		    <artifactId>jtidy</artifactId>
-		    <version>1.0.2</version>
+		    <version>1.0.5</version>
 		</dependency>
 		
 		<dependency>
@@ -1231,8 +1231,12 @@
 			</exclusion>
 		</exclusions>
 	</dependency>
-	
 
+		<dependency>
+			<groupId>org.owasp.encoder</groupId>
+			<artifactId>encoder-jsp</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 	<dependency>
 		<groupId>org.owasp.encoder</groupId>
 		<artifactId>encoder</artifactId>

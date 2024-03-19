@@ -181,7 +181,7 @@ try
 
     jQuery(document).ready(function(){
     	notesLoader(0, notesIncrement, demographicNo);
-    	notesScrollCheckInterval = setInterval('notesIncrementAndLoadMore()', 2000);
+    	notesScrollCheckInterval = setInterval('notesIncrementAndLoadMore()', 1000);
     });
 
     <% if( request.getAttribute("NoteLockError") != null ) { %>
@@ -189,7 +189,7 @@ try
 	<%}%>
 	
 </script>
-
+<div id="topContent">
  <html:form action="/CaseManagementView" method="post">
 	<html:hidden property="demographicNo" value="<%=demographicNo%>" />
 	<html:hidden property="providerNo" value="<%=provNo%>" />
@@ -202,9 +202,8 @@ try
 	<input type="hidden" id="check_issue" name="check_issue">
 	<input type="hidden" id="serverDate" value="<%=strToday%>">
 	<input type="hidden" id="resetFilter" name="resetFilter" value="false">
-	<div id="topContent">
     		<nested:notEmpty name="caseManagementViewForm" property="filter_providers">
-			<div style="float: left; margin-left: 10px; margin-top: 0px;"><u><bean:message key="oscarEncounter.providers.title" />:</u><br>
+			<div style="margin-left: 10px; margin-top: 0;"><u><bean:message key="oscarEncounter.providers.title" />:</u><br>
 				<nested:iterate type="String" id="filter_provider" property="filter_providers">
 					<c:choose>
 						<c:when test="${filter_provider == 'a'}">All</c:when>
@@ -222,7 +221,7 @@ try
 		</nested:notEmpty>
 
 		<nested:notEmpty name="caseManagementViewForm" property="filter_roles">
-		<div style="float: left; margin-left: 10px; margin-top: 0px;"><u><bean:message key="oscarEncounter.roles.title" />:</u><br>
+		<div style="margin-left: 10px; margin-top: 0;"><u><bean:message key="oscarEncounter.roles.title" />:</u><br>
 			<nested:iterate type="String" id="filter_role" property="filter_roles">
 				<c:choose>
 					<c:when test="${filter_role == 'a'}">All</c:when>
@@ -240,13 +239,13 @@ try
 		</nested:notEmpty>
 
 		<nested:notEmpty name="caseManagementViewForm" property="note_sort">
-			<div style="float: left; margin-left: 10px; margin-top: 0;"><bean:message key="oscarEncounter.sort.title" />:<br>
+			<div style="margin-left: 10px; margin-top: 0;"><bean:message key="oscarEncounter.sort.title" />:<br>
 			<nested:write property="note_sort" /><br>
 			</div>
 		</nested:notEmpty>
 
 		<nested:notEmpty name="caseManagementViewForm" property="issues">
-		<div style="float: left; margin-left: 10px; margin-top: 0;"><bean:message key="oscarEncounter.issues.title" />:<br>
+		<div style="margin-left: 10px; margin-top: 0;"><bean:message key="oscarEncounter.issues.title" />:<br>
 			<nested:iterate type="String" id="filter_issue" property="issues">
 				<c:choose>
 					<c:when test="${filter_issue == 'a'}">All</c:when>
@@ -283,7 +282,7 @@ try
 					</th>
 				</tr>
 				<tr>
-					<td style="border-left:solid #ddddff 4px">
+					<td style="border-left:solid #ddddff 3px">
 						<div style="height:150px;overflow:auto">
 							<ul style="padding:0;margin:0;list-style:none inside none">
 								<li><html:multibox property="filter_providers" value="a" onclick="filterCheckBox(this)"></html:multibox><bean:message key="oscarEncounter.sortAll.title" /></li>
@@ -306,7 +305,7 @@ try
 							</ul>
 						</div>
 					</td>
-					<td style="border-left:solid #ddddff 4px">
+					<td style="border-left:solid #ddddff 3px">
 						<div style="height:150px;overflow:auto">
 							<ul style="padding:0;margin:0;list-style:none inside none">
 								<li><html:multibox property="filter_roles" value="a" onclick="filterCheckBox(this)"></html:multibox><bean:message key="oscarEncounter.sortAll.title" /></li>
@@ -324,7 +323,7 @@ try
 							</ul>
 						</div>
 					</td>
-					<td style="border-left:solid #ddddff 4px">
+					<td style="border-left:solid #ddddff 3px">
 						<div style="height:150px;overflow:auto">
 							<ul style="padding:0;margin:0;list-style:none inside none">
 								<li><html:radio property="note_sort" value="observation_date_asc">
@@ -345,7 +344,7 @@ try
 							</ul>
 						</div>
 					</td>
-					<td style="border-left:solid #ddddff 4px;">
+					<td style="border-left:solid #ddddff 3px;">
 						<div style="height:150px;overflow:auto">
 							<ul style="padding:0;margin:0;list-style:none inside none">
 								<li><html:multibox property="issues" value="a" onclick="filterCheckBox(this)"></html:multibox><bean:message key="oscarEncounter.sortAll.title" /></li>
@@ -439,7 +438,7 @@ try
 				</security:oscarSec>
 
 				<security:oscarSec roleName="<%=roleName%>" objectName="_newCasemgmt.templates" rights="r">
-					<select style="width:100px;" onchange="javascript:popupPage(700,700,'Templates',this.value);">
+					<select onchange="javascript:popupPage(700,700,'Templates',this.value);">
 						<option value="-1"><bean:message key="oscarEncounter.Header.Templates"/></option>
 						<option value="-1">------------------</option>
 						<security:oscarSec roleName="<%=roleName%>" objectName="_newCasemgmt.templates" rights="w">
@@ -462,10 +461,9 @@ try
 				</security:oscarSec>
 
 		</div>
-	</div>
 </html:form>
+</div>
 
-<div id="mainContent" >
 
 	<%-- Insert smart note templates here --%>
 	<div style="display:none;" id="templateContainer" >
@@ -563,35 +561,19 @@ try
 
 
 	<div id="issueList" style="background-color: #FFFFFF; height: 440px; width: 350px; position: absolute; z-index: 1; display: none; overflow: auto;">
-	<table id="issueTable" class="enTemplate_name_auto_complete" style="position: relative; left: 0px; display: none;">
+	<table id="issueTable" class="enTemplate_name_auto_complete" style="position: relative; left: 0; display: none;">
 		<tr>
 			<td style="height: 430px; vertical-align: bottom;">
-				<div class="enTemplate_name_auto_complete" id="issueAutocompleteList" style="position: relative; left: 0px; display: none;"></div>
+				<div class="enTemplate_name_auto_complete" id="issueAutocompleteList" style="position: relative; left: 0; display: none;"></div>
 			</td>
 		</tr>
 	</table>
 	</div>
 	<div id="encMainDivWrapper">
-		<div id="encMainDiv" >
+	<div id="encMainDiv" >
 
-		</div>
 	</div>
-	<script type="text/javascript">
-
-		if (parseInt(navigator.appVersion)>3) {
-			var windowHeight=750;
-			if (navigator.appName=="Netscape") {
-				windowHeight = window.innerHeight;
-			}
-			if (navigator.appName.indexOf("Microsoft")!=-1) {
-				windowHeight = document.body.offsetHeight;
-			}
-
-			var divHeight=windowHeight-280;
-			$("encMainDiv").style.height = divHeight+'px';
-		}
-	</script>
-
+	</div>
 	<div id='save'>
 		<span style="float: right; margin-right: 5px;">
 			<button type="button" onclick="pasteTimer()" id="aTimer" title="<bean:message key="oscarEncounter.Index.pasteTimer"/>">00:00</button>
@@ -641,9 +623,8 @@ try
     	</div>
     </div>
 
-
 </nested:form>
-</div>
+
 
 
 <%

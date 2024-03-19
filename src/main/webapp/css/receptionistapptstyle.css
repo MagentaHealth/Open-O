@@ -21,6 +21,29 @@
  * Hamilton 
  * Ontario, Canada 
  */
+
+#dateAndCalendar {
+	text-align: left;
+	vertical-align: middle;
+}
+.title {
+	text-align: center;
+	vertical-align: middle;
+}
+
+#group {
+	text-align: right;
+	vertical-align: middle;
+}
+
+
+
+#caseloadTable {
+	margin-top:25px;
+	left:0;
+	right:0;
+}
+
 .hideReason {
 	display:none;
 }
@@ -111,15 +134,22 @@ table#firstTable td#userSettings ul#userSettingsMenu li {
 tr#ivoryBar td, table#monthScheduleNavigation tr td {
     background-color: whitesmoke;
 	padding:0 10px;
+	width:100%;
+}
+
+table#scheduleNavigation tr td.title {
+	text-wrap: unset;
+	white-space: nowrap;
 }
 
 tr td.infirmaryView {
-    position: sticky;
-    top:50px;
-	left:0;
+	position: sticky;
+	top: 50px;
+	left: 0;
 	margin-left: unset;
-    height:25px;
+	height: 25px;
 	padding: 0 5px;
+	right: 0;
 }
 
 td#dateAndCalendar {
@@ -218,7 +248,7 @@ div.appt-container div.navigation-tag {
 }
 
 table#scheduleTable {
-	margin-top: 49px;
+	margin-top: 50px;
 }
 
 .scheduleTimeNot00 a, .scheduleTime00 a {
@@ -265,7 +295,7 @@ input,select,textarea {
 }
 
 td {
-	font-family: "Arial", sans-serif;
+	/*font-family: "Arial", sans-serif;*/
 	font-size: 12px;
 }
 
@@ -280,7 +310,7 @@ p {
 }
 
 .adhour {
-	font-family: "Arial", sans-serif;
+	/*font-family: "Arial", sans-serif;*/
 	font-size: 12px;
 	color: white;
 	display: block;
@@ -291,13 +321,13 @@ p {
 	margin-top: 15px;
 	margin-left: 100px;
 	margin-right: 140px;
-	font-family: "Arial Black", sans-serif;
+	/*font-family: "Arial Black", sans-serif;*/
 	font-size: 9px;
 	color: #00408f;
 }
 
 .Monthappt {
-	font-family: "Arial Black", sans-serif;
+	/*font-family: "Arial Black", sans-serif;*/
 	font-size: 8px;
 	color: black;
 }

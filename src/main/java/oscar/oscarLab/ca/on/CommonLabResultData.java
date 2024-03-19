@@ -25,13 +25,6 @@
 
 package oscar.oscarLab.ca.on;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.oscarehr.PMmodule.caisi_integrator.CaisiIntegratorManager;
@@ -39,36 +32,18 @@ import org.oscarehr.PMmodule.caisi_integrator.IntegratorFallBackManager;
 import org.oscarehr.billing.CA.BC.dao.Hl7MshDao;
 import org.oscarehr.caisi_integrator.ws.CachedDemographicLabResult;
 import org.oscarehr.caisi_integrator.ws.DemographicWs;
-import org.oscarehr.common.dao.CtlDocumentDao;
-import org.oscarehr.common.dao.DemographicCustDao;
-import org.oscarehr.common.dao.DocumentResultsDao;
-import org.oscarehr.common.dao.Hl7TextMessageDao;
-import org.oscarehr.common.dao.LabPatientPhysicianInfoDao;
-import org.oscarehr.common.dao.MdsMSHDao;
-import org.oscarehr.common.dao.PatientLabRoutingDao;
-import org.oscarehr.common.dao.ProviderLabRoutingDao;
-import org.oscarehr.common.dao.QueueDocumentLinkDao;
-import org.oscarehr.common.model.CtlDocument;
-import org.oscarehr.common.model.DemographicCust;
-import org.oscarehr.common.model.PatientLabRouting;
-import org.oscarehr.common.model.Provider;
-import org.oscarehr.common.model.ProviderLabRoutingModel;
-import org.oscarehr.common.model.QueueDocumentLink;
+import org.oscarehr.common.dao.*;
+import org.oscarehr.common.model.*;
 import org.oscarehr.hospitalReportManager.dao.HRMDocumentToDemographicDao;
 import org.oscarehr.hospitalReportManager.dao.HRMDocumentToProviderDao;
 import org.oscarehr.hospitalReportManager.model.HRMDocumentToDemographic;
 import org.oscarehr.labs.LabIdAndType;
 import org.oscarehr.managers.DemographicManager;
 import org.oscarehr.managers.SecurityInfoManager;
-import org.oscarehr.util.DbConnectionFilter;
-import org.oscarehr.util.LoggedInInfo;
-import org.oscarehr.util.MiscUtils;
-import org.oscarehr.util.SpringUtils;
-import org.oscarehr.util.XmlUtils;
+import org.oscarehr.util.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
 import oscar.OscarProperties;
 import oscar.oscarDB.ArchiveDeletedRecords;
 import oscar.oscarLab.ca.all.Hl7textResultsData;
@@ -77,6 +52,12 @@ import oscar.oscarLab.ca.bc.PathNet.PathnetResultsData;
 import oscar.oscarMDS.data.MDSResultsData;
 import oscar.oscarMDS.data.ReportStatus;
 import oscar.util.ConversionUtils;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class CommonLabResultData {
 
@@ -414,6 +395,12 @@ public class CommonLabResultData {
 
 	public static boolean updateReportStatus(int labNo, String providerNo, char status, String comment, String labType,boolean skipCommentOnUpdate) {
 
+		if(comment == null) {
+			comment = "";
+		}
+
+		comment = comment.trim();
+
 		/*
 		 * Update an existing entry
 		 */
@@ -423,11 +410,16 @@ public class CommonLabResultData {
 			for(ProviderLabRoutingModel providerLabRoutingModel : providerLabRoutingModelList)
 			{
 				providerLabRoutingModel.setStatus(""+status);
+
 				//we don't want to clobber existing comments when filing labs
 				String currentComment = providerLabRoutingModel.getComment();
+				if(currentComment == null) {
+					currentComment = "";
+				}
+
 				// use the new incoming comment on these conditions.
-				if(currentComment != null && ! currentComment.trim().equalsIgnoreCase(comment.trim())) {
-					providerLabRoutingModel.setComment(comment.trim());
+				if(! comment.isEmpty() && ! comment.equalsIgnoreCase(currentComment.trim())) {
+					providerLabRoutingModel.setComment(comment.replaceAll(currentComment, currentComment));
 				}
 				providerLabRoutingModel.setTimestamp(new Date());
 				providerLabRoutingDao.merge(providerLabRoutingModel);
@@ -444,7 +436,7 @@ public class CommonLabResultData {
 			providerLabRouting.setProviderNo(providerNo);
 			providerLabRouting.setLabNo(labNo);
 			providerLabRouting.setStatus(String.valueOf(status));
-			providerLabRouting.setComment(comment);
+			providerLabRouting.setComment(comment.trim());
 			providerLabRouting.setLabType(labType);
 			providerLabRouting.setTimestamp(new Date());
 			providerLabRoutingDao.persist(providerLabRouting);

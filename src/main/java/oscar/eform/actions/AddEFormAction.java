@@ -25,28 +25,12 @@
 
 package oscar.eform.actions;
 
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.ActionRedirect;
-
+import org.apache.struts.action.*;
 import org.oscarehr.common.model.Demographic;
 import org.oscarehr.common.model.enumerator.DocumentType;
 import org.oscarehr.documentManager.DocumentAttachmentManager;
 import org.oscarehr.managers.DemographicManager;
-
 import org.oscarehr.managers.EformDataManager;
 import org.oscarehr.managers.FaxManager.TransactionType;
 import org.oscarehr.managers.SecurityInfoManager;
@@ -57,13 +41,19 @@ import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.PDFGenerationException;
 import org.oscarehr.util.SpringUtils;
-
 import oscar.eform.EFormLoader;
 import oscar.eform.EFormUtil;
 import oscar.eform.data.DatabaseAP;
 import oscar.eform.data.EForm;
 import oscar.oscarEncounter.data.EctProgram;
 import oscar.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 public class AddEFormAction extends Action {
@@ -100,7 +90,13 @@ public class AddEFormAction extends Action {
 		String demographic_no = request.getParameter("efmdemographic_no");
 		String eform_link = request.getParameter("eform_link");
 		String subject = request.getParameter("subject");
-		
+
+		/*
+		 * Part 2 of "counter hack for a hack" initialized in Javascript file
+		 * eform_floating_toolbar.js
+		 */
+		String[] imagePathPlaceHolders = request.getParameterValues("openosp-image-link");
+
 		/*
 		 * An eform developer may add these to the eForm in order to auto 
 		 * populate fax information. 
@@ -172,8 +168,18 @@ public class AddEFormAction extends Action {
 		String curField = "";
 		while (paramNamesE.hasMoreElements()) {
 			curField = paramNamesE.nextElement();
-			if( curField.equalsIgnoreCase("parentAjaxId"))
+			if( curField.equalsIgnoreCase("parentAjaxId")) {
 				continue;
+			}
+
+			/*
+			 * Remove these parameters from the request after the imagePathPlaceHolders variable is set.
+			 * These values do not need to be saved into the eform_values table.
+			 */
+			if( curField.equalsIgnoreCase("openosp-image-link")) {
+				continue;
+			}
+
 			if(request.getParameter(curField) != null && (!request.getParameter(curField).trim().equals("")) )
 			{
 				paramNames.add(curField);
@@ -221,7 +227,17 @@ public class AddEFormAction extends Action {
 			}			
 		}
 		if (!sameform) { //save eform data
-			
+
+			/*
+			 * Part 2 of "counter hack for a hack" initialized in Javascript file
+			 * eform_floating_toolbar.js
+			 * Grab the image path placeholders from the form submission and then
+			 * feed them into the EForm object.
+			 * Doing this ensures the image links get saved correctly into the HTML
+			 * of the eform_data database table.
+			 */
+			curForm.addImagePathPlaceholders(imagePathPlaceHolders);
+
 			String fdid = eformDataManager.saveEformData( loggedInInfo, curForm ) + "";
 
 			EFormUtil.addEFormValues(paramNames, paramValues, new Integer(fdid), new Integer(fid), new Integer(demographic_no)); //adds parsed values

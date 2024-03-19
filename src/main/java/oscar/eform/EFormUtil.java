@@ -24,28 +24,9 @@
 
 package oscar.eform;
 
-import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.persistence.PersistenceException;
-
+import com.quatro.model.security.Secobjprivilege;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -58,24 +39,11 @@ import org.oscarehr.casemgmt.model.CaseManagementNote;
 import org.oscarehr.casemgmt.model.CaseManagementNoteLink;
 import org.oscarehr.casemgmt.model.Issue;
 import org.oscarehr.casemgmt.service.CaseManagementManager;
-import org.oscarehr.common.dao.ConsultationRequestDao;
-import org.oscarehr.common.dao.EFormDao;
+import org.oscarehr.common.dao.*;
 import org.oscarehr.common.dao.EFormDao.EFormSortOrder;
-import org.oscarehr.common.dao.EFormDataDao;
-import org.oscarehr.common.dao.EFormGroupDao;
-import org.oscarehr.common.dao.EFormValueDao;
-import org.oscarehr.common.dao.ProfessionalSpecialistDao;
-import org.oscarehr.common.dao.SecRoleDao;
-import org.oscarehr.common.dao.TicklerDao;
-import org.oscarehr.common.model.ConsultationRequest;
-import org.oscarehr.common.model.EFormData;
-import org.oscarehr.common.model.EFormGroup;
-import org.oscarehr.common.model.EFormValue;
-import org.oscarehr.common.model.OscarMsgType;
-import org.oscarehr.common.model.Prevention;
-import org.oscarehr.common.model.ProfessionalSpecialist;
-import org.oscarehr.common.model.SecRole;
-import org.oscarehr.common.model.Tickler;
+import org.oscarehr.common.model.*;
+import org.oscarehr.documentManager.EDoc;
+import org.oscarehr.documentManager.EDocUtil;
 import org.oscarehr.managers.MessagingManager;
 import org.oscarehr.managers.PreventionManager;
 import org.oscarehr.managers.ProgramManager2;
@@ -83,14 +51,7 @@ import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
-
-import com.quatro.model.security.Secobjprivilege;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import oscar.OscarProperties;
-import org.oscarehr.documentManager.EDoc;
-import org.oscarehr.documentManager.EDocUtil;
 import oscar.eform.actions.DisplayImageAction;
 import oscar.eform.data.EForm;
 import oscar.eform.data.EFormBase;
@@ -100,6 +61,16 @@ import oscar.oscarMessenger.data.MessengerSystemMessage;
 import oscar.util.ConversionUtils;
 import oscar.util.OscarRoleObjectPrivilege;
 import oscar.util.UtilDateUtilities;
+
+import javax.persistence.PersistenceException;
+import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EFormUtil {
 	private static final Logger logger = MiscUtils.getLogger();
@@ -236,10 +207,14 @@ public class EFormUtil {
 		logger.debug("Img Path: " + imagePath);
 		File dir = new File(imagePath);
 		String[] files = dir.list();
-		Arrays.sort(files);
 		ArrayList<String> fileList;
-		if (files != null) fileList = new ArrayList<String>(Arrays.asList(files));
-		else fileList = new ArrayList<String>();
+		if (files != null) {
+			Arrays.sort(files);
+			fileList = new ArrayList<String>(Arrays.asList(files));
+		}
+		else {
+			fileList = new ArrayList<String>();
+		}
 
 		return fileList;
 	}

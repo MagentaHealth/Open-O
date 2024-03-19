@@ -30,40 +30,143 @@
 		#FF8C00 = darkorange
 */
 
-.noteRounded, .showEdContent {
+* {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size: 11px;
+	overscroll-behavior: none;
+}
 
-	background-color: #ffffff;
-	border: 1px solid #cccccc !important;
+#noteEditTxt {
+	font-size: larger;
+}
+
+.nav-menu-heading {
+	display:flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	background-color: inherit;
+}
+
+.nav-menu-heading div:first-of-type {
+	order: 2;
+	background-color: inherit;
+}
+
+.nav-menu-heading div:last-of-type {
+	order: 1;
+}
+
+.nav-menu-heading div:first-of-type h3 a {
+	text-align: center;
+}
+
+.nav-menu-heading div:last-of-type h3 a {
+	text-align: left;
+}
+
+.nav-menu-heading div:first-of-type h3 a, .nav-menu-heading div:last-of-type h3 a {
+	white-space: nowrap;
+	margin: 0 !important;
+	padding:2px 10px !important;
+	background-color:inherit;
+	display: block;
+}
+
+.nav-menu-heading div:first-of-type h3, .nav-menu-heading div:last-of-type h3 {
+	display: inline-block;
+	display: -webkit-box;
+	display: -webkit-inline-box;
+	border:none;
+	margin:0 !important;
+	padding:0 !important;
+	background-color:inherit;
+	width:100%;
+}
+
+.leftBox ul li {
+	display: block;
+}
+.leftBox ul{
+	display: block;
+}
+
+.noteRounded, .showEdContent, .note {
+	border: 1px solid #cccccc;
 	border-radius: 4px;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 	-webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
-
-.showEdContent {
-	padding:5px 10px;
+.noteRounded {
+	background-color: #ffffff;
 }
 
-*:not(h1,h2,#encounterHeaderCenterColumn) {
-	font-size: 12px !important;
+fieldset {
+	background-color: #ffffff;
+	border: 1px solid #cccccc !important;
+	margin:0;
 }
 
-#rightNavBar h3 a, #leftNavBar h3 a, #cppBoxes h3 a {
-	padding:3px 2px;
+.topBox ul li a {
+	display:block;
+	padding:2px 5px;
 }
 
-#encounterHeaderCenterColumn span, #encounterHeaderCenterColumn a {
-	font-size: 14px !important;
-	font-weight: bold;
-}
-#encounterHeaderCenterColumn span.label{
-	font-size: 12px !important;
+div#patient-label {
+	display:flex;
+	align-content: stretch;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	padding: 3px 0;
+	width:100%;
 }
 
-* {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+#save button {
+	margin: 3px;
 }
+textarea.txtArea {
+	border-radius: 4px 4px 0 0;
+}
+
+div#patient-full-name a {
+	text-decoration: none;
+	color:blue;
+	display:block;
+}
+
+.boxsizingBorder {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+div#patient-label div {
+	margin:auto 5px;
+	font-size: small;
+}
+
+div#patient-label div#header-top-row {
+	width:100%;
+}
+
+div#patient-label .label {
+	margin:0;
+	font-weight: normal !important;
+	font-size: smaller;
+	text-decoration: none;
+}
+
+
+div#patient-label div#patient-full-name h1 a {
+	font-size: larger;
+}
+
+div#patient-label div#patient-phone:hover, div#patient-label div#patient-cell-phone:hover {
+	cursor: pointer;
+}
+
 
 .pull-right {
 	float:right !important;
@@ -77,19 +180,19 @@
 }
 
 input {
- box-sizing: border-box; 
- -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
-} 
-
-BODY {
-	padding:0 !important;
-	margin:0 !important;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box; -webkit-box-sizing: border-box;
 }
 
-div#newEncounterLayoutWrapper {
-	margin:auto 15px !important;
-	margin-top:3px !important;
-	margin-bottom: 3px !important;
+html, body {
+	padding:0;
+	margin:0;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	width:100%;
+	height: 100%;
 }
 
 TABLE {
@@ -105,17 +208,9 @@ A IMG {
 
 
 h3 {
-	margin:0px !important;
-	padding:0px !important;
+	margin:0 !important;
+	padding:0 !important;
 }
-
-h3 a, .pull-right a  { 
-		/*font-size: x-small !important;*/
-	display: inline-block !important;
-	padding-left: 5px !important;
-
-}
-
 
 .box {
 	border-top: 1px;
@@ -142,7 +237,7 @@ h3 a, .pull-right a  {
 
 .RowTop {
 
-font-weight: bold;
+	font-weight: bold;
 	background-color: #CCCCFF;
 }
 
@@ -151,119 +246,99 @@ font-weight: bold;
 	font-family: inherit;
 }
 
-form {
-	margin: 0px !important;
-	padding: 0px !important;
-}
-
 #navigation-layout {
-	display:flex;
+	margin:auto 15px !important;
+	height: 100vh;
+	display: flex;
+	flex-direction: row;
+	gap: 2.5px;
+	border-top: white 2.5px solid;
+	align-items: flex-start;
 }
 
-#leftColLoader, #rightColLoader, 
+#leftColLoader, #rightColLoader,
 #rightColLoader h3, #leftColLoader h3, #leftColLoader h3 a {
 	margin:0px !important;
 	padding:0px !important;
 	background-color:white !important;
 	color: black !important;
 	font-weight: unset !important;
-	z-index: 10000 !important;	
+	z-index: 10000 !important;
 }
 
 div#leftNavBar {
-	width: 20% !important;
-	height: auto !important;
 	order: 1;
-	margin-right:2.5px;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	flex-basis: 20%;
 }
 
-div#rightNavBar {
-	width: 20% !important;
-	height: auto !important;
+#rightNavBar {
 	order: 3;
-	margin-left:2.5px;
-}
-
-div#rightNavBar, div#leftNavBar {
 	display: flex;
 	flex-direction: column;
+	flex-grow: 1;
+	flex-basis: 20%;
+	height: 100%;
 }
 
-div#content {
-	margin: 0 !important;
-	padding: 0 !important;
-	border-top: white 2px solid !important;
-	width: 60% !important;
-	order: 2;
-	display: flex;
-	align-items: stretch;
-	flex-direction: column;
-}
-
-div#mainContent div#save {
-	margin-top: 5px;
-	margin-left: 2.5px;
-	margin-right: 2.5px;
-	margin-bottom: 50px;
-}
 
 div#notCPP {
-	padding: 0px !important;
-	margin: 0px !important;
-	/*display: inline-block !important;*/
-	/*background-color: #CCCCFF;*/
+	display: flex;
+	flex-direction: column;
+	gap: 2.5px;
+	height: 70%;
+}
+
+#content {
+	order: 2;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	height: 100%;
+	flex-basis: 60%;
+	align-content: end;
+	width: 100%;
 }
 
 div#cppBoxes {
-	padding: 0px !important;
-	margin: 0px !important;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	gap: 2.5px;
+	height: auto;
+	margin: 0;
 }
 
 div#divR2,div#divR1 {
-	margin: 0 auto !important;
-	padding: 0px !important;
-	width: 100% !important;
 	display: flex;
 	flex-direction: row;
+	gap: 2.5px;
+	flex-wrap: nowrap;
 }
 
 div#divR1I1,div#divR1I2,div#divR2I1,div#divR2I2 {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 	width:100%;
+	flex-basis: 50%;
 }
 
-/*div#divR1I1 div,div#divR1I2 div,div#divR2I1 div,div#divR2I2 div,*/
-/*div#divR1I1 div ul,div#divR1I2 div ul,div#divR2I1 div ul,div#divR2I2 div ul,*/
-/*div#divR1I1 div ul li,div#divR1I2 div ul li,div#divR2I1 div ul li,div#divR2I2 div ul li,*/
-/*div#divR1I1 div ul li a,div#divR1I2 div ul li a,div#divR2I1 div ul li a,div#divR2I2 div ul li a {*/
-/*	margin: 0px !important;*/
-/*	padding: 0px !important;*/
-/*	overflow: unset !important;*/
-/*}*/
+#topContent {
+	height: auto;
+	margin: 0;
+}
 
-/*div#divR1I1 div ul, div#divR1I2 div ul, div#divR2I1 div ul, div#divR2I2 div ul {*/
-/*	display:inline-block !important;*/
-/*	width: 100% !important;*/
-/*	margin:0px !important;*/
-/*	overflow-y: scroll !important;*/
-/*}*/
-
-
-/*div#divR1I1 div ul li,div#divR1I2 div ul li,div#divR2I1 div ul li,div#divR2I2 div ul li {*/
-/*	padding:0px 5px !important;*/
-/*	vertical-align: top !important;*/
-/*}*/
-
+form[name='caseManagementEntryForm'] {
+	height:90%;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+}
 
 div.topBox {
-	border-left:grey thin solid;
-	border-right:grey thin solid;
-	border-bottom:grey thin solid;
-	margin-left:2.5px;
-	margin-right:2.5px;
-	margin-bottom:5px;
+	background-color: #ffffff;
 }
 
 div.cppNotesList {
@@ -288,59 +363,71 @@ div.topBox h3 {
 }
 
 div.topBox ul {
-	padding-left: 0;
-	margin-top: 0;
-	margin-bottom: 0;
+	margin:0;
+	padding:0;
+	list-style: none;
 }
 
-/*div#divR1I1,div#divR1I2,div#divR2I1,div#divR2I2 {*/
-/*	margin: 0px !important;*/
-/*	display: inline-block !important;*/
-/*	width: 49.2% !important;*/
-/*}*/
+#cppBoxes .topBox-notes {
+	height: 100%;
+	max-height:75px;
+	overflow-y: auto;
+	word-wrap: anywhere;
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
 
-div#mainContent {
-	margin: 0px !important;
-	padding: 0px !important;
+#rightNavBar .topBox-notes {
+	height: 100%;
+	max-height:100px;
+	overflow-y: auto;
+	word-wrap: anywhere;
 }
 
 div#encMainDiv {
-	background-color: white !important;
-	overflow-y: auto !important;
 	display: flex;
 	flex-direction: column;
-	margin: 5px;
+	gap: 2.5px;
 }
 
 div#encMainDivWrapper {
-	margin-top: 5px;
-	margin-left: 2.5px;
-	margin-right: 2.5px;
-	border: black thin inset !important;
+	padding: 10px;
+	overflow-y: scroll;
+	border: thin solid #cccccc;
+	margin: 0;
 }
 
 div#header {
-	padding:0px !important;
-	margin: 0px !important;
-	background-color: white !important;
+	padding: 0 10px;
+	margin: 0;
+	background-color: white;
 	position: sticky;
 	top: 0;
 	left: 0;
 	right: 0;
 	z-index: 101;
-	border-bottom: white 2px solid;
+	border-bottom: 1px solid #c0c0c0;
+	display:flex;
+	height: auto;
 }
+
+div#save {
+	margin-top: 2.5px;
+	padding: 5px;
+	border: 1px solid #cccccc;
+	background-color: whitesmoke;
+	margin: 0;
+}
+
+
 table#encounterHeader {
 	width:100% !important;
 	margin-bottom: 2px !important;
 }
 
-table#encounterHeader tr td {
-padding: 1px 5px;
-}
-
 table#encounterHeader tr td a {
-		text-decoration: none !important;
+	text-decoration: none !important;
 }
 
 table#encounterHeader td#encounterHeaderLeftColumn {
@@ -360,78 +447,43 @@ table#encounterHeader td#encounterHeaderLeftColumn h1 {
 	padding-left:7px !important;
 	padding-top:7px !important;
 	display: block !important;
-	/*font-size: larger !important;*/
 	color: white !important;
 
 }
 
 table#encounterHeader td#encounterHeaderRightColumn {
 	color:white !important;
-		vertical-align: top !important;
+	vertical-align: top !important;
 	text-align: right !important;
 	padding-top: 3px !important;
 	padding-right: 3px !important;
 	width: 10.5%;
 }
 
-table#encounterHeader td#encounterHeaderCenterColumn {
-	width:70%;
-}
-
-table#encounterHeader tr td#encounterHeaderCenterColumn #patient-label span {
-	display: inline-block
-}
-
-table#encounterHeader span.label {
-	margin: 0 5px !important;
-	padding: 0px !important;
-	font-weight: normal !important;
-	/*font-size: x-small !important;*/
-}
-
-table#encounterHeader span.HelpAboutLogout a {
-	/*font-size: x-small !important;*/
-	color: white !important;
-	float: right !important;
-	padding: 0 3px !important;
-}
-
-table#encounterHeader span.HelpAboutLogout a[href*='About.jsp'] {
-	border-right: white thin groove !important;
-}
-
-
 div#encounterTools {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
+	gap: 2.5px;
 }
 
-div#encounterTools fieldset {
-	flex:1;
-	border: grey thin groove;
+div#encounterTools fieldset:nth-of-type(1) {
+	flex-grow:1;
+}
+
+div#encounterTools fieldset:nth-of-type(2) {
+	flex-grow:2;
+}
+div#encounterTools fieldset:nth-of-type(3) {
+	flex-grow:3;
 }
 
 
-div#topContent {
-	/*font-size: 8pt;*/
-	padding: 0 !important;
-	margin: 0 !important;
-}
-
-div#encMainDiv div.note {
-	padding: 0 !important;
-	margin: 3px 5px 3px 5px !important;
-	/*font-size: 80% !important;*/
-	color: #3366CC !important;
-}
-
-div#encMainDiv div.note div div [id*="txt"] {
-	margin: 0px !important;
-	padding: 3px 0px 3px 5px !important;
+.note div div[id^='wrapper'] {
+	padding: 2px 5px;
 }
 
 .doctorInfo {
-	/*font-size: x-small;*/
 	font-weight: bold;
 	background-color: #A39FC4;
 }
@@ -441,19 +493,12 @@ div#encMainDiv div.note div div [id*="txt"] {
 }
 
 .patientInfo {
-	/*font-size: small;*/
 	font-weight: bold;
 	background-color: #CBC9E0;
 }
 
-/*.ControlTextarea {*/
-
-/*	font-size: 100%;*/
-/*}*/
 
 .ControlSelect {
-
-	/*font-size: 80%;*/
 	width: 100%;
 }
 
@@ -476,7 +521,6 @@ div#encMainDiv div.note div div [id*="txt"] {
 	padding-left: 0;
 	padding-right: 0;
 	width: 100%;
-	/*font-size: 80%;*/
 }
 
 .MainTableTopRowLeftColumn {
@@ -486,7 +530,6 @@ div#encMainDiv div.note div div [id*="txt"] {
 	border-top: 2px solid #A9A9A9;
 	height: 34px;
 	max-width: 130px;
-	/*font-size: 110%;*/
 	font-weight: bold;
 	color: #FFFFFF;
 }
@@ -569,7 +612,6 @@ div.demographicSection {
 
 div.demographicSection h3 {
 	background-color: #ccccff;
-	/*font-size: 8pt;*/
 	font-weight: bold;
 	margin-top: 0px;
 	padding-top: 0px;
@@ -611,11 +653,6 @@ div.demographicDetail {
 	background-color: #eeeeff;
 }
 
-div.label {
-	clear: both;
-	float: left;
-}
-
 #viewMobileMenu,.mobileScrollBtns,.mobileTitle,.mobileTopBar {
 	display: none;
 }
@@ -644,17 +681,12 @@ div.demographicWrapper {
 	border-right: 3px solid black;
 	padding: 3px;
 	z-index: 10;
-	/*font-size: 9px;*/
 	width: 25em;
 }
 
 .menu a {
 	text-decoration: none;
 	color: white;
-}
-
-div.label {
-	display: block;
 }
 
 /*****************/
@@ -669,7 +701,6 @@ div.label {
 
 .Title {
 	font-weight: bold;
-	/*font-size: 110%;*/
 	color: white;
 	background-color: #6699cc;
 }
@@ -681,35 +712,29 @@ div.label {
 
 .data {
 	background-color: #F7F7F7;
-	/*font-size: 80%;*/
 }
 
 .data2 {
 	background-color: #F7F7F7;
 	color: #3366CC;
-	/*font-size: 9px;*/
 }
 
 .data3 {
 	color: #15120B;
-	/*font-size: 11px;*/
 }
 
 .data4 {
 	background-color: #F7F7F7;
 	color: #3366CC;
-	/*font-size: 12px;*/
 }
 
 .data5 {
 	background-color: #FDFEC7;
 	color: #3366CC;
-	/*font-size: 9px;*/
 }
 
 div.leftBox {
 	width: 100%;
-	margin-top: 2px;
 	background-color: #FFFFFF;
 }
 
@@ -725,25 +750,21 @@ div.leftBox h3 a {
 }
 
 div.leftBox h3 {
-	margin:0px !important;
 	background-color: #6699cc;
-	/*font-size: 9px;*/
 	color: white;
 	font-weight: bold;
-	padding-left: 5px;
 }
 
-div.leftBox ul { 
-	padding:0px !important;
-	margin: 0px !important;
-	/*font-size: 9px;*/
+div.leftBox ul {
+	padding:0 !important;
+	margin: 0 !important;
 	list-style: none;
 	list-style-type: none;
 	list-style-position: outside;
 }
 
-div.leftBox li { 
-	white-space: nowrap;
+div.leftBox li {
+	word-wrap: anywhere;
 	padding: 1px 5px !important;
 }
 
@@ -760,7 +781,6 @@ div.leftBox li {
 	border-right: 3px solid black;
 	padding: 3px;
 	z-index: 101;
-	/*font-size: 9px;*/
 }
 
 .menuItemright {
@@ -781,16 +801,8 @@ div.leftBox li {
 	text-align: center;
 }
 
-.headerTitle {
-	clear: left;
-	float: left;
-	width: 90%;
-}
-/* formatting for navbar */
-.links {
-	color: blue;
-	text-decoration: none;
-	/*font-size: 9px;*/
+.view-links {
+	color:white;
 }
 
 .linkhover {
@@ -801,19 +813,16 @@ div.leftBox li {
 .editBtn {
 	float: right;
 	margin-right: 5px;
-	/*font-size: 8px;*/
 }
 
 .caseNote_date {
 	float: left;
-	/*font-size: 1.0em;*/
 	width: 25%;
 	font-weight: bold;
 }
 
 .caseNote_content {
 	float: left;
-	/*font-size: 1.0em;*/
 	width: 60%;
 }
 
@@ -821,7 +830,6 @@ div.leftBox li {
 	background-color: #CCCCFF;
 	color: #000000;
 	width: 100%;
-	/*font-size: 9px;*/
 }
 
 .observation,.observationEdit,.showEditDate {
@@ -839,26 +847,22 @@ div.leftBox li {
 .topLinks {
 	color: black;
 	text-decoration: none;
-	/*font-size: 9px;*/
 }
 
 .topLinkhover {
 	color: blue;
 	text-decoration: underline;
-	/*font-size: 9px;*/
 }
 
 div.newNote {
 	color: #000000;
-	/*font-family: arial, sans-serif;*/
-	/*font-size: 0.8em;*/
 	margin: 5px 0px 5px 5px;
 	float: left;
 }
 
 div.newNote pre {
 	color: #000000;
-	/*font-family: arial, sans-serif;*/
+
 	margin: 0px 3px 0px 3px;
 	width: 100%;
 	clear: left;
@@ -894,24 +898,19 @@ ul#issueIdList {
 }
 
 .showEdContent {
-	/*border: thin ridge black;*/
 	background-color: #CCCCFF;
-	/*font-size: 9px;*/
 	position: absolute;
 	display: none;
 	z-index: 200;
 	right: 100px;
 	bottom: 200px;
-	text-align: center;
+	padding:10px;
+	box-shadow:2px 3px 5px #999;
 }
 
 #showEditButtons,#showEditLogout {
 	float: right;
 	margin-right: 10px;
-}
-
-#noteEditTxt {
-	margin: 10px;
 }
 
 div#issueNoteAssign {
@@ -931,7 +930,6 @@ div#issueNoteAssign {
 .enTemplate_name_auto_complete {
 	width: 350px;
 	background: #fff;
-	/*font-size: 9px;*/
 	text-align: left;
 }
 
@@ -969,12 +967,12 @@ p.passwdErr {
 }
 
 #notesLoading {
-	position: relative !important;
-	background-color: #AAAADD;
-	border: 1px solid black;
-	border-radius: 3px 3px 3px 3px;
-	box-shadow: 2px 2px 4px;
-	/*font-size: 12px;*/
+	position: absolute;
+	background-color: white;
+	opacity: 80%;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	box-shadow: 2px 3px 5px #999;
 	padding: 4px;
 	text-align: center;
 	width: 130px;
@@ -985,45 +983,28 @@ p.passwdErr {
 	margin-right: 5px;
 }
 
-/* IMPORTED FROM INLINE */
-li.cpp {
-	text-indent: 5px;
-	color: #000000;
-	/*font-family: arial, sans-serif;*/
-	text-overflow: ellipsis;
-	overflow: hidden;
-}
-
 /*Note format */
 div.newNote {
 	color: #000000;
-	/*font-family: arial, sans-serif;*/
-	/*font-size: 0.8em;*/
-	margin: 5px 0px 5px 5px;
+	margin: 5px 0 5px 5px;
 	float: left;
 	width: 98%;
 }
 
 div.newNote pre {
 	color: #000000;
-	/*font-family: arial, sans-serif;*/
-	margin: 0px 3px 0px 3px;
+	margin: 0 3px 0 3px;
 	width: 100%;
 	clear: left;
 }
 
 div.note {
 	color: #000000;
-	/*font-family: arial, sans-serif;*/
-	margin: 3px 0px 3px 5px;
-	float: left;
-	width: 98%;
 }
 
 div.note pre {
 	color: #000000;
-	/*font-family: arial, sans-serif;*/
-	margin: 0px 3px 0px 3px;
+	margin: 0 3px 0 3px;
 	width: 100%;
 	clear: left;
 }
@@ -1033,19 +1014,13 @@ div.note pre {
 	background-color: #EEEEEE !important;
 	color: #111111 !important;
 	width: 100% !important;
-	/*font-size: x-small !important;*/
 	border-top:#CCCCCC thin solid !important;
 }
 
 .txtArea {
-	/*font-family: arial, sans-serif;*/
-	/*font-size: 1.0em;*/
-	width: 99%;
-	rows: 10;
-	overflow: hidden;
 	border: none;
-	/*font-family: arial, sans-serif;*/
-	margin: 0px 3px 0px 3px;
+	font-size: larger;
+	width: 100%;
 }
 
 p.passwd {
@@ -1073,7 +1048,6 @@ span.measureCol3 {
 .links {
 	color: blue;
 	text-decoration: none;
-	/*font-size: 9px;*/
 }
 
 .linkhover {
@@ -1085,7 +1059,6 @@ span.measureCol3 {
 .enTemplate_name_auto_complete {
 	width: 350px;
 	background: #fff;
-	/*font-size: 9px;*/
 	text-align: left;
 }
 
@@ -1114,7 +1087,7 @@ span.measureCol3 {
 	padding: 0;
 }
 
-/* Encounter type select box */ 
+/* Encounter type select box */
 
 div.autocomplete {
 	position: absolute;
@@ -1123,7 +1096,6 @@ div.autocomplete {
 	border: 1px solid #ccc;
 	margin: 0px;
 	padding: 0px;
-	/*font-size: 9px;*/
 	text-align: left;
 	max-height: 200px;
 	overflow: auto;
@@ -1149,14 +1121,12 @@ div.autocomplete ul li {
 
 .encTypeCombo {
 	margin: 0px;
-	/*font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;*/
-	/*font-size: 9px;*/
 	width: 200px;
 	text-align: left;
 	vertical-align: middle;
 	background: #FFFFFF
-		url('../images/downarrow_inv.gif') no-repeat
-		right;
+	url('../images/downarrow_inv.gif') no-repeat
+	right;
 	height: 18px;
 	cursor: pointer;
 	border: 1px solid #ccc;
@@ -1165,7 +1135,6 @@ div.autocomplete ul li {
 
 .printOps {
 	background-color: #CCCCFF;
-	/*font-size: 9px;*/
 	position: absolute;
 	display: none;
 	z-index: 1;
@@ -1181,7 +1150,6 @@ div.autocomplete ul li {
 	right: 100px;
 	bottom: 200px;
 	background-color: transparent;
-	/*font-size: 8px;*/
 	text-align: center;
 }
 
@@ -1189,22 +1157,9 @@ div.autocomplete ul li {
 	display: table-cell;
 	vertical-align: middle;
 }
-
-.showEdContent {
-	background-color: #CCCCFF;
-	/*font-size: 9px;*/
-	position: absolute;
-	display: none;
-	z-index: 200;
-	right: 100px;
-	bottom: 200px;
-	text-align: center;
-}
-
 /* Imported from casemgmt.css */
 
 .blueText {
-	/*font-size: 9pt;*/
 	vertical-align: top;
 }
 
@@ -1223,7 +1178,6 @@ div.autocomplete ul li {
 .subject {
 	background-color: #003399;
 	color: #FFFFFF;
-	/*font-size: 14pt;*/
 	font-weight: bold;
 	text-align: center;
 }
@@ -1269,7 +1223,7 @@ div.autocomplete ul li {
 /* TABS */
 .tabs th {
 	background-image:
-		url('http://localhost:8080/casemgmt/images/nw_maj_rond.gif');
+			url('http://localhost:8080/casemgmt/images/nw_maj_rond.gif');
 	background-repeat: no-repeat;
 	border-right: 1px solid #333;
 	background-color: #ddd;
@@ -1301,11 +1255,9 @@ div.autocomplete ul li {
 }
 
 div.tabs th,div.tabs td,s,#rightcol div.help,.colbar,.tasknav,body.docs div#toc,#leftcol,.legend,.bars
-	{
-	/*font-size: xx-small;*/
+{
 	voice-family: "\"}\"";
 	voice-family: inherit;
-	/*font-size: x-small;*/
 }
 
 .tabs td,.tabs th,dt,.tasknav .selfref,#login .username,.selection {
@@ -1359,10 +1311,33 @@ div.tabs th,div.tabs td,s,#rightcol div.help,.colbar,.tasknav,body.docs div#toc,
 	border-top-width: 0;
 }
 .popover .arrow, .popover .arrow::after {
-    position: absolute;
-    display: block;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
+	position: absolute;
+	display: block;
+	width: 0;
+	height: 0;
+	border-color: transparent;
+	border-style: solid;
+}
+
+div#encMainDiv div.note:not(.encounter-note) div:last-of-type:not(div#encMainDiv div.note:not(.encounter-note) div div div:last-of-type) {
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width:100%;
+}
+
+
+.view-links a, div#encMainDiv div.note:not(.encounter-note) div[id^='observation'] a {
+	display: inline-block;
+	color:white !important;
+	padding:0 5px;
+	text-decoration: underline;
+}
+
+div#encMainDiv div.note:not(.encounter-note) div[id^='wrapper']:not(.view-links), .view-links a {
+	padding:2px 5px;
+}
+
+div#encMainDiv div.note:not(.encounter-note) div.view-links {
+	order:2;
 }

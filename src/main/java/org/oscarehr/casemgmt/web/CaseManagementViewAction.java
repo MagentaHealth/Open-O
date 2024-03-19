@@ -23,33 +23,10 @@
 
 package org.oscarehr.casemgmt.web;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.quatro.model.security.Secrole;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsDateJsonBeanProcessor;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.logging.log4j.Logger;
@@ -63,43 +40,18 @@ import org.oscarehr.PMmodule.dao.SecUserRoleDao;
 import org.oscarehr.PMmodule.model.ProgramProvider;
 import org.oscarehr.PMmodule.model.ProgramTeam;
 import org.oscarehr.PMmodule.model.SecUserRole;
-import org.oscarehr.caisi_integrator.ws.CachedDemographicIssue;
-import org.oscarehr.caisi_integrator.ws.CachedDemographicNote;
-import org.oscarehr.caisi_integrator.ws.CachedFacility;
-import org.oscarehr.caisi_integrator.ws.CodeType;
-import org.oscarehr.caisi_integrator.ws.DemographicWs;
-import org.oscarehr.caisi_integrator.ws.NoteIssue;
+import org.oscarehr.caisi_integrator.ws.*;
 import org.oscarehr.casemgmt.common.Colour;
 import org.oscarehr.casemgmt.dao.CaseManagementNoteDAO;
 import org.oscarehr.casemgmt.dao.IssueDAO;
-import org.oscarehr.casemgmt.model.CaseManagementCPP;
-import org.oscarehr.casemgmt.model.CaseManagementIssue;
-import org.oscarehr.casemgmt.model.CaseManagementNote;
-import org.oscarehr.casemgmt.model.CaseManagementNoteExt;
-import org.oscarehr.casemgmt.model.CaseManagementSearchBean;
-import org.oscarehr.casemgmt.model.ClientImage;
-import org.oscarehr.casemgmt.model.Issue;
+import org.oscarehr.casemgmt.model.*;
 import org.oscarehr.casemgmt.service.CaseManagementManager;
 import org.oscarehr.casemgmt.service.NoteSelectionCriteria;
 import org.oscarehr.casemgmt.service.NoteSelectionResult;
 import org.oscarehr.casemgmt.service.NoteService;
 import org.oscarehr.casemgmt.web.formbeans.CaseManagementViewFormBean;
-import org.oscarehr.common.dao.BillingONCHeader1Dao;
-import org.oscarehr.common.dao.CaseManagementIssueNotesDao;
-import org.oscarehr.common.dao.DemographicDao;
-import org.oscarehr.common.dao.EncounterFormDao;
-import org.oscarehr.common.dao.GroupNoteDao;
-import org.oscarehr.common.model.Admission;
-import org.oscarehr.common.model.Allergy;
-import org.oscarehr.common.model.BillingONCHeader1;
-import org.oscarehr.common.model.CaseManagementTmpSave;
-import org.oscarehr.common.model.CustomFilter;
-import org.oscarehr.common.model.Demographic;
-import org.oscarehr.common.model.Drug;
-import org.oscarehr.common.model.Dxresearch;
-import org.oscarehr.common.model.GroupNoteLink;
-import org.oscarehr.common.model.Provider;
-import org.oscarehr.common.model.UserProperty;
+import org.oscarehr.common.dao.*;
+import org.oscarehr.common.model.*;
 import org.oscarehr.eyeform.EyeformInit;
 import org.oscarehr.eyeform.dao.EyeformFollowUpDao;
 import org.oscarehr.eyeform.dao.EyeformTestBookDao;
@@ -112,7 +64,6 @@ import org.oscarehr.provider.web.CppPreferencesUIBean;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
-
 import oscar.OscarProperties;
 import oscar.eform.EFormUtil;
 import oscar.oscarEncounter.data.EctFormData;
@@ -121,7 +72,13 @@ import oscar.oscarRx.pageUtil.RxSessionBean;
 import oscar.util.ConversionUtils;
 import oscar.util.OscarRoleObjectPrivilege;
 
-import com.quatro.model.security.Secrole;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.*;
 
 /*
  * Updated by Eugene Petruhin on 21 jan 2009 while fixing missing "New Note" link
@@ -1754,7 +1711,7 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 
 	public static String getNoteColour(NoteDisplay noteDisplay) {
 		// set all colors
-		String blackColour = "000000";
+		String blackColour = "FFFFFF";
 		String documentColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().documents + ";";
 		//String diseaseColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().disease + ";";
 		String eFormsColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().eForms + ";";

@@ -697,6 +697,7 @@ function reportWindow(page,height,width) {
 
 
 function submitFile(){
+	console.log("File from: documentsInQueues.jsp");
    aBoxIsChecked = false;
    submitLabs = true;
     if (document.reassignForm.flaggedLabs.length == undefined) {
