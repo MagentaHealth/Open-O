@@ -148,7 +148,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked/>
                                     <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
-                                    <label class="mb-2 btn-sm">Provider:</label>
+                                    <label class="mb-0 btn-sm">Provider:</label>
                                     <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
                                     <input type="text" id="autocompleteProvider" name="searchProviderName"
                                     onchange="this.form.submit()" value="<%=query.getSearchProviderName()%>"/><br>
@@ -168,31 +168,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="PatientsRadios" value="option3" id="specificPatients"/>
                                     <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label>
-                                    <label class="mb-2 btn-sm" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
-                                    <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off"
-                                           value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
-                                    <label class="mb-2 btn-sm" for="inputLastName"><bean:message key="admin.provider.formLastName"/></label>
-                                    <input type="text" name="patientLastName" id="inputLastName" autocomplete="off"
-                                           value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
-                                    <label class="mb-2 btn-sm" for="inputHIN"><bean:message key="oscarMDS.index.msgHealthNumber"/></label>
-                                    <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off"
-                                           value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
+                                    <div id="specificPatientsId">
+                                        <label class="mb-0 btn-sm" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
+                                        <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off" disabled="true"
+                                            value="<%=query.getPatientFirstName()%>" onchange="this.form.submit()"><br>
+                                        <label class="mb-0 btn-sm" for="inputLastName"><bean:message key="admin.provider.formLastName"/></label>
+                                        <input type="text" name="patientLastName" id="inputLastName" autocomplete="off" disabled="true"
+                                            value="<%=query.getPatientLastName()%>" onchange="this.form.submit()"><br>
+                                        <label class="mb-0 btn-sm" for="inputHIN"><bean:message key="oscarMDS.index.msgHealthNumber"/></label>
+                                        <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off" disabled="true"
+                                            value="<%=query.getPatientHealthNumber()%>" onchange="this.form.submit()">
+                                    </div>
                                 </div>
                                 <hr>
-                                <label class="form-check-label">Date Range:</label>
+                                <label class="mb-2 form-check-label">Date Range:</label>
                                 <div>
-                                    <label class="mb-2 btn-sm">Start:</label>
+                                    <label class="mb-1 btn-sm">Start:</label>
                                     <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
                                     <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
                                     <img src="../../images/close.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
                                 </div>
                                 <div>
-                                    <label class="mb-2 btn-sm">End:</label>
+                                    <label class="mb-1 btn-sm">End:</label>
                                     <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
                                     <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
                                     <img src="../../images/close.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
                                 </div>
-                                <center><input type="submit" class="btn btn-primary" value=" <bean:message key="oscarMDS.search.btnSearch"/> "></center>
+                                <input class="btn btn-primary"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
                             </div>
                         </div>
                     </div>
@@ -210,5 +212,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if( inputField.value.length > 0 ) {
             inputField.value = "";
         }
-}
+    }
+
+    document.querySelectorAll('input[name="PatientsRadios"]').forEach(function(radio) {
+        radio.addEventListener('click', function() {
+            var inputDiv = document.getElementById('specificPatientsId');
+            var inputs = inputDiv.getElementsByTagName('input');
+            var disableVal = true;
+            if (radio.value === 'option3') {
+                disableVal = false;
+            }
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = disableVal;
+            }
+        });
+    });
 </script>
