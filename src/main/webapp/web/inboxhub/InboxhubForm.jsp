@@ -186,13 +186,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                     <label class="mb-1 btn-sm">Start:</label>
                                     <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
                                     <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
-                                    <img src="../../images/close.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
+                                    <img src="../../images/clear.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
                                 </div>
                                 <div>
                                     <label class="mb-1 btn-sm">End:</label>
                                     <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
                                     <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
-                                    <img src="../../images/close.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
+                                    <img src="../../images/clear.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
                                 </div>
                                 <input class="btn btn-primary"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
                             </div>
@@ -204,8 +204,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     </div>
 </form>
 <script>
-    Calendar.setup({ inputField : "startDate", ifFormat : "%d/%m/%Y", showsTime :false, button : "startDate_cal", singleClick : true, step : 1 });
-    Calendar.setup({ inputField : "endDate", ifFormat : "%d/%m/%Y", showsTime :false, button : "endDate_cal", singleClick : true, step : 1 });
+    Calendar.setup({ inputField : "startDate", ifFormat : "%Y-%m-%d", showsTime :false, button : "startDate_cal", singleClick : true, step : 1 });
+    Calendar.setup({ inputField : "endDate", ifFormat : "%Y-%m-%d", showsTime :false, button : "endDate_cal", singleClick : true, step : 1 });
 
     function resetDateUsingID(id) {
         const inputField = document.getElementById(id);
