@@ -136,17 +136,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <div class="accordion-body d-grid btn-sm">
                                  <!-- Any Provider -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" />
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeProvider('-1')"/>
                                     <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
                                 </div>
                                 <!-- No Provier -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" />
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeProvider('0')"/>
                                     <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formAllProvider"/></label>
                                  </div>
                                 <!-- Specific Provider -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked/>
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeProvider('<%=query.getSearchProviderNo()%>')" checked/>
                                     <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                                     <label class="mb-0 btn-sm">Provider:</label>
                                     <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
@@ -156,7 +156,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <hr>
                                 <!-- All Patients (including unmatched) -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option1" id="allPatients" checked/>
+                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option1" id="allPatients" onClick="changePatient" checked/>
                                     <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
                                 </div>
                                 <!-- Unmatched to Existing Patient -->
@@ -204,6 +204,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     </div>
 </form>
 <script>
+    function changeProvider(value) {
+        var inProvider = document.getElementsByName('searchProviderNo');
+        inProvider[0].value = value;
+    }
+
     Calendar.setup({ inputField : "startDate", ifFormat : "%Y-%m-%d", showsTime :false, button : "startDate_cal", singleClick : true, step : 1 });
     Calendar.setup({ inputField : "endDate", ifFormat : "%Y-%m-%d", showsTime :false, button : "endDate_cal", singleClick : true, step : 1 });
 
