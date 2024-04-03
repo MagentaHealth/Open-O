@@ -134,7 +134,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                          data-bs-parent="#dropdown">
                         <div class="accordion-body d-grid btn-sm">
                             <div class="accordion-body d-grid btn-sm">
-                                 <!-- Any Provider -->
+                                <!-- Any Provider -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchProviderNo', '-1'); changeValueElementByName('searchProviderName', '')"/>
                                     <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
@@ -143,29 +143,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0'); changeValueElementByName('searchProviderName', '')"/>
                                     <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formAllProvider"/></label>
-                                 </div>
+                                </div>
                                 <!-- Specific Provider -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>')" checked/>
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>'); changeValueElementByName('searchProviderName', '<%=query.getSearchProviderName()%>')" checked/>
                                     <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
-                                    <label class="mb-0 btn-sm">Provider:</label>
-                                    <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
-                                    <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
+                                    <div id="specificProviderId">
+                                        <label class="mb-0 btn-sm">Provider:</label>
+                                        <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
+                                        <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
+                                    </div>
                                 </div>
                                 <hr>
                                 <!-- All Patients (including unmatched) -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
+                                    <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
                                     <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
                                 </div>
                                 <!-- Unmatched to Existing Patient -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
+                                    <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
                                     <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
                                 </div>
                                 <!-- Specific Patient(s) -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="PatientsRadios" value="option3" id="specificPatients"/>
+                                    <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
                                     <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label>
                                     <div id="specificPatientsId">
                                         <label class="mb-0 btn-sm" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
@@ -218,17 +220,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         }
     }
 
-    document.querySelectorAll('input[name="PatientsRadios"]').forEach(function(radio) {
-        radio.addEventListener('click', function() {
-            var inputDiv = document.getElementById('specificPatientsId');
-            var inputs = inputDiv.getElementsByTagName('input');
-            var disableVal = true;
-            if (radio.value === 'option3') {
-                disableVal = false;
-            }
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].disabled = disableVal;
-            }
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('myForm');
+
+        // Provider
+        var providerRadios = form.elements['providerRadios'];
+        for (var i = 0; i < providerRadios.length; i++) {
+            providerRadios[i].addEventListener('change', function() {
+                sessionStorage.setItem('selectedProviderRadio', this.value);
+                updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
+            });
+        }
+        var selectedProviderRadio = sessionStorage.getItem('selectedProviderRadio');
+        if (selectedProviderRadio) {
+            document.querySelector('input[value="' + selectedProviderRadio + '"]').checked = true;
+            updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
+        }
+
+        // Patients
+        var patientsRadios = form.elements['patientsRadios'];
+        for (var i = 0; i < patientsRadios.length; i++) {
+            patientsRadios[i].addEventListener('change', function() {
+                sessionStorage.setItem('selectedPatientsRadio', this.value);
+                updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
+            });
+        }
+        var selectedPatientsRadio = sessionStorage.getItem('selectedPatientsRadio');
+        if (selectedPatientsRadio) {
+            document.querySelector('input[value="' + selectedPatientsRadio + '"]').checked = true;
+            updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
+        }
     });
+
+    function updateInputDisabled(itemName, inputDivId, radioValue) {
+        var selectedRadio = sessionStorage.getItem(itemName);
+        var inputDiv = document.getElementById(inputDivId);
+        var inputs = inputDiv.getElementsByTagName('input');
+        var disableVal = true;
+        if (selectedRadio === radioValue) {
+            disableVal = false;
+        }
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].disabled = disableVal;
+        }
+    }
+
 </script>
