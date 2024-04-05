@@ -44,7 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
       id="myForm">
     <div>
-        <div class="d-grid">
+        <div class="d-grid" style="font-size:smaller" >
             <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
                    id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnViewMode">Preview Mode</label><br>
@@ -136,17 +136,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <div class="accordion-body d-grid btn-sm">
                                 <!-- Any Provider -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchProviderNo', '-1'); changeValueElementByName('searchProviderName', '')"/>
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchProviderNo', '-1');"/>
                                     <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
                                 </div>
                                 <!-- No Provier -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0'); changeValueElementByName('searchProviderName', '')"/>
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0');"/>
                                     <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formAllProvider"/></label>
                                 </div>
                                 <!-- Specific Provider -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>'); changeValueElementByName('searchProviderName', '<%=query.getSearchProviderName()%>')" checked/>
+                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
                                     <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                                     <div id="specificProviderId">
                                         <label class="mb-0 btn-sm">Provider:</label>
