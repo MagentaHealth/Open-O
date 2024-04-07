@@ -142,7 +142,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <!-- No Provier -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0');"/>
-                                    <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formAllProvider"/></label>
+                                    <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formNoProvider"/></label>
                                 </div>
                                 <!-- Specific Provider -->
                                 <div class="form-check">
@@ -206,7 +206,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </form>
 <script>
     function changeValueElementByName(name, value) {
-        var inPatient = document.getElementsByName(name);
+        let inPatient = document.getElementsByName(name);
         inPatient[0].value = value;
     }
 
@@ -221,31 +221,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        var form = document.getElementById('myForm');
+        const form = document.getElementById('myForm');
 
         // Provider
-        var providerRadios = form.elements['providerRadios'];
+        const providerRadios = form.elements['providerRadios'];
         for (var i = 0; i < providerRadios.length; i++) {
             providerRadios[i].addEventListener('change', function() {
                 sessionStorage.setItem('selectedProviderRadio', this.value);
                 updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
             });
         }
-        var selectedProviderRadio = sessionStorage.getItem('selectedProviderRadio');
+        const selectedProviderRadio = sessionStorage.getItem('selectedProviderRadio');
         if (selectedProviderRadio) {
             document.querySelector('input[value="' + selectedProviderRadio + '"]').checked = true;
             updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
         }
 
         // Patients
-        var patientsRadios = form.elements['patientsRadios'];
+        const patientsRadios = form.elements['patientsRadios'];
         for (var i = 0; i < patientsRadios.length; i++) {
             patientsRadios[i].addEventListener('change', function() {
                 sessionStorage.setItem('selectedPatientsRadio', this.value);
                 updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
             });
         }
-        var selectedPatientsRadio = sessionStorage.getItem('selectedPatientsRadio');
+        const selectedPatientsRadio = sessionStorage.getItem('selectedPatientsRadio');
         if (selectedPatientsRadio) {
             document.querySelector('input[value="' + selectedPatientsRadio + '"]').checked = true;
             updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
@@ -253,10 +253,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     });
 
     function updateInputDisabled(itemName, inputDivId, radioValue) {
-        var selectedRadio = sessionStorage.getItem(itemName);
-        var inputDiv = document.getElementById(inputDivId);
-        var inputs = inputDiv.getElementsByTagName('input');
-        var disableVal = true;
+        const selectedRadio = sessionStorage.getItem(itemName);
+        const inputDiv = document.getElementById(inputDivId);
+        const inputs = inputDiv.getElementsByTagName('input');
+        let disableVal = true;
         if (selectedRadio === radioValue) {
             disableVal = false;
         }
