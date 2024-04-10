@@ -112,13 +112,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </table>
     </row>
 </div>
-<script>
-    function redrawTable() {
-        location.reload();
-    }
-
-    $(window).resize(function() {
-        redrawTable();
-    });
-</script>
 <script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>
