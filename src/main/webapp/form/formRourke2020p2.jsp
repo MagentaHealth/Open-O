@@ -1014,7 +1014,7 @@ description layer</div>
 				<tr>
 					<td valign="top"><input type="radio" id="p2_NoPersistentClosed6mOk"
 						name="p2_NoPersistentClosed6mOk" onclick="onCheck(this,'p2_NoPersistentClosed6m')"
-						<%= props.getProperty("p2_NoPersistentClosed6m", "") %>></td>
+						<%= props.getProperty("p2_NoPersistentClosed6mOk", "") %>></td>
 					<td valign="top"><input type="radio" id="p2_NoPersistentClosed6mOkConcerns"
 						name="p2_NoPersistentClosed6mOkConcerns" onclick="onCheck(this,'p2_NoPersistentClosed6m')"
 						<%= props.getProperty("p2_NoPersistentClosed6mOkConcerns", "") %>></td>

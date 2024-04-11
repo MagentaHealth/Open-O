@@ -9,27 +9,26 @@
 
 package org.oscarehr.common.dao;
 
+import org.apache.http.impl.cookie.DateUtils;
+import org.apache.logging.log4j.Logger;
+import org.oscarehr.common.model.SystemPreferences;
+import org.oscarehr.util.MiscUtils;
+import org.oscarehr.util.SpringUtils;
+import oscar.oscarLab.ca.on.LabResultData;
+import oscar.util.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.http.impl.cookie.DateUtils;
-import org.apache.logging.log4j.Logger;
-import org.oscarehr.common.model.SystemPreferences;
-import org.oscarehr.util.SpringUtils;
-
-import oscar.oscarLab.ca.on.LabResultData;
-import oscar.util.StringUtils;
-
 public class InboxResultsDao {
 
-	Logger logger = org.oscarehr.util.MiscUtils.getLogger();
+	private static final Logger logger = MiscUtils.getLogger();
 
 	@PersistenceContext
 	protected EntityManager entityManager = null;

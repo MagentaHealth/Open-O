@@ -811,10 +811,11 @@
 
     <table id="firstTable" class="noprint">
         <tr>
-            <td class="icon-container">
-                <img alt="OSCAR EMR" src="<%=request.getContextPath()%>/images/oscar_logo_small.png" width="19" >
-            </td>
+
             <td id="firstMenu">
+                <div class="icon-container">
+                    <img alt="OSCAR EMR" src="<%=request.getContextPath()%>/images/oscar_logo_small.png" width="19px" >
+                </div>
                 <ul id="navlist">
                     <logic:notEqual name="infirmaryView_isOscar" value="false">
                         <% if (request.getParameter("viewall") != null && request.getParameter("viewall").equals("1")) { %>
@@ -1130,11 +1131,11 @@
                         </a>
                     </li>
                 </ul>
-            </td>
-            <td>
-                <a id="logoutButton" title="<bean:message key="global.btnLogout"/>" href="../logout.jsp">
-                    <span class="glyphicon glyphicon-off"></span>
-                </a>
+                <div>
+                    <a id="logoutButton" title="<bean:message key="global.btnLogout"/>" href="../logout.jsp">
+                        <span class="glyphicon glyphicon-off"></span>
+                    </a>
+                </div>
             </td>
 
         </tr>
@@ -1186,7 +1187,7 @@
                         key="global.calendar"/></a>
 
                 <logic:notEqual name="infirmaryView_isOscar" value="false">
-                    | <% if (request.getParameter("viewall") != null && request.getParameter("viewall").equals("1")) { %>
+                    <% if (request.getParameter("viewall") != null && request.getParameter("viewall").equals("1")) { %>
                     <u><a href=# onClick="review('0')"
                           title="<bean:message key="provider.appointmentProviderAdminDay.viewAllProv"/>"><bean:message
                             key="provider.appointmentProviderAdminDay.schedView"/></a></u>
@@ -1200,7 +1201,7 @@
 
                 <caisi:isModuleLoad moduleName="TORONTO_RFQ" reverse="true">
                     <security:oscarSec roleName="<%=roleName$%>" objectName="_day" rights="r">
-                        | <a class="rightButton top"
+                       <a class="rightButton top"
                              href="providercontrol.jsp?year=<%=curYear%>&month=<%=curMonth%>&day=<%=curDay%><%=viewString%>&displaymode=day&dboperation=searchappointmentday"
                              TITLE='<bean:message key="provider.appointmentProviderAdminDay.viewDaySched"/>'
                              OnMouseOver="window.status='<bean:message key="provider.appointmentProviderAdminDay.viewDaySched"/>' ; return true"><bean:message
@@ -1208,7 +1209,7 @@
                     </security:oscarSec>
                     <security:oscarSec roleName="<%=roleName$%>" objectName="_month" rights="r">
 
-                        | <a
+                        <a
                             href="providercontrol.jsp?year=<%=year%>&month=<%=month%>&day=1<%=viewString%>&displaymode=month&dboperation=searchappointmentmonth"
                             TITLE='<bean:message key="provider.appointmentProviderAdminDay.viewMonthSched"/>'
                             OnMouseOver="window.status='<bean:message key="provider.appointmentProviderAdminDay.viewMonthSched"/>' ; return true"><bean:message
@@ -1274,19 +1275,20 @@
             <td id="group">
 
                 <caisi:isModuleLoad moduleName="TORONTO_RFQ" reverse="true">
+                    <div>
                     <form method="post" name="findprovider"
                           onSubmit="findProvider(<%=year%>,<%=month%>,<%=day%>);return false;" target="apptReception"
-                          action="receptionistfindprovider.jsp"
-                          style="display:inline;margin:0px;padding:0px;padding-right:10px">
-                        <INPUT TYPE="text" NAME="providername" VALUE="" WIDTH="2" HEIGHT="10" border="0" size="10"
+                          action="receptionistfindprovider.jsp">
+                        <INPUT TYPE="text" NAME="providername" VALUE=""
                                maxlength="10" class="noprint" title="Find a Provider" placeholder="Enter Lastname">
                         <INPUT TYPE="SUBMIT" NAME="Go"
                                VALUE='<bean:message key="provider.appointmentprovideradminmonth.btnGo"/>'
                                class="noprint" onClick="findProvider(<%=year%>,<%=month%>,<%=day%>);return false;">
                     </form>
+                    </div>
                 </caisi:isModuleLoad>
-
-                <form name="appointmentForm" style="display:inline;margin:0px;padding:0px;">
+<div>
+                <form name="appointmentForm" >
                     <% if (isWeekView) { %>
                     <bean:message key="provider.appointmentProviderAdminDay.provider"/>:
                     <select name="provider_select" onChange="goWeekView(this.options[this.selectedIndex].value)">
@@ -1453,6 +1455,7 @@
 
 
                 </form>
+</div>
             </td>
         </tr>
     </table>

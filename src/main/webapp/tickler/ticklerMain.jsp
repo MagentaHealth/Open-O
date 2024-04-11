@@ -923,14 +923,22 @@
 					</td>
 				</tr>
 				<% Set<TicklerComment> tcomments = tickler.getComments();
-					for (TicklerComment tc : tcomments) { %>
+					for (TicklerComment tc : tcomments) {
+						// Ugly and wrong. I know. No time to rewrite the bad part.
+						Provider commentProvider = tc.getProvider();
+						String formattedName = "";
+						if(commentProvider != null) {
+							formattedName = commentProvider.getFormattedName();
+						}
+				%>
+
 
 				<tr class="followup-comment-<%=tickler.getId()%> comment-row no-sort">
 					<td></td>
 					<td></td>
 					<td><%=Encode.forHtmlContent(demo.getLastName())%>,<%=Encode.forHtmlContent(demo.getFirstName())%> 
 					</td>
-					<td class="no sort"><%=Encode.forHtmlContent(tc.getProvider().getFormattedName())%>
+					<td class="no-sort"><%=Encode.forHtmlContent(formattedName)%>
 					</td>
 					<td><%=dateOnlyFormat.format(tickler.getServiceDate())%>
 					</td>
@@ -947,7 +955,7 @@
 					</td>
 					<td></td>
 					<td></td>
-					<td class="no sort" style="white-space:pre-wrap"><%=Encode.forHtmlContent(tc.getMessage())%>
+					<td class="no-sort" style="white-space:pre-wrap"><%=Encode.forHtmlContent(tc.getMessage())%>
 					</td>
 					<td></td>
 					<td><%=tickler.getId()%>

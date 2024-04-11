@@ -36,9 +36,9 @@
 %>
 
 <div id="eform_floating_toolbar" class="no-print DoNotPrint hidden-print"> 
-	<nav id="eform_floating_toolbar_nav" class="navbar navbar-fixed-bottom navbar-default no-print DoNotPrint hidden-print">
-		<form class="navbar-form pull-left" >
-			<div class="input-group pull-left">			
+	<nav id="eform_floating_toolbar_nav" class="navbar navbar-default no-print DoNotPrint hidden-print">
+		<form class="navbar-form" >
+			<div class="input-group">
 		  		<input type="text" class="form-control" aria-label="Subject" name="remote_eform_subject" id="remote_eform_subject" placeholder="Subject" required/>
 		  		<div class="input-group-btn">
 		  			<button type="button" class="btn btn-primary" value="Save" name="remoteSubmitButton" title="Save only" id="remoteSubmitButton" onclick="remoteSave()" >
@@ -68,7 +68,7 @@
 			   		</button>
 					<button type="button" class="btn btn-default" value="Attach" name="AttachButton" title="Add Attachment" id="remoteAttachButton" data-poload="">
 		  				<span class="btn-label"><i class="glyphicon glyphicon-plus"></i></span>
-		  				Attach <div id="remoteTotalAttachments">0</div>
+		  				Attach <span class="badge" id="remoteTotalAttachments">0</span>
 		  			</button>
 			   		<button type="button" class="btn btn-danger " id="remoteCloseEformWindow" name="closeEformWindow" value="Close" title="Close this eForm" onclick="remoteClose()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-remove-circle"></i></span>
@@ -76,23 +76,23 @@
 			   		</button>
 		  		</div>
 			</div>
-			<div class="pull-left">
+			<div>
 				<span id="required-warning" style="color:red;display:none;margin:5px;">Subject required</span>
 			</div>
 
 		</form>
 		
-  		<div class="pull-right">
+  		<div>
 			<div class="input-group-btn">
-		  		<button type="button" class="btn btn-default pull-right" id="closeToolbarButton" name="closeToolbarButton" title="Close this toolbar" onclick="closeToolbar()">
-		   			<span class="btn-label"><i class="glyphicon glyphicon-remove"></i></span>
+		  		<button type="button" class="btn btn-link" id="closeToolbarButton" name="closeToolbarButton" title="Close this toolbar" onclick="closeToolbar()">
+		   			<span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span>
 		   		</button>
 		   	</div>
 		</div>
 	</nav>
-	<div class="pull-right no-print DoNotPrint hidden-print" style="border-top: #e7e7e7 thin solid;">
+	<div class="no-print DoNotPrint hidden-print" style="border-top: #e7e7e7 thin solid;position: fixed;right: 0;bottom: 0;border-left: #e7e7e7 thin solid;background-color: #ccc;padding-right: 25px;">
 		<div class="input-group-btn">
-			<button type="button" style="display:none;" class="btn btn-default pull-right" id="openToolbarButton" name="openToolbarButton" title="Open toolbar" onclick="openToolbar()">
+			<button type="button" style="display:none;" class="btn btn-link" id="openToolbarButton" name="openToolbarButton" title="Open toolbar" onclick="openToolbar()">
 				<span class="btn-label"><i class="glyphicon glyphicon-chevron-left"></i></span>
 			</button>
 		</div>

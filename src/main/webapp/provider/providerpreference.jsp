@@ -640,7 +640,7 @@ Event.observe('rxInteractionWarningLevel', 'change', function(event) {
     <td align="center">
 <% String br = OscarProperties.getInstance().getProperty("billregion");
    if (br.equals("BC")) { %>
-	<a href=# onClick ="popupPage(230,400,'../billing/CA/BC/viewBillingPreferencesAction.do?providerNo=<%=providerNo%>');return false;"><bean:message key="provider.btnBillPreference"/></a>
+	<a href=# onClick ="popupPage(900,500,'../billing/CA/BC/viewBillingPreferencesAction.do?providerNo=<%=providerNo%>');return false;"><bean:message key="provider.btnBillPreference"/></a>
 <% } else { %>
 	<a href=# onClick ="showHideBillPref();return false;"><bean:message key="provider.btnBillPreference"/></a>
 <% } %>

@@ -90,8 +90,10 @@
      * For Javascript: First is last.
      */
 
+    eForm.addHeadJavascript(request.getContextPath()+"/js/jquery.are-you-sure.js");
     eForm.addHeadJavascript(request.getContextPath()+"/library/jquery/jquery-ui-1.12.1.min.js");
     eForm.addHeadJavascript(request.getContextPath()+"/library/jquery/jquery-3.6.4.min.js");
+
     eForm.addCSS(request.getContextPath()+"/library/jquery/jquery-ui-1.12.1.min.css", "all");
     eForm.addBodyJavascript(request.getContextPath()+"/eform/eformFloatingToolbar/eform_floating_toolbar.js");
     eForm.addFontLibrary(request.getContextPath()+"/share/javascript/eforms/dejavufonts/ttf/DejaVuSans.ttf");
@@ -108,10 +110,11 @@
     eForm.addHiddenInputElement("eFormPDFName", (String) request.getAttribute("eFormPDFName"));
     eForm.addHiddenInputElement("eFormPDF", (String) request.getAttribute("eFormPDF"));
     eForm.addHiddenInputElement("isDownloadEForm", (String) request.getAttribute("isDownload"));
-
+    eForm.addHiddenInputElement("newForm", "false");
     // Add EForm attachments
     LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
     addHiddenEFormAttachments(loggedInInfo, eForm, fdid);
 
     out.print(eForm.getFormHtml());
 %>
+<script type="text/javascript" src="${oscar_javascript_path}/moment.js" ></script>

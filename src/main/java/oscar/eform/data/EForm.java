@@ -1018,6 +1018,7 @@ public class EForm extends EFormBase {
 
 	public void addHiddenInputElement(String id, String name, String className, String value, Map<String, String> additionalProperties) {
 		Element input = getDocument().createElement("input");
+
 		input.attr(ConvertToEdoc.ElementAttribute.type.name(), "hidden");
 
 		if(id != null && ! id.isEmpty()) {
@@ -1048,6 +1049,16 @@ public class EForm extends EFormBase {
 
 	private void addBodyElement(Element element) {
 		Element bodyElement = getDocument().body();
+
+		// check if this element doesnt pre-exist first
+		Element existing = null;
+		String elementId = element.id();
+		if(elementId != null && ! elementId.isEmpty()) {
+			existing = bodyElement.getElementById(elementId);
+		}
+		if(existing != null) {
+			existing.remove();
+		}
 		bodyElement.appendChild(element);
 	}
 
@@ -1067,7 +1078,7 @@ public class EForm extends EFormBase {
 				JSONObject placeHolder = (JSONObject) objekt;
 				String id = placeHolder.getString("id");
 				String value = placeHolder.getString("value");
-				if(!id.isEmpty() && !value.isEmpty()) {
+				if(!id.isEmpty() && !value.isEmpty() && (! value.startsWith("http") || ! value.startsWith("HTTP"))) {
 					for (Element imageElement : imageElements) {
 						if (id.equalsIgnoreCase(imageElement.id())) {
 							imageElement.attr("src", value);

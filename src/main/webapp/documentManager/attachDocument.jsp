@@ -54,88 +54,118 @@
 	<title><bean:message key="oscarEncounter.oscarConsultationRequest.AttachDocPopup.title" /></title>
 
 	<style>
-		.attachmentContainer {
-			display: flex;
-			width: 95vw;
-		}
 
-		@media (min-width: 2400px) {
-			.attachmentContainer {
-				width: 97vw;
-			}
-		}
+        .attachmentContainer * {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+            font-size: 12px !important;
+	        color:black;
+        }
 
-		.attachmentList {
-			overflow: auto;
-			min-width: 320px;
-			min-height: 580px;
-			height: 94vh;
-		}
+        .attachmentContainer table {
+            border-collapse: collapse;
+            border: none;
+        }
 
-		@media (min-height: 1600px) {
-			.attachmentList {
-				height: 97vh;
-			}
-		}
+        .attachmentContainer table, .attachmentContainer table tr td {
+            background-color:white !important;
+        }
 
-		#attachDocumentsPanel {
-			width: 100%;
-			font-size: x-small;
-		}
+        .attachmentContainer {
+            display: flex;
+            width: 95vw;
+            background-color: white !important;
+        }
 
-		.preview-button {
-			padding: 2px 4px;
-			color: black;
-			border: none;
-			border-radius: 2px;
-			cursor: pointer;
-		}
+        @media (min-width: 2400px) {
+            .attachmentContainer {
+                width: 97vw;
+            }
+        }
 
-		#attachDocumentsForm li.selectAllHeading {
-			justify-content: space-between;
-			align-items: center;
-			border-bottom: black thin inset
-		}
+        .attachmentList {
+            overflow-y: scroll;
+            min-width: 320px;
+            min-height: 580px;
+            width: 100%;
+            flex-basis: 40%;
+        }
 
-		.show-all-button {
-			padding: 2px 4px;
-			color: black;
-			border: none;
-			border-radius: 2px;
-			cursor: pointer;
-			margin-left: auto;
-			background-color:lightblue;
-		}
+        @media (min-height: 1600px) {
+            .attachmentList {
+                height: 97vh;
+            }
+        }
 
-		#pdfPreview {
-			width: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
+        #attachDocumentsPanel {
+            width: 100%;
+            font-size: x-small;
+        }
 
-		#pdfObject {
-			width: 100%;
-			height: 100%;
-		}
+        .preview-button {
+            padding: 2px 4px;
+            color: black;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
 
-		.preview-filler {
-			border: 2px solid black;
-			border-radius: 7px;
-			padding: 10px;
-		}
-		
-		.preview-pane {
-			background-color: lightgray;			
-		}
+        #attachDocumentsForm li.selectAllHeading {
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: black thin inset
+        }
 
-		.flex {
-			display: flex !important;
-		}
+        .show-all-button {
+            padding: 2px 4px;
+            color: black;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            margin-left: auto;
+            background-color:lightblue;
+        }
 
-		.hide {
-			display: none !important;
-		}
+        #pdfPreview {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-basis: 60%;
+        }
+
+        #pdfObject {
+            width: 100%;
+            height: 100%;
+        }
+
+        .preview-filler {
+            border: 2px solid black;
+            border-radius: 7px;
+            padding: 10px;
+        }
+
+        .preview-pane {
+            background-color: lightgray;
+        }
+
+        .flex {
+            display: flex !important;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        .attachmentContainer ul li:nth-of-type(odd) {
+            background-color: white;
+        }
+
+        .attachmentContainer ul li:nth-of-type(even) {
+            background-color: whitesmoke;
+        }
+        .attachmentContainer ul li.lab label:not(.attachmentContainer ul li.lab em label) {
+            font-weight: bold;
+        }
 	</style>
 
 	<script type="text/javascript">
@@ -241,7 +271,7 @@
 					</tr>
 					<tr>
 						<td>
-							<ul id="eFormList" style="list-style-type: none;padding:0px;">
+							<ul id="eFormList" style="list-style-type: none;padding:0;">
 								<li class="selectAllHeading ${allEForms.size() > 5 ? 'flex' : ''}">
 									<input id="selectAllEForms" type="checkbox" onclick="toggleSelectAll(this, 'eForm_');" value="eForm_check" title="Select/un-select all eForms."/>
 									<label for="selectAllEForms">Select all</label>
@@ -300,7 +330,7 @@
 								<c:forEach items="${ allLabsSortedByVersions }" var="lab" varStatus="loop">
 									<c:set var="labName" value="${fn:trim(lab.label) != '' ? fn:substring(lab.label, 0, 30) : fn:substring(lab.discipline, 0, 30)}" />
 									<c:set var="labId" value=",${lab.segmentID}Lab" />
-									<li class="lab ${loop.index > 19 ? 'hide' : ''}">
+									<li class="lab${loop.index > 19 ? 'hide' : ''}">
 										<c:set var="description" value="${ lab.description }" />
 										<c:if test="${empty description}"><c:set var="description" value="UNLABELLED" /></c:if>
 										<c:if test="${fn:contains(latestLabVersionIds, labId)}">
@@ -341,7 +371,7 @@
 					</tr>
 					<tr>
 						<td>
-							<ul id="hrmList" style="list-style-type: none;padding:0px;">
+							<ul id="hrmList" style="list-style-type: none;padding:0;">
 								<li class="selectAllHeading ${allHRMDocuments.size() > 20 ? 'flex' : ''}">
 									<input id="selectAllHRMS" type="checkbox" onclick="toggleSelectAll(this, 'hrm_');" value="hrm_check" title="Select/un-select all HRM documents."/>
 									<label for="selectAllHRMS">Select all</label>
@@ -367,7 +397,7 @@
 					</tr>
 					<tr>
 						<td>
-							<ul id="formList" style="list-style-type: none;padding:0px;">
+							<ul id="formList" style="list-style-type: none;padding:0;">
 								<li class="selectAllHeading ${allForms.size() > 20 ? 'flex' : ''}">
 									<input id="selectAllForms" type="checkbox" onclick="toggleSelectAll(this, 'form_');" value="form_check" title="Select/un-select all forms."/>
 									<label for="selectAllForms">Select all</label>

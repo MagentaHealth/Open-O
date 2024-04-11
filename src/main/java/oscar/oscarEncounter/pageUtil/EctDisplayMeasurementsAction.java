@@ -24,13 +24,6 @@
 
 package oscar.oscarEncounter.pageUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.struts.util.MessageResources;
 import org.oscarehr.common.dao.AdmissionDao;
@@ -42,13 +35,18 @@ import org.oscarehr.common.model.MeasurementGroupStyle;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
-
 import oscar.OscarProperties;
 import oscar.oscarEncounter.oscarMeasurements.MeasurementTemplateFlowSheetConfig;
 import oscar.oscarEncounter.oscarMeasurements.bean.EctMeasurementsDataBeanHandler;
 import oscar.oscarResearch.oscarDxResearch.bean.dxResearchBeanHandler;
 import oscar.util.DateUtils;
 import oscar.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 
 
@@ -274,7 +272,7 @@ public class EctDisplayMeasurementsAction extends EctDisplayAction {
 					title = padd(title, data.getDataField());
 					String tmp = "<span class=\"measureCol1\">" + title + "</span>";
 					//tmp += "<span class=\"measureCol2\">" + data.getDataField() + "&nbsp;</span>";
-					item.setValue(data.getDataField());
+					item.setValue(StringUtils.maxLenString(data.getDataField(), 6, 5, ELLIPSES));
 					//tmp += "<span class=\"measureCol3\">" + formattedDate + "</span><br style=\"clear:both\">";
 					item.setTitle(tmp);
 					item.setDate(date);

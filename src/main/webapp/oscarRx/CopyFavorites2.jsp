@@ -225,21 +225,21 @@
                                         name="fldDurationUnit<%= i%>" class=tblRow>
                                         <option
                                             <%
-                                if (fav.getDurationUnit().equals("D")) {%>
+                                if ("D".equals(fav.getDurationUnit())) {%>
                                             selected="selected"
                                             <% }
                                             %>
                                             value="D">Day(s)</option>
                                         <option
                                             <%
-                                if (fav.getDurationUnit().equals("W")) {%>
+                                if ("W".equals(fav.getDurationUnit())) {%>
                                             selected="selected"
                                             <% }
                                             %>
                                             value="W">Week(s)</option>
                                         <option
                                             <%
-                                if (fav.getDurationUnit().equals("M")) {%>
+                                if ("M".equals(fav.getDurationUnit())) {%>
                                             selected="selected"
                                             <% }
                                             %>

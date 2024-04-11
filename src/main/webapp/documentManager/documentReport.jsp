@@ -161,6 +161,15 @@
 
 		<title><bean:message key="dms.documentReport.msgDocuments"/> Manager</title>
 
+		<link rel="stylesheet" type="text/css"
+		      href="${pageContext.request.contextPath}/library/jquery/jquery-ui-1.12.1.min.css"/>
+		<link href="${pageContext.request.contextPath}/library/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet"
+		      type="text/css"/>
+		<link href="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/css/jquery.dataTables.css"
+		      rel="stylesheet" type="text/css"/>
+
+
+
 		<script src="${pageContext.request.contextPath}/library/jquery/jquery-3.6.4.min.js"
 		        type="text/javascript"></script>
 		<script src="${pageContext.request.contextPath}/library/bootstrap/3.0.0/js/bootstrap.min.js"
@@ -168,14 +177,8 @@
 		<script src="${pageContext.request.contextPath}/library/jquery/jquery-ui-1.12.1.min.js"
 		        type="text/javascript"></script>
 		<script type="text/javascript"
-		        src="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/js/dataTables.bootstrap.js"></script>
+		        src="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.js"></script>
 
-		<link rel="stylesheet" type="text/css"
-		      href="${pageContext.request.contextPath}/library/jquery/jquery-ui-1.12.1.min.css"/>
-		<link href="${pageContext.request.contextPath}/library/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet"
-		      type="text/css"/>
-		<link href="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/css/dataTables.bootstrap.css"
-		      rel="stylesheet" type="text/css"/>
 		<script src="${pageContext.request.contextPath}/js/global.js" type="text/javascript"></script>
 		<%
 			CtlDocClassDao docClassDao = (CtlDocClassDao) SpringUtils.getBean("ctlDocClassDao");
@@ -302,14 +305,33 @@
 				var parentId = "<%=parentAjaxId%>";
 				var Url = window.opener.URLs;
 
-				if (update === "true" && !window.opener.closed)
+				if (update === "true" && !window.opener.closed) {
 					window.opener.popLeftColumn(Url[parentId], parentId, parentId);
+				}
 			}
+
+			jQuery(document).ready(function () {
+				jQuery("table[id^='tblDocs']").DataTable({
+
+					lengthMenu: [
+						[50, -1],
+						[50, 'All']
+					],
+					"language": {
+						"url": "<%=request.getContextPath() %>/library/DataTables/i18n/<bean:message key="global.i18nLanguagecode"/>.json"
+					}
+				});
+			});
 		</script>
+
 		<style>
             :not(h2) {
                 line-height: 1 !important;
                 font-size: 12px !important;
+            }
+
+            .panel-body {
+	            overflow: auto;
             }
 
 		</style>
@@ -343,13 +365,13 @@
 				ArrayList categoryKeys = new ArrayList();
 
 				MiscUtils.getLogger().debug("module=" + module + ", moduleid=" + moduleid + ", view=" + view + ", EDocUtil.PRIVATE=" + EDocUtil.PRIVATE + ", viewstatus=" + viewstatus);
-				ArrayList<EDoc> privatedocs = EDocUtil.listDocs(loggedInInfo, module, moduleid, view, EDocUtil.PRIVATE, EDocUtil.EDocSort.DATE, viewstatus);
+				ArrayList<EDoc> privatedocs = EDocUtil.listDocs(loggedInInfo, module, moduleid, view, EDocUtil.PRIVATE, EDocUtil.EDocSort.OBSERVATIONDATE, viewstatus);
 				MiscUtils.getLogger().debug("privatedocs:" + privatedocs.size());
 
 				categories.add(privatedocs);
 				categoryKeys.add(moduleName + "'s Private Documents");
 				if (module.equals("provider")) {
-					ArrayList publicdocs = EDocUtil.listDocs(loggedInInfo, module, moduleid, view, EDocUtil.PUBLIC, EDocUtil.EDocSort.DATE, viewstatus);
+					ArrayList publicdocs = EDocUtil.listDocs(loggedInInfo, module, moduleid, view, EDocUtil.PUBLIC, EDocUtil.EDocSort.OBSERVATIONDATE, viewstatus);
 					categories.add(publicdocs);
 					categoryKeys.add("Public Documents");
 				}
@@ -365,17 +387,6 @@
 					String currentkey = (String) categoryKeys.get(i);
 					ArrayList category = (ArrayList) categories.get(i);
 			    %>
-				<script>
-					jQuery(document).ready(function () {
-						jQuery('#tblDocs<%=i%>').DataTable({
-							"lengthMenu": [[15, 30, 90, -1], [15, 30, 90, "<bean:message key="oscarEncounter.LeftNavBar.AllLabs"/>"]],
-							"order": [],
-							"language": {
-								"url": "<%=request.getContextPath() %>/library/DataTables/i18n/<bean:message key="global.i18nLanguagecode"/>.json"
-							}
-						});
-					});
-				</script>
 				<div class="doclist panel panel-default">
 					<div class="headerline panel-heading">
 						<div class="container">
@@ -438,14 +449,14 @@
 									       onclick="selectAll('pdfCheck<%=i%>','privateDocsDiv', 'tightCheckbox<%=i%>');"/>
 								</th>
 								<th>
+									<bean:message key="dms.documentReport.msgContent"/>
+								</th>
+								<th>
                                     <bean:message key="dms.documentReport.msgDocDesc"/>
                                 </th>
 								<th>
-									<bean:message key="dms.documentReport.msgContent"/>
-                                </th>
-								<th>
 									<bean:message key="dms.documentReport.msgType"/>
-                                </th>
+								</th>
 								<th>
                                     <bean:message key="dms.documentReport.msgCreator"/>
                                 </th>
@@ -453,11 +464,12 @@
 									<bean:message key="dms.documentReport.msgResponsible"/>
                                 </th>
 								<th>
+									<bean:message key="dms.documentReport.observationDate"/>
+								</th>
+								<th>
 									<bean:message key="dms.documentReport.msgDate"/>
                                 </th>
-								<th>
-									<bean:message key="dms.documentReport.msgReviewer"/>
-                                </th>
+
 								<th></th>
 							</tr>
 							</thead>
@@ -480,10 +492,10 @@
                                     }else {
                                         dStatus = "active";
                                     }
-									String reviewerName = curdoc.getReviewerName();
-									if (reviewerName.equals("")) {
-                                        reviewerName = "- - -";
-                                    }
+//									String reviewerName = curdoc.getReviewerName();
+//									if (reviewerName.equals("")) {
+//                                        reviewerName = "- - -";
+//                                    }
 							%>
 							    <tr>
 								<td>
@@ -492,6 +504,9 @@
                                            id="docNo<%=curdoc.getDocId()%>" value="<%=curdoc.getDocId()%>" style="margin: 0; padding: 0;"/>
 									<%}%>
 								</td>
+								    <td><%=curdoc.getType() == null ? "N/A" : Encode.forHtmlContent(curdoc.getType())%>
+								    </td>
+
 								<td>
 									<%
 										String url = "ManageDocument.do?method=display&doc_no=" + curdoc.getDocId() + "&providerNo=" + user_no + (curdoc.getRemoteFacilityId() != null ? "&remoteFacilityId=" + curdoc.getRemoteFacilityId() : "");
@@ -503,22 +518,22 @@
                                         <%=Encode.forHtml(curdoc.getDescription())%>
 								    </a>
                                 </td>
-								<td>
-									<div style="overflow:hidden; text-overflow: ellipsis;"
-									     title="<%=contentType%>" >
-                                        <%=Encode.forHtmlContent(contentType)%>
-									</div>
-								</td>
-								<td><%=curdoc.getType() == null ? "N/A" : Encode.forHtmlContent(curdoc.getType())%>
-								</td>
+								    <td>
+									    <div style="overflow:hidden; text-overflow: ellipsis;"
+									         title="<%=contentType%>" >
+										    <%=Encode.forHtmlContent(contentType)%>
+									    </div>
+								    </td>
+
 								<td><%=Encode.forHtml(curdoc.getCreatorName())%>
 								</td>
 								<td><%=Encode.forHtml(curdoc.getResponsibleName())%>
 								</td>
-								<td><%=Encode.forHtml(curdoc.getObservationDate())%>
+								    <td><%=Encode.forHtml(curdoc.getObservationDate())%>
+								    </td>
+								<td><%=curdoc.getContentDateTime()%>
 								</td>
-								<td><%=Encode.forHtml(reviewerName)%>
-								</td>
+
 								<td style="text-align: right;">
 									<div style="white-space: nowrap;">
 										<%

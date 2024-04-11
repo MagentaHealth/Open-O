@@ -672,7 +672,7 @@ function resetAll(){
 	document.getElementById('AddSignatureBox2').disabled=false;
 
 	document.getElementById('includePdfPrintControl').checked = false;
-	document.getElementById('includeFaxControl').checked = false;
+	// document.getElementById('includeFaxControl').checked = false;
 	
 	document.getElementById('BlackBox').checked = false;
 	clearGraphics(jg);
@@ -1731,7 +1731,7 @@ function update(e)
 </script>
 
 <!-- js graphics scripts -->
-<script type="text/javascript" src= "<%=request.getContextPath()%>/share/javascript/eforms/jsgraphics.js" ></script>
+<script type="text/javascript" src= "<%=request.getContextPath()%>/library/eforms/jsgraphics.js" ></script>
 
 </head>
 
@@ -1759,7 +1759,7 @@ show('classic');
 
 <form method="post" action="" name="generator" id="generator">
 
-<div name="Wizard" id="Wizard" class="DoNotPrint" style="position: absolute; left:750px; top: 0px; width: 500px; padding:5px; height: 1010; overflow-y: scroll;" >
+<div name="Wizard" id="Wizard" class="DoNotPrint" style="position: absolute; left:750px; top: 0px; width: 500px; padding:5px; height: 1010px; overflow-y: scroll;" >
 
 <span class="h1"><bean:message key="eFormGenerator.title"/></span>
 	<a onclick="show('all');"><bean:message key="eFormGenerator.expandAll"/></a>/
@@ -1848,9 +1848,9 @@ show('classic');
 
 			<div id="Section3b" style="display:none">
 				<span><b><bean:message key="eFormGenerator.radioLabel"/></b>: </span>
-				<input name="RadioButton" id="RadioButton" type="button" value='<bean:message key="eFormGenerator.radioButton"/>' onclick="SetSwitchOn(this.id);"></td>
+				<input name="RadioButton" id="RadioButton" type="button" value='<bean:message key="eFormGenerator.radioButton"/>' onclick="SetSwitchOn(this.id);">
 					<br>
-				<span><bean:message key="eFormGenerator.radioHint"/><span><input type="text" name="RadioName" id="RadioName" style="width:200px;" value="radio">
+				<span><bean:message key="eFormGenerator.radioHint"/></span><input type="text" name="RadioName" id="RadioName" style="width:200px;" value="radio">
 			</div>
 			<p><bean:message key="eFormGenerator.parent"/><br> <input name="parentchild" id="parentchild" type="checkbox" onclick="toggleView(this.checked,'Section3c');"><bean:message key="eFormGenerator.parentCheckbox"/></p>
 			<div id="Section3c" style="display:none">
@@ -1874,7 +1874,7 @@ show('classic');
 <span class='h2'>4. <bean:message key="eFormGenerator.signature"/></span><a onclick="show('Section4');"><bean:message key="eFormGenerator.expand"/></a>/<a onclick="hide('Section4');"><bean:message key="eFormGenerator.collapse"/></a>
 <div id="Section4">
 	<input type="checkbox" name="AddStamp2" id="AddStamp2" 
-		onclick="toggleView(this.checked,'Section4e');toggleView(this.checked,'Section4f');"><span><b>Add Signature Stamps to this form<b></span><br>
+	       onclick="toggleView(this.checked,'Section4e');toggleView(this.checked,'Section4f');"><span><strong>Add Signature Stamps to this form</strong></span><br>
 		<div id="Section4e" style="display:none">			
 			<input type="radio" name="D" id="Delegation" checked ><span><b>MRP Signature by Delegation</b> If no sig file Sig of MRP used</span><br>
 			<input type="radio" name="D" id="Strict" ><span><i>Strict User Signatures</i> Only signed in users can stamp</span>			

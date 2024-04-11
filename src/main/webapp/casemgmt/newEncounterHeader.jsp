@@ -59,7 +59,10 @@
     <c:set var="ctx" value="${pageContext.request.contextPath}" scope="request"/>
 
 	<div id="header-top-row">
-	        <%= demographic.getStandardIdentificationHTML() %>
+		<div id="branding-logo">
+			<img alt="OSCAR EMR" src="<%=request.getContextPath()%>/images/oscar_logo_small.png" width="19px" >
+		</div>
+		<%= demographic.getStandardIdentificationHTML() %>
 	</div>
 
 	<div id="header-bottom-row">

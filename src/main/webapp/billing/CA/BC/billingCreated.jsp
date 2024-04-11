@@ -188,6 +188,12 @@ function showHideLayers() { //v3.0
 
 <style type="text/css">
 
+    :root * {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, 'Glyphicons Halflings';
+        font-size: 12px;
+        line-height: 1 !important;
+    }
+
 	.button-bar {
 		margin-bottom:15px;
 	}

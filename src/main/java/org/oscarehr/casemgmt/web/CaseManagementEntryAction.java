@@ -23,39 +23,14 @@
 
 package org.oscarehr.casemgmt.web;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.quatro.model.security.Secrole;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.processors.JsDateJsonBeanProcessor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import org.oscarehr.PMmodule.dao.ProgramProviderDAO;
 import org.oscarehr.PMmodule.dao.ProviderDao;
 import org.oscarehr.PMmodule.model.Program;
@@ -63,34 +38,13 @@ import org.oscarehr.PMmodule.model.ProgramProvider;
 import org.oscarehr.PMmodule.service.AdmissionManager;
 import org.oscarehr.PMmodule.service.ProgramManager;
 import org.oscarehr.billing.CA.dao.GstControlDao;
-import org.oscarehr.casemgmt.dao.CaseManagementIssueDAO;
-import org.oscarehr.casemgmt.dao.CaseManagementNoteDAO;
-import org.oscarehr.casemgmt.dao.CaseManagementNoteExtDAO;
-import org.oscarehr.casemgmt.dao.CaseManagementNoteLinkDAO;
-import org.oscarehr.casemgmt.dao.IssueDAO;
-import org.oscarehr.casemgmt.model.CaseManagementCPP;
-import org.oscarehr.casemgmt.model.CaseManagementIssue;
-import org.oscarehr.casemgmt.model.CaseManagementNote;
-import org.oscarehr.casemgmt.model.CaseManagementNoteExt;
-import org.oscarehr.casemgmt.model.CaseManagementNoteLink;
-import org.oscarehr.casemgmt.model.ClientImage;
-import org.oscarehr.casemgmt.model.Issue;
+import org.oscarehr.casemgmt.dao.*;
+import org.oscarehr.casemgmt.model.*;
 import org.oscarehr.casemgmt.service.CaseManagementPrint;
 import org.oscarehr.casemgmt.web.CaseManagementViewAction.IssueDisplay;
 import org.oscarehr.casemgmt.web.formbeans.CaseManagementEntryFormBean;
-import org.oscarehr.common.dao.BillingServiceDao;
-import org.oscarehr.common.dao.CasemgmtNoteLockDao;
-import org.oscarehr.common.dao.DemographicDao;
-import org.oscarehr.common.dao.OscarAppointmentDao;
-import org.oscarehr.common.dao.ProviderDefaultProgramDao;
-import org.oscarehr.common.model.Appointment;
-import org.oscarehr.common.model.CaseManagementTmpSave;
-import org.oscarehr.common.model.CasemgmtNoteLock;
-import org.oscarehr.common.model.Demographic;
-import org.oscarehr.common.model.PartialDate;
-import org.oscarehr.common.model.Provider;
-import org.oscarehr.common.model.ProviderDefaultProgram;
-import org.oscarehr.common.model.Tickler;
+import org.oscarehr.common.dao.*;
+import org.oscarehr.common.model.*;
 import org.oscarehr.eyeform.dao.EyeFormDao;
 import org.oscarehr.eyeform.dao.EyeformFollowUpDao;
 import org.oscarehr.eyeform.dao.EyeformTestBookDao;
@@ -103,25 +57,9 @@ import org.oscarehr.eyeform.web.FollowUpAction;
 import org.oscarehr.eyeform.web.ProcedureBookAction;
 import org.oscarehr.eyeform.web.TestBookAction;
 import org.oscarehr.managers.TicklerManager;
-import org.oscarehr.util.EncounterUtil;
-import org.oscarehr.util.LoggedInInfo;
-import org.oscarehr.util.MiscUtils;
-import org.oscarehr.util.SessionConstants;
-import org.oscarehr.util.SpringUtils;
-import org.oscarehr.util.WebUtils;
+import org.oscarehr.util.*;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.WebApplicationContext;
-
-import com.quatro.model.security.Secrole;
-import java.util.GregorianCalendar;
-
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-import net.sf.json.processors.JsDateJsonBeanProcessor;
-import org.oscarehr.common.dao.ProviderDataDao;
-import org.oscarehr.common.dao.ResidentOscarMsgDao;
-import org.oscarehr.common.model.ProviderData;
-import org.oscarehr.common.model.ResidentOscarMsg;
 import oscar.OscarProperties;
 import oscar.appt.ApptStatusData;
 import oscar.log.LogAction;
@@ -131,6 +69,19 @@ import oscar.oscarEncounter.data.EctProgram;
 import oscar.oscarEncounter.pageUtil.EctSessionBean;
 import oscar.oscarSurveillance.SurveillanceMaster;
 import oscar.util.UtilDateUtilities;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /*
  * Updated by Eugene Petruhin on 12 and 13 jan 2009 while fixing #2482832 & #2494061
@@ -144,12 +95,16 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 	private CaseManagementIssueDAO caseManagementIssueDao = (CaseManagementIssueDAO) SpringUtils.getBean("caseManagementIssueDAO");
 	private CaseManagementNoteExtDAO caseManagementNoteExtDao = (CaseManagementNoteExtDAO) SpringUtils.getBean("CaseManagementNoteExtDAO");
 	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean("IssueDAO");
-	//private AppointmentArchiveDao appointmentArchiveDao = (AppointmentArchiveDao)SpringUtils.getBean("appointmentArchiveDao");
 	private CasemgmtNoteLockDao casemgmtNoteLockDao = SpringUtils.getBean(CasemgmtNoteLockDao.class);
-	//private NoteService noteService = SpringUtils.getBean(NoteService.class);
 	private TicklerManager ticklerManager = SpringUtils.getBean(TicklerManager.class);
 
 	public ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+		if(loggedInInfo == null) {
+			String message = "Illegal operation! Empty user session. LoggedInInfo " + loggedInInfo + " request " + request.getQueryString();
+			logger.error(message);
+			return null;
+		}
 		return edit(mapping, form, request, response);
 	}
 

@@ -378,7 +378,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 			<input type="hidden" id="bgColour<%=globalNoteId%>" value="<%=bgColour%>" /> 
 			<input type="hidden" id="editWarn<%=globalNoteId%>" value="<%=editWarn%>" />
 
-	  		<div id="n<%=globalNoteId%>">
+	  		<div id="n<%=globalNoteId%>" class="note-contents">
 			<%
 				//display last saved note for editing
 				if (note.getNoteId()!=null && !"".equals(note.getNoteId()) && note.getNoteId().intValue() == savedId )
@@ -395,11 +395,13 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
  							_setupNewNote();
  						</script>
  						<% } %>
- 												
+
+			        <div class='tool-button print-button'>
 						<img title="<bean:message key="oscarEncounter.print.title"/>" id='print<%=globalNoteId%>' alt="<bean:message key="oscarEncounter.togglePrintNote.title"/>" onclick="togglePrint(<%=globalNoteId%>, event)" style='float: right; margin-right: 5px;' src='<%=ctx %>/oscarEncounter/graphics/printer.png' />
-						<textarea tabindex="7" cols="84" rows="10" class="txtArea boxsizingBorder" wrap="soft" style="line-height: 1.1em;" name="caseNote_note" id="caseNote_note<%=savedId%>"><%=cform.getCaseNote_note()%></textarea>
+			        </div>
+				    <textarea tabindex="7" cols="84" rows="10" class="txtArea boxsizingBorder <%= note.isSigned() ? "" : "unsigned-textarea"%>" wrap="soft" style="line-height: 1.1em;" name="caseNote_note" id="caseNote_note<%=savedId%>"><%=cform.getCaseNote_note()%></textarea>
 						
-						<div class="sig" style="<%=bgColour%>" id="sig<%=globalNoteId%>">
+						<div class="sig <%= note.isSigned() ? "" : "note-unsigned"%>" style="<%=bgColour%>" id="sig<%=globalNoteId%>">
 							<%@ include file="noteIssueList.jsp"%>
 						</div>
 

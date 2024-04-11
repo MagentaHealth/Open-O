@@ -347,9 +347,9 @@ public final class ConvertToEdoc {
 		}
 
 		// DOCTYPE declarations are mandatory. HTML5 if none is declared.
-		if(! incomingDocumentString.startsWith("<!DOCTYPE") || ! incomingDocumentString.startsWith("<!doctype")) {
-			incomingDocumentString = "<!DOCTYPE html>" + incomingDocumentString;
-		}
+//		if(! incomingDocumentString.startsWith("<!DOCTYPE") || ! incomingDocumentString.startsWith("<!doctype")) {
+//			incomingDocumentString = "<!DOCTYPE html>" + incomingDocumentString;
+//		}
 
 		//TODO: COMING SOON.  EForms should be selectively sanitized against potential injection attacks and etc...
 //		Safelist safelist = Safelist.relaxed();
@@ -499,10 +499,23 @@ public final class ConvertToEdoc {
 			String[] parameterList = null;		
 			List<String> potentialFilePaths = new ArrayList<>();
 
-			if( path.contains("?") ) {
+			/*
+			 * NO EXTERNAL LINKS. These are removed.
+			 * eForms are often imported from unknown sources.
+			 * Developers tend to use insecure CDN's, links to images, tracking tokens,
+			 * and advertisements.
+			 */
+			if(path.startsWith("http") || path.startsWith("HTTP")) {
+				element.remove();
+			}
+
+			// internal GET links are validated.
+			else if( path.contains("?") ) {
 				// image or link paths with parameters
 				parameters = path.split("\\?")[1];
-			} else {
+			}
+
+			else if(! path.isEmpty()) {
 				// these are most likely relative context paths
 				path = getRealPath( path );
 				if(! path.isEmpty()) {

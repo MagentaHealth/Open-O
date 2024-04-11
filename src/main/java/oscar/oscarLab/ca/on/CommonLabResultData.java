@@ -221,7 +221,7 @@ public class CommonLabResultData {
     		if (hl7text != null && hl7text.trim().equals("yes")){
     			if (isPaged) {
     		        ArrayList<LabResultData> hl7Labs = Hl7textResultsData.populateHl7ResultsData(providerNo, demographicNo, patientFirstName, patientLastName,
-    		        												   patientHealthNumber, status, true, page, pageSize, mixLabsAndDocs, isAbnormal);
+    		        												   patientHealthNumber, status, true, page, pageSize, mixLabsAndDocs, isAbnormal, startDate, endDate);
     		        labs.addAll(hl7Labs);
                 }
                 else {

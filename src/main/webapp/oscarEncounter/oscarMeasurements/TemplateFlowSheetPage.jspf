@@ -171,7 +171,15 @@
 </script>
 <oscar:customInterface name="renal" section="diab"/>
 
-<style type="text/css">
+<style media="all">
+    :root *:not(h1,h2,h3,h4) {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        font-size: 12px;
+        overscroll-behavior: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
     div.ImmSet { background-color: #ffffff;clear:left;margin-top:10px;}
     div.ImmSet h2 {  }
     div.ImmSet h2 span { font-size:smaller; }
@@ -185,7 +193,7 @@
 
 </style>
 
-<style type="text/css" media="print">
+<style media="print">
 .DoNotPrint {
 	display: none;
 }
@@ -352,7 +360,6 @@ div.headPrevention p {
 
 
 <style type="text/css">
-body {font-size:100%}
 
 
 div.leftBox{
@@ -401,34 +408,9 @@ div.leftBox li {
     white-space: nowrap;
 }
 
-<%--
-div.headPrevention {
-    position:relative;
-    float:left;
-    width:12em;
-    height:2.9em;
-}
-
-div.headPrevention p {
-    background: silver;
-    font-family: verdana,tahoma,sans-serif;
-    margin:0;
-    padding: 4px 4px;
-    line-height: 1.2;
-/*text-align: justify;*/
-    height:2em;
-    font-family: sans-serif;
-}
---%>
 div.headPrevention a {
     text-decoration:none;
 }
-<%--
-div.headPrevention a:active { color:blue; }
-div.headPrevention a:hover { color:blue; }
-div.headPrevention a:link { color:blue; }
-div.headPrevention a:visited { color:blue; }
---%>
 
 div.preventionProcedure{
     width:9em;
@@ -443,8 +425,7 @@ div.preventionProcedure p {
     background: #F0F0E7;
     margin:0;
     padding: 1px 2px;
-/*line-height: 1.3;*/
-/*text-align: justify*/
+
 }
 
 div.preventionSection {
@@ -460,10 +441,7 @@ div.preventionSet {
     clear:left;
 }
 
-div.recommendations{
-    font-family: verdana,tahoma,sans-serif;
-    font-size: 1.2em;
-}
+
 
 div.recommendations ul{
     padding-left:15px;
@@ -474,28 +452,28 @@ div.recommendations ul{
     padding-bottom:0px;
 }
 
-div.recommendations li{
-
-}
-
-
 
 </style>
 
 </head>
 
 <body class="BodyStyle" >
-<!--  -->
+<div class="container">
 <table  class="MainTable" id="scrollNumber1" >
 <tr class="MainTableTopRow">
     <td class="MainTableTopRowLeftColumn"  >
         <h4><%=flowSheet%></h4>
     </td>
-    <td class="MainTableTopRowRightColumn">
+    <td class="MainTableTopRowRightColumn" style="text-align: center;">
+        <h4><oscar:nameage demographicNo="<%=demographic_no%>"/></h4>
+    </td>
+</tr>
+    <tr>
+    <td colspan="2">
         <table class="TopStatusBar">
             <tr>
-                <td colspan="3">
-                    <h4><oscar:nameage demographicNo="<%=demographic_no%>"/></h4>
+                <td>
+
                     <span class="DoNotPrint">
 
                     <a href="TemplateFlowSheet.jsp?demographic_no=<%=demographic_no%>&template=<%=temp%>&show=lastOnly">Last Only</a>
@@ -510,21 +488,31 @@ div.recommendations li{
              </tr>
              <tr>
              	<td>
-               		<span class="DoNotPrint">
-                    #Of Elements <input type="text" size="3" id="numEle" value="<%=request.getParameter("numEle") != null ? request.getParameter("numEle") : "" %>"/>
+               		<div class="DoNotPrint" style="display:flex; gap:3px; flex-direction: row;">
+                        <div class="form-group">
+                   <label for="numEle"> #Of Elements</label>
+                        <input type="text" size="3" id="numEle" value="<%=request.getParameter("numEle") != null ? request.getParameter("numEle") : "" %>"/>
+                        </div>
+                        <div class="form-group">
+                   <label for="flowsheetStartDate"> Start Date</label>
+                        <input type="date" size="10" id="flowsheetStartDate" value="<%=request.getParameter("sdate") != null ? request.getParameter("sdate") : "" %>" />
+                        </div>
+                        <div class="form-group">
+                   <label for="flowsheetEndDate"> End Date</label>
+                        <input type="date" size="10" id="flowsheetEndDate" value="<%=request.getParameter("edate") != null ? request.getParameter("edate") : "" %>"/>
+                        </div>
+                        <div class="button-group">
+                            <label>&nbsp;</label>
+                    <input type="button" class="btn" value="go" onclick="loadDifferentElements()"/>
+                        </div>
+                        <div class="button-group">
+                            <label>&nbsp;</label>
+                    <input type="button" class="btn" value="clear" onclick="clearDifferentElements()"/>
+                        </div>
 
-                    Start Date <input type="date" size="10" id="flowsheetStartDate" value="<%=request.getParameter("sdate") != null ? request.getParameter("sdate") : "" %>" />
-                    End Date <input type="date" size="10" id="flowsheetEndDate" value="<%=request.getParameter("edate") != null ? request.getParameter("edate") : "" %>"/>
-                    <input type="button" class="btn" value="go" onclick="javascript: loadDifferentElements()"/>
-                    <input type="button" class="btn" value="clear" onclick="javascript: clearDifferentElements()"/>
-                    </span>
+                    </div>
                 </td>
-                <td>
-                &nbsp;
-                </td>
-                <td style="text-align:right; vertical-align:bottom;">
-                    <oscar:help keywords="measurement" key="app.top1"/> | <a href="javascript:popupStart(300,400,'About.jsp')" ><bean:message key="global.about" /></a> | <a href="javascript:popupStart(300,400,'License.jsp')" ><bean:message key="global.license" /></a>
-                </td>
+
             </tr>
         </table>
     </td>
@@ -1001,7 +989,7 @@ if(temp.equals("diab2") || temp.equals("chf")) {
 					<br/>
 					<ul>
 					<%
-						thisDrug.sort(new Drug.RxDateCompator());
+						thisDrug.sort(Drug.START_DATE_COMPARATOR);
 						Collections.reverse(thisDrug);
 						for(Drug d : thisDrug) {
 							%>
@@ -1058,6 +1046,7 @@ if(idExists("WT") && idExists("HT" ) && idExists("BMI")){
     document.getElementById('add_custom').style.display = 'block'; // show
 }
 </script>
+</div>
 </body>
 </html:html>
 

@@ -444,7 +444,6 @@ function notesLoader(offset, numToReturn, demoNo) {
 				evalScripts: true,
 				insertion: Insertion.Top,
 				onSuccess: function(data) {
-					console.log(data);
 					notesRetrieveOk = (data.responseText.replace(/\s+/g, '').length > 0);
 					if (! notesRetrieveOk) {
 						clearInterval(scrollCheckInterval);
@@ -1950,9 +1949,9 @@ function editNote(e) {
     Element.remove(txtId);
     caseNote = "caseNote_note" + nId;
 
-    var input = "<textarea tabindex='7' cols='84' rows='10' wrap='hard' class='txtArea boxsizingBorder' style='line-height:1.1em;' name='caseNote_note' id='" + caseNote + "'>" + payload + "<\/textarea>";
+    var input = "<textarea tabindex='7' cols='84' rows='10' wrap='hard' class='txtArea boxsizingBorder edit-textarea' style='line-height:1.1em;' name='caseNote_note' id='" + caseNote + "'>" + payload + "<\/textarea>";
     new Insertion.Top(txt, input);
-    var printimg = "<img title='Print' id='print" + nId + "' alt='Toggle Print Note' onclick='togglePrint(" + nId + ", event)' style='float:right; margin-right:5px;' src='" + ctx + "/oscarEncounter/graphics/printer.png'>";
+    var printimg = "<div class='tool-button print-button'><img title='Print' id='print" + nId + "' alt='Toggle Print Note' onclick='togglePrint(" + nId + ", event)' style='float:right; margin-right:5px;' src='" + ctx + "/oscarEncounter/graphics/printer.png'></div>";
 
     var strNid = "" + nId;
     if( strNid.substr(0,1) != "0" )
@@ -1995,6 +1994,7 @@ function editNote(e) {
     document.forms["caseManagementEntryForm"].forceNote.value = "true";
 
     var divId = "sig" + nId;
+	$(divId).className += " note-edit";
     //cache existing signature so we can recreate it if ajax call aborted
     sigCache = $(divId).innerHTML;
     ajaxUpdateIssues('edit', divId);

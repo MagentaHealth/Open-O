@@ -48,14 +48,14 @@ pageContext.setAttribute("isMobileDevice", isMobileDevice);
 
     <head>
     <title>
-	    <c:choose>
-	    	<c:when test="${ not empty LoginResourceBean.tabName }">
-	    		<c:out value="${ LoginResourceBean.tabName }" />
-	    	</c:when>
-	    	<c:otherwise>
+<%--	    <c:choose>--%>
+<%--	    	<c:when test="${ not empty LoginResourceBean.tabName }">--%>
+<%--	    		<c:out value="${ LoginResourceBean.tabName }" />--%>
+<%--	    	</c:when>--%>
+<%--	    	<c:otherwise>--%>
 	    		<bean:message key="loginApplication.title"/>
-	    	</c:otherwise>
-	    </c:choose>
+<%--	    	</c:otherwise>--%>
+<%--	    </c:choose>--%>
     </title>
     	
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/Oscar.ico" />
@@ -547,11 +547,11 @@ pageContext.setAttribute("isMobileDevice", isMobileDevice);
 
 			    <div class="panel-heading">
 			    
-			    	<div id="oscar_logo">
-				    	<!-- Oscar logo -->
-			        	<img title="OSCAR EMR Login" src="${pageContext.request.contextPath}/images/Logo.png"  alt="OSCAR EMR Login"
-			        		onerror="document.getElementById('default_logo').style.display='block'; this.style.display='none'; " />
-		        	</div>
+<%--			    	<div id="oscar_logo">--%>
+<%--				    	<!-- Oscar logo -->--%>
+<%--			        	<img title="OSCAR EMR Login" src="${pageContext.request.contextPath}/images/Logo.png"  alt="OSCAR EMR Login"--%>
+<%--			        		onerror="document.getElementById('default_logo').style.display='block'; this.style.display='none'; " />--%>
+<%--		        	</div>--%>
 		        	
 		        	<!-- default text if logo is missing -->	
 	        		<h2 id="default_logo" style="display:none;">
