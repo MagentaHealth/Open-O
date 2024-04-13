@@ -132,7 +132,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                          data-bs-parent="#dropdown">
-                        <div class="accordion-body d-grid btn-sm">
+                        <div class="accordion-body d-grid btn-sm" style="text-align: left;">
                             <div class="accordion-body d-grid btn-sm">
                                 <!-- Any Provider -->
                                 <div class="form-check">
