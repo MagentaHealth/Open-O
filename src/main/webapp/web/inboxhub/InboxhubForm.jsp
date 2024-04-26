@@ -51,6 +51,99 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <label class="fw-bold text-uppercase mb-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgTotalResults"/>: <%=categoryData.getTotalNumDocs()%>
             </label>
+        <div style="text-align: left;">
+        <!--Provider-->
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
+                <bean:message key="inbox.inboxmanager.msgProviders"/>
+            </label>
+            <!-- Any Provider -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchProviderNo', '-1');"/>
+                <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
+            </div>
+            <!-- No Provier -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0');"/>
+                <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formNoProvider"/></label>
+            </div>
+            <!-- Specific Provider -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
+                <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
+                <div id="specificProviderId">
+                    <label class="mb-0 btn-sm">Provider:</label>
+                    <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
+                    <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
+                </div>
+            </div>
+            <hr>
+        <!--Patient(s)-->
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
+                <bean:message key="inbox.inboxmanager.msgPatinets"/>
+            </label>
+            <!-- All Patients (including unmatched) -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
+                <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
+            </div>
+            <!-- Unmatched to Existing Patient -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
+                <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
+            </div>
+            <!-- Specific Patient(s) -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
+                <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label>
+                <div id="specificPatientsId">
+                    <label class="mb-0 btn-sm" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
+                    <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off" disabled="true"
+                        value="<%=query.getPatientFirstName()%>"><br>
+                    <label class="mb-0 btn-sm" for="inputLastName"><bean:message key="admin.provider.formLastName"/></label>
+                    <input type="text" name="patientLastName" id="inputLastName" autocomplete="off" disabled="true"
+                        value="<%=query.getPatientLastName()%>"><br>
+                    <label class="mb-0 btn-sm" for="inputHIN"><bean:message key="oscarMDS.index.msgHealthNumber"/></label>
+                    <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off" disabled="true"
+                        value="<%=query.getPatientHealthNumber()%>">
+                </div>
+            </div>
+            <hr>
+        <!-- Date Range-->
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
+                <bean:message key="inbox.inboxmanager.msgDateRange"/>
+            </label>
+            <div>
+                <label class="mb-1 btn-sm">Start:</label>
+                <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
+                <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
+                <img src="../../images/clear.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
+            </div>
+            <div>
+                <label class="mb-1 btn-sm">End:</label>
+                <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
+                <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
+                <img src="../../images/clear.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
+            </div>
+            <hr>
+        <!--Type-->
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
+                <bean:message key="inbox.inboxmanager.msgType"/>
+            </label>
+
+        <!--Review Status-->
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
+                <bean:message key="inbox.inboxmanager.msgReviewStatus"/>
+            </label>
+        <!--Result Status-->
+            <label class="fw-bold text-uppercase mb-2 btn-sm">
+                <bean:message key="inbox.inboxmanager.msgResultStatus"/>
+            </label>
+
+        </div>
+        <!--Search Button-->
+            <input class="btn btn-primary"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
+
+
             <input type="checkbox" class="btn-check btn-sm" name="clearFilters" id="btnClear" autocomplete="off"
                    onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnClear">Clear Filters</label><br>
@@ -121,85 +214,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                        onchange="this.form.submit()"  <% if (Objects.equals(query.getSearchAll(), "")) { %>
                        checked <% } %>>
                 <label class="btn btn-outline-primary btn-sm" for="physicianClear">Clear</label>
-            </div>
-            <div class="accordion" id="dropdown">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button " type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-controls="collapseOne">
-                            <bean:message key="inbox.inboxmanager.msgSearchFilter"/>
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                         data-bs-parent="#dropdown">
-                        <div class="accordion-body d-grid btn-sm" style="text-align: left;">
-                            <div class="accordion-body d-grid btn-sm">
-                                <!-- Any Provider -->
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchProviderNo', '-1');"/>
-                                    <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
-                                </div>
-                                <!-- No Provier -->
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0');"/>
-                                    <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formNoProvider"/></label>
-                                </div>
-                                <!-- Specific Provider -->
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
-                                    <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
-                                    <div id="specificProviderId">
-                                        <label class="mb-0 btn-sm">Provider:</label>
-                                        <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
-                                        <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
-                                    </div>
-                                </div>
-                                <hr>
-                                <!-- All Patients (including unmatched) -->
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
-                                    <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
-                                </div>
-                                <!-- Unmatched to Existing Patient -->
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
-                                    <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
-                                </div>
-                                <!-- Specific Patient(s) -->
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
-                                    <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label>
-                                    <div id="specificPatientsId">
-                                        <label class="mb-0 btn-sm" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
-                                        <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off" disabled="true"
-                                            value="<%=query.getPatientFirstName()%>"><br>
-                                        <label class="mb-0 btn-sm" for="inputLastName"><bean:message key="admin.provider.formLastName"/></label>
-                                        <input type="text" name="patientLastName" id="inputLastName" autocomplete="off" disabled="true"
-                                            value="<%=query.getPatientLastName()%>"><br>
-                                        <label class="mb-0 btn-sm" for="inputHIN"><bean:message key="oscarMDS.index.msgHealthNumber"/></label>
-                                        <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off" disabled="true"
-                                            value="<%=query.getPatientHealthNumber()%>">
-                                    </div>
-                                </div>
-                                <hr>
-                                <label class="mb-2 form-check-label">Date Range:</label>
-                                <div>
-                                    <label class="mb-1 btn-sm">Start:</label>
-                                    <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
-                                    <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
-                                    <img src="../../images/clear.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
-                                </div>
-                                <div>
-                                    <label class="mb-1 btn-sm">End:</label>
-                                    <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
-                                    <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
-                                    <img src="../../images/clear.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
-                                </div>
-                                <input class="btn btn-primary"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
