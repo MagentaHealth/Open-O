@@ -67,12 +67,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </nav>
     </div>
     <div class="row">
-        <div class="col-3" style="z-index: 5; text-align: center;">
+        <div class="col-3" style="z-index: 5; text-align: center; padding-right:0;">
             <div class="bg-light text-dark" style="display: inline-block;">
                 <jsp:include page="InboxhubForm.jsp"/>
             </div>
         </div>
-        <div class="col-9" style="z-index:100">
+        <div class="col-9" style="z-index:100; padding-left:0;">
             <div class="bg-light text-dark">
                 <c:choose>
                     <c:when test="${viewMode}">
