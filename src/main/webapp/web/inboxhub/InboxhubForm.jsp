@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <style>
     #specificProviderId label {
         display: inline-block;
-        width: 100px;
+        width: 80px;
         text-align: right;
         margin-bottom: 5px;
     }
@@ -54,7 +54,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     #specificPatientsId label {
         display: inline-block;
-        width: 100px;
+        width: 80px;
         text-align: right;
         margin-bottom: 5px;
     }
@@ -71,7 +71,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     }
 
     #dateId input[type="text"] {
-        width: calc(100% - 120px);
+        width: calc(100% - 140px);
     }
 </style>
 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
@@ -91,20 +91,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <!-- Any Provider -->
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchProviderNo', '-1');"/>
+                <input class="btn-check-input" type="radio" name="searchAll" id="physicianAll" value="true"
+                       onchange="this.form.submit()" <% if (Objects.equals(query.getSearchAll(), "true")) { %>
+                       checked <% } %>>
                 <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
             </div>
             <!-- No Provier -->
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchProviderNo', '0');"/>
+                <input class="btn-check-input" type="radio" name="searchAll" id="physicianUnclaimed" value="false"
+                       onchange="this.form.submit()"  <% if (Objects.equals(query.getSearchAll(), "false")) { %>
+                       checked <% } %>>
                 <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formNoProvider"/></label>
             </div>
             <!-- Specific Provider -->
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
+                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                 <div id="specificProviderId">
-                    <label class="mb-0">Provider:</label>
+                    <label class="mb-0">Provider</label>
                     <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
                     <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
                 </div>
@@ -115,17 +119,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <!-- All Patients (including unmatched) -->
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
+                <input class="btn-check-input" type="radio"  name="clearFilters" id="btnClear" autocomplete="off"
+                   onchange="this.form.submit()">
                 <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
             </div>
             <!-- Unmatched to Existing Patient -->
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
+                <input class="btn-check-input" type="radio" name="unmatched" <% if (query.getUnmatched()) { %> checked <% } %>
+                   id="btnUnmatched" autocomplete="off" onchange="this.form.submit()">
                 <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
             </div>
             <!-- Specific Patient(s) -->
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
+                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                 <div id="specificPatientsId">
                     <label class="mb-0" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
