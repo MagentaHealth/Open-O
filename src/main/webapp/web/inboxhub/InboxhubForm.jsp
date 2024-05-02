@@ -40,7 +40,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <script type="text/javascript" src="../../share/calendar/calendar.js"></script>
 <script type="text/javascript" src="../../share/calendar/lang/<bean:message key="global.javascript.calendar"/>"></script>
 <script type="text/javascript" src="../../share/calendar/calendar-setup.js"></script>
+<style>
+    #specificProviderId label {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+        margin-bottom: 5px;
+    }
 
+    #specificProviderId input[type="text"] {
+        width: calc(100% - 120px);
+    }
+
+    #specificPatientsId label {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+        margin-bottom: 5px;
+    }
+
+    #specificPatientsId input[type="text"] {
+        width: calc(100% - 120px);
+    }
+
+    #dateId label {
+        display: inline-block;
+        width: 60px;
+        text-align: right;
+        margin-bottom: 5px;
+    }
+
+    #dateId input[type="text"] {
+        width: calc(100% - 120px);
+    }
+</style>
 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
       id="myForm">
     <div>
@@ -93,7 +126,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <!-- Specific Patient(s) -->
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
-                <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label>
+                <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                 <div id="specificPatientsId">
                     <label class="mb-0" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
                     <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off" disabled="true"
@@ -112,17 +145,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <label class="fw-bold text-uppercase mu-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgDateRange"/>
             </label>
-            <div>
-                <label class="mb-1">Start:</label>
-                <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
-                <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
-                <img src="../../images/clear.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
-            </div>
-            <div>
-                <label class="mb-1">End:</label>
-                <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
-                <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
-                <img src="../../images/clear.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
+            <div id="dateId">
+                <div>
+                    <label class="mb-1">Start:</label>
+                    <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
+                    <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
+                    <img src="../../images/clear.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
+                </div>
+                <div>
+                    <label class="mb-1">End:</label>
+                    <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
+                    <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
+                    <img src="../../images/clear.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
+                </div>
             </div>
         <!--Type-->
             <label class="fw-bold text-uppercase mu-2 btn-sm">
@@ -182,7 +217,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
              </div>
         </div>
         <!--Search Button-->
-            <input class="btn btn-primary"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
+            <input class="btn btn-primary btn-sm"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
         </div>
     </div>
 </form>
