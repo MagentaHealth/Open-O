@@ -91,24 +91,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <!-- Any Provider -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="searchAll" id="physicianAll" value="true"
-                       onchange="this.form.submit()" <% if (Objects.equals(query.getSearchAll(), "true")) { %>
-                       checked <% } %>>
+                <input class="btn-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchAll', 'true');"/>
                 <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
             </div>
             <!-- No Provier -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="searchAll" id="physicianUnclaimed" value="false"
-                       onchange="this.form.submit()"  <% if (Objects.equals(query.getSearchAll(), "false")) { %>
-                       checked <% } %>>
+                <input class="btn-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchAll', 'false');"/>
                 <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formNoProvider"/></label>
             </div>
             <!-- Specific Provider -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" onClick="changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
+                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" 
+                    onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                 <div id="specificProviderId">
                     <label class="mb-0">Provider</label>
+                    <input type="hidden" name="searchAll" id="searchProviderAll"value="<%=query.getSearchAll()%>"/>
                     <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
                     <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
                 </div>
@@ -119,14 +117,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <!-- All Patients (including unmatched) -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio"  name="clearFilters" id="btnClear" autocomplete="off"
-                   onchange="this.form.submit()">
+                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
                 <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
             </div>
             <!-- Unmatched to Existing Patient -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="unmatched" <% if (query.getUnmatched()) { %> checked <% } %>
-                   id="btnUnmatched" autocomplete="off" onchange="this.form.submit()">
+                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
                 <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
             </div>
             <!-- Specific Patient(s) -->
@@ -171,17 +167,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
-                    autocomplete="off" onchange="this.form.submit()">
+                    autocomplete="off">
                 <label class="form-check-label" for="btnDoc">DOC (<%=categoryData.getTotalDocs()%>)</label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
-                   autocomplete="off" onchange="this.form.submit()">
+                   autocomplete="off">
             <label class="form-check-label" for="btnLab">LAB (<%=categoryData.getTotalLabs()%>)</label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
-                   autocomplete="off" onchange="this.form.submit()">
+                   autocomplete="off"">
                 <label class="form-checkbox-label" for="btnHRM">HRM</label><br>
             </div>
         <!--Review Status-->
@@ -190,18 +186,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusNew" value="N"
-                       onchange="this.form.submit()"  <% if (Objects.equals(query.getStatus(), "N")) { %>
-                       checked <% } %>>
+                       onclick=<% if (Objects.equals(query.getStatus(), "N")) { %> checked <% } %>>
                 <label class="form-check-label" for="statusNew">New</label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusAcknowledged" value="A"
-                       onchange="this.form.submit()"<% if (Objects.equals(query.getStatus(), "A")) { %> checked <% } %>>
+                    onclick=<% if (Objects.equals(query.getStatus(), "A")) { %> checked <% } %>>
                 <label class="form-check-label" for="statusAcknowledged">Acknowledged</label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusFiled" value="F"
-                       onchange="this.form.submit()" <% if (Objects.equals(query.getStatus(), "F")) { %>
+                       onclick=<% if (Objects.equals(query.getStatus(), "F")) { %>
                        checked <% } %>>
                 <label class="form-check-label" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
             </div>
@@ -211,13 +206,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <div class="form-check">
                 <input type="radio" class="btn-check-input" name="abnormal" id="Abnormal" value="Abnormal"
-                       onchange="this.form.submit()"  <% if (Objects.equals(query.getAbnormal(), "Abnormal")) { %>
+                       onclick=<% if (Objects.equals(query.getAbnormal(), "Abnormal")) { %>
                        checked <% } %>>
                 <label class="form-check-label" for="Abnormal"><bean:message key="global.abnormal"/> (<%=categoryData.getAbnormalCount()%>)</label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input" name="abnormal" id="Normal" value="Normal"
-                       onchange="this.form.submit()"<% if (Objects.equals(query.getAbnormal(), "Normal")) { %>
+                    onclick=<% if (Objects.equals(query.getAbnormal(), "Normal")) { %>
                        checked <% } %>>
                 <label class="form-check-label" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/> (<%=categoryData.getNormalCount()%>)</label>
              </div>
