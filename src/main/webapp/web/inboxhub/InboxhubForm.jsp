@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <style>
     #specificProviderId label {
         display: inline-block;
-        width: 80px;
+        width: 90px;
         text-align: right;
         margin-bottom: 5px;
     }
@@ -54,7 +54,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     #specificPatientsId label {
         display: inline-block;
-        width: 80px;
+        width: 100px;
         text-align: right;
         margin-bottom: 5px;
     }
@@ -65,7 +65,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     #dateId label {
         display: inline-block;
-        width: 60px;
+        width: 70px;
         text-align: right;
         margin-bottom: 5px;
     }
@@ -74,6 +74,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         width: calc(100% - 140px);
     }
 </style>
+
 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
       id="myForm">
     <div>
@@ -81,9 +82,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
                    id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
             <label class="btn btn-outline-primary btn-sm" for="btnViewMode">Preview Mode</label><br>
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
-                <bean:message key="inbox.inboxmanager.msgTotalResults"/>: <%=categoryData.getTotalNumDocs()%>
-            </label>
         <div style="text-align: left;">
         <!--Provider-->
             <label class="fw-bold text-uppercase mu-2 btn-sm">
@@ -101,7 +99,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </div>
             <!-- Specific Provider -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" 
+                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider"
                     onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                 <div id="specificProviderId">
@@ -168,16 +166,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
                     autocomplete="off">
-                <label class="form-check-label" for="btnDoc">DOC (<%=categoryData.getTotalDocs()%>)</label><br>
+                <label class="form-check-label" for="btnDoc">DOC</label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
                    autocomplete="off">
-            <label class="form-check-label" for="btnLab">LAB (<%=categoryData.getTotalLabs()%>)</label><br>
+            <label class="form-check-label" for="btnLab">LAB</label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
-                   autocomplete="off"">
+                   autocomplete="off">
                 <label class="form-checkbox-label" for="btnHRM">HRM</label><br>
             </div>
         <!--Review Status-->
@@ -186,35 +184,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusNew" value="N"
-                       onclick=<% if (Objects.equals(query.getStatus(), "N")) { %> checked <% } %>>
+                       onclick="changeValueElementByName('status', 'N')">
                 <label class="form-check-label" for="statusNew">New</label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusAcknowledged" value="A"
-                    onclick=<% if (Objects.equals(query.getStatus(), "A")) { %> checked <% } %>>
+                       onclick="changeValueElementByName('status', 'A')">
                 <label class="form-check-label" for="statusAcknowledged">Acknowledged</label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusFiled" value="F"
-                       onclick=<% if (Objects.equals(query.getStatus(), "F")) { %>
-                       checked <% } %>>
+                       onclick="changeValueElementByName('status', 'F')">
                 <label class="form-check-label" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
             </div>
-        <!--Result Status-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+        <!--Abnormal-->
+            <label class="fw-bold text-uppercase mu-
                 <bean:message key="inbox.inboxmanager.msgResultStatus"/>
             </label>
             <div class="form-check">
+                <input type="radio" class="btn-check-input" name="abnormal" id="All" value="All" checked
+                    onclick="changeValueElementByName('abnormal', 'All')">
+                <label class="form-check-label" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
+            </div>
+            <div class="form-check">
                 <input type="radio" class="btn-check-input" name="abnormal" id="Abnormal" value="Abnormal"
-                       onclick=<% if (Objects.equals(query.getAbnormal(), "Abnormal")) { %>
-                       checked <% } %>>
-                <label class="form-check-label" for="Abnormal"><bean:message key="global.abnormal"/> (<%=categoryData.getAbnormalCount()%>)</label>
+                    onclick="changeValueElementByName('abnormal', 'Abnormal')">
+                <label class="form-check-label" for="Abnormal"><bean:message key="global.abnormal"/></label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input" name="abnormal" id="Normal" value="Normal"
-                    onclick=<% if (Objects.equals(query.getAbnormal(), "Normal")) { %>
-                       checked <% } %>>
-                <label class="form-check-label" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/> (<%=categoryData.getNormalCount()%>)</label>
+                    onclick="changeValueElementByName('abnormal', 'Normal')">
+                <label class="form-check-label" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/></label>
              </div>
         </div>
         <!--Search Button-->
@@ -267,6 +267,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (selectedPatientsRadio) {
             document.querySelector('input[value="' + selectedPatientsRadio + '"]').checked = true;
             updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
+        }
+
+        // Result status
+        const resultStatusRadios = form.elements['status'];
+        for (var i = 0; i < resultStatusRadios.length; i++) {
+            resultStatusRadios[i].addEventListener('change', function() {
+                sessionStorage.setItem('selectedResultStatusRadio', this.value);
+            });
+        }
+        const selectedResultStatusRadio = sessionStorage.getItem('selectedResultStatusRadio');
+        if (selectedResultStatusRadio) {
+            document.querySelector('input[value="' + selectedResultStatusRadio + '"]').checked = true;
+        }
+
+        // Abnormal
+        const resultAbnormalRadios = form.elements['abnormal'];
+        for (var i = 0; i < resultAbnormalRadios.length; i++) {
+            resultAbnormalRadios[i].addEventListener('change', function() {
+                sessionStorage.setItem('selectedAbnormalRadio', this.value);
+            });
+        }
+        const selectedAbnormalRadio = sessionStorage.getItem('selectedAbnormalRadio');
+        if (selectedAbnormalRadio) {
+            document.querySelector('input[value="' + selectedAbnormalRadio + '"]').checked = true;
         }
     });
 
