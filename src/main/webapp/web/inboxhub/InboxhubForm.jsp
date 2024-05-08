@@ -198,7 +198,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <label class="form-check-label" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
             </div>
         <!--Abnormal-->
-            <label class="fw-bold text-uppercase mu-
+            <label class="fw-bold text-uppercase mu-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgResultStatus"/>
             </label>
             <div class="form-check">
