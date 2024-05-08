@@ -166,25 +166,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
                     autocomplete="off">
-                <label class="form-check-label" for="btnDoc">DOC</label><br>
+                <label class="form-check-label" for="btnDoc">Include Documents</label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
                    autocomplete="off">
-            <label class="form-check-label" for="btnLab">LAB</label><br>
+            <label class="form-check-label" for="btnLab">Include Labs</label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
                    autocomplete="off">
-                <label class="form-checkbox-label" for="btnHRM">HRM</label><br>
+                <label class="form-checkbox-label" for="btnHRM">Include HRM</label><br>
             </div>
         <!--Review Status-->
             <label class="fw-bold text-uppercase mu-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgReviewStatus"/>
             </label>
             <div class="form-check">
+                <input type="radio" class="btn-check-input btn-sm" name="status" id="statusAll" id="All" value="All"
+                    <% if (Objects.equals(query.getStatus(), "")) { %> checked <% } %> onclick="changeValueElementByName('status', '')">
+                <label class="form-check-label" for="statusAll"><bean:message key="inbox.inboxmanager.msgAll"/>
+            </div>
+            <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusNew" value="N"
-                       onclick="changeValueElementByName('status', 'N')">
+                    <% if (Objects.equals(query.getStatus(), "N")) { %> checked <% } %> onclick="changeValueElementByName('status', 'N')">
                 <label class="form-check-label" for="statusNew">New</label>
             </div>
             <div class="form-check">
@@ -203,7 +208,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </label>
             <div class="form-check">
                 <input type="radio" class="btn-check-input" name="abnormal" id="All" value="All" checked
-                    onclick="changeValueElementByName('abnormal', 'All')">
+                    <% if (Objects.equals(query.getAbnormal(), "All")) { %> checked <% } %> onclick="changeValueElementByName('abnormal', 'All')">
                 <label class="form-check-label" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
             </div>
             <div class="form-check">
