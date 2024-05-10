@@ -81,7 +81,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         <div class="d-grid" style="font-size:smaller" >
             <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
                    id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary btn-sm" for="btnViewMode">Preview Mode</label><br>
+            <label class="btn btn-outline-primary btn-sm" for="btnViewMode"><bean:message key="inbox.inboxmanager.msgPreviewModes"/></label><br>
         <div style="text-align: left;">
         <!--Provider-->
             <label class="fw-bold text-uppercase mu-2 btn-sm">
@@ -166,17 +166,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
                     autocomplete="off">
-                <label class="form-check-label" for="btnDoc">Include Documents</label><br>
+                <label class="form-check-label" for="btnDoc"><bean:message key="inbox.inboxmanager.msgTypeDocs"/></label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
                    autocomplete="off">
-            <label class="form-check-label" for="btnLab">Include Labs</label><br>
+            <label class="form-check-label" for="btnLab"><bean:message key="inbox.inboxmanager.msgTypeLabs"/></label><br>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
                    autocomplete="off">
-                <label class="form-checkbox-label" for="btnHRM">Include HRM</label><br>
+                <label class="form-checkbox-label" for="btnHRM"><bean:message key="inbox.inboxmanager.msgTypeHRM"/></label><br>
             </div>
         <!--Review Status-->
             <label class="fw-bold text-uppercase mu-2 btn-sm">
@@ -190,12 +190,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusNew" value="N"
                     <% if (Objects.equals(query.getStatus(), "N")) { %> checked <% } %> onclick="changeValueElementByName('status', 'N')">
-                <label class="form-check-label" for="statusNew">New</label>
+                <label class="form-check-label" for="statusNew"><bean:message key="inbox.inboxmanager.msgNew"/></label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusAcknowledged" value="A"
                        onclick="changeValueElementByName('status', 'A')">
-                <label class="form-check-label" for="statusAcknowledged">Acknowledged</label>
+                <label class="form-check-label" for="statusAcknowledged"><bean:message key="inbox.inboxmanager.msgAcknowledged"/></label>
             </div>
             <div class="form-check">
                 <input type="radio" class="btn-check-input btn-sm" name="status" id="statusFiled" value="F"
