@@ -99,8 +99,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </div>
             <!-- Specific Provider -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider"
-                    onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');" checked/>
+                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked
+                    onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');"/>
                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                 <div id="specificProviderId">
                     <label class="mb-0">Provider</label>
@@ -125,7 +125,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </div>
             <!-- Specific Patient(s) -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients""/>
+                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients"/>
                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                 <div id="specificPatientsId">
                     <label class="mb-0" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
@@ -164,17 +164,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <bean:message key="inbox.inboxmanager.msgType"/>
             </label>
             <div class="form-check">
-                <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc()) { %> checked <% } %> id="btnDoc"
+                <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnDoc"
                     autocomplete="off">
                 <label class="form-check-label" for="btnDoc"><bean:message key="inbox.inboxmanager.msgTypeDocs"/></label><br>
             </div>
             <div class="form-check">
-                <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab()) { %> checked <% } %> id="btnLab"
+                <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnLab"
                    autocomplete="off">
             <label class="form-check-label" for="btnLab"><bean:message key="inbox.inboxmanager.msgTypeLabs"/></label><br>
             </div>
             <div class="form-check">
-                <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm()) { %> checked <% } %> id="btnHRM"
+                <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnHRM"
                    autocomplete="off">
                 <label class="form-checkbox-label" for="btnHRM"><bean:message key="inbox.inboxmanager.msgTypeHRM"/></label><br>
             </div>
