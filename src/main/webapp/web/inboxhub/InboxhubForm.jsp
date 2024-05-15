@@ -87,6 +87,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <label class="fw-bold text-uppercase mu-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgProviders"/>
             </label>
+            <input type="hidden" name="searchAll" id="searchProviderAll" value="<%=query.getSearchAll()%>"/>
             <!-- Any Provider -->
             <div class="form-check">
                 <input class="btn-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchAll', 'true');"/>
@@ -100,12 +101,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <!-- Specific Provider -->
             <div class="form-check">
                 <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked
-                    onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', '<%=query.getSearchProviderNo()%>');"/>
+                    onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', document.getElementsByName('searchProviderNo')[0].value);" />
                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                 <div id="specificProviderId">
                     <label class="mb-0">Provider</label>
-                    <input type="hidden" name="searchAll" id="searchProviderAll"value="<%=query.getSearchAll()%>"/>
-                    <input type="hidden" name="searchProviderNo" id="findProvider"value="<%=query.getSearchProviderNo()%>"/>
+                    <input type="hidden" name="searchProviderNo" id="findProvider" value="<%=query.getSearchProviderNo()%>"/>
                     <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
                 </div>
             </div>
