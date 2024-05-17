@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 -->
 
 <%@ page import="java.util.*" %>
+<%@ page import="oscar.OscarProperties" %>
 <%@ page import="oscar.oscarLab.ca.on.*" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
@@ -174,11 +175,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                    autocomplete="off">
             <label class="form-check-label" for="btnLab"><bean:message key="inbox.inboxmanager.msgTypeLabs"/></label><br>
             </div>
+
+            <% if (!OscarProperties.getInstance().isBritishColumbiaBillingRegion()) { %>
             <div class="form-check">
                 <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnHRM"
                    autocomplete="off">
                 <label class="form-checkbox-label" for="btnHRM"><bean:message key="inbox.inboxmanager.msgTypeHRM"/></label><br>
             </div>
+            <% } %>
         <!--Review Status-->
             <label class="fw-bold text-uppercase mu-2 btn-sm">
                 <bean:message key="inbox.inboxmanager.msgReviewStatus"/>
