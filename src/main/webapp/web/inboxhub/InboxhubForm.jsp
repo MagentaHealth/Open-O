@@ -114,8 +114,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <bean:message key="inbox.inboxmanager.msgPatinets"/>
             </label>
             <!-- All Patients (including unmatched) -->
+            <input type="hidden" name="unmatched" id="unmatchedId" value="<%=query.getUnmatched()%>"/>
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('patientFirstName', '')" checked/>
+                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('unmatched', 'false'); changeValueElementByName('patientFirstName', '')" checked/>
                 <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
             </div>
             <!-- Unmatched to Existing Patient -->
@@ -125,7 +126,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </div>
             <!-- Specific Patient(s) -->
             <div class="form-check">
-                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients"/>
+                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients" onClick="changeValueElementByName('unmatched', 'false')"/>
                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                 <div id="specificPatientsId">
                     <label class="mb-0" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
