@@ -46,6 +46,7 @@ if(!authed) {
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@page
 	import="oscar.oscarEncounter.pageUtil.*,oscar.oscarEncounter.data.*"%>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 
 <%
 String demo = request.getParameter("de");
@@ -193,6 +194,9 @@ function popupOscarConS(vheight,vwidth,varpage) { //open a new popup window
 							key="oscarEncounter.oscarConsultationRequest.DisplayDemographicConsultationRequests.msgPatCall" />
 						<% }else if(status.equals("4")) { %> <bean:message
 							key="oscarEncounter.oscarConsultationRequest.DisplayDemographicConsultationRequests.msgAppMade" />
+						<%-- For ocean referrals --%>
+						<% }else if(status.equals("5")) { %> <bean:message
+							key="oscarEncounter.oscarConsultationRequest.DisplayDemographicConsultationRequests.msgBookCon" />
 						<% } %>
 						</td>
 						<td class="stat<%=status%>"><a
@@ -200,9 +204,11 @@ function popupOscarConS(vheight,vwidth,varpage) { //open a new popup window
 						<%=patient%> </a></td>
 						<td class="stat<%=status%>"><%=provide%></td>
 						<td class="stat<%=status%>"><%=cProv.getFormattedName()%></td>
-						<td class="stat<%=status%>"><a
-							href="javascript:popupOscarRx(700,960,'../../oscarEncounter/ViewRequest.do?de=<%=demo%>&requestId=<%=id%>')">
-						<%=service%> </a></td>
+						<td class="stat<%=status%>">
+							<a href="javascript:popupOscarRx(700,960,'../../oscarEncounter/ViewRequest.do?de=<%=demo%>&requestId=<%=id%>')">
+								<%=StringUtils.trimToEmpty(service)%> 
+							</a>
+						</td>
 						<td class="stat<%=status%>"><%=date%></td>
 					</tr>
 					<%}%>

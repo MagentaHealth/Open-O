@@ -12,11 +12,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		addNavElement();
 		moveSubjectReverse();
 
-		// Add eForm attachments
+		// Add eForm attachments 
 		addEFormAttachments();
-
-		// Resize the window based on the toolbar width
-		window.resizeTo(1100,1100);
 
 		// If download EForm
 		const isDownload = document.getElementById("isDownloadEForm") ? document.getElementById("isDownloadEForm").value : "false";
@@ -27,16 +24,27 @@ document.addEventListener("DOMContentLoaded", function(){
 		const errorMessage = document.getElementById("errorMessage") ? document.getElementById("errorMessage").value : "";
 		if (error === "true") { showError(errorMessage); }
 
+		// add listener to the subject element
+		document.forms[0].elements["subject"].addEventListener("input", function() {
+			document.getElementById("remote_eform_subject").value = this.value;
+		})
+		document.forms[0].elements["subject"].addEventListener("click", function() {
+			document.getElementById("remote_eform_subject").value = this.value;
+		})
+
 	});
 
 	window.onerror = function uncaughtExceptionHandler(message, source, lineNumber, colno, error) {
-		return alert('This eForm contains source code errors that will cause a failure of functionality or loss of data.\n\n' +
-			'Please go to OSCARGalaxy.org for an updated version of this eForm, or  if a new version is not available, contact info@oscarbc.ca to request a repair.\n\n' +
-			'E-forms are a community project managed by OSCAR BC; eForm collections are hosted on OSCAR Galaxy for download and import.\n\n' +
-			'Error Message:' + message);
+		// return alert('This eForm contains source code errors that will cause a failure of functionality or loss of data.\n\n' +
+		// 	'Please go to OSCARGalaxy.org for an updated version of this eForm, or  if a new version is not available, contact info@oscarbc.ca to request a repair.\n\n' +
+		// 	'E-forms are a community project managed by OSCAR BC; eForm collections are hosted on OSCAR Galaxy for download and import.\n\n' +
+		// 	'Error Message:' + message);
+		let eform = {};
+		eform.formId = document.getElementById("fid").value;
+		eform.error = message;
+		let context = document.getElementById("context").value;
+		jQuery.post(context + "/eform/logEformError.do", eform);
 	}
-
-
 
 	/**
 	 * Triggers the eForm save/submit function
@@ -136,6 +144,9 @@ document.addEventListener("DOMContentLoaded", function(){
 					let element = jQuery('#attachDocumentsForm').find(delegate);
 					if (element.length === 0) { element = addFormIfNotFound(data, demographicNo, delegate); }
 					element.attr("checked", true);
+
+					// Expand list if selected lab is older version
+					if (element.attr('data-version')) { expandLabVersionList(element.parent().parent().parent().find('.collapse-arrow')); }
 				});
 			}
 		}).dialog({
@@ -313,6 +324,40 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 
 		remoteSave();
+	}
+
+	/**
+	 * Adds a hidden input field into the eForm form with instructions to 
+	 * open the Oscar Email dialog.
+	 */
+	function remoteEmail() {
+		if (!document.getElementById("hasValidRecipient") || !document.getElementById("emailConsentStatus") || !document.getElementById("emailConsentName")) {
+			alert("Valid recipient or consent parameter is not defined in the EForm.");
+			return;
+		}
+
+		const hasValidRecipient = document.getElementById("hasValidRecipient").value;	
+		const emailConsentStatus = document.getElementById("emailConsentStatus").value;
+		const emailConsentName = document.getElementById("emailConsentName").value;
+
+		if (hasValidRecipient === "false") {
+			alert("Sorry - this patient does not have a valid email address in their demographic. Please update their demographic and try again." );
+			return;
+		}
+
+		if (emailConsentStatus !== "Explicit Opt-In") {
+			const userResponse = prompt("This patient has not explicitly opted-in: [" + emailConsentName + "]\nType 'Yes' to acknowledge you understand the risks before proceeding.", "No");
+			if (userResponse === null || userResponse.toLowerCase() !== 'yes') { return; }
+		}
+
+		const newElement = document.createElement("input");
+		newElement.setAttribute("id", "emailAction");
+		newElement.setAttribute("name", "emailEForm");
+		newElement.setAttribute("value", "true");
+		newElement.setAttribute("type", "hidden");
+		document.forms[0].appendChild(newElement);
+		remoteSave();
+	
 	}
 	
 	/**
@@ -625,7 +670,16 @@ document.addEventListener("DOMContentLoaded", function(){
 		const idsOfButtonsToHide = ["SubmitButton","ResetButton","PrintButton","PrintSubmitButton"];
 		for (let i = 0; i < idsOfButtonsToHide.length; i++) {
 			let el = document.getElementById(idsOfButtonsToHide[i]);
-			if (el) {
+
+			if(!el) {
+				el = document.getElementsByName(idsOfButtonsToHide[i]);
+			}
+
+			if (el && el.constructor === NodeList && el.length > 0) {
+				for (let i = 0; i < el.length; i++) {
+					el[i].style.display = "none";
+				}
+			} else if (el && el.constructor !== NodeList) {
 				el.style.display = "none";
 			}
 		}	

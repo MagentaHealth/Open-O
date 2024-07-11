@@ -171,4 +171,12 @@ public class DemographicPharmacyDao extends AbstractDao<DemographicPharmacy> {
 		return query.getResultList();
 		
 	}
+
+	public Long getTotalDemographicsPreferedToPharmacyByPharmacyId(Integer pharmacyId) {
+		String sql = "SELECT COUNT(*) FROM DemographicPharmacy x WHERE x.pharmacyId = :pharmacyId AND x.status = 1";
+		Query query = entityManager.createQuery(sql);
+		query.setParameter("pharmacyId", pharmacyId);
+		
+		return (Long) query.getSingleResult(); 
+	}
 }

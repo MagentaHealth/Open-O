@@ -165,7 +165,7 @@ if(!authed) {
 	}
 
 	// 2. Default value set in Billing Settings
-	List<Property> defaultBillingFormPropertyList = propertyDao.findGlobalByName("default_billing_form");
+	List<Property> defaultBillingFormPropertyList = propertyDao.findGlobalByName(Property.PROPERTY_KEY.default_billing_form.name());
 	if(defaultBillingFormPropertyList != null && ! defaultBillingFormPropertyList.isEmpty()) {
 		Property defaultBillingFormProperty = defaultBillingFormPropertyList.get(0);
 		String billingForm = null;
@@ -173,7 +173,7 @@ if(!authed) {
 			billingForm = defaultBillingFormProperty.getValue();
 		}
 		if(billingForm != null && !  billingForm.isEmpty()
-				&& ! "clinicdefault".equalsIgnoreCase( billingForm)) {
+				&& ! Property.PROPERTY_VALUE.clinicdefault.name().equalsIgnoreCase(billingForm)) {
 			defaultBillingForm = billingForm;
 		}
 	}
@@ -187,16 +187,23 @@ if(!authed) {
 			userSetBillingForm = userSetDefaultBillingFormProperty.getValue();
 		}
 		if( userSetBillingForm != null && !  userSetBillingForm.isEmpty()
-				&& ! "clinicdefault".equalsIgnoreCase(userSetBillingForm.trim())) {
+				&& ! Property.PROPERTY_VALUE.clinicdefault.name().equalsIgnoreCase(userSetBillingForm.trim())) {
 			// override the billingform preset/default in session with the providers preference.
 			defaultBillingForm = userSetBillingForm;
 		}
 	}
 
+	// 3.a. in some situations if the default billing form is set as Private it may be possible
+	// to set the Billing Type to private as well
+	// The common code for a private billing form is PRI
+	if("PRI".equals(defaultBillingForm)) {
+		bean.setBillType("Pri");
+	}
+
 	// 4. logged in user is overriding billing form preference during billing process.
 	/* horrible hack. Do not repeat.
 	 * If the targetProvider is set to "none" then this indicates that the
-	 * Billing sheet selection has been overiden from the billing form.
+	 * Billing sheet selection has been overridden from the billing form.
 	 * The strange part is that the billing form selection has already been
 	 * set into the "bean" object before reaching this point.
 	 * Normally not a big deal - but - in this case the billing sheet is loaded
@@ -214,7 +221,7 @@ if(!authed) {
 	String defaultServiceLocation = OscarProperties.getInstance().getProperty("visittype");
 
 	// 2. global billing settings
-	List<Property> userSetDefaultServiceLocationList = propertyDao.findGlobalByName("bc_default_service_location");
+	List<Property> userSetDefaultServiceLocationList = propertyDao.findGlobalByName(Property.PROPERTY_KEY.bc_default_service_location);
 	if(userSetDefaultServiceLocationList != null && ! userSetDefaultServiceLocationList.isEmpty()) {
 		Property uerSetDefaultServiceLocationProperty = userSetDefaultServiceLocationList.get(0);
 		String userSetDefaultServiceLocation = null;
@@ -235,10 +242,15 @@ if(!authed) {
 			providerSetDefaultLocation = defaultServiceLocationProperty.getValue();
 		}
 		if(providerSetDefaultLocation != null && ! providerSetDefaultLocation.isEmpty()
-				&& ! "clinicdefault".equalsIgnoreCase(providerSetDefaultLocation)) {
+				&& ! Property.PROPERTY_VALUE.clinicdefault.name().equalsIgnoreCase(providerSetDefaultLocation))  {
 			// override default from Oscar properties or billing properties with the provider preference
 			defaultServiceLocation = providerSetDefaultLocation;
 		}
+	}
+
+	// this captures and modifies any legacy codes that may be still hanging around
+	if(defaultServiceLocation.contains("|")) {
+		defaultServiceLocation = defaultServiceLocation.split("\\|")[0].trim();
 	}
 
 	/*
@@ -695,15 +707,16 @@ function replaceWCB(id){
 }
 
 function gotoPrivate(){
+
    if (document.BillingCreateBillingForm.xml_billtype.value === "Pri"){
 	   // change the billing sheet to private billing
 	   jQuery("#selectBillingForm").val("PRI").trigger('change');
    }
 
    // otherwise go back to the default billing form
-   else {
-	   jQuery("#selectBillingForm").val('${ billingSessionBean.billForm }').trigger('change');
-   }
+   <%--else {--%>
+	<%--   jQuery("#selectBillingForm").val('${ billingSessionBean.billForm }').trigger('change');--%>
+   <%--}--%>
 }
 
 function correspondenceNote(){
@@ -955,7 +968,7 @@ jQuery(document).ready(function(jQuery){
 
 	jQuery(document).on('change', '#xml_provider', function() {
 		let url = '${pageContext.servletContext.contextPath}/billing.do?demographic_no=' + '<%=Encode.forUriComponent(bean.getPatientNo())%>' + '&appointment_no=' + '<%=Encode.forUriComponent(bean.getApptNo())%>' + '&apptProvider_no=' + '<%=Encode.forUriComponent(bean.getApptProviderNo())%>' + '&demographic_name=' + '<%=URLEncoder.encode(bean.getPatientName(),"UTF-8")%>' + '&billRegion=BC&xml_provider=' + this.value;
-		console.log(url);
+
 		jQuery("#billingPatientInfoWrapper").load(url + " #billingPatientInfo", function(){
 			// re-bind all the javascript
 			jQuery("#selectBillingForm").trigger('change');
@@ -1275,7 +1288,19 @@ if(wcbneeds != null){%>
 		if (thisForm != null) {
 
 			thisForm.setXml_provider(bean.getBillingProvider());
-			thisForm.setXml_location(OscarProperties.getInstance().getProperty("visitlocation"));
+			String visitLocation = OscarProperties.getInstance().getProperty("visitlocation");
+
+			// sometimes the visit locations tend to contain punctuation that is offending to struts.
+			if(visitLocation != null && ! visitLocation.isEmpty()) {
+				// split the code and description, then reassemble without punctuation
+				String visitLocationCode = visitLocation.split("\\|")[0];
+				String visitLocationDescription = visitLocation.split("\\|")[1];
+				visitLocationDescription = visitLocationDescription.replaceAll("[^A-Za-z]+", "").toUpperCase();
+				visitLocation = visitLocationCode + "|" + visitLocationDescription;
+
+				thisForm.setXml_location(visitLocation);
+			}
+
 			thisForm.setXml_visittype(bean.getVisitType());
 
 			if ( OscarProperties.getInstance().getProperty("BC_DEFAULT_ALT_BILLING") != null && OscarProperties.getInstance().getProperty("BC_DEFAULT_ALT_BILLING").equalsIgnoreCase("YES")){
@@ -1397,7 +1422,7 @@ if(wcbneeds != null){%>
                 <html:select styleClass="form-control" styleId="xml_location" property="xml_location">
                 <%
                   for (int i = 0; i < billlocation.length; i++) {
-                    String locationDescription = billlocation[i].getBillingLocation() + "|" + billlocation[i].getDescription();
+                    String locationDescription = billlocation[i].getBillingLocation() + "|" + billlocation[i].getDescription().replaceAll("[^A-Za-z]+", "").toUpperCase();;
                 %>
                   <html:option value="<%=Encode.forHtmlAttribute(locationDescription)%>"><%=Encode.forHtmlContent(billlocation[i].getDescription())%></html:option>
                 <%}                %>
@@ -1414,8 +1439,8 @@ if(wcbneeds != null){%>
                 <%
                   for (BillingFormData.BillingVisit billingVisit : billvisit) {
                 %>
-                    <html:option value="<%=Encode.forHtmlAttribute(billingVisit.getDisplayName())%>">
-	                    <%=Encode.forHtmlContent(billingVisit.getDisplayName())%>
+                    <html:option value="<%=Encode.forHtmlAttribute(billingVisit.getVisitType())%>">
+	                    <%=Encode.forHtmlContent(billingVisit.getDescription())%>
                     </html:option>
                 <%}%>
                 </html:select>

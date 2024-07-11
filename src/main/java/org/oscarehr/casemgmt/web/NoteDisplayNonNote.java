@@ -314,6 +314,10 @@ public class NoteDisplayNonNote implements NoteDisplay {
 		return false;
 	}
 
+	public boolean isEmailNote() {
+		return false;
+	}
+
 	public Date getCreated() {
 		return created;
 	}

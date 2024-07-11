@@ -457,7 +457,7 @@ public class DocumentManager {
 	private Path renderDocument(EDoc eDoc) throws PDFGenerationException {
 		Path eDocPDFPath = null;
 		String eDocPath = getFullPathToDocument(eDoc.getFileName());
-		if (eDoc.isImage()) {
+		if (eDoc.isImage() && eDocPath != null) {
 			try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 				ImagePDFCreator imagePDFCreator = new ImagePDFCreator(eDocPath, eDoc.getDescription(), outputStream);
 				imagePDFCreator.printPdf();
@@ -465,7 +465,7 @@ public class DocumentManager {
 			} catch (DocumentException | IOException e) {
 				throw new PDFGenerationException("Error Details: Document [" + eDoc.getDescription() + "] could not be converted into a PDF", e);
 			}
-		} else if (eDoc.isPDF()) {
+		} else if (eDoc.isPDF() && eDocPath != null) {
 			try {
 				eDocPDFPath = Paths.get(eDocPath);
 			} catch (InvalidPathException e) {

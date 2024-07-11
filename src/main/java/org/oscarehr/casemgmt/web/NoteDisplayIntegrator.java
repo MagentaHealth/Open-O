@@ -250,4 +250,8 @@ public class NoteDisplayIntegrator implements NoteDisplay {
 	public boolean isExternalNote() {
 		return false;
 	}
+
+	public boolean isEmailNote() {
+		return false;
+	}
 }

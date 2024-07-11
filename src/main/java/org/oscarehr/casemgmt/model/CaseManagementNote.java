@@ -518,6 +518,9 @@ public class CaseManagementNote extends BaseObject {
 		return isLinkTo(CaseManagementNoteLink.DOCUMENT);
 	}
 
+	public boolean isEmailNote() {
+		return isLinkTo(CaseManagementNoteLink.EMAIL);
+	}
 
     public boolean isRxAnnotation() {
 		return isLinkTo(CaseManagementNoteLink.DRUGS);

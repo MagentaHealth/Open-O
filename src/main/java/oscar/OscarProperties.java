@@ -30,6 +30,7 @@ import org.oscarehr.util.MiscUtils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -227,11 +228,11 @@ public class OscarProperties extends Properties {
 	}
 
 	public static String getBuildDate() {
-		return oscarProperties.getProperty("buildDateTime");
+		return oscarProperties.getProperty("buildDate");
 	}
 
 	public static String getBuildTag() {
-		return oscarProperties.getProperty("buildtag");
+		return oscarProperties.getProperty("buildVersion");
 	}
 
 	public boolean isOscarLearning() {
@@ -377,6 +378,14 @@ public class OscarProperties extends Properties {
 
 	public String getDocumentCacheDirectory() {
 		return oscarProperties.getProperty("DOCUMENT_CACHE_DIR");
+	}
+
+	public String getEformImageDirectory() {
+		String eform_images = oscarProperties.getProperty("eform_image");
+		if (eform_images == null) {
+			eform_images = Paths.get(oscarProperties.getProperty("BASE_DOCUMENT_DIR"), "eform", "images").toString();
+		}
+		return eform_images;
 	}
 
 }

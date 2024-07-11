@@ -26,6 +26,7 @@
 package oscar.oscarEncounter.data;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -355,7 +356,25 @@ public class EctFormData {
 		public String table;
 
 		// Constructor
+		public PatientForm(String table, String formName, Integer formId, Integer demographicId) {
+			this.table = table;
+			this.formName = formName;
+			this.formId = formId;
+			this.demographicId = demographicId;
+		}
+
+		// Constructor
 		public PatientForm(String formName, Integer formId, Integer demographicId, Date created, Date edited) {
+			this.formName = formName;
+			this.formId = formId;
+			this.demographicId = demographicId;
+			this.created = created;
+			this.edited = edited;
+		}
+
+		// Constructor
+		public PatientForm(String table, String formName, Integer formId, Integer demographicId, Date created, Date edited) {
+			this.table = table;
 			this.formName = formName;
 			this.formId = formId;
 			this.demographicId = demographicId;

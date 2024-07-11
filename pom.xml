@@ -3,8 +3,8 @@
 	<groupId>org.oscarehr</groupId>
 	<artifactId>oscar</artifactId>
 	<packaging>war</packaging>
-	<version>v24.02.0</version>
-	<name>OpenOSCAR</name>
+	<version>0-SNAPSHOT</version>
+	<name>OpenO</name>
 	<description>OSCAR McMaster is a web-based electronic medical record (EMR) system initially developed for academic primary care clinics. It has grown into a comprehensive EMR and billing system used by many doctor's offices and private medical clinics in Canada and other parts of the world. The name is derived from where it was created and an acronym; OSCAR stands for Open Source Clinical Application and Resource and McMaster refers to McMaster University, where it was developed. It enables the delivery of evidence resources at the point of care.</description>
 	<issueManagement>
 		<system>SourceForge Tracker</system>
@@ -270,7 +270,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
-			<version>2.5.5</version>
+			<version>4.1.9.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -282,6 +282,24 @@
 			<groupId>com.onelogin</groupId>
 			<artifactId>java-saml</artifactId>
 			<version>2.9.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.santuario</groupId>
+					<artifactId>xmlsec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- 
+			At present, the maximum version we can bump org.apache.santuario:xmlsec to is 2.1.8. 
+			If we aim to go beyond this version, we'll need to update 'ebs-client', 'edt-stubs', 
+			and 'hcv-stubs' as they are currently utilizing xmlsec version 1.5.6. 
+			Thus, we need to update all dependencies together.
+		-->
+		<dependency>
+			<groupId>org.apache.santuario</groupId>
+			<artifactId>xmlsec</artifactId>
+			<version>2.1.8</version>
 		</dependency>
 
 		<!-- hibernate / sql -->
@@ -693,15 +711,16 @@
 
 		<!-- email -->
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>jakarta.mail</artifactId>
+			<version>1.6.7</version>
 		</dependency>
-		<dependency>
+
+		<!-- <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
-			<version>1.1</version>
-		</dependency>
+			<version>1.5</version>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
 		<dependency>
@@ -1083,6 +1102,14 @@
 					<groupId>org.oscarehr</groupId>
 					<artifactId>util</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-email</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -1144,6 +1171,12 @@
 			<groupId>org.marc.shic</groupId>
 			<artifactId>shic-pix</artifactId>
 			<version>1.0.8</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.marc.shic</groupId>
@@ -1442,8 +1475,7 @@
 								<replace file="target/classes/oscar_mcmaster.properties" token="${build.dateTime}" value="${build.dateTime.value}" />
 
 								<property environment="env" />
-								<echo message="ENVIRONMENT ${env}" />
-								<echo message="JOB_NAME - BUILD_NUMBER : ${env.JOB_NAME} - ${env.BUILD_NUMBER}" />
+								<echo message="JOB_NAME - BUILD_NUMBER : ${env.JOB_NAME}-${env.BUILD_NUMBER}" />
 								<replace file="target/classes/oscar_mcmaster.properties" token="${build.JOB_NAME}" value="${env.JOB_NAME}" />
 								<replace file="target/classes/oscar_mcmaster.properties" token="${build.BUILD_NUMBER}" value="${env.BUILD_NUMBER}" />
 							</target>
@@ -1451,7 +1483,9 @@
 					</execution>
 
 					<execution>
-						<!-- We're doing jspc this way because the codehaus jspc seems to be abandonded, it doesn't go beyond jdk 1.5 and the documentation is sparse, and the source code links to a broken page and I can't find the goals it supports. -->
+						<!-- We're doing jspc this way because the codehaus jspc seems to be abandonded,
+						it doesn't go beyond jdk 1.5 and the documentation is sparse, and the source
+						code links to a broken page and I can't find the goals it supports. -->
 						<id>jspc</id>
 						<phase>verify</phase>
 						<goals>
@@ -1460,7 +1494,7 @@
 						<configuration>
 							<target>
 								<property name="build.compiler" value="extJavac" />
-								<property name='jspc_target' value="${project.name}-${project.version}" />
+								<property name='jspc_target' value="${project.artifactId}-${project.version}" />
 								<ant antfile="jspc.xml" target="jspc" />
 							</target>
 						</configuration>

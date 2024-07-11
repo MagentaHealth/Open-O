@@ -23,6 +23,10 @@
  */
 package org.oscarehr.common.dao;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.oscarehr.common.model.ConsultationRequestExtArchive;
 import org.springframework.stereotype.Repository;
 
@@ -32,4 +36,10 @@ public class ConsultationRequestExtArchiveDao extends AbstractDao<ConsultationRe
 	public ConsultationRequestExtArchiveDao() {
 		super(ConsultationRequestExtArchive.class);
 	}
+
+	public List<ConsultationRequestExtArchive> getConsultationRequestExtArchives(int archiveId) {
+        Query query = entityManager.createQuery("select crea from " + modelClass.getSimpleName() + " crea where crea.archiveId=:archiveId");
+        query.setParameter("archiveId", new Integer(archiveId));
+        return query.getResultList();
+    }
 }

@@ -23,29 +23,36 @@
  */
 package org.oscarehr.integration.mchcv;
 
+import ca.ontario.health.ebs.EbsFault;
 import ca.ontario.health.hcv.Faultexception;
 import ca.ontario.health.hcv.HCValidation;
 import ca.ontario.health.hcv.HcvRequest;
 import ca.ontario.health.hcv.HcvResults;
-import ca.ontario.health.hcv.Person;
 import ca.ontario.health.hcv.Requests;
-import java.util.List;
-import javax.xml.datatype.XMLGregorianCalendar;
-import org.apache.commons.lang.time.DateFormatUtils;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.xml.soap.SOAPFault;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.apache.logging.log4j.Logger;
 import org.oscarehr.integration.ebs.client.EdtClientBuilder;
 import org.oscarehr.integration.ebs.client.EdtClientBuilderConfig;
+import org.oscarehr.util.MiscUtils;
+
 import oscar.OscarProperties;
 
 public class OnlineHCValidator implements HCValidator {
+    private static Logger logger = MiscUtils.getLogger();
 
     private HCValidation validation;
+    private EdtClientBuilder builder;
 
     public OnlineHCValidator() {
-        init();
-    }
-
-    private void init() {
-
         OscarProperties properties = OscarProperties.getInstance();
         EdtClientBuilderConfig config = new EdtClientBuilderConfig();
         config.setLoggingRequired(!Boolean.valueOf(properties.getProperty("hcv.logging.skip")));
@@ -57,54 +64,80 @@ public class OnlineHCValidator implements HCValidator {
         config.setConformanceKey(properties.getProperty("hcv.service.conformanceKey"));
         config.setServiceId(properties.getProperty("hcv.service.id"));
 
-        EdtClientBuilder builder = new EdtClientBuilder(config);
+        setBuilder(new EdtClientBuilder(config));
+        setExternalClientKeystoreFilename(properties.getProperty("mcedt.service.clientKeystore.properties"));
         validation = builder.build(HCValidation.class);
     }
 
     @Override
     public HCValidationResult validate(String healthCardNumber, String versionCode) {
+        return validate(healthCardNumber, versionCode, null);
+    }
+
+    @Override
+    public HCValidationResult validate(String healthCardNumber, String versionCode, String serviceCode) {
         Requests requests = new Requests();
         HcvRequest request = new HcvRequest();
         request.setHealthNumber(healthCardNumber);
         request.setVersionCode(versionCode);
+        if(serviceCode != null && ! serviceCode.isEmpty()) {
+            request.getFeeServiceCodes().add(serviceCode);
+        }
         requests.getHcvRequest().add(request);
         HcvResults results = null;
+        HCValidationResult result = null;
         try {
-            results = validation.validate(requests, "en");
-        } catch (Faultexception ex) {
-            throw new RuntimeException(ex.getMessage());
+            results = validate(requests, "en");
+            if(results != null) {
+                result = HCValidator.createSingleResult(results, 0);
+            }
+        } catch (Faultexception e) {
+            result = new HCValidationResult();
+            result.setEbsFault(e.getFaultInfo());
+            result.setResponseCode(NOT_VALID_RESPONSE_CODE);
         }
 
-        List persons = results.getResults();
-        Person person = (Person) persons.get(0);
-
-        HCValidationResult result = new HCValidationResult();
-        result.setResponseCode(person.getResponseCode());
-        result.setResponseDescription(person.getResponseDescription());
-        result.setResponseAction(person.getResponseAction());
-        result.setFirstName(person.getFirstName());
-        result.setLastName(person.getLastName());
-        result.setGender(person.getGender());
-
-        String birthDate = null;
-        XMLGregorianCalendar xmlBirthDate = person.getDateOfBirth();
-        if (xmlBirthDate != null) {
-            birthDate = makeDate(xmlBirthDate.getYear(), xmlBirthDate.getMonth(), xmlBirthDate.getDay());
-        }
-        result.setBirthDate(birthDate);
-
-        String expiryDate = null;
-        XMLGregorianCalendar xmlExpiryDate = person.getExpiryDate();
-        if (xmlExpiryDate != null) {
-            expiryDate = makeDate(xmlExpiryDate.getYear(), xmlExpiryDate.getMonth(), xmlExpiryDate.getDay());
-        }
-        result.setExpiryDate(expiryDate);        
         return result;
     }
 
-    private String makeDate(int year, int month, int day) {
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(year, month - 1, day, 0, 0, 0);
-        return DateFormatUtils.format(calendar, "yyyyMMdd");
+    @Override
+    public HcvResults validate(Requests requests, String local) throws Faultexception {
+        HcvResults results;
+        try {
+            results = validation.validate(requests, local);
+        } catch (SOAPFaultException sfx) {
+            SOAPFault soapFault = sfx.getFault();
+            EbsFault ebsFault = new EbsFault();
+            ebsFault.setCode(soapFault.getFaultCode());
+            ebsFault.setMessage(soapFault.getFaultString());
+            throw new Faultexception("", ebsFault);
+        }
+        return results;
     }
+
+    public EdtClientBuilder getBuilder() {
+        return builder;
+    }
+
+    private void setBuilder(EdtClientBuilder builder) {
+        this.builder = builder;
+    }
+
+    /*
+	 * Set an external `clientKeystore.properties` by providing the path to the file. 
+	 * If the path is not provided, it will default to `src/main/resources/clientKeystore.properties`.
+	 */
+	private static void setExternalClientKeystoreFilename(String clientKeystorePropertiesPath) {
+		if (clientKeystorePropertiesPath == null) { return; }
+		Path signaturePropFile = Paths.get(clientKeystorePropertiesPath);
+		if (Files.exists(signaturePropFile)) {
+			File file = new File(clientKeystorePropertiesPath);
+			try {
+				EdtClientBuilder.setClientKeystoreFilename(file.toURI().toURL().toString());
+			} catch (MalformedURLException e) {
+				logger.error("Malformed URL: " + clientKeystorePropertiesPath, e);
+			}
+		}
+	}
+
 }

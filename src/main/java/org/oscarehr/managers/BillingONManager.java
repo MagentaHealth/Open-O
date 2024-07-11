@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.mail.EmailException;
 import org.apache.velocity.VelocityContext;
 import org.oscarehr.common.dao.BillingONCHeader1Dao;
 import org.oscarehr.common.dao.ClinicDAO;

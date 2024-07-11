@@ -28,10 +28,14 @@ package oscar.eform.actions;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.*;
 import org.oscarehr.common.model.Demographic;
+import org.oscarehr.common.model.EmailConfig;
+import org.oscarehr.common.model.EmailConfig.EmailProvider;
+import org.oscarehr.common.model.EmailConfig.EmailType;
 import org.oscarehr.common.model.enumerator.DocumentType;
 import org.oscarehr.documentManager.DocumentAttachmentManager;
 import org.oscarehr.managers.DemographicManager;
 import org.oscarehr.managers.EformDataManager;
+import org.oscarehr.managers.EmailManager;
 import org.oscarehr.managers.FaxManager.TransactionType;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.match.IMatchManager;
@@ -62,6 +66,7 @@ public class AddEFormAction extends Action {
 	private SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
 	private EformDataManager eformDataManager = SpringUtils.getBean( EformDataManager.class );
 	private DocumentAttachmentManager documentAttachmentManager = SpringUtils.getBean(DocumentAttachmentManager.class);
+	private EmailManager emailManager = SpringUtils.getBean(EmailManager.class);
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -80,6 +85,13 @@ public class AddEFormAction extends Action {
 		boolean print = "true".equals(request.getParameter("print"));
 		boolean saveAsEdoc = "true".equals( request.getParameter("saveAsEdoc") );
 		boolean isDownloadEForm = "true".equals(request.getParameter("saveAndDownloadEForm"));
+		boolean isEmailEForm = "true".equals(request.getParameter("emailEForm"));
+
+		String[] attachedDocuments = (request.getParameterValues("docNo") != null ? request.getParameterValues("docNo") : new String[0]);
+		String[] attachedLabs = (request.getParameterValues("labNo") != null ? request.getParameterValues("labNo") : new String[0]);
+		String[] attachedForms = (request.getParameterValues("formNo") != null ? request.getParameterValues("formNo") : new String[0]);
+		String[] attachedEForms = (request.getParameterValues("eFormNo") != null ? request.getParameterValues("eFormNo") : new String[0]);
+		String[] attachedHRMDocuments = (request.getParameterValues("hrmNo") != null ? request.getParameterValues("hrmNo") : new String[0]);
 
 		@SuppressWarnings("unchecked")
 		Enumeration<String> paramNamesE = request.getParameterNames();
@@ -242,17 +254,7 @@ public class AddEFormAction extends Action {
 
 			EFormUtil.addEFormValues(paramNames, paramValues, new Integer(fdid), new Integer(fid), new Integer(demographic_no)); //adds parsed values
 
-			String[] attachedDocuments = (request.getParameterValues("docNo") != null ? request.getParameterValues("docNo") : new String[0]);
-			String[] attachedLabs = (request.getParameterValues("labNo") != null ? request.getParameterValues("labNo") : new String[0]);
-			String[] attachedForms = (request.getParameterValues("formNo") != null ? request.getParameterValues("formNo") : new String[0]);
-			String[] attachedEForms = (request.getParameterValues("eFormNo") != null ? request.getParameterValues("eFormNo") : new String[0]);
-			String[] attachedHRMDocuments = (request.getParameterValues("hrmNo") != null ? request.getParameterValues("hrmNo") : new String[0]);
-
-			documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.DOC, attachedDocuments, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
-			documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.LAB, attachedLabs, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
-			documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.FORM, attachedForms, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
-			documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.EFORM, attachedEForms, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
-			documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.HRM, attachedHRMDocuments, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
+			attachToEForm(loggedInInfo, attachedEForms, attachedDocuments, attachedLabs, attachedHRMDocuments, attachedForms, fdid, demographic_no, providerNo);
 
 			//post fdid to {eform_link} attribute
 			if (eform_link!=null) {
@@ -321,6 +323,13 @@ public class AddEFormAction extends Action {
 				return printForward;
 			}
 
+			else if (isEmailEForm) {
+				ActionForward emailForward = new ActionForward(mapping.findForward("emailCompose"));
+				String path = emailForward.getPath() + "?method=prepareComposeEFormMailer";
+				addEmailAttachments(request, attachedEForms, attachedDocuments, attachedLabs, attachedHRMDocuments, attachedForms); 
+				return new ActionForward(path);
+			}
+
 			else {
 				//write template message to echart
 				String program_no = new EctProgram(se).getProgram(providerNo);
@@ -337,6 +346,8 @@ public class AddEFormAction extends Action {
 			logger.debug("Warning! Form HTML exactly the same, new form data not saved.");
 			request.setAttribute("fdid", prev_fdid);
 			request.setAttribute("demographicId", demographic_no);
+
+			attachToEForm(loggedInInfo, attachedEForms, attachedDocuments, attachedLabs, attachedHRMDocuments, attachedForms, prev_fdid, demographic_no, providerNo);
 
 			if (fax) {
 				/*
@@ -389,6 +400,13 @@ public class AddEFormAction extends Action {
 
 				return printForward;
 			}
+
+			else if (isEmailEForm) {
+				ActionForward emailForward = new ActionForward(mapping.findForward("emailCompose"));
+				String path = emailForward.getPath() + "?method=prepareComposeEFormMailer";
+				addEmailAttachments(request, attachedEForms, attachedDocuments, attachedLabs, attachedHRMDocuments, attachedForms); 
+				return new ActionForward(path);
+			}
 			
 			if(saveAsEdoc) {
 				try {
@@ -426,6 +444,34 @@ public class AddEFormAction extends Action {
 		String formattedDate = dateFormat.format(currentDate);
 
 		return formattedDate + "_" + demographicLastName + ".pdf";
+	}
+
+	private void addEmailAttachments(HttpServletRequest request, String[] attachedEForms, String[] attachedDocuments, String[] attachedLabs, String[] attachedHRMDocuments, String[] attachedForms) {
+		Boolean attachEFormItSelf = request.getParameter("attachEFormToEmail") == null || "true".equals(request.getParameter("attachEFormToEmail")) ? true : false;
+		Boolean openEFormAfterEmail = request.getParameter("openEFormAfterSendingEmail") == null || "false".equals(request.getParameter("openEFormAfterSendingEmail")) ? false : true;
+		Boolean isEmailEncrypted = request.getParameter("enableEmailEncryption") == null || "true".equals(request.getParameter("enableEmailEncryption")) ? true : false;
+		Boolean isEmailAttachmentEncrypted = request.getParameter("encryptEmailAttachments") == null || "true".equals(request.getParameter("encryptEmailAttachments")) ? true : false;
+		Boolean isEmailAutoSend = request.getParameter("autoSendEmail") == null || "false".equals(request.getParameter("autoSendEmail")) ? false : true;
+		Boolean deleteEFormAfterEmail = request.getParameter("deleteEFormAfterSendingEmail") == null || "false".equals(request.getParameter("deleteEFormAfterSendingEmail")) ? false : true;
+		request.setAttribute("deleteEFormAfterEmail", deleteEFormAfterEmail);
+		request.setAttribute("isEmailEncrypted", isEmailEncrypted);
+		request.setAttribute("isEmailAttachmentEncrypted", isEmailAttachmentEncrypted);
+		request.setAttribute("isEmailAutoSend", isEmailAutoSend);
+		request.setAttribute("openEFormAfterEmail", openEFormAfterEmail);
+		request.setAttribute("attachEFormItSelf", attachEFormItSelf);
+		request.setAttribute("attachedEForms", attachedEForms);
+		request.setAttribute("attachedDocuments", attachedDocuments);
+		request.setAttribute("attachedLabs", attachedLabs);
+		request.setAttribute("attachedHRMDocuments", attachedHRMDocuments);
+		request.setAttribute("attachedForms", attachedForms);
+	}
+
+	private void attachToEForm(LoggedInInfo loggedInInfo, String[] attachedEForms, String[] attachedDocuments, String[] attachedLabs, String[] attachedHRMDocuments, String[] attachedForms, String fdid, String demographic_no, String providerNo) {
+		documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.DOC, attachedDocuments, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
+		documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.LAB, attachedLabs, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
+		documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.FORM, attachedForms, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
+		documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.EFORM, attachedEForms, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
+		documentAttachmentManager.attachToEForm(loggedInInfo, DocumentType.HRM, attachedHRMDocuments, providerNo, Integer.valueOf(fdid), Integer.valueOf(demographic_no));
 	}
 
 }

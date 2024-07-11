@@ -117,6 +117,11 @@
 
     mFlowsheet = templateConfig.getFlowSheet(temp,loggedInInfo.getLoggedInProviderNo(),Integer.parseInt(demographic_no));
 
+    if (mFlowsheet == null) {
+        request.setAttribute("errorMessage", temp + "Flowsheet not found");
+        return;
+    }
+
     MeasurementInfo mi = new MeasurementInfo(demographic_no);
     List<String> measurementLs = mFlowsheet.getMeasurementList();
     ArrayList<String> measurements = new ArrayList(measurementLs);

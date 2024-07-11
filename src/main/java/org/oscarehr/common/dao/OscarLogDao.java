@@ -23,17 +23,15 @@
 
 package org.oscarehr.common.dao;
 
+import org.oscarehr.common.model.OscarLog;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Query;
-
-import org.oscarehr.common.model.AbstractModel;
-import org.oscarehr.common.model.OscarLog;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class OscarLogDao extends AbstractDao<OscarLog> {
@@ -220,11 +218,6 @@ public class OscarLogDao extends AbstractDao<OscarLog> {
 		
 		
 	}
-	
-	@Override
-    public void remove(AbstractModel<?> o) {
-	    throw new SecurityException("Cannot remove audit log entries!");
-    }
 
 	@Override
     public boolean remove(Object id) {

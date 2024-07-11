@@ -111,8 +111,8 @@
 
 			<td class="MainTableRightColumn"><label for="defaultServiceLocation">Select Default Service Location:</label>
 				<html:select property="defaultServiceLocation" styleClass="form-control" styleId="defaultServiceLocation">
-					<html:options collection="serviceLocationList" property="displayName"
-								  labelProperty="displayName" />
+					<html:options collection="serviceLocationList" property="visitType"
+								  labelProperty="description" />
 				</html:select> </td>
 		</tr>
 		<tr>
@@ -245,6 +245,9 @@
         defaultPayeeSelect();
 
 		$( document ).ready(function() {
+
+			const defaultValue = "<%= Property.PROPERTY_VALUE.clinicdefault.name() %>";
+
 			$("#defaultBillingProvider").on("change", function () {
 				let selected = $("#defaultBillingProvider option:selected").val();
 				disableFields(selected);
@@ -252,7 +255,7 @@
 
 			function disableFields(selected) {
 				// disable other settings whenever a default provider is selected to override.
-				if (selected && selected !== "clinicdefault") {
+				if (selected && selected !== defaultValue) {
 
 					// $("#referral").prop('disabled', true);
 					// $("#autoPopulateRefer").prop('disabled', true);

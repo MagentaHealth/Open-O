@@ -1822,16 +1822,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		LogAction.addLog((String) session.getAttribute("user"), logAction, LogConst.CON_CME_NOTE, String.valueOf(note.getId()), request.getRemoteAddr(), demo, note.getAuditString());
 
 		return mapping.findForward("issueList_ajax");
-		/*
-		 * CaseManagementEntryFormBean cform = (CaseManagementEntryFormBean) form;
-		 *
-		 * String oldId = cform.getCaseNote().getId() == null ? request.getParameter("newNoteIdx") : String.valueOf(cform.getCaseNote().getId()); long newId = noteSave(cform, request);
-		 *
-		 * if( newId > -1 ) { log.debug("OLD ID " + oldId + " NEW ID " + String.valueOf(newId)); cform.setMethod("view"); session.setAttribute("newNote", false); session.setAttribute("caseManagementEntryForm", cform);
-		 * request.setAttribute("caseManagementEntryForm", cform); request.setAttribute("ajaxsave", newId); request.setAttribute("origNoteId", oldId); return mapping.findForward("issueList_ajax"); }
-		 *
-		 * return null;
-		 */
+
 	}
 
 	private void releaseNoteLock(String providerNo, Integer demographicNo, Long noteId) {
@@ -2116,52 +2107,44 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		}
 
 		LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
-
 		String programId = (String) session.getAttribute("case_program_id");
-		CaseManagementEntryFormBean cform = (CaseManagementEntryFormBean) form;
-
-		String demono = request.getParameter("amp;demographicNo");
-		if (demono == null) demono = request.getParameter("demographicNo");
-
-		// get current providerNo
-		// String providerNo = request.getParameter("amp;providerNo");
+//		CaseManagementEntryFormBean cform = (CaseManagementEntryFormBean) form;
 		String providerNo = loggedInInfo.getLoggedInProviderNo();
 
 		// get the issue list have search string
 		String search = request.getParameter("issueSearch");
+		if(search == null || search.isEmpty()) {
+			search = request.getParameter("term");
+		}
 
-		List searchResults;
-		searchResults = caseManagementMgr.searchIssues(providerNo, programId, search);
+		List<Issue> searchResults = caseManagementMgr.searchIssues(providerNo, programId, search);
 
 		// Don't remove issues which we already have. But don't insert duplicate issues when save the issues.
-		List existingIssues = new ArrayList<Issue>();
-		List<Issue> filteredSearchResults;
+//		List<CaseManagementIssue> existingIssues = new ArrayList<>();
+//		List<Issue> filteredSearchResults;
+//
+//		if (request.getParameter("amp;all") != null) {
+//			filteredSearchResults = new ArrayList<>(searchResults);
+//		} else {
+//			filteredSearchResults = new ArrayList<>();
+//			Map<Long, CaseManagementIssue> existingIssuesMap = convertIssueListToMap(existingIssues);
+//			for (Issue issue : searchResults) {
+//				if (existingIssuesMap.get(issue.getId()) == null) {
+//					filteredSearchResults.add(issue);
+//				}
+//			}
+//
+//		}
 
-		if (request.getParameter("amp;all") != null) {
-			filteredSearchResults = new ArrayList<Issue>(searchResults);
-		} else {
-			filteredSearchResults = new ArrayList<Issue>();
-			Map existingIssuesMap = convertIssueListToMap(existingIssues);
-			for (Iterator iter = searchResults.iterator(); iter.hasNext();) {
-				Issue issue = (Issue) iter.next();
-				if (existingIssuesMap.get(issue.getId()) == null) {
-					filteredSearchResults.add(issue);
-				}
-			}
-
-		}
-
-		CheckIssueBoxBean[] issueList = new CheckIssueBoxBean[filteredSearchResults.size()];
-		for (int i = 0; i < filteredSearchResults.size(); i++) {
-			issueList[i] = new CheckIssueBoxBean();
-			issueList[i].setIssue(filteredSearchResults.get(i));
-
-		}
-		cform.setNewIssueCheckList(issueList);
-
-		request.setAttribute("issueList", filteredSearchResults);
-
-		return mapping.findForward("issueAutoCompletion");
+//		CheckIssueBoxBean[] issueList = new CheckIssueBoxBean[filteredSearchResults.size()];
+//		for (int i = 0; i < filteredSearchResults.size(); i++) {
+//			issueList[i] = new CheckIssueBoxBean();
+//			issueList[i].setIssue(filteredSearchResults.get(i));
+//		}
+//
+//		cform.setNewIssueCheckList(issueList);
+		super.jsonResponse(response,JsonUtil.pojoCollectionToJson(searchResults));
+		return null;
 	}
 
 	public ActionForward issueSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {

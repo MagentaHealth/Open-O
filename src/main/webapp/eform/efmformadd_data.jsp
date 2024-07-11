@@ -25,6 +25,9 @@
 --%>
 
 <%@ page import="oscar.eform.data.*"%>
+<%@ page import="org.oscarehr.managers.EmailComposeManager"%>
+<%@ page import="org.oscarehr.util.SpringUtils"%>
+<%@ page import="org.oscarehr.util.LoggedInInfo"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%--
@@ -54,6 +57,18 @@
 		<span style="font-size: 10px; font-color: darkred;"> <html:errors /> </span>
 	</div>
 </c:if>
+
+<%!
+    public void addHiddenEmailProperties(LoggedInInfo loggedInInfo, EForm thisEForm, String demographicNo) {
+        EmailComposeManager emailComposeManager = SpringUtils.getBean(EmailComposeManager.class);
+        Boolean hasValidRecipient = emailComposeManager.hasValidRecipient(loggedInInfo, Integer.parseInt(demographicNo));
+        String[] emailConsent = emailComposeManager.getEmailConsentStatus(loggedInInfo, Integer.parseInt(demographicNo));
+
+        thisEForm.addHiddenInputElement("hasValidRecipient", Boolean.toString(hasValidRecipient));
+        thisEForm.addHiddenInputElement("emailConsentName", emailConsent[0]);
+        thisEForm.addHiddenInputElement("emailConsentStatus", emailConsent[1]);
+    }
+%>
 
 <%
     /**
@@ -108,6 +123,10 @@
     thisEForm.addHiddenInputElement("fid", fid);
     thisEForm.addHiddenInputElement("fdid", request.getParameter("fdid"));
     thisEForm.addHiddenInputElement("newForm", "true");
+
+    // Add email consent properties
+    LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+    addHiddenEmailProperties(loggedInInfo, thisEForm, demographic_no);
 
     out.print(thisEForm.getFormHtml());
 %>

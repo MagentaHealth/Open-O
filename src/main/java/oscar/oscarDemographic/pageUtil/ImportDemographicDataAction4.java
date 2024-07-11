@@ -189,6 +189,7 @@ import oscar.oscarLab.FileUploadCheck;
 import oscar.oscarLab.LabRequestReportLink;
 import oscar.oscarLab.ca.all.Hl7textResultsData;
 import oscar.oscarLab.ca.all.upload.HandlerClassFactory;
+import oscar.oscarLab.ca.all.upload.ProviderLabRouting;
 import oscar.oscarLab.ca.all.upload.handlers.CMLHandler;
 import oscar.oscarLab.ca.all.upload.handlers.GDMLHandler;
 import oscar.oscarLab.ca.all.upload.handlers.MDSHandler;
@@ -772,7 +773,7 @@ public class ImportDemographicDataAction4 extends Action {
             		c.setEmail(cEmail);
             		
             		ContactDao cDao = SpringUtils.getBean(ContactDao.class);
-            		cDao.saveEntity(c);
+            		cDao.persist(c);
             		
 	                for (int j=0; j<rel.length; j++) {
 	                	if (rel[j]==null) continue;
@@ -3694,7 +3695,7 @@ public class ImportDemographicDataAction4 extends Action {
 		return ret;
 	}
     
-    void addMeasurementsExt(Long measurementId, String key, String val, List<AbstractModel<?>> exts) {
+    void addMeasurementsExt(Long measurementId, String key, String val, List<MeasurementsExt> exts) {
         if (measurementId != null && StringUtils.filled(key) && StringUtils.filled(val)) {
             MeasurementsExt mx = new MeasurementsExt(measurementId.intValue());
             mx.setKeyVal(key);
@@ -4361,7 +4362,7 @@ public class ImportDemographicDataAction4 extends Action {
 		        	
 		        	LabRequestReportLink.save(null,null,dateFPtoString(dt,0),"labPatientPhysicianInfo",labNo.longValue());
 
-                    List<AbstractModel<?>> providerLabRoutingQueue = new ArrayList<>();
+                    List<ProviderLabRoutingModel> providerLabRoutingQueue = new ArrayList<>();
                     
                     if (StringUtils.filled(demographic.getProviderNo())) {
                         providerLabRoutingQueue.add(new ProviderLabRoutingModel(demographic.getProviderNo(), labNo , "N", "", new Date(), "HL7"));
@@ -4385,7 +4386,7 @@ public class ImportDemographicDataAction4 extends Action {
 
                     providerLabRoutingDao.batchPersist(providerLabRoutingQueue);
 
-                    List<AbstractModel<?>> measurementsExtsToSave = new ArrayList<AbstractModel<?>>();
+                    List<MeasurementsExt> measurementsExtsToSave = new ArrayList<>();
 			        for(int x=0;x<reportResults.length;x++) {
 	                	LaboratoryResults result = reportResults[x];
 	                	Long measId = findMeasurementId(labNo, result.getTestNameReportedByLab());

@@ -100,11 +100,12 @@
 	background-color: #ffffff;
 	box-shadow: 0 2px 4px 0 rgba(38,40,42,0.3);
 	border-radius: 4px;
+	border: lightgray thin solid;
 }
 
-div.encounter-note:not(#nc00) > div > div:first-of-type:not(.tool-button), .encounter-note textarea.txtArea {
-	padding: 10px !important;
-}
+/*div.encounter-note > div > div:first-of-type:not(.tool-button), .encounter-note textarea.txtArea {*/
+/*	padding: 10px !important;*/
+/*}*/
 
 fieldset {
 	background-color: transparent;
@@ -126,10 +127,6 @@ div#patient-label {
 	width:100%;
 }
 
-#save button {
-	margin: 3px;
-}
-
 .boxsizingBorder {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -141,6 +138,7 @@ textarea.txtArea {
 	border-radius: 4px 4px 0 0;
 	width:100%;
 	font-size: inherit;
+	padding: 2px 5px;
 }
 
 textarea.unsigned-textarea, textarea.edit-textarea {
@@ -277,6 +275,7 @@ div#leftNavBar {
 	flex-direction: column;
 	flex-grow: 1;
 	flex-basis: 20%;
+	padding-bottom: 20px;
 }
 
 #rightNavBar {
@@ -286,6 +285,7 @@ div#leftNavBar {
 	flex-grow: 1;
 	flex-basis: 20%;
 	height: 100%;
+	padding-bottom: 20px;
 }
 
 #rightNavBar img:first-of-type {
@@ -309,6 +309,7 @@ div#notCPP {
 	align-content: end;
 	width: 100%;
 	gap: 3px;
+	padding-bottom: 20px;
 }
 
 div#cppBoxes {
@@ -445,15 +446,6 @@ div#header {
 	display:flex;
 	height: auto;
 }
-
-div#save {
-	margin-top: 2.5px;
-	padding: 5px;
-	border: 1px solid #cccccc;
-	background-color: whitesmoke;
-	margin: 0;
-}
-
 
 table#encounterHeader {
 	width:100% !important;
@@ -691,7 +683,7 @@ div.demographicWrapper {
 }
 
 /* popup menu styles for forms */
-.menu {
+div.nav-menu-heading div.menu {
 	position: absolute;
 	left:20px;
 	top:auto;
@@ -699,7 +691,7 @@ div.demographicWrapper {
 	visibility: hidden;
 	background-color: #6699cc;
 	color: white;
-	border: thin solid #cccccc;
+	border: thin solid #4080BF;
 	box-shadow: 1px 2px 4px 1px rgba(38,40,42,0.3);
 	border-radius: 4px 4px 0 0;
 	z-index: 101;
@@ -708,10 +700,10 @@ div.demographicWrapper {
 	padding:0 0 5px 0;
 }
 
-.menu h3 {
+div.nav-menu-heading div.menu h3 {
 	margin:0;
 	padding:2px 0 !important;
-	border-bottom:#cccccc thin solid;
+	border-bottom:#4080BF thin solid;
 	width:100%;
 	display:block;
 	font-weight: 500 !important;
@@ -719,15 +711,15 @@ div.demographicWrapper {
 	top:0;
 	left:0;
 	right:0;
-	background-color: inherit !important;
+	background-color: #4080BF;
 	opacity: 100;
 }
 
-.menu br {
+div.nav-menu-heading div.menu br {
 	display:none;
 }
 
-.menu a {
+div.nav-menu-heading div.menu a {
 	display:block;
 	padding:1px 5px;
 	text-decoration: none;
@@ -1046,44 +1038,27 @@ div.note pre {
 	clear: left;
 }
 
-
 .sig:not(.sig div#autosaveTime) {
 	color: #111111 !important;
 	width: inherit;
-	border-top: #CCCCCC thin solid !important;
 	border-radius: 0 0 4px 4px;
 	padding: 5px;
 	font-weight: 400;
 }
 
 .sig:not(#sig0, #autosaveTime, .note-unsigned, .new-note, .note-edit) {
-	background-color: cornsilk !important;
+	border-top: #FFEEA9 thin solid;
+	background-color: cornsilk;
 }
 
-#sig0, .note-unsigned, .new-note {
+#sig0, .note-unsigned, .new-note, .note-edit {
+	border-top: #9999FF thin solid;
 	background-color:#ccccff;
 }
 
 p.passwd {
 	margin: 0 3px 0 3px;
 }
-
-/* span formatting for measurements div found in ajax call */
-span.measureCol1 {
-	float: left;
-	width: 50px;
-}
-
-span.measureCol2 {
-	float: left;
-	width: 55px;
-}
-
-span.measureCol3 {
-	float: left;
-}
-
-
 
 /* formatting for navbar */
 .links {
@@ -1385,18 +1360,99 @@ div#encMainDiv div.note:not(.encounter-note) div.view-links {
 	order:2;
 }
 
-.tool-button {
+div.note-contents div.tool-button {
 	display:-webkit-inline-box;
 	display: inline-block;
 	float:right;
-	clear:left;
-	margin-top: 5px;
-	margin-right:5px;
-	margin-bottom:5px;
-	height:14px;
+}
+div.note-contents div.tool-button img {
+	padding:0 !important;
+	margin:0 !important;
 }
 
-.tool-button * {
-	height:14px;
-	width:auto;
+div#control-panel div#timer-control,
+div#control-panel div#assignIssueSection,
+div#control-panel div#save-sign-bill-buttons,
+div#control-panel div.row,
+div#control-panel div#form-control-panel{
+	display: flex;
+	gap:3px;
+}
+
+
+div#control-panel div.row,
+div#control-panel div#form-control-panel {
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+div#control-panel div#form-control-panel div:first-of-type {
+	margin-left: auto;
+	margin-right: 0;
+}
+div#control-panel div#form-control-panel div:last-of-type,
+div#control-panel div#assignIssueSection {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+div#control-panel div.row:last-of-type {
+	align-content: center
+}
+
+div#control-panel div.row:last-of-type button {
+	margin-top:3px
+}
+
+div#control-panel div.row:first-of-type,
+div#control-panel div#form-control-panel {
+	flex-direction: row-reverse;
+}
+
+
+div#control-panel {
+	display: flex;
+	flex-direction: column;
+	padding:5px;
+	height: auto;
+	margin: 0;
+	border: 1px solid #cccccc;
+	background-color: whitesmoke;
+
+}
+
+div#timer-control button {
+	line-height: 1;
+}
+
+button#aTimer {
+	border-radius: 4px;
+	border: 1px solid grey;
+	font-weight: bold;
+}
+
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+div.encounter-note div.note-contents div.view-links a {
+	color: #111111 !important;
+	padding:0 !important;
+	margin: 0 !important;
+}
+
+div.encounter-note div.note-contents img, div.encounter-note div.note-contents div.view-links,
+div.encounter-note div.note-contents > a:not(div.encounter-note div.note-contents div.view-links a),
+div.encounter-note div.note-contents input[type*='image']
+{
+	float:right;
+	color: #111111;
+	display: inline-flex;
+	display: -webkit-box;
+	display: -webkit-inline-box;
+	margin:3px 3px 0 0 !important;
+	padding:0 !important;
+	line-height: 1 !important;
 }

@@ -80,7 +80,7 @@
             <% } %>
         </script>
         <title><bean:message key="ManagePharmacy.title" /></title>
-<script src="<%=request.getContextPath()%>/JavaScriptServlet" type="text/javascript"></script>
+<script src="<%=request.getContextPath()%>/csrfguard" type="text/javascript"></script>
         <html:base />
 
         <logic:notPresent name="RxSessionBean" scope="session">

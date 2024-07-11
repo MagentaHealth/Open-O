@@ -25,6 +25,47 @@
 
 package oscar.oscarEncounter.oscarConsultationRequest.pageUtil;
 
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.model.v26.message.ORU_R01;
+import ca.uhn.hl7v2.model.v26.message.REF_I12;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.oscarehr.common.dao.*;
+import org.oscarehr.common.hl7.v2.oscar_to_oscar.OruR01;
+import org.oscarehr.common.hl7.v2.oscar_to_oscar.OruR01.ObservationData;
+import org.oscarehr.common.hl7.v2.oscar_to_oscar.RefI12;
+import org.oscarehr.common.hl7.v2.oscar_to_oscar.SendingUtils;
+import org.oscarehr.common.model.*;
+import org.oscarehr.common.model.enumerator.DocumentType;
+import org.oscarehr.documentManager.DocumentAttachmentManager;
+import org.oscarehr.documentManager.EDoc;
+import org.oscarehr.documentManager.EDocUtil;
+import org.oscarehr.fax.core.FaxRecipient;
+import org.oscarehr.managers.ConsultationManager;
+import org.oscarehr.managers.DemographicManager;
+import org.oscarehr.managers.FaxManager;
+import org.oscarehr.managers.FaxManager.TransactionType;
+import org.oscarehr.managers.SecurityInfoManager;
+import org.oscarehr.util.*;
+import oscar.OscarProperties;
+import oscar.oscarEncounter.data.EctFormData;
+import oscar.oscarLab.ca.all.pageUtil.LabPDFCreator;
+import oscar.oscarLab.ca.on.CommonLabResultData;
+import oscar.oscarLab.ca.on.LabResultData;
+import oscar.util.ParameterActionForward;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
@@ -33,74 +74,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.oscarehr.common.dao.ClinicDAO;
-import org.oscarehr.common.dao.ConsultationRequestDao;
-import org.oscarehr.common.dao.ConsultationRequestExtDao;
-import org.oscarehr.common.dao.Hl7TextInfoDao;
-import org.oscarehr.common.dao.ProfessionalSpecialistDao;
-import org.oscarehr.common.hl7.v2.oscar_to_oscar.OruR01;
-import org.oscarehr.common.hl7.v2.oscar_to_oscar.OruR01.ObservationData;
-import org.oscarehr.common.hl7.v2.oscar_to_oscar.RefI12;
-import org.oscarehr.common.hl7.v2.oscar_to_oscar.SendingUtils;
-import org.oscarehr.common.model.Clinic;
-import org.oscarehr.common.model.ConsultationRequest;
-import org.oscarehr.common.model.ConsultationRequestExt;
-import org.oscarehr.common.model.Demographic;
-import org.oscarehr.common.model.DemographicContact;
-import org.oscarehr.common.model.DigitalSignature;
-import org.oscarehr.common.model.EFormData;
-import org.oscarehr.common.model.FaxConfig;
-import org.oscarehr.common.model.Hl7TextInfo;
-import org.oscarehr.common.model.ProfessionalSpecialist;
-import org.oscarehr.common.model.Provider;
-import org.oscarehr.common.model.enumerator.DocumentType;
-import org.oscarehr.documentManager.DocumentAttachmentManager;
-import org.oscarehr.managers.ConsultationManager;
-import org.oscarehr.fax.core.FaxRecipient;
-import org.oscarehr.managers.DemographicManager;
-import org.oscarehr.managers.FaxManager;
-import org.oscarehr.managers.FaxManager.TransactionType;
-import org.oscarehr.managers.SecurityInfoManager;
-import org.oscarehr.util.DigitalSignatureUtils;
-import org.oscarehr.util.LoggedInInfo;
-import org.oscarehr.util.MiscUtils;
-import org.oscarehr.util.PDFGenerationException;
-import org.oscarehr.util.SpringUtils;
-import org.oscarehr.util.WebUtils;
-
-import oscar.OscarProperties;
-import org.oscarehr.documentManager.EDoc;
-import org.oscarehr.documentManager.EDocUtil;
-import oscar.oscarEncounter.data.EctFormData;
-import oscar.oscarLab.ca.all.pageUtil.LabPDFCreator;
-import oscar.oscarLab.ca.on.CommonLabResultData;
-import oscar.oscarLab.ca.on.LabResultData;
-import oscar.util.ParameterActionForward;
-import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.model.v26.message.ORU_R01;
-import ca.uhn.hl7v2.model.v26.message.REF_I12;
-import net.sf.json.JSONObject;
+import java.util.*;
 
 public class EctConsultationFormRequestAction extends Action {
 
@@ -148,8 +122,9 @@ public class EctConsultationFormRequestAction extends Action {
 		String signatureImg = frm.getSignatureImg();
 		if(StringUtils.isBlank(signatureImg)) {
 			signatureImg = request.getParameter("newSignatureImg");
-			if(signatureImg ==null) 
+			if(signatureImg ==null) {
 				signatureImg = "";
+			}
 		}
 	
 		
@@ -199,6 +174,9 @@ public class EctConsultationFormRequestAction extends Action {
 							                MiscUtils.getLogger().error("Invalid Time", nfEx);
 										}
 									}
+								} else {
+									consult.setAppointmentDate(null);
+									consult.setAppointmentTime(null);
 								}
                                 consult.setReasonForReferral(frm.getReasonForConsultation());
                                 consult.setClinicalInfo(frm.getClinicalInformation());
@@ -325,7 +303,7 @@ public class EctConsultationFormRequestAction extends Action {
                 
                 // converting the newer Contacts Table and Health Care Team back and forth
                 // from the older professionalSpecialist module.
-                // This should persist and retrieve values to be backwards compatable.
+                // This should persist and retrieve values to be backwards compatible.
                 if( OscarProperties.getInstance().getBooleanProperty("ENABLE_HEALTH_CARE_TEAM_IN_CONSULTATION_REQUESTS", "true") ) {                                	
                 	DemographicContact demographicContact = demographicManager.getHealthCareMemberbyId( loggedInInfo, specId );	                            	
                 	if( demographicContact != null ) {
@@ -350,14 +328,17 @@ public class EctConsultationFormRequestAction extends Action {
                 if( frm.getAppointmentDate() != null && !frm.getAppointmentDate().equals("") ) {
                 	date = DateUtils.parseDate(frm.getAppointmentDate(), format);
                 	consult.setAppointmentDate(date);
-			try {
-	                	date = DateUtils.setHours(date, new Integer(appointmentHour));
-        	        	date = DateUtils.setMinutes(date, new Integer(frm.getAppointmentMinute()));
-                		consult.setAppointmentTime(date);
-			}catch(NumberFormatException nfEx) {
-				MiscUtils.getLogger().error("Invalid Time", nfEx);
-			}
-                }
+					try {
+						date = DateUtils.setHours(date, new Integer(appointmentHour));
+						date = DateUtils.setMinutes(date, new Integer(frm.getAppointmentMinute()));
+						consult.setAppointmentTime(date);
+					}catch(NumberFormatException nfEx) {
+						MiscUtils.getLogger().error("Invalid Time", nfEx);
+					}
+                } else {
+					consult.setAppointmentDate(null);
+					consult.setAppointmentTime(null);
+				}
                 consult.setReasonForReferral(frm.getReasonForConsultation());
                 consult.setClinicalInfo(frm.getClinicalInformation());
                 consult.setCurrentMeds(frm.getCurrentMedications());

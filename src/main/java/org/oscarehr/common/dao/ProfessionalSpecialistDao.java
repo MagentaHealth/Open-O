@@ -23,16 +23,17 @@
 
 package org.oscarehr.common.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Query;
 import org.apache.commons.lang.StringUtils;
 import org.oscarehr.common.model.ProfessionalSpecialist;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
 public class ProfessionalSpecialistDao extends AbstractDao<ProfessionalSpecialist> {
+
 
 	public ProfessionalSpecialistDao() {
 		super(ProfessionalSpecialist.class);

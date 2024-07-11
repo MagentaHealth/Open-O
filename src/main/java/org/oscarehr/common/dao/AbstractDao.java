@@ -22,20 +22,13 @@
  */
 package org.oscarehr.common.dao;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
 import org.oscarehr.common.model.AbstractModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
 import oscar.util.ParamAppender;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Transactional
 public abstract class AbstractDao<T extends AbstractModel<?>> {
@@ -66,25 +59,28 @@ public abstract class AbstractDao<T extends AbstractModel<?>> {
 		entityManager.persist(o);
 	}
 
-	public void batchPersist(List<AbstractModel<?>> oList) {
+
+	public void batchPersist(List<T> oList) {
 		batchPersist(oList, 25);
 	}
 	
-	public void batchPersist(List<AbstractModel<?>> oList, int batchSize) {
+	public void batchPersist(List<T> oList, int batchSize) {
 		EntityManager batchEntityManager = null;
 		EntityTransaction transaction = null;
 		try {
 			batchEntityManager = entityManagerFactory.createEntityManager();
 			transaction = batchEntityManager.getTransaction();
 			transaction.begin();
-			for (int i = 0; i < oList.size(); i++) {
+			int i = 0;
+			for (T entity : oList) {
+				batchEntityManager.persist(entity);
+				i++;
 				if (i > 0 && i % batchSize == 0) {
 					batchEntityManager.flush();
 					batchEntityManager.clear();
 					transaction.commit();
 					transaction.begin();
 				}
-				batchEntityManager.persist(oList.get(i));
 			}
 			transaction.commit();
 		} catch (RuntimeException e) {
@@ -102,28 +98,32 @@ public abstract class AbstractDao<T extends AbstractModel<?>> {
 		entityManager.remove(o);
 	}
 
-	public void batchRemove(List<AbstractModel<?>> oList) {
+	public void batchRemove(List<T> oList) {
 		batchRemove(oList, 25);
 	}
 
-	public void batchRemove(List<AbstractModel<?>> oList, int batchSize) {
+	public void batchRemove(List<T> oList, int batchSize) {
 		EntityManager batchEntityManager = null;
 		EntityTransaction transaction = null;
 		try {
 			batchEntityManager = entityManagerFactory.createEntityManager();
 			transaction = batchEntityManager.getTransaction();
 			transaction.begin();
-			for (int i = 0; i < oList.size(); i++) {
+			int i = 0;
+			for (T entity : oList) {
+
+				// Gets the model and gets the reference to it so that it is attached to the new entity manager's session
+//				AbstractModel<?> model = oList.get(i);
+//				Object entity = batchEntityManager.getReference(model.getClass(), model.getId());
+				batchEntityManager.remove(entity);
+				i++;
 				if (i > 0 && i % batchSize == 0) {
 					batchEntityManager.flush();
 					batchEntityManager.clear();
 					transaction.commit();
 					transaction.begin();
 				}
-				// Gets the model and gets the reference to it so that it is attached to the new entity manager's session
-				AbstractModel<?> model = oList.get(i);
-				Object entity = batchEntityManager.getReference(model.getClass(), model.getId());
-				batchEntityManager.remove(entity);
+
 			}
 			transaction.commit();
 		} catch (RuntimeException e) {
@@ -362,8 +362,12 @@ public abstract class AbstractDao<T extends AbstractModel<?>> {
 	 * 		Returns the entity
 	 */
 	public T saveEntity(T entity) {
-		if (entity.isPersistent()) merge(entity);
-		else persist(entity);
+		if (entity.isPersistent()) {
+			merge(entity);
+		}
+		else {
+			persist(entity);
+		}
 		return entity;
 	}
 

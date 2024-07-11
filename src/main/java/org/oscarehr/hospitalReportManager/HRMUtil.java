@@ -284,6 +284,42 @@ public class HRMUtil {
 
 	}
 
+	public static HRMDocument getHRMDocumentById(LoggedInInfo loggedInInfo, Integer hrmId) {
+		if(!securityInfoManager.hasPrivilege(loggedInInfo, "_hrm", "r", null)) {
+			throw new SecurityException("missing required security object (_hrm)");
+		}
+
+		HRMDocument hrmDocument = hrmDocumentDao.find(hrmId);
+		HRMReport hrmReport = HRMReportParser.parseReport(loggedInInfo, hrmDocument.getReportFile());
+		if (hrmReport == null) { return null; }
+		String dispSubClass = "";
+		HRMSubClass hrmSubClass;
+		List<HRMDocumentSubClass> subClassList = new ArrayList<>(hrmDocument.getAccompanyingSubClasses());
+		if (hrmReport.getFirstReportClass().equalsIgnoreCase("Diagnostic Imaging Report") || hrmReport.getFirstReportClass().equalsIgnoreCase("Cardio Respiratory Report")) {
+			//Get first sub class to display on eChart
+			if (subClassList != null && subClassList.size() > 0) {
+				HRMDocumentSubClass firstSubClass = subClassList.get(0);
+				hrmSubClass = hrmSubClassDao.findApplicableSubClassMapping(hrmReport.getFirstReportClass(), firstSubClass.getSubClass(), firstSubClass.getSubClassMnemonic(), hrmReport.getSendingFacilityId());
+				dispSubClass = hrmSubClass != null ? hrmSubClass.getSubClassDescription() : "";
+			}
+
+			if (StringUtils.isNullOrEmpty(dispSubClass) && hrmReport.getAccompanyingSubclassList().size() > 0){
+				// if sub class doesn't exist, display the accompanying subclass
+				dispSubClass = hrmReport.getFirstAccompanyingSubClass();
+			}
+		} else {
+			//Medical Records Report
+			String[] reportSubClass = hrmReport.getFirstReportSubClass() != null ? hrmReport.getFirstReportSubClass().split("\\^") : null;
+			if (reportSubClass != null && reportSubClass.length > 1) {
+				dispSubClass = reportSubClass[1];
+			}
+		}
+
+		String hrmDocumentDisplayName = getHRMDocumentDisplayName(hrmDocument.getDescription(), dispSubClass, hrmDocument.getReportType(), hrmDocument.getReportStatus());
+		hrmDocument.setDisplayName(hrmDocumentDisplayName);
+		return hrmDocument;
+	}
+
 	private static String getHRMDocumentDisplayName(String description, String subClass, String reportType, String reportStatus) {
 		String displayHRMName = "";
 		if (!StringUtils.isNullOrEmpty(description)) {

@@ -1725,6 +1725,7 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 		String invoiceColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().invoices + ";";
 		String ticklerNoteColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().ticklerNotes + ";";
 		String externalNoteColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().externalNotes + ";";
+		String emailNoteColour = "color:#" + blackColour + ";background-color:#" + Colour.getInstance().emailNotes + ";";
 
 		String bgColour = "color:#000000;background-color:#CCCCFF;";
 
@@ -1745,6 +1746,8 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 			bgColour = formsColour;
 		} else if (noteDisplay.isInvoice()) {
 			bgColour = invoiceColour;
+		} else if (noteDisplay.isEmailNote()) {
+			bgColour = emailNoteColour;
 		}
 
 		return (bgColour);

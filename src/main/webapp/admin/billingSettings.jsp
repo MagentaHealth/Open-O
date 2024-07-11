@@ -198,10 +198,16 @@
                                 // Get the visittype property
                                 defaultServiceLocation = OscarProperties.getInstance().getProperty("visittype");
                             }
+
+                            // this captures and modifies any legacy codes that may be still hanging around
+                            if(defaultServiceLocation.contains("|")) {
+                                defaultServiceLocation = defaultServiceLocation.split("\\|")[0].trim();
+                            }
+
                             for(BillingFormData.BillingVisit billingVisit : billingVisits) {
                         %>
-                        <option value="<%=Encode.forHtmlAttribute(billingVisit.getDisplayName())%>" <%= billingVisit.getDisplayName().equals(defaultServiceLocation) ? "selected" : ""%>>
-                            <%=Encode.forHtmlContent(billingVisit.getDisplayName())%>
+                        <option value="<%=Encode.forHtmlAttribute(billingVisit.getVisitType())%>" <%= billingVisit.getVisitType().equalsIgnoreCase(defaultServiceLocation) ? "selected" : ""%>>
+                            <%=Encode.forHtmlContent(billingVisit.getDescription())%>
                         </option>
                         <%  } %>a
                     </select>

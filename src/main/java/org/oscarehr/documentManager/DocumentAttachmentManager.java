@@ -1,6 +1,5 @@
 package org.oscarehr.documentManager;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.oscarehr.common.dao.ConsultDocsDao;
 import org.oscarehr.common.dao.EFormDocsDao;
 import org.oscarehr.common.model.ConsultDocs;
@@ -9,6 +8,8 @@ import org.oscarehr.common.model.EFormDocs;
 import org.oscarehr.hospitalReportManager.HRMUtil;
 import org.oscarehr.managers.*;
 import org.oscarehr.common.model.enumerator.DocumentType;
+import org.oscarehr.documentManager.data.AttachmentLabResultData;
+import org.oscarehr.util.DateUtils;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.PDFGenerationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import org.springframework.stereotype.Service;
 
 import oscar.eform.EFormUtil;
 import oscar.oscarEncounter.data.EctFormData;
+import oscar.oscarEncounter.data.EctFormData.PatientForm;
 import oscar.oscarLab.ca.all.Hl7textResultsData;
 import oscar.oscarLab.ca.on.CommonLabResultData;
 import oscar.oscarLab.ca.on.LabResultData;
 import oscar.util.ConcatPDF;
+import oscar.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,42 +102,57 @@ public class DocumentAttachmentManager {
 	 * This method is responsible for lab version sorting and is intended for use in the attachment window (attachDocument.jsp).
 	 * In other parts of the application, developers should utilize CommonLabResultData.populateLabResultsData() to access all available lab data.
 	 */
-	public Pair<List<LabResultData>, String> getAllLabsSortedByVersions(LoggedInInfo loggedInInfo, String demographicNo) {
+	public List<AttachmentLabResultData> getAllLabsSortedByVersions(LoggedInInfo loggedInInfo, String demographicNo) {
 		CommonLabResultData commonLabResultData = new CommonLabResultData();
 		List<LabResultData> allLabs = commonLabResultData.populateLabResultsData(loggedInInfo, "", demographicNo, "", "", "", "U");
 		Collections.sort(allLabs);
-		String latestLabVersionIds = "";
-		String allLabVersionIds = "";
-		List<LabResultData> allLabsSortedByVersions = new ArrayList<>();
-		for (LabResultData lab : allLabs) {
-			if (allLabVersionIds.contains("," + lab.getSegmentID() + "Lab")) { continue; }
 
-			String[] matchingLabIds = Hl7textResultsData.getMatchingLabs(lab.getSegmentID()).split(",");
-			if (matchingLabIds.length == 1) {
-				allLabsSortedByVersions.add(lab);
-				continue;
-			} else {
-				latestLabVersionIds += "," + matchingLabIds[matchingLabIds.length - 1] + "Lab";
-			}
+		List<String> allLabVersionIds = new ArrayList<>();
+		List<AttachmentLabResultData> allLabsSortedByVersions = new ArrayList<>();
 
-			for (int i = matchingLabIds.length - 1; i >= 0; i--) {
-				LabResultData labResultData = null;
-				for (LabResultData labResultData1 : allLabs) {
-					if (matchingLabIds[i].equals(labResultData1.getSegmentID())) {
-						labResultData = labResultData1;
-						String label = labResultData.getLabel() != null ? labResultData.getLabel() : "";
-						String discipline = labResultData.getDiscipline() != null ? labResultData.getDiscipline() : "";
-						String labTitle = !"".equals(label) ? label.substring(0, Math.min(label.length(), 40)) : discipline.substring(0, Math.min(discipline.length(), 40));
-						labResultData.setDescription(labTitle);
-						labResultData.setLabel("...Version " + (i+1));
-						break;
-					}
-				}
-				allLabsSortedByVersions.add(labResultData);
-				allLabVersionIds += "," + matchingLabIds[i] + "Lab";
-			}
+		Map<String, LabResultData> labMap = new HashMap<>();
+		for (LabResultData lab : allLabs) { 
+			labMap.put(lab.getSegmentID(), lab); 
 		}
-		return Pair.of(allLabsSortedByVersions, latestLabVersionIds);
+
+		/*
+		 * Explaining this code with an example:
+		 * Let's assume the 'allLabs' variable contains these lab IDs [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]. 
+		 * Among these IDs, ID 2 is the latest version, and 3, 4, and 5 are older versions of that. 
+		 * Similarly, 6 is the latest version, and 1, 7, 8, and 9 are older versions of that. 
+		 * Lab ID 10 doesn't have any version.
+		 * 
+		 * First, I iterate through the 'allLabs' using a for loop.
+		 */
+		for (LabResultData lab : allLabs) {
+			if (allLabVersionIds.contains(lab.getSegmentID())) { continue; }
+
+			AttachmentLabResultData attachmentLabResultData = new AttachmentLabResultData(lab.getSegmentID(), getDisplayLabName(lab), lab.getDateObj());
+
+			/*
+			 * Then, if, for example, I pass lab ID 1, it will give all its related labs in the correct version order. 
+			 * By 'correct order,' I mean it will return this array [7, 9, 8, 1, 6]. 
+			 * This array will be in version order, where the first is the oldest and the last is the latest.
+			 */
+			String[] matchingLabIds = Hl7textResultsData.getMatchingLabs(lab.getSegmentID()).split(",");
+
+
+			/*
+			 * Here, I add the latest lab (6) to 'allLabsSortedByVersions' after attaching its versions (7, 9, 8, and 1) to the latest lab.
+			 */
+			for (int i = matchingLabIds.length - 2; i >= 0; i--) {
+				LabResultData versionLab = labMap.get(matchingLabIds[i]);
+				if (versionLab != null) { attachmentLabResultData.getLabVersionIds().put(versionLab.getSegmentID(), DateUtils.formatDate(versionLab.getDateObj(), null)); }
+
+				/*
+				 * Then, I add those version labs (7, 9, and 8) into the 'allLabVersionIds' array so that they can be skipped.
+				 * At the start of the for loop, I use `if (allLabVersionIds.contains(lab.getSegmentID())) { continue; }` to ensure that labs already included in 'allLabVersionIds' are skipped during the iteration.
+				 */
+				allLabVersionIds.add(matchingLabIds[i]);
+			}
+			allLabsSortedByVersions.add(attachmentLabResultData);
+		}
+		return allLabsSortedByVersions;
 	}
 
 	/**
@@ -165,6 +183,23 @@ public class DocumentAttachmentManager {
 		}
 
 		DocumentAttach documentAttach = new DocumentAttach();
+		documentAttach.attachToConsult(attachments, documentType, providerNo, requestId);
+	}
+
+	/*
+	 * @param editOnOcean When editOnOcean is set to false, it signifies a normal consult request, performing just attach or detach operations on the consult request form.
+	 * When editOnOcean is set to true, it signifies that the attach or detach operation is being performed on a consult request created by OceanMD.
+	 * In this case, it will do two things:
+	 * 1. Attach or detach attachments from the consult request.
+	 * 2. Add those new attachments to the 'EreferAttachment' table, so Oscar can sent those attachment to OceanMD.
+	 * By doing this, the user will not have to manually upload new attachments to e-refer. They will be automatically fetched.
+	 */
+	public void attachToConsult(LoggedInInfo loggedInInfo, DocumentType documentType, String[] attachments, String providerNo, Integer requestId, Integer demographicNo, Boolean editOnOcean) {
+		if (!securityInfoManager.hasPrivilege(loggedInInfo, "_con", SecurityInfoManager.WRITE, demographicNo)) {
+			throw new RuntimeException("missing required security object (_con)");
+		}
+
+		DocumentAttach documentAttach = new DocumentAttach(demographicNo, editOnOcean);
 		documentAttach.attachToConsult(attachments, documentType, providerNo, requestId);
 	}
 
@@ -269,6 +304,23 @@ public class DocumentAttachmentManager {
 		return base64 != null ? base64 : "";
 	}
 
+	public Path concatPDF(ArrayList<Object> pdfDocumentList) throws PDFGenerationException {
+		Path path = null;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			ConcatPDF.concat(pdfDocumentList, outputStream);
+			path = nioFileManager.saveTempFile("combinedPDF_" + new Date().getTime(), outputStream);
+		} catch (IOException e) {
+			throw new PDFGenerationException("An error occurred while concatenating PDF.", e);
+		}
+		return path;
+	}
+
+	public Path concatPDF(List<Path> pdfDocuments) throws PDFGenerationException {
+		ArrayList<Object> pdfDocumentList = new ArrayList<>();
+        for (Path pdfDocument : pdfDocuments) { pdfDocumentList.add(pdfDocument.toString()); }
+		return concatPDF(pdfDocumentList);
+	}
+
 	private Path renderDocument(LoggedInInfo loggedInInfo, HttpServletRequest request, HttpServletResponse response, DocumentType documentType, Integer documentId) throws PDFGenerationException {
 		Path path = null;
 		switch (documentType) {
@@ -285,7 +337,8 @@ public class DocumentAttachmentManager {
 				path = HRMUtil.renderHRM(loggedInInfo, documentId);
 				break;
 			case FORM:
-				path = formsManager.renderForm(request, response, null);
+				PatientForm patientForm = null;
+				path = formsManager.renderForm(request, response, patientForm);
 				break;
 		}
 		return path;
@@ -326,14 +379,10 @@ public class DocumentAttachmentManager {
 		}
 	}
 
-	private Path concatPDF(ArrayList<Object> pdfDocumentList) throws PDFGenerationException {
-		Path path = null;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-			ConcatPDF.concat(pdfDocumentList, outputStream);
-			path = nioFileManager.saveTempFile("combinedPDF_" + new Date().getTime(), outputStream);
-		} catch (IOException e) {
-			throw new PDFGenerationException("An error occurred while concatenating PDF.", e);
-		}
-		return path;
+	private String getDisplayLabName(LabResultData labResultData) {
+		String label = labResultData.getLabel() != null ? labResultData.getLabel() : "";
+		String discipline = labResultData.getDiscipline() != null ? labResultData.getDiscipline() : "";
+		String labTitle = !"".equals(label) ? label.substring(0, Math.min(label.length(), 40)) : discipline.substring(0, Math.min(discipline.length(), 40));
+		return StringUtils.isNullOrEmpty(labTitle) ? "UNLABELLED" : labTitle;
 	}
 }

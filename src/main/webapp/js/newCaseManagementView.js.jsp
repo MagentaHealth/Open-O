@@ -1679,6 +1679,10 @@ function toggleCollapseViewForAll() {
 	});
 }
 
+function viewEmailByLogId(width, height, url) {
+    window.open(url, "_blank", "width=1100,height=1000");
+}
+
 //this func fires only if maximize button is clicked
 function fullView(e) {
     var id = Event.element(e).id;
@@ -1694,11 +1698,10 @@ function fullViewById(id) {
 	
     
     var txt = "n" + nId;
-    var img = "quitImg" + nId;
+    var img = "fullImg" + nId;
     var fullId = "full" + nId;
     var params = "method=viewNote&raw=false&noteId=" + nId;
     var noteTxtId = "txt" + nId; 
-    var btnHtml = "<img title='Minimize Display' id='bottomQuitImg" + nId + "' alt='Minimize Display' onclick='minView(event)' style='float:right; margin-right:5px; margin-bottom:3px;' src='" + ctx + "/oscarEncounter/graphics/triangle_up.gif'>";
     Element.stopObserving(txt, 'click', fullView);
 	
 	
@@ -1710,25 +1713,39 @@ function fullViewById(id) {
                         postBody: params,
                         evalScripts: true,
                         onSuccess: function(response) {
-                        	$(noteTxtId).update(response.responseText);
-                            if( largeNote(response.responseText) ) {
-                                new Insertion.After(noteTxtId,btnHtml);
-                            }
+                        	$(noteTxtId).update(response.responseText.trim());
                             $(fullId).value = "true";
                          
                         }
                     }
                );
 
-    var imgTag = "<img title='Minimize Display' id='quitImg" + nId + "' onclick='minView(event)' style='float:right; margin-right:5px; margin-top: 2px;' src='" + ctx + "/oscarEncounter/graphics/triangle_up.gif'>";
+    var imgTag1 = "<img title='Minimize Display' id='quitImg" + nId + "' onclick='minNonEditableNoteView(" + nId + ")' style='float:right; margin-right:5px; margin-top: 2px;' src='" + ctx + "/oscarEncounter/graphics/triangle_up.gif'>";
+    const imgTag2 = "<img title='Minimize Display' id='quitImg" + nId + "' alt='Minimize Display' onclick='minNonEditableNoteView(" + nId + ")' src='" + ctx + "/oscarEncounter/graphics/triangle_up.gif'>";
 
 
-    Element.remove(img);
+    document.getElementById(img)?.remove();
 
 
     $(txt).style.height = 'auto';
-    new Insertion.Top(txt, imgTag);
-    //Element.stopObserving(txt, 'click', fullView);
+    const observationDivId = "#observation" + nId;
+    if (jQuery(observationDivId).length > 0) {
+        jQuery(observationDivId).append(imgTag2);
+        jQuery(observationDivId).css('font-size', '10px');
+    } else {
+        new Insertion.Top(txt, imgTag1);
+    }
+    Element.stopObserving(noteTxtId, 'click', fullView);
+}
+
+function minNonEditableNoteView(id) {
+    const noteId = "n" + id;
+    const noteTxtId = "txt" + id;
+    const quitImgId = "quitImg" + id;
+    const line = $(noteTxtId).innerHTML.substr(0,50).replace(/<br>/g," ");
+    $(noteTxtId).update(line);
+    document.getElementById(quitImgId)?.remove();
+    Element.observe(noteTxtId, 'click', fullView);
 }
 
 function resetEdit(e) {
@@ -2005,8 +2022,8 @@ function editNote(e) {
 
 
     //AutoCompleter for Issues
-    var issueURL = ctx + "/CaseManagementEntry.do?method=issueList&demographicNo=" + demographicNo + "&providerNo=" + providerNo;
-	issueAutoCompleter = new Ajax.Autocompleter("issueAutocomplete", "issueAutocompleteList", issueURL, {minChars: 4, indicator: 'busy', afterUpdateElement: saveIssueId, onShow: autoCompleteShowMenu, onHide: autoCompleteHideMenu});
+    <%--var issueURL = ctx + "/CaseManagementEntry.do?method=issueList&demographicNo=" + demographicNo + "&providerNo=" + providerNo;--%>
+	<%--issueAutoCompleter = new Ajax.Autocompleter("issueAutocomplete", "issueAutocompleteList", issueURL, {minChars: 4, indicator: 'busy', afterUpdateElement: saveIssueId, onShow: autoCompleteShowMenu, onHide: autoCompleteHideMenu});--%>
 
     //if note is already signed, remove save button to force edits to be signed
     var sign = "signed" + nId;
@@ -2073,7 +2090,7 @@ function showHideIssues(e, issueType) {
 				
 	Event.stop(e);
 	//Element.toggle('noteIssues');
-	if(issueType=="hide" || issueType=="")
+	if(issueType==="hide" || issueType==="")
 		showIssue = false;
 	else
 		showIssue = true;
@@ -2623,27 +2640,6 @@ function savePage(method, chain) {
     		   }
     		 );
 
-
-    /*var frm = document.forms["caseManagementViewForm"];
-    var url = ctx + "/CaseManagementView.do";
-    var objAjax = new Ajax.Request (
-                    url,
-                    {
-                        method: 'post',
-                        postBody: Form.serialize(frm),
-                        onSuccess: function(request) {
-                            tmpSaveNeeded = false;
-                            caseMgtEntryfrm.submit();
-                        },
-                        onFailure: function(request) {
-                            if( request.status == 403 )
-                                alert(sessionExpiredError);
-                            else
-                                alert(request.status + " " + savingNoteError);
-                        }
-                     }
-                   );
-*/
     return false;
 }
 
@@ -2769,13 +2765,12 @@ function updateIssues(e) {
 	var args = $A(arguments);
     args.shift();
 
-
-    if( $("newIssueId").value.length == 0 || $("issueAutocomplete").value != $("newIssueName").value )
+    if( $("newIssueId").value.length === 0 || $("issueAutocomplete").value !== $("newIssueName").value )
         alert(pickIssueMsg);
     else
         ajaxUpdateIssues(args[0], args[1]);
 
-    if( $F("asgnIssues") != assignIssueMsg ) {
+    if( $F("asgnIssues") !== assignIssueMsg ) {
         $("asgnIssues").value= assignIssueMsg;
         Element.stopObserving('asgnIssues', 'click', changeIssueFunc);
         Element.observe('asgnIssues', 'click', addIssueFunc);
@@ -2814,10 +2809,10 @@ function onIssueUpdate() {
 
 function submitIssue(event) {
     var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-    if (keyCode == 13 ) {
-        if( submitIssues)
-            $("asgnIssues").click();
-
+    if (keyCode === 13 ) {
+        if( submitIssues) {
+	        $("asgnIssues").click();
+        }
         return false;
     }
 }
@@ -2920,8 +2915,8 @@ function newNote(e) {
         Element.observe('asgnIssues', 'click', addIssueFunc);
 
         //AutoCompleter for Issues
-        var issueURL = "/CaseManagementEntry.do?method=issueList&demographicNo=" + demographicNo + "&providerNo=" + providerNo;
-        issueAutoCompleter = new Ajax.Autocompleter("issueAutocomplete", "issueAutocompleteList", issueURL, {minChars: 4, indicator: 'busy', afterUpdateElement: saveIssueId, onShow: autoCompleteShowMenu, onHide: autoCompleteHideMenu});
+        <%--var issueURL = "/CaseManagementEntry.do?method=issueList&demographicNo=" + demographicNo + "&providerNo=" + providerNo;--%>
+        <%--let issueAutoCompleter = new Ajax.Autocompleter("issueAutocomplete", "issueAutocompleteList", issueURL, {minChars: 4, indicator: 'busy', afterUpdateElement: saveIssueId, onShow: autoCompleteShowMenu, onHide: autoCompleteHideMenu});--%>
 
         //hide new note button
         //$("newNoteImg").hide();

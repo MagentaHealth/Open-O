@@ -63,6 +63,8 @@
 <%@page import="org.oscarehr.common.dao.EncounterTemplateDao"%>
 <%@page import="org.oscarehr.casemgmt.web.CheckBoxBean"%>
 <%@page import="org.oscarehr.common.model.CasemgmtNoteLock"%>
+<%@page import="org.oscarehr.common.model.EmailLog"%>
+<%@page import="org.oscarehr.managers.EmailManager"%>
 
 <%
     String roleName2$ = (String)session.getAttribute("userrole") + "," + (String) session.getAttribute("user");
@@ -84,6 +86,8 @@ String ctx = request.getContextPath();
 LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 Facility facility = loggedInInfo.getCurrentFacility();
 ProfessionalSpecialistDao professionalSpecialistDao=(ProfessionalSpecialistDao)SpringUtils.getBean("professionalSpecialistDao");
+
+EmailManager emailManager = SpringUtils.getBean(EmailManager.class);
 
 String pId = (String)session.getAttribute("case_program_id");
 Program program = null;
@@ -206,6 +210,12 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 				continue;
 			}
 
+			if (cmNote.isEmailNote())
+			{
+				fullTxtFormat.add(Boolean.FALSE);
+				continue;
+			}
+
 			if( cmNote.getObservationDate() == null ) {
 				fullTxtFormat.add(Boolean.FALSE);
 				continue;
@@ -306,6 +316,10 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 					globalNoteId = "EFORM" + note.getNoteId();
 				} else if (note.isInvoice()) {
 					globalNoteId = "INV" + note.getNoteId();
+				} else if (note.isEmailNote()) {
+					EmailLog emailLog = emailManager.getEmailLogByCaseManagementNoteId(loggedInInfo, Long.valueOf(noteId));
+					if (emailLog == null) { continue; }
+					dispDocNo = String.valueOf(emailLog.getId());
 				}
 			}
 
@@ -365,7 +379,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 			//String metaDisplay = (hideMetaData)?"none":"block";
 			
 			String noteIdAttribute = new StringBuilder("nc").append(offset > 0 ? offset : "").append(idx+1).toString();
-			boolean isMagicNote = note.isDocument() || note.isCpp() || note.isEformData() || note.isEncounterForm() || note.isInvoice();
+			boolean isMagicNote = note.isDocument() || note.isCpp() || note.isEformData() || note.isEncounterForm() || note.isInvoice() || note.isEmailNote();
 			String noteClassAttribute = new StringBuilder("note").append(isMagicNote ? "" : " noteRounded encounter-note").toString();
 		%>
 		
@@ -401,7 +415,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 			        </div>
 				    <textarea tabindex="7" cols="84" rows="10" class="txtArea boxsizingBorder <%= note.isSigned() ? "" : "unsigned-textarea"%>" wrap="soft" style="line-height: 1.1em;" name="caseNote_note" id="caseNote_note<%=savedId%>"><%=cform.getCaseNote_note()%></textarea>
 						
-						<div class="sig <%= note.isSigned() ? "" : "note-unsigned"%>" style="<%=bgColour%>" id="sig<%=globalNoteId%>">
+						<div class="sig <%= note.isSigned() ? "" : "note-unsigned"%>" id="sig<%=globalNoteId%>">
 							<%@ include file="noteIssueList.jsp"%>
 						</div>
 
@@ -423,7 +437,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 						String rev = note.getRevision();
 						if (note.getRemoteFacilityId()==null) // always display full note for remote notes
 						{
-							if (note.isDocument() || note.isCpp() || note.isEformData() || note.isEncounterForm() || note.isInvoice())
+							if (note.isDocument() || note.isCpp() || note.isEformData() || note.isEncounterForm() || note.isInvoice() || note.isEmailNote())
 							{
 								// blank if so it never displays min/max icon for documents
 							}
@@ -460,7 +474,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 						<%
 						}
 
-						if (!note.isDocument() && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice())
+						if (!note.isDocument() && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice() && !note.isEmailNote())
 						{
 
 					 	%>
@@ -472,7 +486,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 					 	{
 					 		// only allow editing for local notes
 					 		// also disallow editing of cpp's inline (can be edited in the cpp area)
-					 		if (note.getRemoteFacilityId()==null && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice())
+					 		if (note.getRemoteFacilityId()==null && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice() && !note.isEmailNote())
 							{
 					 			if(!note.isReadOnly())
 					 			{
@@ -618,8 +632,15 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 								<a class="links" title="<bean:message key="oscarEncounter.view.eformView"/>" id="view<%=globalNoteId%>" href="javascript:void(0)" onclick="<%=url%>"><bean:message key="oscarEncounter.view" /></a>
 			                </div>
 				    <%
+						} else if (note.isEmailNote()) {
+							String url = "viewEmailByLogId(1100,1000,'" + request.getContextPath() + "/admin/ManageEmails.do?method=resendEmail&logId=" + dispDocNo + "');" + "return false;";
+						 	%>
+								<div class="view-links" style="<%=(isMagicNote)?(bgColour):""%>">
+							 		<a class="links" title="<bean:message key="oscarEncounter.view.docView"/>" id="view<%=globalNoteId%>" href="javascript:void(0);" onclick="<%=url%>" ><bean:message key="oscarEncounter.view" />					</a>
+								</div>
+							<%
 						}
-					 	if (!note.isDocument() && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice()) {
+					 	if (!note.isDocument() && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice() && !note.isEmailNote()) {
 					 		String atbname = "anno" + String.valueOf(new Date().getTime());
 					 		String addr = request.getContextPath() + "/annotation/annotation.jsp?atbname=" + atbname + "&table_id=" + String.valueOf(note.getNoteId()) + "&display=EChartNote&demo=" + demographicNo;
 						%>
@@ -627,17 +648,17 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 						<%}
 						%>
 
-							<div id="wrapper<%=globalNoteId%>" style="<%=(note.isDocument()||note.isCpp()||note.isEformData()||note.isEncounterForm()||note.isInvoice())?(bgColour):""%>">
+							<div id="wrapper<%=globalNoteId%>" style="<%=(note.isDocument()||note.isCpp()||note.isEformData()||note.isEncounterForm()||note.isInvoice()||note.isEmailNote())?(bgColour):""%>">
 							<%-- render the note contents here --%>
-			  				<div id="txt<%=globalNoteId%>" style="display:inline-block;">
+			  				<div id="txt<%=globalNoteId%>" >
 
 		  						<%=noteStr%>
 							</div> <!-- end of txt<%=globalNoteId%> -->
 		  						<%
-		  							if (note.isCpp()||note.isEformData()||note.isEncounterForm()||note.isInvoice())
+		  							if (note.isCpp()||note.isEformData()||note.isEncounterForm()||note.isInvoice()||note.isEmailNote())
 		  							{
 		  								%>
-											<div id="observation<%=globalNoteId%>">
+											<div id="observation<%=globalNoteId%>" style="display:ruby;">
 													<bean:message key="oscarEncounter.encounterDate.title"/>:&nbsp;
 													<span id="obs<%=globalNoteId%>"><%=note.getObservationDate() != null ? DateUtils.getDate(note.getObservationDate(), dateFormat, request.getLocale()) : "N/A"%></span>
 													<%
@@ -675,7 +696,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 			  				</div> <!-- end of wrapper<%=globalNoteId%> -->
 						<%
 
-			 			if (largeNote(noteStr))
+			 			if (!note.isEmailNote() && largeNote(noteStr))
 						{
 			 			%>
 						 	<img title="<bean:message key="oscarEncounter.MinDisplay.title"/>" id='bottomQuitImg<%=globalNoteId%>' alt="<bean:message key="oscarEncounter.MinDisplay.title"/>" onclick="minView(event)" style='float: right; margin-right: 5px; margin-bottom: 3px;'
@@ -683,7 +704,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 						<%
 				 		}
 
-						if (!note.isDocument() && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice())
+						if (!note.isDocument() && !note.isCpp() && !note.isEformData() && !note.isEncounterForm() && !note.isInvoice() && !note.isEmailNote())
 						{
 						
 							if (OscarProperties.getInstance().getBooleanProperty("note_program_ui_enabled", "true")) {
@@ -694,7 +715,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 							<%
 							}
 						%>						
-							<div id="sig<%=globalNoteId%>" class="sig" style="clear:both;<%=bgColour%>">
+							<div id="sig<%=globalNoteId%>" class="sig" >
 								<div id="sumary<%=globalNoteId%>">
 									<div id="observation<%=globalNoteId%>" style="float: right; margin-right: 3px;">
 											<bean:message key="oscarEncounter.encounterDate.title"/>:&nbsp;
@@ -818,6 +839,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 			}
 			else if (!fulltxt && !note.isDocument() && !note.isEformData() && !note.isEncounterForm() && !note.isRxAnnotation() && !note.isInvoice())
 			{
+				%><script> Element.observe('n<%=note.getNoteId()%>', 'click', fullView); </script><%
 				unLockedNotes.add(note.getNoteId());
 			}
 		}
@@ -905,6 +927,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 %>
 
 	jQuery(document).ready(function() {
+
 		<%
 		String singleLineFormat="false";
     	UserProperty slProp = (UserProperty)request.getAttribute(UserProperty.STALE_FORMAT);
@@ -927,6 +950,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 				jQuery("#"+staleIds[i]).trigger('click');
 			}
 		}
+
 	});
 
     document.forms["caseManagementEntryForm"].noteId.value = "<%=savedId%>";
@@ -976,8 +1000,8 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
     //flag for determining if we want to submit case management entry form with enter key pressed in auto completer text box
     var submitIssues = false;
    //AutoCompleter for Issues
-    <c:url value="/CaseManagementEntry.do?method=issueList&demographicNo=${param.demographicNo}&providerNo=${param.providerNo}" var="issueURL" />
-    var issueAutoCompleter = new Ajax.Autocompleter("issueAutocomplete", "issueAutocompleteList", "<c:out value="${issueURL}"/>", {minChars: 3, indicator: 'busy', afterUpdateElement: saveIssueId, onShow: autoCompleteShowMenu, onHide: autoCompleteHideMenu});
+<%--    <c:url value="/CaseManagementEntry.do?method=issueList&demographicNo=${param.demographicNo}&providerNo=${param.providerNo}" var="issueURL" />--%>
+<%--    let issueAutoCompleter = new Ajax.Autocompleter("issueAutocomplete", "issueAutocompleteList", "<c:out value="${issueURL}"/>", {minChars: 3, indicator: 'busy', afterUpdateElement: saveIssueId, onShow: autoCompleteShowMenu, onHide: autoCompleteHideMenu});--%>
 
     <%int MaxLen = 20;
 			int TruncLen = 17;

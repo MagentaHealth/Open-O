@@ -145,7 +145,7 @@
 <html:html locale="true">
     <head>
         <title><bean:message key="admin.admin.ManagePrivFrm"/></title>
-        <script src="<%=request.getContextPath()%>/JavaScriptServlet" type="text/javascript"></script>
+        <script src="<%=request.getContextPath()%>/csrfguard" type="text/javascript"></script>
 
         <link href="<%=request.getContextPath() %>/css/bootstrap.css" rel="stylesheet">
         <link href="<%=request.getContextPath() %>/css/datepicker.css" rel="stylesheet">

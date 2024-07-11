@@ -35,6 +35,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.oscarehr.common.model.EFormData;
+import org.oscarehr.email.core.EmailData;
 import org.oscarehr.managers.NioFileManager;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.PDFGenerationException;
@@ -68,7 +69,7 @@ public final class ConvertToEdoc {
 
 	public enum DocumentType { eForm, form }
 	public enum ElementAttribute { src, href, value, name, id, title, type, rel, media }
-	private enum FileType { pdf, css, jpeg, png, gif, js }
+	private enum FileType { pdf, css, jpeg, png, gif, js, jpg }
 	public static final String CUSTOM_STYLESHEET_ID = "pdfMediaStylesheet";
 	private static final String DEFAULT_IMAGE_DIRECTORY = String.format( "%1$s", OscarProperties.getInstance().getProperty( "eform_image" ) );
 	private static final String DEFAULT_FILENAME = "temporaryPDF";
@@ -219,6 +220,20 @@ public final class ConvertToEdoc {
 		ConvertToEdoc.realPath = formTransportContainer.getRealPath();
 		String filename = buildFilename( formTransportContainer.getFormName(), formTransportContainer.getDemographicNo() );
 		return execute( htmlString, filename );
+	}
+
+	/**
+	 * 
+	 * Save the document as a temporary PDF. Does not save or return an eDoc entity. 
+	 * This is a temporary file location. Ensure that the file is deleted after it's used. 
+	 * 
+	 * @param emailData An object representing email-related data, including HTML content.
+	 * @return temporary path to the produced PDF.. 
+	 */
+	public synchronized static Path saveAsTempPDF(EmailData emailData) {
+		String htmlString = emailData.getEncryptedMessage();
+		String filename = buildFilename("emailbody_", "");
+		return execute(htmlString, filename);
 	}
 	
 	/**

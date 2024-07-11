@@ -572,11 +572,10 @@
 
 
         </script>
-        <style type="text/css">
+        <style>
             .ds-btn {
                 background-color: #f4ead7;
                 border: 1px solid #0097cf;
-                span-size: 11px;
             }
         </style>
 
@@ -1794,7 +1793,19 @@
                                                               String name = ".";
                                                               if (demographic_no != 0) {
                                                                   demographic = demographicManager.getDemographic(loggedInInfo1, demographic_no);
-																  name = UtilMisc.toUpperLowerCase(demographic.getLastName()) + ", " + UtilMisc.toUpperLowerCase(demographic.getFirstName());
+                                                                  StringBuilder nameBuilder = new StringBuilder();
+																  nameBuilder.append(UtilMisc.toUpperLowerCase(demographic.getLastName()))
+																  .append(", ")
+																  .append(UtilMisc.toUpperLowerCase(demographic.getFirstName()));
+																  if(demographic.getPrefName() != null && ! demographic.getPrefName().isEmpty()) {
+                                                                      nameBuilder.append(" (")
+                                                                      .append(UtilMisc.toUpperLowerCase(demographic.getPrefName()))
+                                                                      .append(")");
+																  }
+																  if(demographic.getPronoun() != null && ! demographic.getPronoun().isEmpty()) {
+																    nameBuilder.append("; ").append(demographic.getPronoun());
+                                                                  }
+                                                                  name = nameBuilder.toString();
                                                               }
                                                               else {
 																  name = appointment.getName();
@@ -1862,23 +1873,23 @@
                                                                       String sitename = String.valueOf(appointment.getLocation()).trim();
                                                                       String type = appointment.getType();
                                                                       String urgency = appointment.getUrgency();
-                                                                      String reasonCodeName = null;
+                                                                      String reasonCodeName = "";
                                                                       if(appointment.getReasonCode() != null)    {
-                                                                        LookupListItem lli  = reasonCodesMap.get(appointment.getReasonCode());
-                                                                        if(lli != null) {
-                                                                            reasonCodeName = lli.getLabel();
-                                                                        }
-                                                                        if(reasonCodeName != null)
-                                                                        {
-                                                                            reasonCodeName = reasonCodeName.trim();
-                                                                        }
+                                                                            LookupListItem lli  = reasonCodesMap.get(appointment.getReasonCode());
+                                                                            if(lli != null) {
+                                                                                reason = lli.getLabel().trim() + " " + reason;
+                                                                            }
                                                                       }
-                                                                    if ( "yes".equalsIgnoreCase(OscarProperties.getInstance().getProperty("SHOW_APPT_TYPE_WITH_REASON")) ) {
-                                                                        reasonCodeName = ( type
+
+                                                                      if(reason != null && ! reason.isEmpty()) {
+                                                                            reasonCodeName += reason;
+                                                                      }
+
+                                                                      if ( "yes".equalsIgnoreCase(OscarProperties.getInstance().getProperty("SHOW_APPT_TYPE_WITH_REASON")) ) {
+                                                                        reasonCodeName = type
                                                                                 + ((type != null && ! type.isEmpty()) ? " : " : "")
-                                                                                + reasonCodeName );
-                                                                    }
-																	reasonCodeName = reasonCodeName;
+                                                                                + reasonCodeName;
+                                                                      }
 
                                                                   bFirstTimeRs=true;
                                                             as.setApptStatus(status);
@@ -1998,15 +2009,15 @@
 
                                                         <a href="javascript:void(0)"
                                                            onClick="popupPage(535,860,'../appointment/appointmentcontrol.jsp?appointment_no=<%=appointment.getId()%>&provider_no=<%=curProvider_no[nProvider]%>&year=<%=year%>&month=<%=month%>&day=<%=day%>&start_time=<%=iS+":"+iSm%>&demographic_no=0&displaymode=edit&dboperation=search');return false;"
-                                                           title="<%=iS+":"+(iSm>10?"":"0")+iSm%>-<%=iE+":"+iEm%> <%=Encode.forHtmlAttribute(name)%>&#013;&#010;<%=" type: " + Encode.forHtmlAttribute(type)%>&#013;&#010;<%= " reason: " + Encode.forHtmlAttribute(reasonCodeName)%> <%=Encode.forHtmlAttribute(reason)%>&#013;&#010;<%=" notes: " + Encode.forHtmlAttribute(notes)%>"
-                                                        >
+                                                           title="<%=iS+":"+(iSm>10?"":"0")+iSm%>-<%=iE+":"+iEm%>
+                                                                <%=Encode.forHtmlAttribute(name)%><%= (type != null && ! type.isEmpty()) ? "&#013;&#010;type: " + Encode.forHtmlAttribute(type) : "" %>&#013;&#010;<%="reason: " + Encode.forHtmlAttribute(reason)%>&#013;&#010;<%="notes: " + Encode.forHtmlAttribute(notes)%>">
                                                             <span>
-                                                            .<%=name.length() > len ? name.substring(0, len).toUpperCase() : Encode.forHtmlContent(name.toUpperCase())%>
+                                                            .<%=(view == 0 && numAvailProvider != 1) ? (name.length() > len ? name.substring(0, len).toUpperCase() : Encode.forHtmlContent(name.toUpperCase())) : Encode.forHtmlContent(name.toUpperCase())%>
                                                             </span>
                                                         </a><!--Inline display of reason -->
 
                                                         <span class="reason reason_<%=curProvider_no[nProvider]%> hideReason">
-                                                            <c:out value="<%=reason%>" />
+                                                            <%= Encode.forHtmlContent(reasonCodeName) %>
                                                         </span>
 
 
@@ -2057,24 +2068,22 @@
                                                             <% if (ver!=null && ver!="" && "##".compareTo(ver.toString()) == 0){%><a
                                                         href="#"
                                                         title="<bean:message key="provider.appointmentProviderAdminDay.versionMsg"/> <%=UtilMisc.htmlEscape(ver)%>">
-                                                    <span color="red">*</span></a><%}%>
+                                                    <span style="color:red;">*</span></a><%}%>
 
                                                             <% if (roster!="" && "FS".equalsIgnoreCase(roster)){%>
                                                     <a href="#"
-                                                       title="<bean:message key="provider.appointmentProviderAdminDay.rosterMsg"/> <%=UtilMisc.htmlEscape(roster)%>"><span
-                                                            color="red">$</span></a><%}%>
+                                                       title="<bean:message key="provider.appointmentProviderAdminDay.rosterMsg"/> <%=UtilMisc.htmlEscape(roster)%>"><span style="color:red;">$</span></a><%}%>
 
                                                             <% if ("NR".equalsIgnoreCase(roster) || "PL".equalsIgnoreCase(roster)){%>
                                                     <a href="#"
-                                                       title="<bean:message key="provider.appointmentProviderAdminDay.rosterMsg"/> <%=UtilMisc.htmlEscape(roster)%>"><span
-                                                            color="red">#</span></a><%}%>
+                                                       title="<bean:message key="provider.appointmentProviderAdminDay.rosterMsg"/> <%=UtilMisc.htmlEscape(roster)%>"><span style="color:red;">#</span></a><%}%>
 
                                                            </c:if>
                                                     <!-- doctor code block 2 -->
                                                         <c:if test="${not isPreventionWarningDisabled}">
                                                             <%String warning = providerPreventionManager.getWarnings(loggedInInfo1, String.valueOf(demographic_no));
                                                             if( !warning.isEmpty()) { %>
-                                                                  <img src="${pageContext.servletContext.contextPath}/images/stop_sign.png" width="14" height="14" style="margin-bottom: 3px;margin-left: 3px;" title="<%=Encode.forHtmlContent(warning)%>" />&nbsp;
+                                                                  <img src="${pageContext.servletContext.contextPath}/images/stop_sign.png" width="14px" height="14px" style="margin-bottom: 3px;margin-left: 3px;" title="<%=Encode.forHtmlContent(warning)%>" />&nbsp;
                                                             <% } %>
                                                         </c:if>
                                                         <%
@@ -2093,9 +2102,9 @@
                                                     <a class="apptLink" href="javascript:void(0)"
                                                        onClick="popupPage(535,860,'../appointment/appointmentcontrol.jsp?appointment_no=<%=appointment.getId()%>&provider_no=<%=curProvider_no[nProvider]%>&year=<%=year%>&month=<%=month%>&day=<%=day%>&start_time=<%=iS+":"+iSm%>&demographic_no=<%=demographic_no%>&displaymode=edit&dboperation=search');return false;"
                                                             <oscar:oscarPropertiesCheck property="SHOW_APPT_REASON_TOOLTIP" value="yes" defaultVal="true">
-                                                                title="<%=Encode.forHtmlAttribute(name)%>&#013;&#010;<%=" type: " + Encode.forHtmlAttribute(type)%>&#013;&#010;<%= " reason: " + Encode.forHtmlAttribute(reasonCodeName)%> <%=Encode.forHtmlAttribute(reason)%>&#013;&#010;<%=" notes: " + Encode.forHtmlAttribute(notes)%>"
+                                                                title="<%=Encode.forHtmlAttribute(name)%><%= (type != null && ! type.isEmpty()) ? "&#013;&#010;type: " + Encode.forHtmlAttribute(type) : "" %>&#013;&#010;<%="reason: " + Encode.forHtmlAttribute(reason)%>&#013;&#010;<%="notes: " + Encode.forHtmlAttribute(notes)%>"
                                                             </oscar:oscarPropertiesCheck> >
-                                                        <%=name.length() > len ? Encode.forHtmlContent(name.substring(0, len)) : Encode.forHtmlContent(name)%>
+                                                        <%=(view == 0) ? (name.length() > len ? Encode.forHtmlContent(name.substring(0, len)) : Encode.forHtmlContent(name)) : Encode.forHtmlContent(name)%>
                                                     </a>
 
                                                             <% if(len==lenLimitedL || view!=0 || numAvailProvider==1 ) {%>
@@ -2103,7 +2112,7 @@
 
                                                     <oscar:oscarPropertiesCheck
                                                             property="eform_in_appointment" value="yes">
-                                                    &#124;<b><a href="#"
+                                                    &#124; <b><a href="#"
                                                                 onclick="popupPage(500,1024,'../eform/efmformslistadd.jsp?parentAjaxId=eforms&demographic_no=<%=demographic_no%>&appointment=<%=appointment.getId()%>'); return false;"
                                                                 title="eForm Library">F</a></b>
                                                     </oscar:oscarPropertiesCheck>
@@ -2242,9 +2251,8 @@
                                                     </oscar:oscarPropertiesCheck>
 
                                                     <span class='reason reason_<%=curProvider_no[nProvider]%> hideReason'>
-                                                        <strong><i>
-                                                            &#124;<c:out value='<%=reasonCodeName == null ? "" : " " + reasonCodeName %>' />
-                                                            <c:out value='<%=(reason == null || reason.isEmpty()) ? "" : ((reasonCodeName != null && !reasonCodeName.isEmpty()) ? "- " : "") + reason%>' />
+                                                        &#124; <strong><i>
+                                                            <%= Encode.forHtmlContent(reasonCodeName)%>
                                                         </i></strong>
                                                     </span>
                                                     </c:if>

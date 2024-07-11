@@ -25,19 +25,14 @@
 
 package oscar.oscarEncounter.oscarMeasurements.util;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
-
 import oscar.oscarDemographic.data.DemographicData;
 import oscar.oscarEncounter.oscarMeasurements.bean.EctMeasurementsDataBean;
 import oscar.oscarEncounter.oscarMeasurements.bean.EctMeasurementsDataBeanHandler;
+
+import java.util.*;
 
 /**
  *
@@ -172,7 +167,7 @@ public class MeasurementDSHelper {
         log.debug("dataAsDouble");
         double ret = -1;
         try{
-        	if(mdb != null && mdb.getDataField() != null) {
+        	if(mdb != null && mdb.getDataField() != null && ! mdb.getDataField().isEmpty()) {
         		ret = Double.parseDouble(mdb.getDataField());
         	}
         }catch(Exception e){

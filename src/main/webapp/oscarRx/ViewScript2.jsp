@@ -542,10 +542,10 @@ function unloadMess(){
 
 var isSignatureDirty = false;
 var isSignatureSaved = false;
+<% if (OscarProperties.getInstance().isRxFaxEnabled()) { %>
+	var hasFaxNumber = <%= pharmacy != null && pharmacy.getFax() != null && pharmacy.getFax().trim().length() > 0 ? "true" : "false" %>;
+<% } %>
 function signatureHandler(e) {
-	<% if (OscarProperties.getInstance().isRxFaxEnabled()) { %>
-		var hasFaxNumber = <%= pharmacy != null && pharmacy.getFax() != null && pharmacy.getFax().trim().length() > 0 ? "true" : "false" %>;
-	<% } %>
 	isSignatureDirty = e.isDirty;
 	isSignatureSaved = e.isSave;
 	e.target.onbeforeunload = null;
@@ -577,6 +577,12 @@ function enableExistingSignature() {
 	}
 }
 
+function showFaxWarning() {
+	if (typeof hasFaxNumber !== 'undefined' && !hasFaxNumber) {
+		document.getElementById("faxWarningNote").style.display = "block";
+	}
+}
+
 var requestIdKey = "<%=signatureRequestId %>";
 
 </script>
@@ -584,12 +590,21 @@ var requestIdKey = "<%=signatureRequestId %>";
         * {
 	        font:13px/1.231 arial,helvetica,clean,sans-serif;
         }
+
+		.warning-note {
+			background-color: #ffffcc;
+			color: #cc6600;
+			padding: 20px;
+			border: 1px solid #cc6600;
+			border-radius: 5px;
+			display: none;
+		}
 	</style>
 
 </head>
 
 <body topmargin="0" leftmargin="0" vlink="#0000FF"
-	onload="addressSelect();printPharmacy('<%=prefPharmacyId%>','<%=prefPharmacy%>')">
+	onload="addressSelect();printPharmacy('<%=prefPharmacyId%>','<%=prefPharmacy%>');showFaxWarning();">
 
 <!-- added by vic, hsfo -->
 <%
@@ -669,6 +684,9 @@ function toggleView(form) {
 
 				<td valign=top><html:form action="/oscarRx/clearPending">
 					<html:hidden property="action" value="" />
+					<div class="warning-note" id="faxWarningNote">
+						<strong>Warning:</strong> faxing is disabled because no pharmacy fax number is available.</br></br>To enable faxing, close this window and select a pharmacy with a fax number before trying again.
+					</div>
 				</html:form>
                                     <script type="text/javascript">
                                 function clearPending(action){

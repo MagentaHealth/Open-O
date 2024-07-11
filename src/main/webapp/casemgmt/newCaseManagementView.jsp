@@ -86,6 +86,11 @@
 
 	</div>
 	
+	<!--  This leaves the OCEAN toolbar accessible -->
+	<div id="ocean_placeholder" >
+		<span style="visibility:hidden">Ocean Toolbar</span>
+	</div>
+	
 	<div id="notCPP">
  	
 	</div>

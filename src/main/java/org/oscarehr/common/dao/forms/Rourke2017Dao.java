@@ -65,10 +65,10 @@ public class Rourke2017Dao extends AbstractDao<FormRourke2017> {
         return form;
     }
 
-    @Override
+
     public FormRourke2017 saveEntity(FormRourke2017 form) {
         // save FormRourke2017 object
-        form = super.saveEntity(form);
+        super.saveEntity(form);
         
         // get boolean fields and persist them:
         for (FormBooleanValue value : form.getBooleanValueMap().values()) {

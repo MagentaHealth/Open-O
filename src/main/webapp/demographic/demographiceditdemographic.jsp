@@ -881,6 +881,25 @@ function updateEnrolledTo() {
 	}
 }
 
+function validateHC() {
+	const hin = jQuery("#hinBox").val();
+	const ver = jQuery("#verBox").val();
+	const hcType = jQuery("#hcTypeBox").val();
+
+    jQuery.ajax({
+        type: "GET",
+        url:  '<%=request.getContextPath() %>/ws/rs/patientDetailStatusService/validateHC?hin='+hin+'&ver='+ver,
+        dataType:'json',
+        contentType:'application/json',
+        success: function (data) {
+        	alert(data.responseDescription);
+        },
+        error: function(data) {
+        	alert('An error occured.');
+        }
+	});
+}
+
 </script>
 	<script type="application/javascript">
 <%
@@ -952,7 +971,7 @@ function updateEnrolledTo() {
                                 	notes = notes==null?"":notes;                               	
                                 }
 
-                                int age=0, dob_year=0, dob_month=0, dob_date=0;
+                                int dob_year=0, dob_month=0, dob_date=0;
                                 String birthYear="0000", birthMonth="00", birthDate="00";
 
                                 
@@ -983,10 +1002,10 @@ function updateEnrolledTo() {
                                                	dob_year = Integer.parseInt(birthYear);
                                                	dob_month = Integer.parseInt(birthMonth);
                                                	dob_date = Integer.parseInt(birthDate);
-                                                if(dob_year!=0) age=MyDateFormat.getAge(dob_year,dob_month,dob_date);
+
                         %> <%=demographic.getLastName()%>,
 				<%=demographic.getFirstName()%> <%=demographic.getSex()%>
-				<%=age%> years &nbsp;
+				<%=demographic.getAgeAsOf(new Date())%>
 
 				<span style="margin-left: 20px;font-style:italic">
 				<bean:message key="demographic.demographiceditdemographic.msgNextAppt"/>: <oscar:nextAppt demographicNo='<%=demographic.getDemographicNo().toString()%>' />
@@ -1514,8 +1533,8 @@ if(oscarProps.getProperty("new_label_print") != null && oscarProps.getProperty("
 														<span class="info"><%=Encode.forHtmlContent(StringUtils.trimToEmpty(demographic.getGender()))%></span>
 													</li>
                                                     <li><span class="label"><bean:message key="demographic.demographiceditdemographic.msgDemoAge"/>:</span>
-                                                        <span class="info"><%=age%>&nbsp;(<bean:message
-                                                            key="demographic.demographiceditdemographic.formDOB" />: <%=birthYear%>-<%=birthMonth%>-<%=birthDate%>)
+                                                        <span class="info"><%=demographic.getAgeAsOf(new Date())%>&nbsp;(
+	                                                        <bean:message key="demographic.demographiceditdemographic.formDOB" />: <%=birthYear%>-<%=birthMonth%>-<%=birthDate%>)
                                                         </span>
                                                     </li>
                                                     <li><span class="label"><bean:message key="demographic.demographiceditdemographic.msgDemoLanguage"/>:</span>
@@ -2956,8 +2975,8 @@ if ( Dead.equals(PatStat) ) {%>
 									<%} %>
 									</select>			
 
-									<label for="age">Age:</label> <input type="text"
-									name="age" id="age" value="<%=age%>" readonly>
+									<label for="age">Age:</label>
+									<input type="text" name="age" id="age" value="<%=demographic.getAgeAsOf(new Date())%>" readonly>
 
 								</td>
 								<td align="right" nowrap><b><bean:message

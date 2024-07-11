@@ -771,6 +771,27 @@ String curProvider_no = (String)session.getAttribute("user");
 				</div>		
 </security:oscarSec>
 
+<!-- #Email Management -->
+<security:oscarSec roleName="<%=roleName$%>" objectName="_admin.email" rights="r" reverse="<%=false%>">
+	<div class="accordion-heading">
+		<a class="accordion-toggle" data-toggle="collapse" data-parent="#adminNav" href="#collapseSeventeen">
+			Emails
+			<i class="icon-chevron-right"></i>
+		</a>
+	</div>
+				
+	<div id="collapseSeventeen" class="accordion-body collapse">
+		<div class="accordion-inner">
+			<ul>
+				<security:oscarSec roleName="<%=roleName$%>" objectName="_admin" rights="r" reverse="<%=false%>">
+					<li><a href='javascript:void(0);' class="xlink" rel="${ctx}/admin/configureEmail.jsp">Configure Email</a></li>
+				</security:oscarSec>
+				<li><a href='javascript:void(0);' class="xlink" rel="${ctx}/admin/ManageEmails.do?method=showEmailManager">Manage Emails</a></li>
+			</ul>
+		</div>
+	</div>		
+</security:oscarSec>
+
 <!-- #SYSTEM REPORTS-->
 	<security:oscarSec roleName="<%=roleName$%>" objectName="_admin" rights="r" reverse="<%=false%>">
 				<div class="accordion-heading">

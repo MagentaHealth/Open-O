@@ -181,6 +181,16 @@ public class DemographicManager {
 		return (name);
 	}
 
+	public String getDemographicEmail(LoggedInInfo loggedInInfo, Integer demographicId) {
+		Demographic result = getDemographic(loggedInInfo, demographicId);
+		String email = null;
+		if (result != null) {
+			email = result.getEmail();
+		}
+
+		return (email);
+	}
+
 	public Demographic getDemographicByMyOscarUserName(LoggedInInfo loggedInInfo, String myOscarUserName) {
 		checkPrivilege(loggedInInfo, SecurityInfoManager.READ);
 		Demographic result = demographicDao.getDemographicByMyOscarUserName(myOscarUserName);

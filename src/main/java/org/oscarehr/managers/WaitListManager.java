@@ -33,7 +33,6 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.mail.EmailException;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.oscarehr.PMmodule.dao.ProgramDao;
@@ -152,7 +151,7 @@ public class WaitListManager {
     * TODO: Once the new emailing feature is fully implemented, refactor and update this method to make it compatible with the latest email handling in EmailManager.java.
     */
 	@Deprecated
-	public void sendProxyEformNotification(Program program, String app_ctx_path, String fid) throws IOException, EmailException {
+	public void sendProxyEformNotification(Program program, String app_ctx_path, String fid) throws IOException {
 		throw new UnsupportedOperationException("This method is no longer supported.");
 		// if (!enableEmailNotifications) return;
 		

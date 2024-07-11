@@ -46,6 +46,7 @@ import oscar.eform.EFormUtil;
 import oscar.eform.data.EForm;
 import oscar.log.LogAction;
 import oscar.oscarEncounter.data.EctFormData;
+import oscar.util.StringUtils;
 
 @Service
 public class EformDataManager {
@@ -129,6 +130,14 @@ public class EformDataManager {
 		documentManager.moveDocumentToOscarDocuments(loggedInInfo, eDoc.getDocument(), eDoc.getFilePath());
 		eDoc.setFilePath(null);
 		return documentManager.saveDocument(loggedInInfo, eDoc);
+	}
+
+	public EFormData findByFdid(LoggedInInfo loggedInInfo, Integer fdid) {
+		if (!securityInfoManager.hasPrivilege(loggedInInfo, "_eform", SecurityInfoManager.READ, null)) {
+			throw new RuntimeException("missing required security object (_eform)");
+		}
+
+		return eFormDataDao.find(fdid);
 	}
 	
 	/**
@@ -218,6 +227,17 @@ public class EformDataManager {
 		}
 
 		return filteredForms;
+	}
+
+	public void removeEFormData(LoggedInInfo loggedInInfo, String fdid) {
+		if (!securityInfoManager.hasPrivilege(loggedInInfo, "_eform", SecurityInfoManager.DELETE, null)) {
+			throw new RuntimeException("missing required security object (_eform)");
+		}
+
+		EFormData eFormData = eFormDataDao.find(Integer.parseInt(fdid));
+		if (eFormData == null) { return; }
+		eFormData.setCurrent(false);
+		eFormDataDao.merge(eFormData);
 	}
 
 }

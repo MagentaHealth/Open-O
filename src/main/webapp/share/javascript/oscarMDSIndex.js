@@ -1980,20 +1980,20 @@ function getHeight() {
 
 function showPDF(docid,cp) {
 
-    var height=700;
-    if(getHeight()>750) {
-        height=getHeight()-50;
-    }
+    // var height=700;
+    // if(getHeight()>750) {
+    //     height=getHeight()-50;
+    // }
 
-    var width=700;
-    if(getWidth()>1350)
-    {
-        width=getWidth()-650;
-    }
+    // var width=700;
+    // if(getWidth()>1350)
+    // {
+    //     width=getWidth()-650;
+    // }
 
     var url=cp+'/documentManager/ManageDocument.do?method=display&doc_no='+docid+'&rand='+Math.random()+'#view=fitV&page=1';
 
-    document.getElementById('docDispPDF_'+docid).innerHTML='<object width="'+(width)+'" height="'+(height)+'" type="application/pdf" data="'+url+'" id="docPDF_'+docid+'"></object>';
+    document.getElementById('docDispPDF_'+docid).innerHTML='<object style="width:100%;height:92vh"  type="application/pdf" data="'+url+'" id="docPDF_'+docid+'"></object>';
 }
 
 function showPageImg(docid,pn,cp){

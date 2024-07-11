@@ -23,19 +23,7 @@
 
 package org.oscarehr.casemgmt.web;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionForm;
-import org.apache.struts.actions.DispatchAction;
 import org.oscarehr.PMmodule.service.ProviderManager;
 import org.oscarehr.casemgmt.model.CaseManagementCPP;
 import org.oscarehr.casemgmt.model.CaseManagementIssue;
@@ -47,8 +35,12 @@ import org.oscarehr.common.dao.DxDao;
 import org.oscarehr.util.SpringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import oscar.form.JSONAction;
 
-public class BaseCaseManagementEntryAction extends DispatchAction {
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+public class BaseCaseManagementEntryAction extends JSONAction {
 
 	protected String relateIssueString = "Issues related to this note:";
 

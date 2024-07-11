@@ -25,13 +25,12 @@
 
 package org.oscarehr.common.dao;
 
-import java.util.List;
+import org.oscarehr.common.model.Property;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-
-import org.oscarehr.common.model.Property;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public class PropertyDao extends AbstractDao<Property> {
@@ -55,9 +54,13 @@ public class PropertyDao extends AbstractDao<Property> {
 	/**
 	 * Find a property by name where the provider number is null. This identifies a globally set property that is not tied to a specific provider.
 	 * This is more of a legacy function, since most new global properties should be added to SystemPreferences instead.
-	 * @param name property key name
 	 * @return list of properties found matching criteria
 	 */
+	public List<Property> findGlobalByName(Property.PROPERTY_KEY propertyName)
+	{
+		return findGlobalByName(propertyName.name());
+	}
+
 	public List<Property> findGlobalByName(String name)
 	{
 		String sqlCommand="select x from "+modelClass.getSimpleName()+" x where x.name=?1 and x.providerNo is null";

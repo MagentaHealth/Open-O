@@ -58,7 +58,7 @@ pageContext.setAttribute("isMobileDevice", isMobileDevice);
 <%--	    </c:choose>--%>
     </title>
     	
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/Oscar.ico" />
+    <link rel="icon" href="${pageContext.request.contextPath}/images/Oscar.ico" />
 	<link href="${pageContext.request.contextPath}/css/Roboto.css" rel='stylesheet' type='text/css' />
     <script type="text/javascript">
     

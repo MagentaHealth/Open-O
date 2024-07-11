@@ -108,6 +108,7 @@ import org.oscarehr.common.model.HashAudit;
 import org.oscarehr.common.model.MessageTbl;
 import org.oscarehr.common.model.MsgDemoMap;
 import org.oscarehr.common.model.Provider;
+import org.oscarehr.common.model.SecRole;
 import org.oscarehr.common.model.UserProperty;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
@@ -238,6 +239,10 @@ public class CaseManagementManager {
 
 	public EncounterWindow getEctWin(String provider) {
 		return this.encounterWindowDao.find(provider);
+	}
+
+	public SecRole getSecRoleByRoleName(String roleName) {
+		return secRoleDao.findByName(roleName);
 	}
 
 	public void saveNoteExt(CaseManagementNoteExt cExt) {

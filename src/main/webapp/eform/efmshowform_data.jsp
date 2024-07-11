@@ -25,15 +25,15 @@
 --%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page import="java.sql.*, oscar.eform.data.*"%>
+<%@ page import="oscar.eform.data.*"%>
 <%@ page import="org.oscarehr.util.LoggedInInfo"%>
 <%@ page import="oscar.oscarEncounter.data.EctFormData"%>
 <%@ page import="org.oscarehr.common.model.enumerator.DocumentType"%>
 <%@ page import="org.oscarehr.documentManager.DocumentAttachmentManager"%>
+<%@ page import="org.oscarehr.managers.EmailComposeManager"%>
 <%@ page import="org.oscarehr.util.SpringUtils"%>
 <%@ page import="oscar.util.StringUtils" %>
 <%@ page import="java.util.List"%>
-<%@ page import="java.util.ArrayList"%>
 
 <%!
     public void addHiddenEFormAttachments(LoggedInInfo loggedInInfo, EForm eForm, String eFormId) {
@@ -48,6 +48,16 @@
         List<String> attachedLabIds = documentAttachmentManager.getEFormAttachments(loggedInInfo, fdid, DocumentType.LAB, demographicNo);
         List<EctFormData.PatientForm> attachedForms = documentAttachmentManager.getFormsAttachedToEForms(loggedInInfo, fdid, DocumentType.FORM, demographicNo);
         eForm.addHiddenAttachments(attachedDocumentIds, attachedEFormIds, attachedHRMDocumentIds, attachedLabIds, attachedForms);
+    }
+
+    public void addHiddenEmailProperties(LoggedInInfo loggedInInfo, EForm eForm, String demographicNo) {
+        EmailComposeManager emailComposeManager = SpringUtils.getBean(EmailComposeManager.class);
+        Boolean hasValidRecipient = emailComposeManager.hasValidRecipient(loggedInInfo, Integer.parseInt(demographicNo));
+        String[] emailConsent = emailComposeManager.getEmailConsentStatus(loggedInInfo, Integer.parseInt(demographicNo));
+
+        eForm.addHiddenInputElement("hasValidRecipient", Boolean.toString(hasValidRecipient));
+        eForm.addHiddenInputElement("emailConsentName", emailConsent[0]);
+        eForm.addHiddenInputElement("emailConsentStatus", emailConsent[1]);
     }
 %>
 
@@ -115,6 +125,8 @@
     LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
     addHiddenEFormAttachments(loggedInInfo, eForm, fdid);
 
+    // Add email consent properties
+    addHiddenEmailProperties(loggedInInfo, eForm, eForm.getDemographicNo());
+
     out.print(eForm.getFormHtml());
-%>
-<script type="text/javascript" src="${oscar_javascript_path}/moment.js" ></script>
+%><script type="text/javascript" src="${oscar_javascript_path}/moment.js" ></script>

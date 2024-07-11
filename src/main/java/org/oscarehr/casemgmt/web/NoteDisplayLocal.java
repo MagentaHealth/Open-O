@@ -172,6 +172,10 @@ public class NoteDisplayLocal implements NoteDisplay {
 		return (caseManagementNote.isEformData());
 	}
 
+	public boolean isEmailNote() {
+		return (caseManagementNote.isEmailNote());
+	}
+
 	public CaseManagementNoteLink getNoteLink() {
 		CaseManagementNoteLinkDAO cmDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean("CaseManagementNoteLinkDAO");
 		return cmDao.getLastLinkByNote(caseManagementNote.getId());

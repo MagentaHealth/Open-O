@@ -26,7 +26,9 @@
 package org.oscarehr.common.model;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -115,6 +117,9 @@ public class ConsultationRequest extends AbstractModel<Integer> implements Seria
     @ManyToOne(fetch=FetchType.EAGER, targetEntity=LookupListItem.class)
     @JoinColumn(name="appointmentInstructions", referencedColumnName="value", insertable = false, updatable = false)
     private LookupListItem lookupListItem;
+
+	@Transient
+	private List<ConsultationRequestExt> extras = Collections.emptyList();
     
 	@Override
     public Integer getId() {
@@ -419,6 +424,14 @@ public class ConsultationRequest extends AbstractModel<Integer> implements Seria
 
 	public void setLastUpdateDate(Date lastUpdateDate) {
 		this.lastUpdateDate = lastUpdateDate;
+	}
+
+	public List<ConsultationRequestExt> getExtras() {
+		return extras;
+	}
+	
+	public void setExtras(List<ConsultationRequestExt> extras) {
+		this.extras = extras;
 	}
 
 

@@ -2265,7 +2265,7 @@ function wk16VisitTool() {
 						<option value="FAS">Persian</option>
 						<option value="POL">Polish</option>
 						<option value="POR">Portuguese</option>
-						<option value="PUS">Pushto</option>
+						<option value="PUS">Pashto</option>
 						<option value="QUE">Quechua</option>
 						<option value="RON">Romanian</option>
 						<option value="ROH">Romansh</option>

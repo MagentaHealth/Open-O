@@ -89,6 +89,8 @@ import org.oscarehr.ws.rest.to.model.TicklerNoteTo1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import oscar.OscarProperties;
@@ -320,7 +322,18 @@ public class NotesService extends AbstractServiceImpl {
 	@Path("/{demographicNo}/save")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public NoteTo1 saveNote(@PathParam("demographicNo") Integer demographicNo ,NoteTo1 note) throws Exception{
+	public NoteTo1 saveNote(@PathParam("demographicNo") Integer demographicNo, JSONObject jsonNote) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		NoteTo1 note = null;
+		if (jsonNote != null){
+			if (jsonNote.containsKey("encounterNote")){
+				note = objectMapper.readValue(jsonNote.get("encounterNote").toString(), NoteTo1.class);
+			}
+			else {
+				note = objectMapper.readValue(jsonNote.toString(), NoteTo1.class);
+			}
+		}
+
 		logger.debug("saveNote "+note);
 		LoggedInInfo loggedInInfo = getLoggedInInfo(); //LoggedInInfo.loggedInInfo.get();
 		String providerNo=loggedInInfo.getLoggedInProviderNo();

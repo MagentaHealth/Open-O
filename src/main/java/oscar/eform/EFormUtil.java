@@ -86,17 +86,18 @@ public class EFormUtil {
 	public static final String CURRENT = "current";
 	public static final String ALL = "all";
 
-	private static CaseManagementManager cmm = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
-	private static CaseManagementNoteLinkDAO cmDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean(CaseManagementNoteLinkDAO.class);
-	private static EFormDataDao eFormDataDao = (EFormDataDao) SpringUtils.getBean(EFormDataDao.class);
-	private static EFormValueDao eFormValueDao = (EFormValueDao) SpringUtils.getBean(EFormValueDao.class);
-	private static EFormGroupDao eFormGroupDao = (EFormGroupDao) SpringUtils.getBean(EFormGroupDao.class);
-	private static ProviderDao providerDao = (ProviderDao) SpringUtils.getBean(ProviderDao.class);
-	private static TicklerDao ticklerDao = SpringUtils.getBean(TicklerDao.class);
-	private static PreventionManager preventionManager = SpringUtils.getBean(PreventionManager.class);
-	private static ProgramManager2 programManager2 = SpringUtils.getBean(ProgramManager2.class);
-	private static ConsultationRequestDao consultationRequestDao = SpringUtils.getBean(ConsultationRequestDao.class);
-	private static ProfessionalSpecialistDao professionalSpecialistDao = SpringUtils.getBean(ProfessionalSpecialistDao.class);
+	private static final CaseManagementManager cmm = SpringUtils.getBean(CaseManagementManager.class);
+	private static final CaseManagementNoteLinkDAO cmDao = SpringUtils.getBean(CaseManagementNoteLinkDAO.class);
+	private static final EFormDataDao eFormDataDao = SpringUtils.getBean(EFormDataDao.class);
+	private static final EFormValueDao eFormValueDao = SpringUtils.getBean(EFormValueDao.class);
+	private static final EFormGroupDao eFormGroupDao = SpringUtils.getBean(EFormGroupDao.class);
+	private static final ProviderDao providerDao = SpringUtils.getBean(ProviderDao.class);
+	private static final TicklerDao ticklerDao = SpringUtils.getBean(TicklerDao.class);
+	private static final PreventionManager preventionManager = SpringUtils.getBean(PreventionManager.class);
+	private static final ProgramManager2 programManager2 = SpringUtils.getBean(ProgramManager2.class);
+	private static final ConsultationRequestDao consultationRequestDao = SpringUtils.getBean(ConsultationRequestDao.class);
+	private static final ProfessionalSpecialistDao professionalSpecialistDao = SpringUtils.getBean(ProfessionalSpecialistDao.class);
+	private static final EFormDao eformDao = SpringUtils.getBean(EFormDao.class);
 	
 	private EFormUtil() {
 	}
@@ -127,8 +128,7 @@ public class EFormUtil {
 		eform.setPatientIndependent(patientIndependent);
 		eform.setRoleType(roleType);
 
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
-		dao.persist(eform);
+		eformDao.persist(eform);
 
 		return eform.getId().toString();
 	}
@@ -136,7 +136,7 @@ public class EFormUtil {
 	public static ArrayList<HashMap<String, ? extends Object>> listEForms(String sortBy, String deleted) {
 
 		// sends back a list of forms that were uploaded (those that can be added to the patient)
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
+		
 		List<org.oscarehr.common.model.EForm> eforms = null;
 		Boolean status = null;
 		if (deleted.equals("deleted")) {
@@ -153,7 +153,7 @@ public class EFormUtil {
 		else if (FILE_NAME.equals(sortBy)) sortOrder = EFormSortOrder.FILE_NAME;
 		else if (DATE.equals(sortBy)) sortOrder = EFormSortOrder.DATE;
 
-		eforms = dao.findByStatus(status, sortOrder);
+		eforms = eformDao.findByStatus(status, sortOrder);
 
 		ArrayList<HashMap<String, ? extends Object>> results = new ArrayList<HashMap<String, ? extends Object>>();
 		for (org.oscarehr.common.model.EForm eform : eforms) {
@@ -422,9 +422,9 @@ public class EFormUtil {
 	}
 
 	public static HashMap<String, Object> loadEForm(String fid) {
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
+		
 		Integer id = Integer.valueOf(fid);
-		org.oscarehr.common.model.EForm eform = dao.find(id);
+		org.oscarehr.common.model.EForm eform = eformDao.find(id);
 		HashMap<String, Object> curht = new HashMap<String, Object>();
 		if (eform == null) {
 			logger.error("Unable to find EForm with ID = " + fid);
@@ -452,8 +452,8 @@ public class EFormUtil {
 	public static void updateEForm(EFormBase updatedForm) {
 		// Updates the form - used by editForm
 	
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
-		org.oscarehr.common.model.EForm eform = dao.find(Integer.parseInt(updatedForm.getFid()));
+		
+		org.oscarehr.common.model.EForm eform = eformDao.find(Integer.parseInt(updatedForm.getFid()));
 		if (eform == null) {
 			logger.error("Unable to find eform for update: " + updatedForm);
 			return;
@@ -469,7 +469,7 @@ public class EFormUtil {
 		eform.setPatientIndependent(updatedForm.isPatientIndependent());
 		eform.setRoleType(updatedForm.getRoleType());
 		
-		dao.merge(eform);
+		eformDao.merge(eform);
 	}
 
 	/*
@@ -489,8 +489,8 @@ public class EFormUtil {
 	 */
 
 	public static String getEFormParameter(String fid, String fieldName) {
-		EFormDao dao = SpringUtils.getBean(EFormDao.class); 
-		org.oscarehr.common.model.EForm eform = dao.find(ConversionUtils.fromIntString(fid));
+		 
+		org.oscarehr.common.model.EForm eform = eformDao.find(ConversionUtils.fromIntString(fid));
 		if (eform == null) {
 			logger.error("Unable to find EForm for ID = " + fid);
 			return "";
@@ -523,9 +523,9 @@ public class EFormUtil {
 	}
 
 	public static String getEFormIdByName(String name) {		
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);		
+				
 		logger.debug("EFORM NAME '" + name + "'");
-		Integer maxId = dao.findMaxIdForActiveForm(name);
+		Integer maxId = eformDao.findMaxIdForActiveForm(name);
 		
 		return (maxId == null ? null : maxId.toString());
 	}
@@ -628,14 +628,14 @@ public class EFormUtil {
 	}
 
 	public static boolean formExistsInDB(String eFormName) {
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
-		org.oscarehr.common.model.EForm eform = dao.findByName(eFormName);
+		
+		org.oscarehr.common.model.EForm eform = eformDao.findByName(eFormName);
 		return eform != null;
 	}
 
 	public static int formExistsInDBn(String formName, String fid) {
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
-		Long result = dao.countFormsOtherThanSpecified(formName, ConversionUtils.fromIntString(fid));
+		
+		Long result = eformDao.countFormsOtherThanSpecified(formName, ConversionUtils.fromIntString(fid));
 		return result.intValue();
 	}
 
@@ -1253,14 +1253,14 @@ public class EFormUtil {
 	}
 
 	private static void setFormStatus(String fid, boolean status) {
-		EFormDao dao = SpringUtils.getBean(EFormDao.class);
-		org.oscarehr.common.model.EForm eform = dao.find(ConversionUtils.fromIntString(fid));
+		
+		org.oscarehr.common.model.EForm eform = eformDao.find(ConversionUtils.fromIntString(fid));
 		if (eform == null) {
 			logger.error("Unable to find EForm for " + fid);
 			return;
 		}
 		eform.setCurrent(status);
-		dao.merge(eform);
+		eformDao.merge(eform);
 	}
 
 	private static String rsGetString(ResultSet rs, String column) throws SQLException {
@@ -1587,5 +1587,51 @@ public class EFormUtil {
 		eFormData.setRoleType(eForm.getRoleType());
 
 		return(eFormData);
+	}
+
+	/**
+	 * Errors found during the eForm runtime are logged into the eForm
+	 * table and a status of unstable is set.
+	 * These logs are added in order to track and pre-emptively discourage use of poorly
+	 * developed eForms that are imported from external sources.
+	 *
+	 */
+	public static void logError(int formId, String error) {
+		org.oscarehr.common.model.EForm eform = eformDao.findById(formId);
+
+		/*
+		 * DEFAULT is always stable = true
+		 * Reaching this point indicates an error. This form is not stable.
+		 * This status can be reversed by deleting this entry and then uploading
+		 * a new stable eform
+ 		 */
+		eform.setStable(Boolean.FALSE);
+
+		/*
+		 * Logs are stored and compared with JSON.
+		 */
+		if(error != null && ! error.isEmpty()) {
+			String currentErrors = eform.getErrorLog();
+			JSONArray jsonArray;
+			if(currentErrors == null || currentErrors.isEmpty()) {
+				jsonArray = new JSONArray();
+				jsonArray.add(error);
+			} else {
+				jsonArray = JSONArray.fromObject(currentErrors);
+				boolean addError = true;
+				for(Object jsonArrayObject : jsonArray) {
+					if(((String)jsonArrayObject).equalsIgnoreCase(error)) {
+						addError = false;
+						break;
+					}
+				}
+				if(addError) {
+					jsonArray.add(error);
+				}
+			}
+			eform.setErrorLog(jsonArray.toString());
+		}
+
+		eformDao.merge(eform);
 	}
 }

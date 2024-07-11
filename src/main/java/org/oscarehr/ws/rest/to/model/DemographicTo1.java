@@ -23,8 +23,9 @@
  */
 package org.oscarehr.ws.rest.to.model;
 
+//import net.sf.json.JSONObject;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,16 +105,23 @@ public class DemographicTo1 implements Serializable {
 	private String cellPhone;
 	private String phoneComment;
 
-	private List<DemographicContactFewTo1> demoContacts = new ArrayList<DemographicContactFewTo1>();
-	private List<DemographicContactFewTo1> demoContactPros = new ArrayList<DemographicContactFewTo1>();
-	private List<DemographicExtTo1> extras = new ArrayList<DemographicExtTo1>();
-	private List<ProviderTo1> doctors = new ArrayList<ProviderTo1>();
-	private List<ProviderTo1> nurses = new ArrayList<ProviderTo1>();
-	private List<ProviderTo1> midwives = new ArrayList<ProviderTo1>();
-	private List<ProfessionalSpecialistTo1> referralDoctors = new ArrayList<ProfessionalSpecialistTo1>();
-	private List<WaitingListNameTo1> waitingListNames = new ArrayList<WaitingListNameTo1>();
-	private List<StatusValueTo1> patientStatusList = new ArrayList<StatusValueTo1>();
-	private List<StatusValueTo1> rosterStatusList = new ArrayList<StatusValueTo1>();
+	private List<DemographicContactFewTo1> demoContacts;
+	private List<DemographicContactFewTo1> demoContactPros;
+	private List<DemographicExtTo1> extras;
+	private List<ProviderTo1> doctors;
+	private List<ProviderTo1> nurses;
+	private List<ProviderTo1> midwives;
+	private List<ProfessionalSpecialistTo1> referralDoctors;
+	private List<WaitingListNameTo1> waitingListNames;
+	private List<StatusValueTo1> patientStatusList;
+	private List<StatusValueTo1> rosterStatusList;
+	private List<AllergyTo1> allergies;
+	private List<MeasurementTo1> measurements;
+	private List<ConsultationRequestTo1> consultationRequests;
+	private List<ConsultationResponseTo1> consultationResponses;
+	private List<NoteTo1> encounterNotes;
+	private List<DocumentTo1> documents;
+	private List<String> medicationSummary;
 	
 	
 	public Integer getDemographicNo() {
@@ -730,5 +738,60 @@ public class DemographicTo1 implements Serializable {
 
 	public void setPhoneComment(String phoneComment) {
 		this.phoneComment = phoneComment;
+	}
+
+	public List<AllergyTo1> getAllergies() {
+		return allergies;
+	}
+
+	public void setAllergies(List<AllergyTo1> allergies) {
+		this.allergies = allergies;
+	}
+
+	public List<MeasurementTo1> getMeasurements() {
+		return measurements;
+	}
+
+	public void setMeasurements(List<MeasurementTo1> measurements) {
+		this.measurements = measurements;
+	}
+
+	public List<ConsultationRequestTo1> getConsultationRequests() {
+		return consultationRequests;
+	}
+
+	public void setConsultationRequests(List<ConsultationRequestTo1> consultationRequests) {
+		this.consultationRequests = consultationRequests;
+	}
+
+	public List<ConsultationResponseTo1> getConsultationResponses() {
+		return consultationResponses;
+	}
+
+	public void setConsultationResponses(List<ConsultationResponseTo1> consultationResponses) {
+		this.consultationResponses = consultationResponses;
+	}
+
+	public List<NoteTo1> getEncounterNotes() {
+		return encounterNotes;
+	}
+
+	public void setEncounterNotes(List<NoteTo1> encounterNotes) {
+		this.encounterNotes = encounterNotes;
+	}
+	
+	public List<DocumentTo1> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<DocumentTo1> documents) {
+		this.documents = documents;
+	}
+
+	public List<String> getMedicationSummary() {
+		return medicationSummary;
+	}
+	public void setMedicationSummary(List<String> medicationSummary) {
+		this.medicationSummary = medicationSummary;
 	}
 }
