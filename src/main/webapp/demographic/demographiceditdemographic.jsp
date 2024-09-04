@@ -1351,7 +1351,7 @@ if (iviewTag!=null && !"".equalsIgnoreCase(iviewTag.trim())){
 				<td>
 				<form method="post" name="updatedelete" id="updatedelete"
 					action="demographiccontrol.jsp"
-					onSubmit="return checkTypeInEdit();">
+					onSubmit="return checkTypeInEdit();" autocomplete="off">
 					<input type="hidden" name="demographic_no" value="<%=demographic.getDemographicNo()%>">
 				<table width="100%" class="demographicDetail">
 					<tr>

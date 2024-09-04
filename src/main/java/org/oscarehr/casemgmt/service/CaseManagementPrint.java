@@ -79,6 +79,7 @@ public class CaseManagementPrint {
 		request.setAttribute("demoName", getDemoName(demono));
 		request.setAttribute("demoSex", getDemoSex(demono));
 		request.setAttribute("demoAge", getDemoAge(demono));
+		request.setAttribute("demoPhn", getDemoPhn(demono));
 		request.setAttribute("mrp", getMRP(request,demono));
 		String dob = getDemoDOB(demono);
 		dob = convertDateFmt(dob, request);
@@ -481,6 +482,11 @@ public class CaseManagementPrint {
 	protected String getDemoDOB(String demoNo){
 		if (demoNo==null) return "";
 		return caseManagementMgr.getDemoDOB(demoNo);
+	}
+
+	protected String getDemoPhn(String demoNo){
+		if (demoNo==null) return "";
+		return caseManagementMgr.getDemoPhn(demoNo);
 	}
 	
 	protected String getMRP(HttpServletRequest request,String demographicNo) {

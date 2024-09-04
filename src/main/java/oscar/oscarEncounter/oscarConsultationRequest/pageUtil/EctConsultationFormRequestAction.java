@@ -202,8 +202,12 @@ public class EctConsultationFormRequestAction extends Action {
                                     consult.setFollowUpDate(date);
                                 }
 
-                                Integer specId = new Integer( frm.getSpecialist() );
-                                
+								Integer specId = null;
+
+								if(! frm.getSpecialist().isEmpty()) {
+									specId = Integer.parseInt(frm.getSpecialist());
+								}
+
                                 // converting the newer Contacts Table and Health Care Team back and forth
                                 // from the older professionalSpecialist module.
                                 // This should persist and retrieve values to be backwards compatible.
@@ -297,10 +301,13 @@ public class EctConsultationFormRequestAction extends Action {
         		consult.setLetterheadName(frm.getLetterheadName());
         		consult.setLetterheadAddress(frm.getLetterheadAddress());
         		consult.setLetterheadPhone(frm.getLetterheadPhone());
-        		consult.setLetterheadFax(frm.getLetterheadFax());                
+        		consult.setLetterheadFax(frm.getLetterheadFax());
 
-        		Integer specId = new Integer( frm.getSpecialist() );
-                
+				Integer specId = null;
+				if(!frm.getSpecialist().isEmpty()) {
+					specId = new Integer(frm.getSpecialist());
+				}
+
                 // converting the newer Contacts Table and Health Care Team back and forth
                 // from the older professionalSpecialist module.
                 // This should persist and retrieve values to be backwards compatible.
@@ -317,8 +324,11 @@ public class EctConsultationFormRequestAction extends Action {
                 } 
                  
                 // only add the professionalSpecialist if it checks out.
-                ProfessionalSpecialist professionalSpecialist=professionalSpecialistDao.find( specId );
-        			
+                ProfessionalSpecialist professionalSpecialist = new ProfessionalSpecialist();
+				if(specId != null) {
+					professionalSpecialist = professionalSpecialistDao.find(specId);
+				}
+
                 if( professionalSpecialist != null ) {
                 		request.setAttribute("professionalSpecialistName", professionalSpecialist.getFormattedTitle());
                     consult.setProfessionalSpecialist(professionalSpecialist);                                   

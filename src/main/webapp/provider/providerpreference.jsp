@@ -59,8 +59,9 @@
 <%@page import="org.oscarehr.PMmodule.dao.ProviderDao" %>
 <%@page import="org.oscarehr.common.model.Provider" %>
 
-<%
+<%!
 	CtlBillingServiceDao ctlBillingServiceDao = SpringUtils.getBean(CtlBillingServiceDao.class);
+	UserPropertyDAO propertyDao = SpringUtils.getBean(UserPropertyDAO.class);
 %>
 
 <html:html locale="true">
@@ -522,10 +523,21 @@ function showHideERxPref() {
 					</table>
 	            </td>
 			</tr>
-
+			<tr>
+				<td class="preferenceLabel">
+					Show Weekends in Week View:
+				</td>
+				<td class="preferenceValue">
+					<%
+						UserProperty showWeekendsProp = propertyDao.getProp(providerNo, UserProperty.SCHEDULE_WEEK_VIEW_WEEKENDS);
+						boolean weekendsEnabled = showWeekendsProp == null || Boolean.parseBoolean(showWeekendsProp.getValue());
+					%>
+					<input type="checkbox" name="schedule.week_view_weekends" value="true" <%=weekendsEnabled ? "checked=\"checked\"" : ""%> />
+				</td>
+			</tr>
 			<tr>
 				<%
-					UserPropertyDAO propertyDao = (UserPropertyDAO)SpringUtils.getBean("UserPropertyDAO");
+
 					UserProperty prop = propertyDao.getProp(providerNo,"rxInteractionWarningLevel");
 					String warningLevel = "0";
 					if(prop!=null) {

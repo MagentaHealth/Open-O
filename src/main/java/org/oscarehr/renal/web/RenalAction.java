@@ -23,25 +23,8 @@
  */
 package org.oscarehr.renal.web;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.struts.action.ActionForm;
@@ -56,22 +39,23 @@ import org.oscarehr.common.dao.MeasurementDao;
 import org.oscarehr.common.model.Demographic;
 import org.oscarehr.common.model.Dxresearch;
 import org.oscarehr.common.model.Measurement;
-import org.oscarehr.common.model.Provider;
 import org.oscarehr.renal.CkdScreener;
 import org.oscarehr.renal.ORNCkdScreeningReportThread;
 import org.oscarehr.renal.ORNPreImplementationReportThread;
-import org.oscarehr.util.LoggedInInfo;
-import org.oscarehr.util.MiscUtils;
-import org.oscarehr.util.OscarAuditLogger;
-import org.oscarehr.util.SpringUtils;
-import org.oscarehr.util.VelocityUtils;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
-
+import org.oscarehr.util.*;
 import oscar.OscarProperties;
 import oscar.form.FrmLabReq07Record;
 import oscar.form.FrmLabReq10Record;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class RenalAction extends DispatchAction {
 
@@ -163,18 +147,48 @@ public class RenalAction extends DispatchAction {
 		List<Measurement> egfrs = measurementDao.findByType(Integer.parseInt(demographicNo), "EGFR");
 		List<Measurement> acrs = measurementDao.findByType(Integer.parseInt(demographicNo), "ACR");
 		Date latestEgfrDate = null;
-		
-		
+
+		String datafield = null;
 		Double latestEgfr = null;
 		Double aYearAgoEgfr = null;
 		if(egfrs.size()>0) {
-			latestEgfr = Double.valueOf(egfrs.get(0).getDataField());
+			/*
+			 *  Some older datasets allowed a comparator to be
+			 *  saved with a numeric value.
+			 *  This filters out those comparators.
+			 */
+			datafield = egfrs.get(0).getDataField();
+			if(datafield != null) {
+				if (datafield.contains(">")) {
+					datafield = datafield.replaceAll(">", "");
+				}
+				if (datafield.contains("<")) {
+					datafield = datafield.replaceAll("<", "");
+				}
+				latestEgfr = Double.valueOf(datafield);
+			}
 			latestEgfrDate = egfrs.get(0).getDateObserved();
 		}
+
 		Double latestAcr = null;
 		if(acrs.size()>0) {
-			latestAcr = Double.valueOf(acrs.get(0).getDataField());
+			/*
+			 *  Some older datasets allowed a comparator to be
+			 *  saved with a numeric value.
+			 *  This filters out those comparators.
+			 */
+			datafield = acrs.get(0).getDataField();
+			if(datafield != null) {
+				if (datafield.contains(">")) {
+					datafield = datafield.replaceAll(">", "");
+				}
+				if (datafield.contains("<")) {
+					datafield = datafield.replaceAll("<", "");
+				}
+				latestAcr = Double.valueOf(datafield);
+			}
 		}
+
 		if(latestEgfrDate != null) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(latestEgfrDate);

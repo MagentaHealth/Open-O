@@ -34,6 +34,7 @@
 <%@page import="org.oscarehr.common.model.UserProperty" %>
 <%@page import="org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.util.LoggedInInfo" %>
+<%@ page import="org.oscarehr.provider.web.CppPreferencesUIBean" %>
 <%@page import="org.oscarehr.casemgmt.common.Colour" %>
 <%@page import="org.oscarehr.common.dao.ProviderDataDao" %>
 <%@page import="org.oscarehr.common.model.ProviderData"%>
@@ -42,6 +43,8 @@
 
 
 <%
+	LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
+
     String roleName = (String)session.getAttribute("userrole") + "," + (String) session.getAttribute("user");
 
     oscar.oscarEncounter.pageUtil.EctSessionBean bean = null;
@@ -57,6 +60,9 @@
 
     String encTimeMandatoryValue = OscarProperties.getInstance().getProperty("ENCOUNTER_TIME_MANDATORY","false");
 
+	CppPreferencesUIBean cppPreferences = new CppPreferencesUIBean(loggedInInfo.getLoggedInProviderNo());
+	cppPreferences.loadValues();
+	pageContext.setAttribute("cppPreferences", cppPreferences, PageContext.PAGE_SCOPE);
 %>
 <!DOCTYPE html>
 <html:html locale="true">
@@ -151,10 +157,7 @@ var Colour = {
 <% if (OscarProperties.getInstance().getBooleanProperty("note_program_ui_enabled", "true")) { %>
 	<link rel="stylesheet" href="<c:out value="${ctx}/casemgmt/noteProgram.css" />" />
 	<script type="text/javascript" src="<c:out value="${ctx}/casemgmt/noteProgram.js" />"></script>
-<% } 
-
-LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
-%>
+<% } %>
 
 <script type="text/javascript">
 
@@ -429,10 +432,12 @@ LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 jQuery(window).on("load", function() {
 
 	viewFullChart(false);
-    showIssueNotes();
 
     var navBars = new navBarLoader();
     navBars.load();
+
+	getPreferenceBasedEChart();
+
     Calendar.setup({ inputField : "printStartDate", ifFormat : "%d-%b-%Y", showsTime :false, button : "printStartDate_cal", singleClick : true, step : 1 });
     Calendar.setup({ inputField : "printEndDate", ifFormat : "%d-%b-%Y", showsTime :false, button : "printEndDate_cal", singleClick : true, step : 1 });
 
@@ -452,6 +457,62 @@ jQuery(window).on("load", function() {
     </nested:notEmpty>
 
 })
+
+/*
+ * Show and hide CPP categories according to user preferences, and display Social History, Medical History, Ongoing Concerns, and Reminders at user-specified positions
+ */
+function getPreferenceBasedEChart() {
+	const isCppPreferencesEnabled = '<c:out value="${cppPreferences.enable}" />';
+	if (isCppPreferencesEnabled !== 'on') {
+		showIssueNotes();
+		return;
+	}
+
+	const socialHxPosition = '<c:out value="${cppPreferences.socialHxPosition}" />';
+	const medicalHxPosition = '<c:out value="${cppPreferences.medicalHxPosition}" />';
+	const ongoingConcernsPosition = '<c:out value="${cppPreferences.ongoingConcernsPosition}" />';
+	const remindersPosition = '<c:out value="${cppPreferences.remindersPosition}" />';
+	showCustomIssueNotes(socialHxPosition, medicalHxPosition, ongoingConcernsPosition, remindersPosition);
+
+	const preventionsDisplay = '<c:out value="${cppPreferences.preventionsDisplay}" />';
+	const dxRegistryDisplay = '<c:out value="${cppPreferences.dxRegistryDisplay}" />';
+	const formsDisplay = '<c:out value="${cppPreferences.formsDisplay}" />';
+	const eformsDisplay = '<c:out value="${cppPreferences.eformsDisplay}" />';
+	const documentsDisplay = '<c:out value="${cppPreferences.documentsDisplay}" />';
+	const labsDisplay = '<c:out value="${cppPreferences.labsDisplay}" />';
+	const measurementsDisplay = '<c:out value="${cppPreferences.measurementsDisplay}" />';
+	const consultationsDisplay = '<c:out value="${cppPreferences.consultationsDisplay}" />';
+	const hrmDisplay = '<c:out value="${cppPreferences.hrmDisplay}" />';
+
+	const allergiesDisplay = '<c:out value="${cppPreferences.allergiesDisplay}" />';
+	const medicationsDisplay = '<c:out value="${cppPreferences.medicationsDisplay}" />';
+	const otherMedsDisplay = '<c:out value="${cppPreferences.otherMedsDisplay}" />';
+	const riskFactorsDisplay = '<c:out value="${cppPreferences.riskFactorsDisplay}" />';
+	const familyHxDisplay = '<c:out value="${cppPreferences.familyHxDisplay}" />';
+	const unresolvedIssuesDisplay = '<c:out value="${cppPreferences.unresolvedIssuesDisplay}" />';
+	const resolvedIssuesDisplay = '<c:out value="${cppPreferences.resolvedIssuesDisplay}" />';
+	const episodesDisplay = '<c:out value="${cppPreferences.episodesDisplay}" />';
+
+	// If any display variable is empty, it means that the corresponding cpp is hidden
+	if (!preventionsDisplay) { hideCpp('preventions'); }
+	if (!dxRegistryDisplay) { hideCpp('Dx'); }
+	if (!formsDisplay) { hideCpp('forms'); }
+	if (!eformsDisplay) { hideCpp('eforms'); }
+	if (!documentsDisplay) { hideCpp('docs'); }
+	if (!labsDisplay) { hideCpp('labs'); }
+	if (!measurementsDisplay) { hideCpp('measurements'); }
+	if (!consultationsDisplay) { hideCpp('consultation'); }
+	if (!hrmDisplay) { hideCpp('HRM'); }
+
+	if (!allergiesDisplay) { hideCpp('allergies'); }
+	if (!medicationsDisplay) { hideCpp('Rx'); }
+	if (!otherMedsDisplay) { hideCpp('OMeds'); }
+	if (!riskFactorsDisplay) { hideCpp('RiskFactors'); }
+	if (!familyHxDisplay) { hideCpp('FamHistory'); }
+	if (!unresolvedIssuesDisplay) { hideCpp('unresolvedIssues'); }
+	if (!resolvedIssuesDisplay) { hideCpp('resolvedIssues'); }
+	if (!episodesDisplay) { hideCpp('episode'); }
+}
 
 function doscroll(){
 	let bodyScroll = document.body.scrollHeight + 99999;

@@ -25,13 +25,13 @@
 
 package org.oscarehr.common.dao;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.Query;
-
 import org.oscarehr.common.model.GroupMembers;
 import org.springframework.stereotype.Repository;
+import oscar.oscarMessenger.data.ContactIdentifier;
+
+import javax.persistence.Query;
+import java.util.Collections;
+import java.util.List;
 
 @Repository
 public class GroupMembersDao extends AbstractDao<GroupMembers>{
@@ -105,6 +105,21 @@ public class GroupMembersDao extends AbstractDao<GroupMembers>{
 		
 		return results;
     }
+
+	public List<GroupMembers> findGroupMember(String providerNo, int groupId) {
+		Query query = entityManager.createQuery("SELECT x FROM GroupMembers x WHERE x.providerNo LIKE ? AND x.groupId = ?");
+		query.setParameter(1, providerNo);
+		query.setParameter(2, groupId);
+
+		@SuppressWarnings("unchecked")
+		List<GroupMembers> results = query.getResultList();
+
+		if(results == null) {
+			results = Collections.emptyList();
+		}
+
+		return results;
+	}
     
     public List<GroupMembers> findByFacilityId(Integer facilityId) {
 		Query query = entityManager.createQuery("SELECT x FROM GroupMembers x WHERE x.facilityId=?");
@@ -119,5 +134,14 @@ public class GroupMembersDao extends AbstractDao<GroupMembers>{
 		
 		return results;
     }
+
+	public GroupMembers findByIdentity(ContactIdentifier contactIdentifier) {
+		Query query = entityManager.createQuery("SELECT x FROM GroupMembers x " +
+				"WHERE x.facilityId=? AND x.providerNo=? AND x.groupId=?");
+		query.setParameter(1, contactIdentifier.getFacilityId());
+		query.setParameter(2, contactIdentifier.getContactId());
+		query.setParameter(3, contactIdentifier.getGroupId());
+		return super.getSingleResultOrNull(query);
+	}
 	
 }

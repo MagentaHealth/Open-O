@@ -113,9 +113,8 @@ public abstract class AbstractDao<T extends AbstractModel<?>> {
 			for (T entity : oList) {
 
 				// Gets the model and gets the reference to it so that it is attached to the new entity manager's session
-//				AbstractModel<?> model = oList.get(i);
-//				Object entity = batchEntityManager.getReference(model.getClass(), model.getId());
-				batchEntityManager.remove(entity);
+				Object entityObj = batchEntityManager.getReference(entity.getClass(), entity.getId());
+				batchEntityManager.remove(entityObj);
 				i++;
 				if (i > 0 && i % batchSize == 0) {
 					batchEntityManager.flush();

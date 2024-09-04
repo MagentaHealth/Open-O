@@ -1541,6 +1541,7 @@ INSERT INTO `secObjectName` (`objectName`, `description`, `orgapplicable`) VALUE
 INSERT INTO `secObjectName` (`objectName`, `description`, `orgapplicable`) VALUES ('_team_billing_only', 'Restrict billing access to only login provider and his team', '0');
 INSERT INTO `secObjectName` (`objectName`, `description`, `orgapplicable`) VALUES ('_admin.fax', 'Configure & Manage Faxes', '0');
 INSERT INTO `secObjectName` (`objectName`, `description`, `orgapplicable`) VALUES ('_admin.email', 'Configure & Manage Emails', '0');
+INSERT INTO `secObjectName` (`objectName`, `description`, `orgapplicable`) VALUES ('_admin.fax.restart', 'Show status and restart fax scheduler', '0');
 
 insert into `secObjectName` (`objectName`) values ('_newCasemgmt.preventions');
 insert into `secObjectName` (`objectName`) values ('_newCasemgmt.viewTickler');
@@ -1749,6 +1750,7 @@ insert into `secObjPrivilege` values('admin','_admin.systemMessage','x',0,'99999
 insert into `secObjPrivilege` values('admin','_admin.unlockAccount','x',0,'999998');
 insert into `secObjPrivilege` values('admin','_admin.fax','x',0,'999998');
 insert into `secObjPrivilege` values('admin','_admin.email','x',0,'999998');
+insert into `secObjPrivilege` values('admin','_admin.fax.restart','x',0,'999998');
 insert into `secObjPrivilege` values('admin','_admin.userCreatedForms','x',0,'999998');
 insert into `secObjPrivilege` values('admin','_admin.measurements','x',0,'999998');
 insert into `secObjPrivilege` values('admin','_appointment','x',0,'999998');
@@ -2160,9 +2162,11 @@ INSERT INTO `appointment_status` VALUES
 (8,'c','Customized 3','#897DF8','3.gif',0,1,0,'CUST3'),
 (9,'d','Customized 4','#897DF8','4.gif',1,1,0,'CUST4'),
 (10,'e','Customized 5','#897DF8','5.gif',1,1,0,'CUST5'),
-(11,'N','No Show','#cccccc','noshow.gif',1,0,0,'NOSHO'),
-(12,'C','Cancelled','#999999','cancel.gif',1,0,0,'CAN'),
-(13,'B','Billed','#3ea4e1','billed.gif',1,0,0,'BILL');
+(11,'f','Customized 6', '#897DF8','5.gif',1,1,0,'CUST6'),
+(12,'h', 'Confirmed', '#2fcccf', 'thumb.png', 1,1,0,'CONF'),
+(13,'N','No Show','#cccccc','noshow.gif',1,0,0,'NOSHO'),
+(14,'C','Cancelled','#999999','cancel.gif',1,0,0,'CAN'),
+(15,'B','Billed','#3ea4e1','billed.gif',1,0,0,'BILL');
 
 
 insert into gstControl set gstPercent = 5;

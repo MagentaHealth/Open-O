@@ -921,8 +921,8 @@ String curProvider_no = (String)session.getAttribute("user");
 						class="xlink" rel="${ctx}/demographic/demographicExport.jsp"><bean:message key="admin.admin.DemoExport"/></a></li>
 		                        <li><a href='javascript:void(0);'
 						class="xlink" rel="${ctx}/demographic/demographicImport.jsp"><bean:message key="admin.admin.DemoImport"/></a></li>
-<%--					<li><a href='javascript:void(0);'--%>
-<%--						class="xlink" rel="${ctx}/admin/demographicmergerecord.jsp"><bean:message key="admin.admin.mergeRec"/></a></li>--%>
+					<li><a href='javascript:void(0);'
+						class="xlink" rel="${ctx}/admin/demographicmergerecord.jsp"><bean:message key="admin.admin.mergeRec"/></a></li>
 					<li><a href='javascript:void(0);'
 						class="xlink" rel="${ctx}/admin/updatedemographicprovider.jsp"><bean:message
 						key="admin.admin.btnUpdatePatientProvider" /></a></li>

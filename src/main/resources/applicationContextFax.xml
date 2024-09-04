@@ -7,10 +7,10 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 			
 			
+			<bean id="faxSchedulerJob" class="org.oscarehr.fax.core.FaxSchedulerJob"></bean>
+			
 			<bean id="scheduledFaxImporterTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
-    			<property name="timerTask">
-    				<bean class="org.oscarehr.fax.core.FaxSchedulerJob"></bean>
-    			</property>
+    			<property name="timerTask" ref="faxSchedulerJob"></property>
     			<property name="delay" value="5000" />
     			<property name="period" value="${faxPollInterval}" />
 			</bean>

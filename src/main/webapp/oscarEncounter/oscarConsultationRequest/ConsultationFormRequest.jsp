@@ -63,7 +63,6 @@ if(!authed) {
 <%@page import="oscar.oscarDemographic.data.DemographicData"%>
 <%@page import="oscar.oscarEncounter.oscarConsultationRequest.pageUtil.EctViewRequestAction"%>
 <%@page import="org.oscarehr.util.MiscUtils,oscar.oscarClinic.ClinicData"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="org.oscarehr.util.LoggedInInfo"%>
 <%@ page import="org.oscarehr.util.DigitalSignatureUtils"%>
 <%@ page import="org.oscarehr.ui.servlet.ImageRenderingServlet"%>
@@ -91,6 +90,7 @@ if(!authed) {
 <%@ page import="org.oscarehr.documentManager.EDocUtil" %>
 <%@ page import="org.oscarehr.documentManager.EDoc" %>
 <%@ page import="oscar.util.StringUtils" %>
+
 
 <jsp:useBean id="displayServiceUtil" scope="request" class="oscar.oscarEncounter.oscarConsultationRequest.config.pageUtil.EctConDisplayServiceUtil" />
 <!DOCTYPE html>
@@ -1012,9 +1012,9 @@ function onSelectSpecialist(SelectedSpec)	{
     
 	// load the text fields with phone fax and address for past consult review even if spec has been removed from service list
 	<%if(requestId!=null && ! "null".equals( consultUtil.specialist ) ){ %>
-	form.phone.value = '<%=StringEscapeUtils.escapeJavaScript(consultUtil.specPhone)%>';
-	form.fax.value = '<%=StringEscapeUtils.escapeJavaScript(consultUtil.specFax)%>';					
-	form.address.value = '<%=StringEscapeUtils.escapeJavaScript(consultUtil.specAddr) %>';
+	form.phone.value = '<%=Encode.forJavaScript(consultUtil.specPhone)%>';
+	form.fax.value = '<%=Encode.forJavaScript(consultUtil.specFax)%>';
+	form.address.value = '<%=Encode.forJavaScript(consultUtil.specAddr)%>';
 
 	//make sure this dislaimer is displayed
 	document.getElementById("consult-disclaimer").style.display='inline';
@@ -1244,18 +1244,23 @@ String lhndType = "provider"; //set default as provider
 String providerDefault = providerNo;
 
 if(consultUtil.letterheadName == null ){
-//nothing saved so find default	
-UserProperty lhndProperty = userPropertyDAO.getProp(providerNo, UserProperty.CONSULTATION_LETTERHEADNAME_DEFAULT);
-String lhnd = lhndProperty != null?lhndProperty.getValue():null;
-//1 or null = provider, 2 = MRP and 3 = clinic
+	//nothing saved so find default
+	UserProperty lhndProperty = userPropertyDAO.getProp(providerNo, UserProperty.CONSULTATION_LETTERHEADNAME_DEFAULT);
+	String lhnd = null;
 
-	if(lhnd!=null){	
-		if(lhnd.equals("2")){
+	if(lhndProperty != null) {
+		lhnd = lhndProperty.getValue();
+	}
+
+	//1 or null = provider, 2 = MRP and 3 = clinic
+
+	if(lhnd != null){
+		if("2".equals(lhnd)){
 			//mrp
 			providerDefault = providerNoFromChart;
-		}else if(lhnd.equals("3")){
+		}else if("3".equals(lhnd)){
 			//clinic
-			lhndType="clinic";
+			lhndType = "clinic";
 		}
 	}	
 
@@ -1264,51 +1269,46 @@ String lhnd = lhndProperty != null?lhndProperty.getValue():null;
 
 <script>
 
-var providerData = new Object(); //{};
+const providerData = {};
 
+providerData['<%=Encode.forHtmlContent(clinic.getClinicName())%>'] = {};
 
-providerData['<%=StringEscapeUtils.escapeHtml(clinic.getClinicName())%>'] = new Object();
+let addr, ph, fx;
 
-var addr;
-var ph;
-var fx;
+<% if (consultUtil.letterheadAddress != null) { %>
+	addr = '<%= Encode.forHtmlContent(consultUtil.letterheadAddress).replace('\n', ' ') %>';
+<%} else {%>
+	addr = '<%=Encode.forHtmlContent(clinic.getClinicAddress()) + " " + Encode.forHtmlContent(clinic.getClinicCity()) + " " + Encode.forHtmlContent(clinic.getClinicProvince()) + " " + Encode.forHtmlContent(clinic.getClinicPostal()) %>';
+<%}%>
 
-<% 
-if (consultUtil.letterheadAddress != null) { 
-	%>addr = '<%=Encode.forHtmlContent(consultUtil.letterheadAddress).replace('\n', ' ')%>';<%
-} else {
-	%> addr = "<%=Encode.forHtmlContent(clinic.getClinicAddress()) %>  <%=Encode.forHtmlContent(clinic.getClinicCity()) %>  <%=Encode.forHtmlContent(clinic.getClinicProvince()) %>  <%=Encode.forHtmlContent(clinic.getClinicPostal()) %>";<%
-}
+<% if(consultUtil.letterheadPhone != null) { %>
+	ph = '<%=Encode.forHtmlContent(consultUtil.letterheadAddress).replace('\n', ' ')%>';
+<%} else { %>
+	ph = '<%=Encode.forHtmlContent(clinic.getClinicPhone())%>';
+<% }%>
 
-if(consultUtil.letterheadPhone != null) {
-	%>ph = '<%=Encode.forHtmlContent(consultUtil.letterheadAddress).replace('\n', ' ')%>';<%
-} else {
-	%>ph = '<%=Encode.forHtmlContent(clinic.getClinicPhone())%>';<%
-}
+<%if(consultUtil.letterheadFax != null) { %>
+	fx = '<%=Encode.forHtmlContent(consultUtil.letterheadFax)%>';
+<% } else {%>
+	fx = '<%=Encode.forHtmlContent(clinic.getClinicFax())%>';
+<% } %>
 
-
-if(consultUtil.letterheadFax != null) {
-	%>fx = '<%=Encode.forHtmlContent(consultUtil.letterheadFax)%>';<%
-} else {
-	%>fx = '<%=Encode.forHtmlContent(clinic.getClinicFax())%>';<%
-}
-%>
-providerData['<%=StringEscapeUtils.escapeHtml(clinic.getClinicName())%>'].address = addr;
-providerData['<%=StringEscapeUtils.escapeHtml(clinic.getClinicName())%>'].phone = ph;
-providerData['<%=StringEscapeUtils.escapeHtml(clinic.getClinicName())%>'].fax = fx;
+providerData['<%=Encode.forJavaScript(clinic.getClinicName())%>'].address = addr;
+providerData['<%=Encode.forJavaScript(clinic.getClinicName())%>'].phone = ph;
+providerData['<%=Encode.forJavaScript(clinic.getClinicName())%>'].fax = fx;
 
 
 <%
-for (Provider p : prList) {
-	if (!p.getProviderNo().equalsIgnoreCase("-1")) {
-		String prov_no = "prov_"+p.getProviderNo();
+for (Provider providerItem: prList) {
+	if (!providerItem.getProviderNo().equalsIgnoreCase("-1")) {
+		String prov_no = "prov_"+providerItem.getProviderNo();
 
 		%>
-	 providerData['<%=prov_no%>'] = new Object(); //{};
+	 providerData['<%=prov_no%>'] = {};
 
-	providerData['<%=prov_no%>'].address = "<%=p.getFullAddress() %>";
-	providerData['<%=prov_no%>'].phone = "<%=p.getClinicPhone().trim() %>";
-	providerData['<%=prov_no%>'].fax = "<%=p.getClinicFax().trim() %>";
+	providerData['<%=prov_no%>'].address = "<%=Encode.forHtmlContent(providerItem.getFullAddress())%>";
+	providerData['<%=prov_no%>'].phone = "<%=Encode.forHtmlContent(providerItem.getClinicPhone())%>";
+	providerData['<%=prov_no%>'].fax = "<%=Encode.forHtmlContent(providerItem.getClinicFax())%>";
 
 <%	}
 }
@@ -1318,41 +1318,39 @@ List<Program> programList = programDao.getAllActivePrograms();
 
 if (OscarProperties.getInstance().getBooleanProperty("consultation_program_letterhead_enabled", "true")) {
 	if (programList != null) {
-		for (Program p : programList) {
-			String progNo = "prog_" + p.getId();
+		for (Program program : programList) {
+			String progNo = "prog_" + program.getId();
 %>
-		providerData['<%=progNo %>'] = new Object();
-		providerData['<%=progNo %>'].address = "<%=(p.getAddress() != null && p.getAddress().trim().length() > 0) ? p.getAddress().trim() : ((clinic.getClinicAddress() + "  " + clinic.getClinicCity() + "   " + clinic.getClinicProvince() + "  " + clinic.getClinicPostal()).trim()) %>";
-		providerData['<%=progNo %>'].phone = "<%=(p.getPhone() != null && p.getPhone().trim().length() > 0) ? p.getPhone().trim() : clinic.getClinicPhone().trim() %>";
-		providerData['<%=progNo %>'].fax = "<%=(p.getFax() != null && p.getFax().trim().length() > 0) ? p.getFax().trim() : clinic.getClinicFax().trim() %>";
+		providerData['<%=progNo %>'] = {};
+		providerData['<%=progNo %>'].address = '<%=(program.getAddress() != null && !program.getAddress().trim().isEmpty()) ? Encode.forHtmlContent(program.getAddress()) : (Encode.forHtmlContent(clinic.getClinicAddress()) + " " + Encode.forHtmlContent(clinic.getClinicCity()) + " " + Encode.forHtmlContent(clinic.getClinicProvince()) + " " + Encode.forHtmlContent(clinic.getClinicPostal())) %>';
+		providerData['<%=progNo %>'].phone = '<%=(program.getPhone() != null && !program.getPhone().trim().isEmpty()) ? Encode.forHtmlContent(program.getPhone()) : Encode.forHtmlContent(clinic.getClinicPhone()) %>';
+		providerData['<%=progNo %>'].fax = '<%=(program.getFax() != null && !program.getFax().trim().isEmpty()) ? Encode.forHtmlContent(program.getFax()) : Encode.forHtmlContent(clinic.getClinicFax()) %>';
 <%
 		}
 	}
 } %>
-
+console.log(providerData);
 
 function switchProvider(value) {
-	if (value==-1) {
+
+	if (value === -1) {
 		document.getElementById("letterheadName").value = value;
-		document.getElementById("letterheadAddress").value = "<%=(clinic.getClinicAddress() + "  " + clinic.getClinicCity() + "   " + clinic.getClinicProvince() + "  " + clinic.getClinicPostal()).trim() %>";
-		document.getElementById("letterheadAddressSpan").innerHTML = "<%=(clinic.getClinicAddress() + "  " + clinic.getClinicCity() + "   " + clinic.getClinicProvince() + "  " + clinic.getClinicPostal()).trim() %>";
-		document.getElementById("letterheadPhone").value = "<%=clinic.getClinicPhone().trim() %>";
-		document.getElementById("letterheadPhoneSpan").innerHTML = "<%=clinic.getClinicPhone().trim() %>";
-		document.getElementById("letterheadFax").value = "<%=clinic.getClinicFax().trim() %>";
-		// document.getElementById("letterheadFaxSpan").innerHTML = "<%=clinic.getClinicFax().trim() %>";
+		document.getElementById("letterheadAddress").value = '<%=Encode.forHtmlAttribute(clinic.getClinicAddress()) + " " + Encode.forHtmlAttribute(clinic.getClinicCity()) + " " + Encode.forHtmlAttribute(clinic.getClinicProvince()) + " " + Encode.forHtmlAttribute(clinic.getClinicPostal()) %>';
+		document.getElementById("letterheadAddressSpan").innerHTML = '<%=Encode.forHtmlContent(clinic.getClinicAddress()) + " " + Encode.forHtmlContent(clinic.getClinicCity()) + " " + Encode.forHtmlContent(clinic.getClinicProvince()) + " " + Encode.forHtmlContent(clinic.getClinicPostal()) %>';
+		document.getElementById("letterheadPhone").value = "<%=Encode.forHtmlAttribute(clinic.getClinicPhone()) %>";
+		document.getElementById("letterheadPhoneSpan").innerHTML = "<%=Encode.forHtmlContent(clinic.getClinicPhone()) %>";
+		document.getElementById("letterheadFax").value = "<%=Encode.forHtmlAttribute(clinic.getClinicFax()) %>";
 	} else {
-		var origValue = value;
-		if (typeof providerData["prov_" + value.toString()] != "undefined")
+		let origValue = value;
+		if (typeof providerData["prov_" + value.toString()] != "undefined") {
 			value = "prov_" + value;
-		
-		
+		}
 		document.getElementById("letterheadName").value = origValue;
 		document.getElementById("letterheadAddress").value = providerData[value]['address'];
-		document.getElementById("letterheadAddressSpan").innerHTML = providerData[value]['address'].replace(" ", "");
+		document.getElementById("letterheadAddressSpan").innerHTML = providerData[value]['address'];
 		document.getElementById("letterheadPhone").value = providerData[value]['phone'];
 		document.getElementById("letterheadPhoneSpan").innerHTML = providerData[value]['phone'];
 		document.getElementById("letterheadFax").value = providerData[value]['fax'];
-		//document.getElementById("letterheadFaxSpan").innerHTML = providerData[value]['fax'];
 	}
 }
 
@@ -1610,7 +1608,7 @@ function clearAppointmentDateAndTime() {
 						style="padding-left: 2px; padding-right: 2px; border-right: 2px solid #003399; text-align: left; font-size: 80%; font-weight: bold; width: 100%;"
 						>
 						<h2>
-						<%=thisForm.getPatientName()%> <%=thisForm.getPatientSex()%>	<%=thisForm.getPatientAge()%>
+						<%=thisForm.getPatientName()%> <%=thisForm.getPatientSex()%> <%=thisForm.getPatientAge()%>
 						</h2>
 					</td>
 						<% if ("ocean".equals(props.get("cme_js"))) { %>
@@ -1875,7 +1873,7 @@ function clearAppointmentDateAndTime() {
                     <tr class="consultDemographicData" >
 					<td>
 
-					<table height="100%" width="100%">
+					<table>
 						<% if (props.isConsultationFaxEnabled() && OscarProperties.getInstance().isPropertyActive("consultation_dynamic_labelling_enabled")) { %>
 						<tr>
 							<td class="tite4"><bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.msgAssociated2" /></td>
@@ -1886,7 +1884,7 @@ function clearAppointmentDateAndTime() {
 											if (p.getProviderNo().compareTo("-1") != 0) {
 									%>
 									<option value="<%=p.getProviderNo() %>" <%=((consultUtil.providerNo != null && consultUtil.providerNo.equalsIgnoreCase(p.getProviderNo())) || (consultUtil.providerNo == null &&  providerNo.equalsIgnoreCase(p.getProviderNo())) ? "selected='selected'" : "") %>>
-										<%=p.getFirstName() %> <%=p.getSurname() %>
+										<%=Encode.forHtmlContent(p.getFirstName().replace("Dr.", "")) %>&nbsp;<%=Encode.forHtmlContent(p.getSurname()) %>
 									</option>
 									<% }
 
@@ -2250,21 +2248,26 @@ function clearAppointmentDateAndTime() {
 					<td colspan="2" class="tite4 heading">Letterhead</td>
 				<tr>
 					<td colspan="2">
-					<table  width="100%">
+					<table>
 						<tr>
 						
-							<td class="tite4"><bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.letterheadName" />
+							<td class="tite4">
+								<label for="letterheadName">
+									<bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.letterheadName" />
+								</label>
 							</td>							
 							<td  class="tite1">				
 								<select name="letterheadName" id="letterheadName" onchange="switchProvider(this.value)">
-									<option value="<%=StringEscapeUtils.escapeHtml(clinic.getClinicName())%>" <%=(consultUtil.letterheadName != null && consultUtil.letterheadName.equalsIgnoreCase(clinic.getClinicName()) ? "selected='selected'" : lhndType.equals("clinic") ? "selected='selected'" : "" )%>><%=clinic.getClinicName() %></option>
+									<option value="<%=Encode.forHtmlAttribute(clinic.getClinicName())%>" <%=(consultUtil.letterheadName != null && consultUtil.letterheadName.equalsIgnoreCase(clinic.getClinicName())) ? "selected='selected'" : (lhndType.equals("clinic") ? "selected='selected'" : "") %>>
+										<%=Encode.forHtmlContent(clinic.getClinicName()) %>
+									</option>
 								<%
 									for (Provider p : prList) {
 										if (p.getProviderNo().compareTo("-1") != 0 && (p.getFirstName() != null || p.getSurname() != null)) {
 								%>
 								<option value="<%=p.getProviderNo() %>" 
-								<%=(consultUtil.letterheadName != null && consultUtil.letterheadName.equalsIgnoreCase(p.getProviderNo()) ? "selected='selected'"  : consultUtil.letterheadName == null && p.getProviderNo().equalsIgnoreCase(providerDefault) && lhndType.equals("provider") ? "selected='selected'"  : "") %>>
-									<%=p.getSurname() %>, <%=p.getFirstName().replace("Dr.", "") %>
+								<%=(consultUtil.letterheadName != null && consultUtil.letterheadName.equalsIgnoreCase(p.getProviderNo())) ? "selected='selected'"  : (consultUtil.letterheadName == null && p.getProviderNo().equalsIgnoreCase(providerDefault) && lhndType.equals("provider") ? "selected='selected'"  : "") %>>
+									<%=Encode.forHtmlContent(p.getSurname())%>,&nbsp;<%=Encode.forHtmlContent(p.getFirstName().replace("Dr.", ""))%>
 								</option>
 								<% }
 								}
@@ -2273,29 +2276,33 @@ function clearAppointmentDateAndTime() {
 								for (Program p : programList) {
 								%>
 									<option value="prog_<%=p.getId() %>" <%=(consultUtil.letterheadName != null && consultUtil.letterheadName.equalsIgnoreCase("prog_" + p.getId()) ? "selected='selected'"  : "") %>>
-									<%=p.getName() %>
+									<%=Encode.forHtmlContent(p.getName()) %>
 									</option>
 								<% }
 								}%>
 								</select>
 								<%if ( props.isConsultationFaxEnabled() ) {%>
-									<div style="font-size:12px"><input type="checkbox" name="ext_letterheadTitle" value="Dr" <%=(consultUtil.letterheadTitle != null && consultUtil.letterheadTitle.equals("Dr") ? "checked"  : "") %>>Include Dr. with name</div>
+									<div>
+										<input type="checkbox" id="ext_letterheadTitle" name="ext_letterheadTitle" value="Dr" <%=(consultUtil.letterheadTitle != null && consultUtil.letterheadTitle.equals("Dr") ? "checked"  : "") %>>
+										<label for="ext_letterheadTitle">Include Dr. with name</label>
+									</div>
 								<%}%>
 							</td>
 						</tr>
 						<tr>
-							<td class="tite4"><bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.letterheadAddress" />
+							<td class="tite4">
+								<bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.letterheadAddress" />
 							</td>
 							<td  class="tite1">
 								<% if (consultUtil.letterheadAddress != null) { %>
-									<input type="hidden" name="letterheadAddress" id="letterheadAddress" value="<%=StringEscapeUtils.escapeHtml(consultUtil.letterheadAddress) %>" />
+									<input type="hidden" name="letterheadAddress" id="letterheadAddress" value="<%=Encode.forHtmlAttribute(consultUtil.letterheadAddress) %>" />
 									<span id="letterheadAddressSpan">
-										<%=consultUtil.letterheadAddress %>
+										<%=Encode.forHtmlContent(consultUtil.letterheadAddress) %>
 									</span>
 								<% } else { %>
-									<input type="hidden" name="letterheadAddress" id="letterheadAddress" value="<%=StringEscapeUtils.escapeHtml(clinic.getClinicAddress()) %>  <%=StringEscapeUtils.escapeHtml(clinic.getClinicCity()) %>  <%=StringEscapeUtils.escapeHtml(clinic.getClinicProvince()) %>  <%=StringEscapeUtils.escapeHtml(clinic.getClinicPostal()) %>" />
+									<input type="hidden" name="letterheadAddress" id="letterheadAddress" value='<%=Encode.forHtmlAttribute(clinic.getClinicAddress()) + " " + Encode.forHtmlAttribute(clinic.getClinicCity()) + " " + Encode.forHtmlAttribute(clinic.getClinicProvince()) + " " + Encode.forHtmlAttribute(clinic.getClinicPostal()) %>' />
 									<span id="letterheadAddressSpan">
-										<%=clinic.getClinicAddress() %><%=clinic.getClinicCity() %><%=clinic.getClinicProvince() %><%=clinic.getClinicPostal() %>
+										<%=Encode.forHtmlContent(clinic.getClinicAddress()) %>&nbsp;<%=Encode.forHtmlContent(clinic.getClinicCity()) %>&nbsp;<%=Encode.forHtmlContent(clinic.getClinicProvince()) %>&nbsp;<%=Encode.forHtmlContent(clinic.getClinicPostal()) %>
 									</span>
 								<% } %>
 							</td>
@@ -2306,20 +2313,21 @@ function clearAppointmentDateAndTime() {
 							<td  class="tite1">
 								<% if (consultUtil.letterheadPhone != null) {
 								%>
-									<input type="hidden" name="letterheadPhone" id="letterheadPhone" value="<%=StringEscapeUtils.escapeHtml(consultUtil.letterheadPhone) %>" />
+									<input type="hidden" name="letterheadPhone" id="letterheadPhone" value="<%=Encode.forHtmlAttribute(consultUtil.letterheadPhone) %>" />
 								 	<span id="letterheadPhoneSpan">
 										<%=consultUtil.letterheadPhone%>
 									</span>
 								<% } else { %>
-									<input type="hidden" name="letterheadPhone" id="letterheadPhone" value="<%=StringEscapeUtils.escapeHtml(clinic.getClinicPhone()) %>" />
+									<input type="hidden" name="letterheadPhone" id="letterheadPhone" value="<%=Encode.forHtmlAttribute(clinic.getClinicPhone()) %>" />
 									<span id="letterheadPhoneSpan">
-										<%=clinic.getClinicPhone()%>
+										<%=Encode.forHtmlContent(clinic.getClinicPhone())%>
 									</span>
 								<% } %>
 							</td>
 						</tr>
 						<tr>
-							<td class="tite4"><bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.letterheadFax" />
+							<td class="tite4">
+								<label for="letterheadFax"><bean:message key="oscarEncounter.oscarConsultationRequest.ConsultationFormRequest.letterheadFax" /></label>
 							</td>
 							<td  class="tite1">
 							   <%								
@@ -2331,7 +2339,7 @@ function clearAppointmentDateAndTime() {
 								<%
 									for( FaxConfig faxConfig : faxConfigs ) {
 								%>
-										<option value="<%=faxConfig.getFaxNumber()%>" <%=faxConfig.getFaxNumber().equalsIgnoreCase(consultUtil.letterheadFax) ? "selected" : ""%>><%=Encode.forHtmlAttribute(faxConfig.getAccountName())%></option>
+										<option value="<%=Encode.forHtmlAttribute(faxConfig.getFaxNumber())%>" <%=faxConfig.getFaxNumber().equalsIgnoreCase(consultUtil.letterheadFax) ? "selected" : ""%>><%=Encode.forHtmlContent(faxConfig.getAccountName())%></option>
 								<%	    
 									}								
 								%>
@@ -2597,7 +2605,7 @@ function clearAppointmentDateAndTime() {
 			//<!--
 				function initConsultationServices() {
 					initMaster();
-			        initService('<%=consultUtil.service%>','<%=((consultUtil.service==null)?"":StringEscapeUtils.escapeJavaScript(consultUtil.getServiceName(consultUtil.service.toString())))%>','<%=consultUtil.specialist%>','<%=((consultUtil.specialist==null)?"":StringEscapeUtils.escapeJavaScript(consultUtil.getSpecailistsName(consultUtil.specialist.toString())))%>','<%=StringEscapeUtils.escapeJavaScript(consultUtil.specPhone)%>','<%=StringEscapeUtils.escapeJavaScript(consultUtil.specFax)%>','<%=StringEscapeUtils.escapeJavaScript(consultUtil.specAddr)%>');
+			        initService('<%=consultUtil.service%>','<%=((consultUtil.service==null)?"":Encode.forJavaScript(consultUtil.getServiceName(consultUtil.service.toString())))%>','<%=consultUtil.specialist%>','<%=((consultUtil.specialist==null)?"":Encode.forJavaScript(consultUtil.getSpecailistsName(consultUtil.specialist.toString())))%>','<%=Encode.forJavaScript(consultUtil.specPhone)%>','<%=Encode.forJavaScript(consultUtil.specFax)%>','<%=Encode.forJavaScript(consultUtil.specAddr)%>');
 		            initSpec();
 		            
 		            document.EctConsultationFormRequestForm.phone.value = ("");

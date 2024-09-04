@@ -99,6 +99,10 @@ public class PreventionReportAction extends Action {
        request.setAttribute("asDate",asofDate);
        PreventionReport report = PreventionReportFactory.getPreventionReport(prevention);
 
+      if ("ChildImmunizations".equals(prevention)) {
+         request.setAttribute("ReportType", prevention);
+      }
+
        Hashtable h =report.runReport(loggedInInfo, list,asofDate);
        request.setAttribute("up2date",h.get("up2date"));
        request.setAttribute("percent",h.get("percent"));

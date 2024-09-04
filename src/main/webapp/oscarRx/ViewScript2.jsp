@@ -677,7 +677,7 @@ function toggleView(form) {
 			<tr>
 				<td width=420px>
 				<div class="DivContentPadding"><!-- src modified by vic, hsfo -->
-				<iframe id='preview' name='preview' width=420px height=1000px
+				<iframe id='preview' name='preview' width=420px height=890px
 					src="<%= dx<0?"Preview2.jsp?scriptId="+request.getParameter("scriptId")+"&rePrint="+reprint+"&pharmacyId="+request.getParameter("pharmacyId"):dx==7?"HsfoPreview.jsp?dxCode=7":"about:blank" %>"
 					align=center border=0 frameborder=0></iframe></div>
 				</td>
@@ -688,7 +688,7 @@ function toggleView(form) {
 						<strong>Warning:</strong> faxing is disabled because no pharmacy fax number is available.</br></br>To enable faxing, close this window and select a pharmacy with a fax number before trying again.
 					</div>
 				</html:form>
-                                    <script type="text/javascript">
+							<script type="text/javascript">
                                 function clearPending(action){
                                     document.forms.RxClearPendingForm.action.value = action;
                                     document.forms.RxClearPendingForm.submit();
@@ -729,17 +729,18 @@ function toggleView(form) {
                                 }
                                 function expandPreview(text){
                                     parent.document.getElementById('lightwindow_container').style.width="1140px";
+									parent.document.getElementById('lightwindow_container').style.left="-600px";
                                     parent.document.getElementById('lightwindow_contents').style.width="1120px";
-                                    document.getElementById('preview').style.width="580px";
+                                    document.getElementById('preview').style.width="600px";
                                     frames['preview'].document.getElementById('pharmInfo').innerHTML=text;
                                     //frames['preview'].document.getElementById('removePharm').show();
                                     $("selectedPharmacy").innerHTML='<bean:message key="oscarRx.printPharmacyInfo.paperSizeWarning"/>';
 
                                 }
                                 function reducePreview(){
-                                    parent.document.getElementById('lightwindow_container').style.width="980px";
-                                    parent.document.getElementById('lightwindow_contents').style.width="960px";
-                                    document.getElementById('preview').style.width="420px";
+                                    parent.document.getElementById('lightwindow_container').style.width="1000px";
+                                    parent.document.getElementById('lightwindow_contents').style.width="980px";
+                                    document.getElementById('preview').style.width="460px";
                                     frames['preview'].document.getElementById('pharmInfo').innerHTML="";
                                     $("selectedPharmacy").innerHTML="";
                                 }
@@ -870,13 +871,13 @@ function toggleView(form) {
                                         <tr>
 						<td colspan=2 style="font-weight: bold"><span><bean:message key="ViewScript.msgAddNotesRx"/></span></td>
 					</tr>
-                                        <tr>
+					<tr>
                                                 <!--td width=10px></td-->
-                                                <td>
-                                                    <textarea id="additionalNotes" style="width: 200px" onchange="javascript:addNotes();" ></textarea>
-                                                    <input type="button" value="Additional Rx Notes" onclick="javascript:addNotes();"/>
-                                                </td>
-                                        </tr>
+						<td>
+							<textarea id="additionalNotes" style="width: 200px" onchange="javascript:addNotes();" ></textarea>
+							<input type="button" value="Additional Rx Notes" onclick="javascript:addNotes();"/>
+						</td>
+					</tr>
 
                                         <%}%>
 					<% if (OscarProperties.getInstance().isRxSignatureEnabled() && !OscarProperties.getInstance().getBooleanProperty("signature_tablet", "yes")) { %>

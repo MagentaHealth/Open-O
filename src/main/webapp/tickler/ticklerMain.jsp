@@ -243,6 +243,14 @@
 				// });
 				let groupColumn = 11;
 				ticklerResultsTable = jQuery("#ticklerResults").dataTable({
+					// cache the datatable state to persist through page refreshes
+					bStateSave: true,
+					fnStateSave: function(oSettings, oData) {
+						localStorage.setItem('ticklerDataTable', JSON.stringify(oData));
+					},
+					fnStateLoad: function() {
+						return JSON.parse(localStorage.getItem('ticklerDataTable'));
+					},
 					"searching": false,
 					"aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
 					"iDisplayLength": 50,

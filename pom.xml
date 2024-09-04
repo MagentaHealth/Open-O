@@ -53,12 +53,12 @@
 		<repository>
 			<id>hapi-sf</id>
 			<name>HAPI Sourceforge Repository</name>
-			<url>http://hl7api.sourceforge.net/m2</url>
+			<url>https://hl7api.sourceforge.net/m2</url>
 		</repository>
 
 		<repository>
 			<id>oscar_repo</id>
-			<url>http://oscarmcmaster.sourceforge.net/m2</url>
+			<url>https://oscarmcmaster.sourceforge.net/m2</url>
 		</repository>
 
 		<!-- for the com.github.openosp htmltopdf dependency only. Upgrades
@@ -77,7 +77,7 @@
 
 		<pluginRepository>
 			<id>oscar_repo</id>
-			<url>http://oscarmcmaster.sourceforge.net/m2</url>
+			<url>https://oscarmcmaster.sourceforge.net/m2</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -290,10 +290,10 @@
 			</exclusions>
 		</dependency>
 
-		<!-- 
-			At present, the maximum version we can bump org.apache.santuario:xmlsec to is 2.1.8. 
-			If we aim to go beyond this version, we'll need to update 'ebs-client', 'edt-stubs', 
-			and 'hcv-stubs' as they are currently utilizing xmlsec version 1.5.6. 
+		<!--
+			At present, the maximum version we can bump org.apache.santuario:xmlsec to is 2.1.8.
+			If we aim to go beyond this version, we'll need to update 'ebs-client', 'edt-stubs',
+			and 'hcv-stubs' as they are currently utilizing xmlsec version 1.5.6.
 			Thus, we need to update all dependencies together.
 		-->
 		<dependency>
@@ -380,16 +380,16 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc-struts</artifactId>
 			<version>2.5.6.SEC03</version>
-			<exclusions>		
-				<exclusion>		
-					<groupId>org.springframework</groupId>		
-					<artifactId>spring-webmvc</artifactId>		
-				</exclusion>		
-				<exclusion>		
-					<groupId>org.springframework</groupId>		
-					<artifactId>spring-web</artifactId>		
-				</exclusion>		
-			</exclusions>			
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-webmvc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -808,7 +808,7 @@
 			</exclusions>
 		</dependency>
 
-		<!-- ostermillerutils_1_04_03_for_java_1_4.jar 
+		<!-- ostermillerutils_1_04_03_for_java_1_4.jar
 		we need to stop using this and replace it with apache commons -->
 		<dependency>
 			<groupId>com.ostermiller</groupId>
@@ -897,13 +897,13 @@
 		    <artifactId>jtidy</artifactId>
 		    <version>1.0.5</version>
 		</dependency>
-		
+
 		<dependency>
 		    <groupId>org.jsoup</groupId>
 		    <artifactId>jsoup</artifactId>
 		    <version>1.17.2</version>
 		</dependency>
-		
+
 		<!-- xerces -->
 		<dependency>
 			<groupId>xerces</groupId>
@@ -950,16 +950,12 @@
 			<artifactId>olis-service</artifactId>
 			<version>20111111</version>
 		</dependency>
-	        <dependency>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcmail-jdk15on</artifactId>
-                        <version>1.64</version>
-                </dependency>
-                <dependency>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcprov-jdk15on</artifactId>
-                        <version>1.70</version>
-                </dependency>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on-->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk18on</artifactId>
+			<version>1.78.1</version>
+		</dependency>
 
 		<!-- AXIS2 (for OLIS) -->
 
@@ -1087,7 +1083,7 @@
     		<artifactId>cxf-rt-transports-http</artifactId>
     		<version>2.7.11</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>org.oscarehr</groupId>
@@ -1188,20 +1184,20 @@
 			<artifactId>shic-cda</artifactId>
 			<version>1.0.8</version>
 		</dependency>
-                
+
         <!-- Apache Tika - MimeType handling for downloaded files (ie. XDS) -->
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>1.5</version>
         </dependency>
-        
+
         <dependency>
     			<groupId>com.atlassian.commonmark</groupId>
     			<artifactId>commonmark</artifactId>
     			<version>0.10.0</version>
 		</dependency>
-		
+
 		<!--tagsoup-->
 		<dependency>
 			<groupId>org.ccil.cowan.tagsoup</groupId>
@@ -1214,13 +1210,13 @@
 				 <artifactId>cbi_ws_client</artifactId>
 				 <version>1.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>rome</groupId>
 			<artifactId>rome</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
         <dependency>
                 <groupId>org.oscarehr.integration.ebs</groupId>
                 <artifactId>ebs-client</artifactId>
@@ -1251,18 +1247,6 @@
 		<groupId>org.codehaus.jackson</groupId>
 		<artifactId>jackson-jaxrs</artifactId>
 		<version>1.9.13</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.xhtmlrenderer</groupId>
-		<artifactId>flying-saucer-pdf</artifactId>
-		<version>9.1.22</version>
-		<exclusions>
-			<exclusion>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bctsp-jdk14</artifactId>
-			</exclusion>
-		</exclusions>
 	</dependency>
 
 		<dependency>
@@ -1296,20 +1280,23 @@
 	    <artifactId>jasypt</artifactId>
 	    <version>1.8</version>
 	</dependency>
-	
-	<dependency>
-	    <groupId>org.xhtmlrenderer</groupId>
-	    <artifactId>flying-saucer-core</artifactId>
-	    <version>9.1.22</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>org.xhtmlrenderer</groupId>
-	    <artifactId>flying-saucer-pdf-openpdf</artifactId>
-	    <version>9.1.22</version>
-	</dependency>
 
-	<!-- Caisi Integrator -->
+
+		<!-- https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-core -->
+		<dependency>
+			<groupId>org.xhtmlrenderer</groupId>
+			<artifactId>flying-saucer-core</artifactId>
+			<version>9.4.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf -->
+		<dependency>
+			<groupId>org.xhtmlrenderer</groupId>
+			<artifactId>flying-saucer-pdf</artifactId>
+			<version>9.4.1</version>
+		</dependency>
+
+		<!-- Caisi Integrator -->
 	<dependency>
 		<groupId>org.oscarehr.caisi_integrator</groupId>
 		<artifactId>integrator-objects</artifactId>
@@ -1321,7 +1308,7 @@
 			</exclusion>
 		</exclusions>
 	</dependency>
-	
+
 	<!-- This is a dependency for the Caisi Integrator Objects. Only required until
 	OpenJPA is no longer needed in Integrator. -->
     <dependency>
@@ -1643,6 +1630,35 @@ Comming soon. After spring and java upgrades
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Update lockfile - mvn se.vandmo:dependency-lock-maven-plugin:lock -->
+			<plugin>
+            	<groupId>se.vandmo</groupId>
+            	<artifactId>dependency-lock-maven-plugin</artifactId>
+            	<version>1.1.0</version>
+				<executions>
+					<execution>
+						<id>check</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+        	</plugin>
+
+			<plugin>
+			<groupId>org.owasp</groupId>
+			<artifactId>dependency-check-maven</artifactId>
+			<version>9.2.0</version> <!-- Use the latest version -->
+			<executions>
+				<execution>
+					<goals>
+						<goal>check</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 		</plugins>
 
 			<!--     Maybe one day when the header licences are used again.

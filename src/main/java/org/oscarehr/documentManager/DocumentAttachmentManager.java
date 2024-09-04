@@ -1,5 +1,7 @@
 package org.oscarehr.documentManager;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.oscarehr.common.dao.ConsultDocsDao;
 import org.oscarehr.common.dao.EFormDocsDao;
 import org.oscarehr.common.model.ConsultDocs;
@@ -309,6 +311,7 @@ public class DocumentAttachmentManager {
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			ConcatPDF.concat(pdfDocumentList, outputStream);
 			path = nioFileManager.saveTempFile("combinedPDF_" + new Date().getTime(), outputStream);
+			flattenPDFFormFields(path);
 		} catch (IOException e) {
 			throw new PDFGenerationException("An error occurred while concatenating PDF.", e);
 		}
@@ -384,5 +387,15 @@ public class DocumentAttachmentManager {
 		String discipline = labResultData.getDiscipline() != null ? labResultData.getDiscipline() : "";
 		String labTitle = !"".equals(label) ? label.substring(0, Math.min(label.length(), 40)) : discipline.substring(0, Math.min(discipline.length(), 40));
 		return StringUtils.isNullOrEmpty(labTitle) ? "UNLABELLED" : labTitle;
+	}
+
+	public void flattenPDFFormFields(Path pdfPath) throws PDFGenerationException {
+		try (PDDocument document = PDDocument.load(pdfPath.toFile())) {
+			PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
+            if (acroForm != null) { acroForm.flatten(); }
+            document.save(pdfPath.toString());
+		} catch (IOException e) {
+			throw new PDFGenerationException("Error while flattening the " + pdfPath.getFileName() + " file. " + e.getMessage(), e);
+		}
 	}
 }

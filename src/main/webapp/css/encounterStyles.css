@@ -32,7 +32,7 @@
 
 
 :root * {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif !important;
 	font-size: 12px;
 	overscroll-behavior: none;
 	-webkit-font-smoothing: antialiased;
@@ -41,6 +41,39 @@
 
 #noteEditTxt {
 	font-size: larger;
+}
+
+div#userSettings ul#userSettingsMenu {
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	list-style-type: none;
+}
+
+div#userSettings ul#userSettingsMenu li a {
+	text-decoration: none;
+	color:#00283c;
+}
+
+div#userSettings ul#userSettingsMenu li a:hover {
+	text-decoration: none;
+	color:red;
+}
+
+div#userSettings ul#userSettingsMenu li {
+	color: #00283c;
+	font-weight: bold;
+	display:inline-block;
+}
+
+div#userSettings ul#userSettingsMenu li .glyphicon{
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	-webkit-font-smoothing: antialiased;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
 }
 
 .nav-menu-heading {
@@ -86,10 +119,17 @@
 	width:100%;
 }
 
-#header-top-row {
+#header-top-row, #header-top-row #left-column {
 	display: flex;
 }
-#header-top-row #branding-logo {
+
+#header-top-row {
+	width: 100%;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+#header-top-row #left-column #branding-logo {
 	margin: 5px 5px auto 5px;
 	position: relative;
 	top: 0;

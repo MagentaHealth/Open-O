@@ -24,18 +24,8 @@
 
 package org.oscarehr.provider.web;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -52,10 +42,13 @@ import org.oscarehr.common.model.UserProperty;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
-
 import oscar.eform.EFormUtil;
 import oscar.log.LogAction;
 import oscar.oscarEncounter.oscarConsultationRequest.pageUtil.EctConsultationFormRequestUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  *
@@ -153,6 +146,31 @@ public class ProviderPropertyAction extends DispatchAction {
 
          request.setAttribute("status", "success");
          return actionmapping.findForward("success");
+    }
+
+    /**
+     * typically set from inside the JSP class providerupdatepreference.jsp
+     * @param request
+     */
+    public static void updateOrCreateProviderProperties(HttpServletRequest request) {
+        LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+        UserPropertyDAO propertyDAO = SpringUtils.getBean(UserPropertyDAO.class);
+        String providerNo = loggedInInfo.getLoggedInProviderNo();
+
+        List<UserProperty> userProperties = new ArrayList<>();
+        String propertyValue;
+        UserProperty property;
+
+        propertyValue = StringUtils.trimToNull(request.getParameter(UserProperty.SCHEDULE_WEEK_VIEW_WEEKENDS));
+        property = propertyDAO.getProp(providerNo, UserProperty.SCHEDULE_WEEK_VIEW_WEEKENDS);
+        if (property == null) {
+            property = new UserProperty();
+            property.setProviderNo(providerNo);
+            property.setName(UserProperty.SCHEDULE_WEEK_VIEW_WEEKENDS);
+        }
+        property.setValue(String.valueOf(Boolean.parseBoolean(propertyValue)));
+        propertyDAO.saveProp(property);
+
     }
     public ActionForward viewDefaultSex(ActionMapping actionmapping,
                                ActionForm actionform,

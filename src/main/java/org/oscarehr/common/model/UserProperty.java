@@ -24,15 +24,8 @@
 
 package org.oscarehr.common.model;
 
+import javax.persistence.*;
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name="property")
@@ -185,6 +178,9 @@ public class UserProperty extends AbstractModel<Integer> implements Serializable
 	public static final String TICKLER_TASK_ASSIGNEE = "tickler_task_assignee";
 
     public static final String EMAIL_COMMUNICATION = "email_communication";
+
+    public static final String SCHEDULE_WEEK_VIEW_WEEKENDS = "schedule.week_view_weekends";
+
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -25,13 +25,14 @@ document.addEventListener("DOMContentLoaded", function(){
 		if (error === "true") { showError(errorMessage); }
 
 		// add listener to the subject element
-		document.forms[0].elements["subject"].addEventListener("input", function() {
-			document.getElementById("remote_eform_subject").value = this.value;
-		})
-		document.forms[0].elements["subject"].addEventListener("click", function() {
-			document.getElementById("remote_eform_subject").value = this.value;
-		})
-
+		if(document.forms[0].elements["subject"]) {
+			document.forms[0].elements["subject"].addEventListener("input", function () {
+				document.getElementById("remote_eform_subject").value = this.value;
+			})
+			document.forms[0].elements["subject"].addEventListener("click", function () {
+				document.getElementById("remote_eform_subject").value = this.value;
+			})
+		}
 	});
 
 	window.onerror = function uncaughtExceptionHandler(message, source, lineNumber, colno, error) {

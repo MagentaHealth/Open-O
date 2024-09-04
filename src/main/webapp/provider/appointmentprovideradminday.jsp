@@ -391,11 +391,16 @@
 
     //verify the input date is really existed
     cal = new GregorianCalendar(year, (month - 1), day);
-
+    boolean weekendsEnabled = true;
+    int weekViewDays = 7;
     if (isWeekView) {
-        cal.add(Calendar.DATE, -(cal.get(Calendar.DAY_OF_WEEK) - 1)); // change the day to the current weeks initial sunday
+        UserProperty weekViewWeekendProp = userPropertyDao.getProp(loggedInInfo1.getLoggedInProviderNo(), UserProperty.SCHEDULE_WEEK_VIEW_WEEKENDS);
+        if (weekViewWeekendProp!= null && StringUtils.trimToNull(weekViewWeekendProp.getValue()) != null) {
+            weekendsEnabled = Boolean.parseBoolean(weekViewWeekendProp.getValue());
+        }
+        weekViewDays = weekendsEnabled ? 7 : 5;
+        cal.add(Calendar.DATE, -(cal.get(Calendar.DAY_OF_WEEK)- (weekendsEnabled ? 1 : 2)));
     }
-
     int week = cal.get(Calendar.WEEK_OF_YEAR);
     year = cal.get(Calendar.YEAR);
     month = (cal.get(Calendar.MONTH) + 1);
@@ -1114,19 +1119,30 @@
             </td>
 
             <td id="userSettings">
-                <ul id="userSettingsMenu">
+                <ul id="userSettingsMenu"  style="display: flex; gap:5px;">
                     <li>
                         <a title="Scratch Pad" href="javascript: function myFunction() {return false; }"
-                           onClick="popup(700,1024,'../scratch/index.jsp','scratch')"><span class="glyphicon glyphicon-list-alt"></span></a>
+                           onClick="popup(700,1024,'../scratch/index.jsp','scratch')">
+                            		<span class="glyphicon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
+								<path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"></path>
+								<path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"></path>
+							</svg>
+						</span>
+                        </a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)"
+                        <a href="javascript:void(0)" style="display: flex; align-items: flex-end;"
                            onClick="popupPage(715,680,'providerpreference.jsp?provider_no=<%=loggedInInfo1.getLoggedInProviderNo()%>')"
                            title='<bean:message key="provider.appointmentProviderAdminDay.msgSettings"/>'>
-                            <span class="glyphicon glyphicon-user"></span>
-                            <span>
+                            <span class="glyphicon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path>
+                                </svg>
+						    </span>
+                            <div>
                                 <c:out value='<%= userfirstname + " " + userlastname %>' />
-                            </span>
+                            </div>
                         </a>
                     </li>
                 </ul>
@@ -1488,7 +1504,7 @@
                             // set up the iterator appropriately (today - for each doctor; this week - for each day)
                             int iterMax;
                             if (isWeekView) {
-                                iterMax = 7;
+                                iterMax = weekViewDays;
                                 // find the nProvider value that corresponds to provNum
                                 if (numProvider == 1) {
                                     nProvider = 0;
@@ -1797,9 +1813,9 @@
 																  nameBuilder.append(UtilMisc.toUpperLowerCase(demographic.getLastName()))
 																  .append(", ")
 																  .append(UtilMisc.toUpperLowerCase(demographic.getFirstName()));
-																  if(demographic.getPrefName() != null && ! demographic.getPrefName().isEmpty()) {
+																  if(demographic.getAlias() != null && ! demographic.getAlias().isEmpty()) {
                                                                       nameBuilder.append(" (")
-                                                                      .append(UtilMisc.toUpperLowerCase(demographic.getPrefName()))
+                                                                      .append(UtilMisc.toUpperLowerCase(demographic.getAlias()))
                                                                       .append(")");
 																  }
 																  if(demographic.getPronoun() != null && ! demographic.getPronoun().isEmpty()) {
@@ -2104,9 +2120,8 @@
                                                             <oscar:oscarPropertiesCheck property="SHOW_APPT_REASON_TOOLTIP" value="yes" defaultVal="true">
                                                                 title="<%=Encode.forHtmlAttribute(name)%><%= (type != null && ! type.isEmpty()) ? "&#013;&#010;type: " + Encode.forHtmlAttribute(type) : "" %>&#013;&#010;<%="reason: " + Encode.forHtmlAttribute(reason)%>&#013;&#010;<%="notes: " + Encode.forHtmlAttribute(notes)%>"
                                                             </oscar:oscarPropertiesCheck> >
-                                                        <%=(view == 0) ? (name.length() > len ? Encode.forHtmlContent(name.substring(0, len)) : Encode.forHtmlContent(name)) : Encode.forHtmlContent(name)%>
+                                                        <%=(name.length() > len ? Encode.forHtmlContent(name.substring(0, len)) : Encode.forHtmlContent(name))%>
                                                     </a>
-
                                                             <% if(len==lenLimitedL || view!=0 || numAvailProvider==1 ) {%>
 
 

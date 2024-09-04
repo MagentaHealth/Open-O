@@ -51,7 +51,7 @@
 		  			</button>
 			   		<button type="button" class="btn btn-default" id="remotePrintButton" name="remotePrintButton" value="Print" title="Save and then print" onclick="remotePrint()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-print"></i></span>
-			   			Print (eForm Only)
+			   			Print
 			   		</button>
 					<button type="button" class="btn btn-default" id="remoteDownloadButton" name="remoteDownloadButton" value="Download" title="Save and Download" onclick="remoteDownload()">
 			   			<span class="btn-label"><i class="glyphicon glyphicon-download"></i></span>

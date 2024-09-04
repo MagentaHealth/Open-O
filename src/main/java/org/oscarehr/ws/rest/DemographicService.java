@@ -92,6 +92,8 @@ import org.oscarehr.ws.rest.to.model.DemographicSearchRequest.SORTDIR;
 import org.oscarehr.ws.rest.to.model.DemographicSearchRequest.SORTMODE;
 import org.oscarehr.ws.rest.to.model.DemographicSearchResult;
 import org.oscarehr.ws.rest.to.model.DemographicTo1;
+import org.oscarehr.ws.rest.to.model.ProfessionalSpecialistTo1;
+import org.oscarehr.ws.rest.to.model.ProviderTo1;
 import org.oscarehr.ws.rest.to.model.StatusValueTo1;
 import org.oscarehr.ws.rest.to.model.WaitingListNameTo1;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -254,55 +256,66 @@ public class DemographicService extends AbstractServiceImpl {
 		
 		List<WaitingListName> waitingListNames = waitingListNameDao.findAll(null, null);
 		if (waitingListNames!=null) {
+			List<WaitingListNameTo1> waitingListNameTo1s = new ArrayList<>();
 			for (WaitingListName waitingListName : waitingListNames) {
 				if (waitingListName.getIsHistory().equals("Y")) continue;
 				
-				WaitingListNameTo1 waitingListNameTo1 = waitingListNameConverter.getAsTransferObject(getLoggedInInfo(),waitingListName);
-				result.getWaitingListNames().add(waitingListNameTo1);
+				waitingListNameTo1s.add(waitingListNameConverter.getAsTransferObject(getLoggedInInfo(),waitingListName));
 			}
+			result.setWaitingListNames(waitingListNameTo1s);
 		}
 		
 		List<ProfessionalSpecialist> referralDocs = specialistDao.findAll();
 		if (referralDocs!=null) {
+			List<ProfessionalSpecialistTo1> professionalSpecialistTo1s = new ArrayList<>();
 			for (ProfessionalSpecialist referralDoc : referralDocs) {
 				if(referralDoc != null) {
-					result.getReferralDoctors().add(specialistConverter.getAsTransferObject(getLoggedInInfo(),referralDoc));
+					professionalSpecialistTo1s.add(specialistConverter.getAsTransferObject(getLoggedInInfo(),referralDoc));
 				}
 			}
+			result.setReferralDoctors(professionalSpecialistTo1s);
 		}
 		
 		List<SecUserRole> doctorRoles = secUserRoleDao.getSecUserRolesByRoleName("doctor");
+		List<ProviderTo1> providerTo1s = new ArrayList<>();
 		if (doctorRoles!=null) {
 			for (SecUserRole doctor : doctorRoles) {
 				Provider provider = providerDao.getProvider(doctor.getProviderNo());
 				if(provider != null) {
-					result.getDoctors().add(providerConverter.getAsTransferObject(getLoggedInInfo(),provider));
+					providerTo1s.add(providerConverter.getAsTransferObject(getLoggedInInfo(),provider));
 				}
 			}
+			result.setDoctors(providerTo1s);
 		}
 		
 		List<SecUserRole> nurseRoles = secUserRoleDao.getSecUserRolesByRoleName("nurse");
+		providerTo1s.clear();
 		if (nurseRoles!=null) {
 			for (SecUserRole nurse : nurseRoles) {
 				Provider provider = providerDao.getProvider(nurse.getProviderNo());
 				if(provider != null) {
-					result.getNurses().add(providerConverter.getAsTransferObject(getLoggedInInfo(),provider));
+					providerTo1s.add(providerConverter.getAsTransferObject(getLoggedInInfo(),provider));
 				}
 			}
+			result.setNurses(providerTo1s);
 		}
 		
 		List<SecUserRole> midwifeRoles = secUserRoleDao.getSecUserRolesByRoleName("midwife");
+		providerTo1s.clear();
 		if (midwifeRoles!=null) {
 			for (SecUserRole midwife : midwifeRoles) {
 				Provider provider = providerDao.getProvider(midwife.getProviderNo());
 				if(provider != null) {
-					result.getMidwives().add(providerConverter.getAsTransferObject(getLoggedInInfo(),provider));
+					providerTo1s.add(providerConverter.getAsTransferObject(getLoggedInInfo(),provider));
 				}
 			}
+			result.setMidwives(providerTo1s);
 		}
 		
 		List<DemographicContact> demoContacts = demographicManager.getDemographicContacts(getLoggedInInfo(),id);
 		if (demoContacts!=null) {
+			List<DemographicContactFewTo1> demographicContactFewTo1s = new ArrayList<>();
+			List<DemographicContactFewTo1> demographicContactFewTo1Pros = new ArrayList<>();
 			for (DemographicContact demoContact : demoContacts) {
 				Integer contactId = Integer.valueOf(demoContact.getContactId());
 				DemographicContactFewTo1 demoContactTo1 = new DemographicContactFewTo1();
@@ -320,7 +333,7 @@ public class DemographicService extends AbstractServiceImpl {
 						Contact contactC = contactDao.find(contactId);
 						demoContactTo1 = demoContactFewConverter.getAsTransferObject(demoContact, contactC);
 					}
-					result.getDemoContacts().add(demoContactTo1);
+					demographicContactFewTo1s.add(demoContactTo1);
 				}
 				else if (demoContact.getCategory().equals(DemographicContact.CATEGORY_PROFESSIONAL)) {
 					if (demoContact.getType()==DemographicContact.TYPE_PROVIDER) {
@@ -331,24 +344,31 @@ public class DemographicService extends AbstractServiceImpl {
 						ProfessionalSpecialist contactS = specialistDao.find(contactId);
 						demoContactTo1 = demoContactFewConverter.getAsTransferObject(demoContact, contactS);
 					}
-					result.getDemoContactPros().add(demoContactTo1);
+					demographicContactFewTo1Pros.add(demoContactTo1);
 				}
 			}
+			result.setDemoContacts(demographicContactFewTo1s);
+			result.setDemoContactPros(demographicContactFewTo1Pros);
 		}
 		
 		List<String> patientStatusList = demographicManager.getPatientStatusList();
 		List<String> rosterStatusList = demographicManager.getRosterStatusList();
+		List<StatusValueTo1> statusValueTo1s = new ArrayList<>();
 		if (patientStatusList!=null) {
 			for (String ps : patientStatusList) {
 				StatusValueTo1 value = new StatusValueTo1(ps);
-				result.getPatientStatusList().add(value);
+				statusValueTo1s.add(value);
 			}
+			result.setPatientStatusList(statusValueTo1s);
 		}
+		
+		statusValueTo1s.clear();
 		if (rosterStatusList!=null) {
 			for (String rs : rosterStatusList) {
 				StatusValueTo1 value = new StatusValueTo1(rs);
-				result.getRosterStatusList().add(value);
+				statusValueTo1s.add(value);
 			}
+			result.setRosterStatusList(statusValueTo1s);
 		}
 
 		if (include.contains(IncludeType.ALLERGIES.getValue())) {
@@ -436,23 +456,30 @@ public class DemographicService extends AbstractServiceImpl {
 		
 		List<String> patientStatusList = demographicManager.getPatientStatusList();
 		List<String> rosterStatusList = demographicManager.getRosterStatusList();
+		List<StatusValueTo1> statusValueTo1s = new ArrayList<>();
 		if (patientStatusList!=null) {
 			for (String ps : patientStatusList) {
 				StatusValueTo1 value = new StatusValueTo1(ps);
-				result.getPatientStatusList().add(value);
+				statusValueTo1s.add(value);
 			}
+			result.setPatientStatusList(statusValueTo1s);
 		}
+
+		statusValueTo1s.clear();
 		if (rosterStatusList!=null) {
 			for (String rs : rosterStatusList) {
 				StatusValueTo1 value = new StatusValueTo1(rs);
-				result.getRosterStatusList().add(value);
+				statusValueTo1s.add(value);
 			}
+			result.setRosterStatusList(statusValueTo1s);
 		}
 
 		// If the contacts are included add Demographic Contacts to the basic results (relationships/healthcareteam/etc)
 		if (includes.contains(IncludeType.CONTACTS.getValue())) {
 			List<DemographicContact> demoContacts = demographicManager.getDemographicContacts(getLoggedInInfo(), id);
 			if (demoContacts != null) {
+				List<DemographicContactFewTo1> demographicContactFewTo1s = new ArrayList<>();
+				List<DemographicContactFewTo1> demographicContactFewTo1Pros = new ArrayList<>();
 				for (DemographicContact demoContact : demoContacts) {
 					// Check if 'demoContact' has given consent to be contacted;
 					// if not, skip sharing 'demoContact'.
@@ -473,7 +500,7 @@ public class DemographicService extends AbstractServiceImpl {
 							Contact contactC = contactDao.find(contactId);
 							demoContactTo1 = demoContactFewConverter.getAsTransferObject(demoContact, contactC);
 						}
-						result.getDemoContacts().add(demoContactTo1);
+						demographicContactFewTo1s.add(demoContactTo1);
 					} else if (demoContact.getCategory().equals(DemographicContact.CATEGORY_PROFESSIONAL)) {
 						if (demoContact.getType() == DemographicContact.TYPE_PROVIDER) {
 							Provider contactP = providerDao.getProvider(contactId.toString());
@@ -482,9 +509,11 @@ public class DemographicService extends AbstractServiceImpl {
 							ProfessionalSpecialist contactS = specialistDao.find(contactId);
 							demoContactTo1 = demoContactFewConverter.getAsTransferObject(demoContact, contactS);
 						}
-						result.getDemoContactPros().add(demoContactTo1);
+						demographicContactFewTo1Pros.add(demoContactTo1);
 					}
 				}
+				result.setDemoContacts(demographicContactFewTo1s);
+				result.setDemoContactPros(demographicContactFewTo1Pros);
 			}
 		}
 		return result;

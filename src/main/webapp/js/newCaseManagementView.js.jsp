@@ -386,6 +386,25 @@ function showIssueNotes() {
     }
 }
 
+/*
+	Loads issue notes at custom position: Social History, Medical History, Ongoing Concerns, Reminders
+*/
+function showCustomIssueNotes(socialHistoryPositon, medicalHistoryPosition, ongoingConcernsPosition, remindersPosition) {
+	issueNoteUrls = {};
+
+    // If any position variable is empty, it means that the corresponding issue is hidden
+	if (socialHistoryPositon) { issueNoteUrls[socialHistoryPositon] = ctx + "/CaseManagementView.do?hc=996633&method=listNotes&providerNo=" + providerNo + "&demographicNo=" + demographicNo + "&issue_code=SocHistory&title=" + socHistoryLabel + "&cmd=div" + socialHistoryPositon; }
+    if (medicalHistoryPosition) { issueNoteUrls[medicalHistoryPosition] = ctx + "/CaseManagementView.do?hc=996633&method=listNotes&providerNo=" + providerNo + "&demographicNo=" + demographicNo + "&issue_code=MedHistory&title=" + medHistoryLabel + "&cmd=div" + medicalHistoryPosition; }
+    if (ongoingConcernsPosition) { issueNoteUrls[ongoingConcernsPosition] = ctx + "/CaseManagementView.do?hc=996633&method=listNotes&providerNo=" + providerNo + "&demographicNo=" + demographicNo + "&issue_code=Concerns&title=" + onGoingLabel + "&cmd=div" + ongoingConcernsPosition; }
+    if (remindersPosition) { issueNoteUrls[remindersPosition] = ctx + "/CaseManagementView.do?hc=996633&method=listNotes&providerNo=" + providerNo + "&demographicNo=" + demographicNo + "&issue_code=Reminders&title=" + remindersLabel + "&cmd=div" + remindersPosition; }
+
+    var limit = 5;
+
+    for( idx in issueNoteUrls ) {
+        loadDiv('div'+idx,issueNoteUrls[idx],limit);
+    }
+}
+
 var notesOffset = 0;
 var notesIncrement = 20;
 var notesRetrieveOk = false;

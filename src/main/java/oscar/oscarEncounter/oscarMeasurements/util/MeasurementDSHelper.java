@@ -165,16 +165,37 @@ public class MeasurementDSHelper {
     
     public double getDataAsDouble() {
         log.debug("dataAsDouble");
+
         double ret = -1;
-        try{
-        	if(mdb != null && mdb.getDataField() != null && ! mdb.getDataField().isEmpty()) {
-        		ret = Double.parseDouble(mdb.getDataField());
-        	}
-        }catch(Exception e){
-            MiscUtils.getLogger().error("Error", e);
-            problem =true;
-        }  
-        log.debug("DOUBLE val : "+ret);
+        String dataField = null;
+
+        if(mdb != null) {
+            dataField = mdb.getDataField();
+        }
+
+        if (dataField != null) {
+            /*
+             * filter out comparators that were inserted
+             * accidentally in older measurement datasets.
+             */
+            if (dataField.contains("<")) {
+                dataField = dataField.replaceAll("<", "");
+            }
+
+            if (dataField.contains(">")) {
+                dataField = dataField.replaceAll(">", "");
+            }
+
+            if(!dataField.isEmpty()) {
+                try {
+                    ret = Double.parseDouble(dataField);
+                } catch (Exception e) {
+                    MiscUtils.getLogger().error("Fatal error while parsing double value {} for Flowsheet type {} in demographic number {}", ret, mdb.getType(), mdb.getDemo(), e);
+                    problem = true;
+                }
+            }
+        }
+	    log.debug("DOUBLE val : {}", ret);
         return ret;
     }       
     
