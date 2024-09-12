@@ -32,22 +32,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<%=request.getContextPath()%>/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet"
-          media="screen">
-    <link rel="stylesheet" type="text/css"
-          href="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" media="all" href="<%=request.getContextPath()%>/css/bootstrap-datetimepicker-standalone.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="<%=request.getContextPath()%>/css/bootstrap-datetimepicker.min.css" /> 
+    <link href="<%=request.getContextPath()%>/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="<%=request.getContextPath()%>/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/web/css/Inboxhub.css"/>
-    <link href="<%=request.getContextPath() %>/css/datepicker.css" rel="stylesheet" type="text/css">
 
-    <script src="<%=request.getContextPath()%>/library/bootstrap/5.0.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/library/moment.js"></script>
+    <script src="<%=request.getContextPath()%>/library/bootstrap/5.0.2/js/bootstrap.bundle.js"></script>
     <script src="<%=request.getContextPath()%>/library/jquery/jquery-3.6.4.min.js"></script>
     <script src="<%=request.getContextPath()%>/library/jquery/jquery-ui-1.12.1.min.js"></script>
-    <script type="text/javascript" charset="utf8"
-            src="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript"
-            src="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/web/inboxhub/inboxhubController.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath() %>/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/library/bootstrap-datetimepicker.min.js" ></script>
     <title>Inboxhub</title>
 </head>
 <body>
@@ -66,13 +65,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <jsp:include page="InboxhubTopbar.jsp"/>
         </nav>
     </div>
-    <div class="row">
-        <div class="col-3" style="z-index: 5; text-align: center; padding-right:0;">
-            <div class="bg-light text-dark" style="display: inline-block;">
+    <div class="row flex-nowrap">
+        <div class="col-auto px-0 m-1">
+            <div class="bg-light text-dark inbox-form" style="display: inline-block;">
                 <jsp:include page="InboxhubForm.jsp"/>
             </div>
         </div>
-        <div class="col-9" style="z-index:100; padding-left:0;">
+        <div class="col px-0 m-1">
             <div class="bg-light text-dark">
                 <c:choose>
                     <c:when test="${viewMode}">

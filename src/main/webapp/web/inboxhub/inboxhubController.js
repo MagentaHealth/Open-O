@@ -49,7 +49,6 @@ $(document).ready(function () {
     $('#inbox_table').DataTable({
         autoWidth: false,
         searching: false,
-        scrollY: '800px',
         scrollCollapse: true,
         paging: false,
         columnDefs: [

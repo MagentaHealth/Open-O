@@ -43,15 +43,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     ctx = '<%=request.getContextPath()%>';
     const searchProviderNo = '<%=(String) session.getAttribute("user")%>';
 </script>
-<div class="bg-light text-light btn-sm" style="font-size:smaller">
+<div class="bg-light text-light">
     <row>
         <div id="categoryList"></div>
-        <input id="topFBtn" type="button" class="btn btn-primary" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('<%=searchProviderNumber%>')">
-        <input id="topFileBtn" type="button" class="btn btn-primary" value="File" onclick="submitFile('<%=searchProviderNumber%>')"/>
+        <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('<%=searchProviderNumber%>')">
+        <input id="topFileBtn" type="button" class="btn btn-primary btn-sm" value="File" onclick="submitFile('<%=searchProviderNumber%>')"/>
     </row>
     <row>
-        <table table id="inbox_table" class='table table-striped'>
-            <thead>
+        <div class="inbox-table-responsive">
+        <table table id="inbox_table" class="table table-striped inbox-table">
+            <thead class="inbox-table-sticky-header">
             <tr>
                 <th>
                     <input type="checkbox" onclick="checkAllLabs(0);" name="checkA"/>
@@ -110,15 +111,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             %>
             </tbody>
         </table>
+        </div>
     </row>
 </div>
-<script>
-    function redrawTable() {
-        $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
-    }
-
-    $(window).resize(function() {
-        redrawTable();
-    });
-</script>
 <script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>

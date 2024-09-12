@@ -18,6 +18,23 @@
  */
 
 @CHARSET "UTF-8";
+body {
+    font-size: small !important;
+}
+
+input {
+    font-size: small !important;
+}
+
+.d-inline-grid {
+    display: inline-grid !important;
+}
+
+.form-check {
+    min-height: 0 !important;
+    padding-left: 0.5rem !important;
+}
+
 .ui-autocomplete {
     position: absolute;
     top: 100%;
@@ -68,4 +85,67 @@
     padding: 0;
     position: absolute;
     width: 1px;
+}
+
+.inbox-table-responsive {
+    height: calc(100vh - 7em);
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.inbox-table td {
+    padding: 0.25rem 0.25rem !important;
+}
+
+.inbox-table-sticky-header th {
+    position: sticky !important;
+    top: 0;
+    background-color: #fff; /* Background color to prevent transparency when scrolled */
+    z-index: 100; /* Ensure the header stays on top when scrolling */
+}
+
+@media (max-width: 1230px) {
+    .inbox-table-responsive {
+        height: calc(100vh - 8.5em);
+    }
+}
+
+.inbox-form {
+    height: calc(100vh - 5em);
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 270px;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+    width: auto;
+    height: auto;
+}
+
+.inbox-form-datepicker-wrapper {
+    position: relative;
+}
+
+.inbox-form-datepicker-wrapper label {
+    width: 50px;
+    padding-left: 0.5rem;
+}
+
+.inbox-form-datepicker-wrapper .clear-btn {
+    position: absolute;
+    right: 35px;
+    top: 8.5px;
+    cursor: pointer;
+    z-index: 1;
+    color: lightgray;
+    display: none; /* Hide button initially */
+}
+
+.inbox-form-datepicker-wrapper .clear-btn:hover {
+    color: gray;
+}
+
+.inbox-form-datepicker-input {
+    width: 100px !important;
 }

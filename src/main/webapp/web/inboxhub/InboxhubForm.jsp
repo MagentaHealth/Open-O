@@ -36,56 +36,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     InboxhubQuery query = (InboxhubQuery) request.getAttribute("query");
 %>
 
-<!-- calendar -->
-<link rel="stylesheet" type="text/css" media="all" href="../../share/calendar/calendar.css" title="win2k-cold-1" />
-<script type="text/javascript" src="../../share/calendar/calendar.js"></script>
-<script type="text/javascript" src="../../share/calendar/lang/<bean:message key="global.javascript.calendar"/>"></script>
-<script type="text/javascript" src="../../share/calendar/calendar-setup.js"></script>
-<style>
-    #specificProviderId label {
-        display: inline-block;
-        width: 90px;
-        text-align: right;
-        margin-bottom: 5px;
-    }
-
-    #specificProviderId input[type="text"] {
-        width: calc(100% - 120px);
-    }
-
-    #specificPatientsId label {
-        display: inline-block;
-        width: 100px;
-        text-align: right;
-        margin-bottom: 5px;
-    }
-
-    #specificPatientsId input[type="text"] {
-        width: calc(100% - 120px);
-    }
-
-    #dateId label {
-        display: inline-block;
-        width: 70px;
-        text-align: right;
-        margin-bottom: 5px;
-    }
-
-    #dateId input[type="text"] {
-        width: calc(100% - 140px);
-    }
-</style>
-
-<form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post"
-      id="myForm">
-    <div>
-        <div class="d-grid" style="font-size:smaller" >
+<form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post" id="myForm">
+    <div class="m-2">
+        <div class="d-grid mb-2">
             <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
                    id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
-            <label class="btn btn-outline-primary btn-sm" for="btnViewMode"><bean:message key="inbox.inboxmanager.msgPreviewModes"/></label><br>
-        <div style="text-align: left;">
+            <label class="btn btn-outline-primary btn-sm" for="btnViewMode"><bean:message key="inbox.inboxmanager.msgPreviewModes"/></label>
+        </div>
+
+        <div class="mb-1">
         <!--Provider-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+            <label class="fw-bold text-uppercase">
                 <bean:message key="inbox.inboxmanager.msgProviders"/>
             </label>
             <input type="hidden" name="searchAll" id="searchProviderAll" value="<%=query.getSearchAll()%>"/>
@@ -104,14 +65,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked
                     onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', document.getElementsByName('searchProviderNo')[0].value);" />
                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
-                <div id="specificProviderId">
-                    <label class="mb-0">Provider</label>
+                <div id="specificProviderId" class="ms-3">
                     <input type="hidden" name="searchProviderNo" id="findProvider" value="<%=query.getSearchProviderNo()%>"/>
-                    <input type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>"/><br>
+                    <div class="input-group input-group-sm">
+                        <input class="form-control pe-0 m-1" type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>" placeholder="Provider"/>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <div class="mb-1">
         <!--Patient(s)-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+            <label class="fw-bold text-uppercase">
                 <bean:message key="inbox.inboxmanager.msgPatinets"/>
             </label>
             <!-- All Patients (including unmatched) -->
@@ -129,40 +94,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="form-check">
                 <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients" onClick="changeValueElementByName('unmatched', 'false')"/>
                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
-                <div id="specificPatientsId">
-                    <label class="mb-0" for="inputFirstName"><bean:message key="admin.provider.formFirstName"/></label>
-                    <input type="text" name="patientFirstName" id="inputFirstName" autocomplete="off" disabled="true"
-                        value="<%=query.getPatientFirstName()%>"><br>
-                    <label class="mb-0" for="inputLastName"><bean:message key="admin.provider.formLastName"/></label>
-                    <input type="text" name="patientLastName" id="inputLastName" autocomplete="off" disabled="true"
-                        value="<%=query.getPatientLastName()%>"><br>
-                    <div>
-                        <label class="mb-0" for="inputHIN"><bean:message key="oscarMDS.index.msgHealthNumber"/></label>
-                        <input type="text" name="patientHealthNumber" id="inputHIN" autocomplete="off" disabled="true"
-                            value="<%=query.getPatientHealthNumber()%>">
+                <div id="specificPatientsId" class="d-grid ms-3">
+                    <div class="input-group input-group-sm">
+                        <input class="form-control pe-0 m-1" type="text" name="patientFirstName" id="inputFirstName" value="<%=query.getPatientFirstName()%>" placeholder="<bean:message key='admin.provider.formFirstName'/>"/>
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientLastName" id="inputLastName" value="<%=query.getPatientLastName()%>" placeholder="<bean:message key='admin.provider.formLastName'/>"/>
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientHealthNumber" id="inputHIN" value="<%=query.getPatientHealthNumber()%>" placeholder="<bean:message key='oscarMDS.index.msgHealthNumber'/>"/>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="mb-1">
         <!-- Date Range-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+            <label class="fw-bold text-uppercase">
                 <bean:message key="inbox.inboxmanager.msgDateRange"/>
             </label>
-            <div id="dateId">
-                <div>
-                    <label class="mb-1">Start:</label>
-                    <input readonly type="text" id="startDate" name="startDate" size="10" value="<%=query.getStartDate()%>" />
-                    <img src="../../images/cal.gif" id="startDate_cal" style="vertical-align: middle;">
-                    <img src="../../images/clear.png" id="startDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('startDate')">
+            <div id="dateId" class="inbox-form-date-range">
+                <div class="inbox-form-datepicker-wrapper mb-1 d-flex">
+                    <label class="my-auto pe" for="startDate">Start</label>
+                    <div class="input-group input-group-sm d-inline-flex">
+                        <input class="form-control pe-0 inbox-form-datepicker-input" type="text" placeholder="yyyy-mm-dd" id="startDate" name="startDate" value="<%=query.getStartDate()%>"/>
+                        <span class="input-group-text" for="startDate" id="startDateIcon"><i class="icon-calendar"></i></span>
+                    </div>
+                    <i class="icon-remove-sign clear-btn" aria-hidden="true" id="clearStartDate"></i>
                 </div>
-                <div>
-                    <label class="mb-1">End:</label>
-                    <input readonly type="text" id="endDate" name="endDate" size="10" value="<%=query.getEndDate()%>" />
-                    <img src="../../images/cal.gif" id="endDate_cal" style="vertical-align: middle;">
-                    <img src="../../images/clear.png" id="endDate_delete" style="vertical-align: middle; cursor: pointer;" onClick="resetDateUsingID('endDate')">
+                <div class="inbox-form-datepicker-wrapper d-flex">
+                    <label class="my-auto" for="endDate">End</label>
+                    <div class="input-group input-group-sm d-inline-flex">
+                        <input class="form-control pe-0 inbox-form-datepicker-input" type="text" placeholder="yyyy-mm-dd" id="endDate" name="endDate" value="<%=query.getEndDate()%>"/>
+                        <span class="input-group-text" for="endDate" id="endDateIcon"><i class="icon-calendar"></i></span>
+                    </div>
+                    <i class="icon-remove-sign clear-btn" aria-hidden="true" id="clearEndDate"></i>
                 </div>
             </div>
+        </div>
+
+        <div class="mb-1">
         <!--Type-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+            <label class="fw-bold text-uppercase">
                 <bean:message key="inbox.inboxmanager.msgType"/>
             </label>
             <div class="form-check">
@@ -183,32 +156,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <label class="form-checkbox-label" for="btnHRM"><bean:message key="inbox.inboxmanager.msgTypeHRM"/></label><br>
             </div>
             <% } %>
+        </div>
+
+        <div class="mb-1">
         <!--Review Status-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+            <label class="fw-bold text-uppercase">
                 <bean:message key="inbox.inboxmanager.msgReviewStatus"/>
             </label>
             <div class="form-check">
-                <input type="radio" class="btn-check-input btn-sm" name="status" id="statusAll" id="All" value="All"
+                <input type="radio" class="btn-check-input" name="status" id="statusAll" id="All" value="All"
                     <% if (Objects.equals(query.getStatus(), "")) { %> checked <% } %> onclick="changeValueElementByName('status', '')">
                 <label class="form-check-label" for="statusAll"><bean:message key="inbox.inboxmanager.msgAll"/>
             </div>
             <div class="form-check">
-                <input type="radio" class="btn-check-input btn-sm" name="status" id="statusNew" value="N"
+                <input type="radio" class="btn-check-input" name="status" id="statusNew" value="N"
                     <% if (Objects.equals(query.getStatus(), "N")) { %> checked <% } %> onclick="changeValueElementByName('status', 'N')">
                 <label class="form-check-label" for="statusNew"><bean:message key="inbox.inboxmanager.msgNew"/></label>
             </div>
             <div class="form-check">
-                <input type="radio" class="btn-check-input btn-sm" name="status" id="statusAcknowledged" value="A"
+                <input type="radio" class="btn-check-input" name="status" id="statusAcknowledged" value="A"
                        onclick="changeValueElementByName('status', 'A')">
                 <label class="form-check-label" for="statusAcknowledged"><bean:message key="inbox.inboxmanager.msgAcknowledged"/></label>
             </div>
             <div class="form-check">
-                <input type="radio" class="btn-check-input btn-sm" name="status" id="statusFiled" value="F"
+                <input type="radio" class="btn-check-input" name="status" id="statusFiled" value="F"
                        onclick="changeValueElementByName('status', 'F')">
                 <label class="form-check-label" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
             </div>
+        </div>
+
+        <div class="mb-2">
         <!--Abnormal-->
-            <label class="fw-bold text-uppercase mu-2 btn-sm">
+            <label class="fw-bold text-uppercase">
                 <bean:message key="inbox.inboxmanager.msgResultStatus"/>
             </label>
             <div class="form-check">
@@ -227,7 +206,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <label class="form-check-label" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/></label>
              </div>
         </div>
+
         <!--Search Button-->
+        <div class="d-grid">
             <input class="btn btn-primary btn-sm"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
         </div>
     </div>
@@ -238,16 +219,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         inPatient[0].value = value;
     }
 
-    Calendar.setup({ inputField : "startDate", ifFormat : "%Y-%m-%d", showsTime :false, button : "startDate_cal", singleClick : true, step : 1 });
-    Calendar.setup({ inputField : "endDate", ifFormat : "%Y-%m-%d", showsTime :false, button : "endDate_cal", singleClick : true, step : 1 });
-
-    function resetDateUsingID(id) {
-        const inputField = document.getElementById(id);
-        if( inputField.value.length > 0 ) {
-            inputField.value = "";
-        }
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('myForm');
 
@@ -256,13 +227,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         for (var i = 0; i < providerRadios.length; i++) {
             providerRadios[i].addEventListener('change', function() {
                 sessionStorage.setItem('selectedProviderRadio', this.value);
-                updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
+                //updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
+                toggleInputVisibility('specificProvider', 'specificProviderId');
             });
         }
         const selectedProviderRadio = sessionStorage.getItem('selectedProviderRadio');
         if (selectedProviderRadio) {
             document.querySelector('input[value="' + selectedProviderRadio + '"]').checked = true;
-            updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
+            //updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
         }
 
         // Patients
@@ -270,14 +242,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         for (var i = 0; i < patientsRadios.length; i++) {
             patientsRadios[i].addEventListener('change', function() {
                 sessionStorage.setItem('selectedPatientsRadio', this.value);
-                updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
+                //updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
+                toggleInputVisibility('specificPatients', 'specificPatientsId');
             });
         }
         const selectedPatientsRadio = sessionStorage.getItem('selectedPatientsRadio');
         if (selectedPatientsRadio) {
             document.querySelector('input[value="' + selectedPatientsRadio + '"]').checked = true;
-            updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
+            //updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
         }
+
+        toggleInputVisibility('specificProvider', 'specificProviderId');
+        toggleInputVisibility('specificPatients', 'specificPatientsId');
 
         // Result status
         const resultStatusRadios = form.elements['status'];
@@ -302,7 +278,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (selectedAbnormalRadio) {
             document.querySelector('input[value="' + selectedAbnormalRadio + '"]').checked = true;
         }
+
+        document.getElementById('startDateIcon').addEventListener('click', function() {
+            document.getElementById('startDate').focus();
+        });
+        document.getElementById('endDateIcon').addEventListener('click', function() {
+            document.getElementById('endDate').focus();
+        });
+
+        // Initialize datepickers and clear buttons
+        setupDatepicker('#startDate', '#clearStartDate');
+        setupDatepicker('#endDate', '#clearEndDate');
     });
+
+    function toggleInputVisibility(selectedRadioId, inputDivId) {
+        const selectedRadio = document.getElementById(selectedRadioId);
+        const inputDiv = $('#' + inputDivId);
+        if (selectedRadio.checked) {
+            inputDiv.hide().removeClass('d-none').slideDown(200);  // Show with animation and remove 'd-none'
+        } else {
+            inputDiv.slideUp(200, function() {
+                inputDiv.addClass('d-none');  // Hide with animation and add 'd-none'
+            });
+        }
+    }
 
     function updateInputDisabled(itemName, inputDivId, radioValue) {
         const selectedRadio = sessionStorage.getItem(itemName);
@@ -317,4 +316,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         }
     }
 
+    function setupDatepicker(dateInputId, clearBtnId) {
+        let dateInput = $(dateInputId);
+        let clearBtn = $(clearBtnId);
+        
+        dateInput.datetimepicker({
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+        }).on('dp.change', function(e) {
+            clearBtn.toggle(!!dateInput.val());
+        }).on('dp.hide', function(e) {
+        });
+
+        // Disable manual typing
+        dateInput.on('keydown paste', function(e) {
+            e.preventDefault();
+        });
+
+        // Attach event listeners for input change and clear button
+        dateInput.on('input', clearBtn.toggle(!!dateInput.val()));
+        clearBtn.on('click', function() {
+            dateInput.val('');
+            clearBtn.toggle(!!dateInput.val());
+        });
+
+        // Initialize clear button visibility
+        clearBtn.toggle(!!dateInput.val());
+    }
 </script>
