@@ -35,6 +35,10 @@ input {
     padding-left: 0.5rem !important;
 }
 
+.show {
+    display: block;
+}
+
 .ui-autocomplete {
     position: absolute;
     top: 100%;
@@ -105,17 +109,15 @@ input {
     z-index: 100; /* Ensure the header stays on top when scrolling */
 }
 
-@media (max-width: 1230px) {
-    .inbox-table-responsive {
-        height: calc(100vh - 8.5em);
-    }
-}
-
 .inbox-form {
     height: calc(100vh - 5em);
     overflow-y: auto;
     overflow-x: hidden;
-    min-width: 270px;
+    min-width: 300px;
+}
+
+.inbox-form .accordion-body {
+    padding: 0;
 }
 
 .bootstrap-datetimepicker-widget.dropdown-menu {
@@ -148,4 +150,10 @@ input {
 
 .inbox-form-datepicker-input {
     width: 100px !important;
+}
+
+@media (max-width: 1400px) {
+    .inbox-form {
+        min-width: 270px;
+    }
 }
