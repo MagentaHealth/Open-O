@@ -49,6 +49,8 @@
 <script type="text/javascript" src="<%= request.getContextPath() %>/library/jquery/jquery-3.6.4.min.js"></script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/library/jquery/jquery-ui-1.12.1.min.js"></script>
 
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/validateTextInputs.js"></script>
+
 <script type="text/javascript">
 <%
  if (request.getParameter("ID") != null && type != null && type.equals("Edit")){ %>
@@ -77,6 +79,7 @@
 	});
 <% } %>
   function savePharmacy() {
+		sanitizeAllElements()
 	var typeName = (new URLSearchParams(window.location.search)).get('type')
 	if (typeName != null && typeName.toLowerCase() == "edit") {
 		const saveWarningStr = "WARNING - you are about to edit a pharmacy's entry in the clinic's database. Any changes will automatically apply to all patients who already have this pharmacy as a preferred pharmacy.\n\nOnly proceed if you are absolutely sure. Type \"yes\" in the box below to proceed.";

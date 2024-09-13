@@ -23,9 +23,16 @@
  */
 package org.oscarehr.integration.mcedt;
 
+import org.apache.cxf.jaxws.JaxWsClientProxy;
+import org.apache.cxf.message.Message;
+import org.apache.cxf.transport.Conduit;
+import org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduit;
 import org.apache.logging.log4j.Logger;
 import org.oscarehr.common.dao.UserPropertyDAO;
 import org.oscarehr.common.model.UserProperty;
+import org.oscarehr.integration.ebs.client.AttachmentCachingInterceptor;
+import org.oscarehr.integration.ebs.client.AttachmentCleanupInterceptor;
+import org.oscarehr.integration.ebs.client.DownloadInInterceptor;
 import org.oscarehr.integration.ebs.client.EdtClientBuilder;
 import org.oscarehr.integration.ebs.client.EdtClientBuilderConfig;
 import org.oscarehr.integration.mcedt.mailbox.ActionUtils;
@@ -40,8 +47,14 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.interceptor.Interceptor;
 
 public class DelegateFactory {
 	
@@ -78,6 +91,9 @@ public class DelegateFactory {
 		EdtClientBuilder builder = new EdtClientBuilder(config);
 		setExternalClientKeystoreFilename(props.getProperty("mcedt.service.clientKeystore.properties"));
 		EDTDelegate edtDelegate = builder.build(EDTDelegate.class);
+
+		if (!config.isLoggingRequired()) { removeDownloadInInterceptor(edtDelegate); }
+
 		if (logger.isInfoEnabled()) {
 			logger.info("Created new EDT delegate " + edtDelegate);
 		}
@@ -119,6 +135,34 @@ public class DelegateFactory {
 				logger.error("Malformed URL: " + clientKeystorePropertiesPath, e);
 			}
 		}
+	}
+
+	/**
+	 * Removes the DownloadInInterceptor from the in interceptors of the given proxy.
+	 *
+	 * Note: This prevents SOAP response logs. Comment this out if logs are needed for
+	 * 		 conformance testing or debugging.
+	 */
+	public static void removeDownloadInInterceptor(EDTDelegate edtDelegate) {
+		// Retrieve the client from the proxy
+		Client client = ClientProxy.getClient(edtDelegate);
+
+		// Retrieve the list of in interceptors
+		List<Interceptor<? extends Message>> inInterceptors = client.getEndpoint().getInInterceptors();
+
+		// Create a new list to hold interceptors without DownloadInInterceptor
+		List<Interceptor<? extends Message>> newInterceptors = new ArrayList<Interceptor<? extends Message>>();
+
+		// Iterate through the interceptors and exclude DownloadInInterceptor
+		for (Interceptor<? extends Message> interceptor : inInterceptors) {
+			if (!(interceptor instanceof DownloadInInterceptor)) {
+				newInterceptors.add(interceptor);
+			}
+		}
+
+		// Replace the old list with the new one
+		client.getEndpoint().getInInterceptors().clear();
+		client.getEndpoint().getInInterceptors().addAll(newInterceptors);
 	}
 	
 }
