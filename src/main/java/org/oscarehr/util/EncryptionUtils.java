@@ -25,20 +25,15 @@ package org.oscarehr.util;
 
 import org.apache.logging.log4j.Logger;
 
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 
-public final class EncryptionUtils {
+public final class EncryptionUtils extends PasswordHash {
     private static final QueueCacheValueCloner<byte[]> byteArrayCloner = new QueueCacheValueCloner<byte[]>() {
         public byte[] cloneBean(byte[] original) {
             return (byte[])original.clone();
@@ -61,6 +56,12 @@ public final class EncryptionUtils {
         }
     }
 
+    /**
+     * @deprecated
+     * weak: do not use for generating password hashes.
+     * use the hash(String password) method below.
+     */
+    @Deprecated
     public static byte[] getSha1(String s) {
         byte[] b = (byte[])sha1Cache.get(s);
         if (b == null) {
@@ -73,7 +74,13 @@ public final class EncryptionUtils {
         return b;
     }
 
-    protected static byte[] getSha1NoCache(String s) {
+    /**
+     * @deprecated
+     * weak: do not use for generating password hashes.
+     * use the hash(String password) method below.
+     */
+    @Deprecated
+    private static byte[] getSha1NoCache(String s) {
         if (s == null) {
             return null;
         } else {
@@ -88,39 +95,75 @@ public final class EncryptionUtils {
         }
     }
 
+    /**
+     * uses Javax.crypto utils to generate a random AES key.
+     * Considered a weak method.
+     */
     public static SecretKey generateEncryptionKey() throws NoSuchAlgorithmException {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(128);
-        SecretKey secretKey = keyGenerator.generateKey();
-        return secretKey;
+        return keyGenerator.generateKey();
     }
 
+    /**
+     * uses Javax.crypto utils to generate a secret key spec
+     * Considered a weak method.
+     */
     public static SecretKeySpec generateEncryptionKey(String seed) {
         byte[] sha1 = getSha1(seed);
-        SecretKeySpec secretKey = new SecretKeySpec(sha1, 0, 16, "AES");
-        return secretKey;
+        return new SecretKeySpec(sha1, 0, 16, "AES");
     }
 
+    /**
+     * Use only to store encrypted data.
+     * Do NOT use for authentication.
+     * Considered a weak encryption.
+     */
     public static byte[] encrypt(SecretKey secretKey, byte[] plainData) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
         if (secretKey == null) {
             return plainData;
         } else {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(1, secretKey);
-            byte[] results = cipher.doFinal(plainData);
-            return results;
+            return cipher.doFinal(plainData);
         }
     }
 
+    /**
+     * Use only to store encrypted data.
+     * Do NOT use for authentication.
+     * Considered a weak encryption.
+     */
     public static byte[] decrypt(SecretKey secretKey, byte[] encryptedData) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         if (secretKey == null) {
             return encryptedData;
         } else {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(2, secretKey);
-            byte[] results = cipher.doFinal(encryptedData);
-            return results;
+            return cipher.doFinal(encryptedData);
         }
+    }
+
+    /**
+     * A one way PBKDF2 With Hmac SHA1 hash of given password string.
+     * The verify method, should be used to validate the hash against
+     * passwords.
+     * @param password string
+     * @return hashed password
+     * @throws CannotPerformOperationException failed encrypt
+     */
+    public static String hash(String password) throws CannotPerformOperationException {
+        return createHash(password);
+    }
+
+    /**
+     * Validate a given password phrase against the stored hash password.
+     * This is a boolean validation. No password values are returned
+     * @param password  plain password string
+     * @param hashedPassword hashed password string usually stored in the database.
+     */
+    public static boolean verify(String password, String hashedPassword) throws InvalidHashException, CannotPerformOperationException {
+        return verifyPassword(password, hashedPassword);
     }
 
     static {

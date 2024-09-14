@@ -1311,7 +1311,7 @@ function updateResidentialProvinces(province) {
 				<td align="right" id="hinLbl"><b><bean:message
 					key="demographic.demographicaddrecordhtm.formHIN" />: </b></td>
 				<td align="left" id="hinVer" >
-					<input type="text" name="hin" id="hin" onfocus="autoFillHin()" >
+					<input type="text" name="hin" id="hin" onfocus="autoFillHin()" oninput="sanitizeInput(this)">
 					<bean:message key="demographic.demographicaddrecordhtm.formVer" />:
 						<input type="text" id="ver" name="ver" value="" onBlur="upCaseCtrl(this)">
 				</td>

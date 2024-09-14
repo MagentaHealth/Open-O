@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
-		/**
-		 *  Enable Are-you-sure dirty page detection.
-		 */
-		jQuery("form:first").areYouSure();
+
 
 		/**
 		 * Trigger these functions every time this page loads.
@@ -33,6 +30,11 @@ document.addEventListener("DOMContentLoaded", function(){
 				document.getElementById("remote_eform_subject").value = this.value;
 			})
 		}
+
+		/**
+		 *  Enable Are-you-sure dirty page detection.
+		 */
+		jQuery("form:first").areYouSure();
 	});
 
 	window.onerror = function uncaughtExceptionHandler(message, source, lineNumber, colno, error) {

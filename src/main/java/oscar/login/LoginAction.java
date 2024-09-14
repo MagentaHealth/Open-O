@@ -25,18 +25,8 @@
 
 package oscar.login;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.quatro.model.security.LdapSecurity;
 import net.sf.json.JSONObject;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -51,20 +41,28 @@ import org.oscarehr.common.dao.*;
 import org.oscarehr.common.model.*;
 import org.oscarehr.decisionSupport.service.DSService;
 import org.oscarehr.managers.AppManager;
-//import org.oscarehr.managers.SsoAuthenticationManager;
 import org.oscarehr.util.*;
 import org.owasp.encoder.Encode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.quatro.model.security.LdapSecurity;
-
 import oscar.OscarProperties;
 import oscar.log.LogAction;
 import oscar.log.LogConst;
 import oscar.util.AlertTimer;
 import oscar.util.CBIUtil;
 import oscar.util.ParameterActionForward;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
 
 public final class LoginAction extends DispatchAction {
 	
@@ -91,8 +89,15 @@ public final class LoginAction extends DispatchAction {
 	 * TODO: for the love of god - please help me clean-up this nightmare
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	boolean ajaxResponse = request.getParameter("ajaxResponse") != null?Boolean.valueOf(request.getParameter("ajaxResponse")):false;
-    	
+
+		if(!"POST".equals(request.getMethod())) {
+			MiscUtils.getLogger().error("Someone is trying to login with a GET request.",new Exception());
+			String newURL = mapping.findForward("error").getPath();
+			newURL = newURL + "?errormsg=Application Error. See Log.";
+			return new ActionForward(newURL);
+		}
+
+		boolean ajaxResponse = request.getParameter("ajaxResponse") != null?Boolean.valueOf(request.getParameter("ajaxResponse")):false;
     	boolean isMobileOptimized = false;
     	    	
     	String ip = request.getRemoteAddr();

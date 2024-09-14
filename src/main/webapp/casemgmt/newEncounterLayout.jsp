@@ -141,6 +141,7 @@ var Colour = {
 </script>
 
 
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/validateTextInputs.js"></script>
 <!--js code for newCaseManagementView.jsp -->
 <script type="text/javascript" src="<c:out value="${ctx}/js/newCaseManagementView.js.jsp"/>"></script>
 

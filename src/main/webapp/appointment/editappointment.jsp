@@ -1280,7 +1280,7 @@ function locale(){
 			value="<bean:message key="appointment.editappointment.btnGroupAction"/>">
              <% }%>
         <input type="submit" id="printReceiptButton" class="btn"
-            onclick="document.forms['EDITAPPT'].displaymode.value='Update Appt';document.forms['EDITAPPT'].printReceipt.value='1';"
+            onclick="document.forms['EDITAPPT'].displaymode.value='Update Appt';document.forms['EDITAPPT'].printReceipt.value='1'; onButUpdate();"
             value="<bean:message key='appointment.editappointment.btnPrintReceipt'/>">
         <input type="hidden" name="printReceipt" value="">
 		<input type="submit" class="btn btn-danger" id="deleteButton"

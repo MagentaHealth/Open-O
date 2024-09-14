@@ -1158,20 +1158,17 @@ public class Demographic extends AbstractModel<Integer> implements Serializable 
 	 * @return
 	 */
 	public DemographicExt getExtra(DemographicExt.DemographicProperty key) {
-		List<DemographicExt> demographicExtList = new ArrayList<>();
 		DemographicExt demographicExtResult = null;
 		if (this.extras != null) {
 			for (DemographicExt demographicExt : this.extras) {
 				if (key.name().equalsIgnoreCase(demographicExt.getKey())) {
-					demographicExtList.add(demographicExt);
+					/* there will be multiple key value pairs.
+					 * Only the most current value ordered by date desc is desired here.
+					 */
+					demographicExtResult = demographicExt;
+					break;
 				}
 			}
-		}
-		/*
-		 * Only return the first (hopefully the only) result for now.
-		 */
-		if (!demographicExtList.isEmpty()) {
-			demographicExtResult = demographicExtList.get(0);
 		}
 		return demographicExtResult;
 	}
