@@ -657,7 +657,7 @@ public final class MessageUploader {
 
 			
 			try {
-	
+				if (hin.equalsIgnoreCase("UNKNOWN")) { hin = ""; }
 				if (hin != null) {
 					hinMod = new String(hin);
 					if (hinMod.length() == 12) {
@@ -665,7 +665,7 @@ public final class MessageUploader {
 					}
 				}
 	
-				if (dob != null && !dob.equals("")) {
+				if (dob != null && !dob.equals("") && !dob.equalsIgnoreCase("UNKNOWN")) {
 					String[] dobArray = dob.trim().split("-");
 					dobYear = dobArray[0];
 					dobMonth = dobArray[1];
