@@ -17,7 +17,7 @@
 <%@ page import="java.util.*,oscar.*,java.io.*,java.net.*,oscar.util.*,org.apache.commons.io.FileUtils" errorPage="/errorpage.jsp"%>
 <jsp:useBean id="oscarVariables" class="java.util.Properties" scope="session" />
 
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/global.js"></script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/share/javascript/jquery/jquery-1.4.2.js"></script>

@@ -122,7 +122,7 @@ public class LabPDFCreator extends PdfPageEventHelper {
         this.id = segmentId;
 
       //Need date lab was received by OSCAR
-        Hl7TextMessageDao hl7TxtMsgDao = (Hl7TextMessageDao)SpringUtils.getBean("hl7TextMessageDao");
+        Hl7TextMessageDao hl7TxtMsgDao = (Hl7TextMessageDao)SpringUtils.getBean(Hl7TextMessageDao.class);
         Hl7TextMessage hl7TextMessage = hl7TxtMsgDao.find(Integer.parseInt(segmentId));
         java.util.Date date = hl7TextMessage.getCreated();
         String stringFormat = "yyyy-MM-dd HH:mm";

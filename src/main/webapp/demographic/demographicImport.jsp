@@ -46,7 +46,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 
 <%
-	ProgramDao programDao = (ProgramDao) SpringUtils.getBean("programDao");
+	ProgramDao programDao = (ProgramDao) SpringUtils.getBean(ProgramDao.class);
 	List<Program> programs = programDao.getAllPrograms();
 	List<Program> courses = new ArrayList<Program>();
 	for(Program p:programs) {
@@ -56,7 +56,7 @@
 	}
 
 %>
-<html:html locale="true">
+<html:html lang="en">
 	<script src="${pageContext.request.contextPath}/csrfguard"></script>
 <head>
 <!--I18n-->

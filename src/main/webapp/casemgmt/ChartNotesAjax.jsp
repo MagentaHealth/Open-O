@@ -85,7 +85,7 @@ String ctx = request.getContextPath();
 
 LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 Facility facility = loggedInInfo.getCurrentFacility();
-ProfessionalSpecialistDao professionalSpecialistDao=(ProfessionalSpecialistDao)SpringUtils.getBean("professionalSpecialistDao");
+ProfessionalSpecialistDao professionalSpecialistDao=(ProfessionalSpecialistDao)SpringUtils.getBean(ProfessionalSpecialistDao.class);
 
 EmailManager emailManager = SpringUtils.getBean(EmailManager.class);
 
@@ -94,7 +94,7 @@ Program program = null;
 if (pId == null) {
     pId = "";
 } else {
-    ProgramDao programDao=(ProgramDao)SpringUtils.getBean("programDao");
+    ProgramDao programDao=(ProgramDao)SpringUtils.getBean(ProgramDao.class);
     program = programDao.getProgram(Integer.valueOf(pId));
 }
 

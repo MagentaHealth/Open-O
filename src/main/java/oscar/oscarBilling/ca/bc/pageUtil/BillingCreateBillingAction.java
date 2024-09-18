@@ -183,7 +183,7 @@ public class BillingCreateBillingAction extends Action {
             MiscUtils.getLogger().debug("WCB id is not null "+request.getParameter("WCBid"));
             List<String> errs = null;
             WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
-            BillingmasterDAO billingmasterDAO = (BillingmasterDAO) ctx.getBean("BillingmasterDAO");
+            BillingmasterDAO billingmasterDAO = (BillingmasterDAO) ctx.getBean(BillingmasterDAO.class);
             WCB wcbForm = billingmasterDAO.getWCBForm(request.getParameter("WCBid"));
 
         for (Iterator<BillingItem> iter = billItem.iterator(); iter.hasNext(); ) {

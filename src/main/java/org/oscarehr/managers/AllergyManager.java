@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2024. Magenta Health. All Rights Reserved.
  * Copyright (c) 2001-2002. Department of Family Medicine, McMaster University. All Rights Reserved.
  * This software is published under the GPL GNU General Public License.
  * This program is free software; you can redistribute it and/or
@@ -20,82 +21,30 @@
  * McMaster University
  * Hamilton
  * Ontario, Canada
+ *
+ * Modifications made by Magenta Health in 2024.
  */
 
 package org.oscarehr.managers;
 
-import org.oscarehr.common.dao.AllergyDao;
-import org.oscarehr.common.model.Allergy;
-import org.oscarehr.common.model.ConsentType;
-import org.oscarehr.util.LoggedInInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import oscar.log.LogAction;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.oscarehr.common.model.Allergy;
+import org.oscarehr.util.LoggedInInfo;
 
-@Service
-public class AllergyManager {
-	@Autowired
-	private AllergyDao allergyDao;
-	
-	@Autowired
-	private PatientConsentManager patientConsentManager;
+public interface AllergyManager {
 
+	public Allergy getAllergy(LoggedInInfo loggedInInfo, Integer id);
 
-	public Allergy getAllergy(LoggedInInfo loggedInInfo, Integer id) {
-		Allergy result = allergyDao.find(id);
+	public List<Allergy> getActiveAllergies(LoggedInInfo loggedInInfo, Integer demographicNo);
 
-		//--- log action ---
-		if (result != null) {
-			LogAction.addLogSynchronous(loggedInInfo, "AllergyManager.getAllergy", "id=" + id);
-		}
+	public List<Allergy> getUpdatedAfterDate(LoggedInInfo loggedInInfo, Date updatedAfterThisDateInclusive,
+			int itemsToReturn);
 
-		return (result);
-	}
-	
-	public List<Allergy> getActiveAllergies(LoggedInInfo loggedInInfo, Integer demographicNo) {
-		List<Allergy> results = allergyDao.findActiveAllergiesOrderByDescription(demographicNo);
-		
-		//--- log action ---
-		if (results!=null && results.size()>0) {
-			LogAction.addLogSynchronous(loggedInInfo, "AllergyManager.getActiveAllergies", "demographicNo=" + demographicNo);
-		}
+	public List<Allergy> getByDemographicIdUpdatedAfterDate(LoggedInInfo loggedInInfo, Integer demographicId,
+			Date updatedAfterThisDate);
 
-		return(results);
-	}
-	
-	public List<Allergy> getUpdatedAfterDate(LoggedInInfo loggedInInfo, Date updatedAfterThisDateInclusive, int itemsToReturn) {
-		List<Allergy> results = allergyDao.findByUpdateDate(updatedAfterThisDateInclusive, itemsToReturn);
-		patientConsentManager.filterProviderSpecificConsent(loggedInInfo, results);
-		LogAction.addLogSynchronous(loggedInInfo, "AllergyManager.getUpdatedAfterDate", "updatedAfterThisDateInclusive=" + updatedAfterThisDateInclusive);
-
-		return (results);
-	}
-	
-	public List<Allergy> getByDemographicIdUpdatedAfterDate(LoggedInInfo loggedInInfo, Integer demographicId, Date updatedAfterThisDate) {
-		List<Allergy> results = new ArrayList<Allergy>();
-		ConsentType consentType = patientConsentManager.getProviderSpecificConsent(loggedInInfo);
-		if (patientConsentManager.hasPatientConsented(demographicId, consentType)) {
-			results = allergyDao.findByDemographicIdUpdatedAfterDate(demographicId, updatedAfterThisDate);
-			LogAction.addLogSynchronous(loggedInInfo, "AllergyManager.getByDemographicIdUpdatedAfterDate", "demographicId="+demographicId+" updatedAfterThisDate="+updatedAfterThisDate);
-		}
-		return (results);
-	}
-
-	/**
-	 * At this time, not all criteria maybe available in oscar but the method signature is what is "should" be
-	 * and hopefully can be refactored as data becomes available.
-	 */
-	public List<Allergy> getAllergiesByProgramProviderDemographicDate(LoggedInInfo loggedInInfo, Integer programId, String providerNo, Integer demographicId, Calendar updatedAfterThisDateInclusive, int itemsToReturn) {
-		List<Allergy> results = allergyDao.findByProviderDemographicLastUpdateDate(providerNo, demographicId, updatedAfterThisDateInclusive.getTime(), itemsToReturn);
-
-		LogAction.addLogSynchronous(loggedInInfo, "AllergyManager.getUpdatedAfterDate", "programId=" + programId + ", providerNo=" + providerNo + ", demographicId=" + demographicId + ", updatedAfterThisDateInclusive=" + updatedAfterThisDateInclusive.getTime());
-
-		return (results);
-	}
-
+	public List<Allergy> getAllergiesByProgramProviderDemographicDate(LoggedInInfo loggedInInfo, Integer programId,
+			String providerNo, Integer demographicId, Calendar updatedAfterThisDateInclusive, int itemsToReturn);
 }

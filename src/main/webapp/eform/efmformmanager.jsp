@@ -35,7 +35,7 @@ else if (orderByRequest.equals("form_subject")) orderBy = EFormUtil.SUBJECT;
 else if (orderByRequest.equals("form_name")) orderBy = EFormUtil.NAME;
 else if (orderByRequest.equals("file_name")) orderBy = EFormUtil.FILE_NAME;
 %>
-<html:html locale="true">
+<html:html lang="en">
 <head>
 
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>

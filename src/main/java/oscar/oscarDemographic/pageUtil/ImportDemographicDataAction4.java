@@ -242,22 +242,22 @@ public class ImportDemographicDataAction4 extends Action {
     OscarProperties oscarProperties = OscarProperties.getInstance();
     List<String> importErrors = new ArrayList<String>();
 
-    ProgramManager programManager = (ProgramManager) SpringUtils.getBean("programManager");
-    AdmissionManager admissionManager = (AdmissionManager) SpringUtils.getBean("admissionManager");
-    AdmissionDao admissionDao = (AdmissionDao) SpringUtils.getBean("admissionDao");
-    CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
-    DrugDao drugDao = (DrugDao) SpringUtils.getBean("drugDao");
-    DrugReasonDao drugReasonDao = (DrugReasonDao) SpringUtils.getBean("drugReasonDao");
-    DemographicArchiveDao demoArchiveDao = (DemographicArchiveDao) SpringUtils.getBean("demographicArchiveDao");
-    ProviderDataDao providerDataDao = (ProviderDataDao) SpringUtils.getBean("providerDataDao");
-    PartialDateDao partialDateDao = (PartialDateDao) SpringUtils.getBean("partialDateDao");
-    DemographicExtDao demographicExtDao = (DemographicExtDao) SpringUtils.getBean("demographicExtDao");
-    OscarAppointmentDao appointmentDao = (OscarAppointmentDao)SpringUtils.getBean("oscarAppointmentDao");
+    ProgramManager programManager = (ProgramManager) SpringUtils.getBean(ProgramManager.class);
+    AdmissionManager admissionManager = (AdmissionManager) SpringUtils.getBean(AdmissionManager.class);
+    AdmissionDao admissionDao = (AdmissionDao) SpringUtils.getBean(AdmissionDao.class);
+    CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
+    DrugDao drugDao = (DrugDao) SpringUtils.getBean(DrugDao.class);
+    DrugReasonDao drugReasonDao = (DrugReasonDao) SpringUtils.getBean(DrugReasonDao.class);
+    DemographicArchiveDao demoArchiveDao = (DemographicArchiveDao) SpringUtils.getBean(DemographicArchiveDao.class);
+    ProviderDataDao providerDataDao = (ProviderDataDao) SpringUtils.getBean(ProviderDataDao.class);
+    PartialDateDao partialDateDao = (PartialDateDao) SpringUtils.getBean(PartialDateDao.class);
+    DemographicExtDao demographicExtDao = (DemographicExtDao) SpringUtils.getBean(DemographicExtDao.class);
+    OscarAppointmentDao appointmentDao = (OscarAppointmentDao)SpringUtils.getBean(OscarAppointmentDao.class);
     PatientLabRoutingDao patientLabRoutingDao  = SpringUtils.getBean(PatientLabRoutingDao.class); 
     ProviderLabRoutingDao providerLabRoutingDao = SpringUtils.getBean(ProviderLabRoutingDao.class);
     MeasurementsExtDao measurementsExtDao = SpringUtils.getBean(MeasurementsExtDao.class);
     IssueDAO issueDao = SpringUtils.getBean(IssueDAO.class);
-    DemographicContactDao contactDao = (DemographicContactDao) SpringUtils.getBean("demographicContactDao");
+    DemographicContactDao contactDao = (DemographicContactDao) SpringUtils.getBean(DemographicContactDao.class);
 
     private final NioFileManager nioFileManager = SpringUtils.getBean(NioFileManager.class);
 
@@ -2510,10 +2510,10 @@ public class ImportDemographicDataAction4 extends Action {
 
                 //REPORTS RECEIVED
 
-                HRMDocumentDao hrmDocDao = (HRMDocumentDao) SpringUtils.getBean("HRMDocumentDao");
-                HRMDocumentCommentDao hrmDocCommentDao = (HRMDocumentCommentDao) SpringUtils.getBean("HRMDocumentCommentDao");
-                HRMDocumentSubClassDao hrmDocSubClassDao = (HRMDocumentSubClassDao) SpringUtils.getBean("HRMDocumentSubClassDao");
-                HRMDocumentToDemographicDao hrmDocToDemoDao = (HRMDocumentToDemographicDao) SpringUtils.getBean("HRMDocumentToDemographicDao");
+                HRMDocumentDao hrmDocDao = (HRMDocumentDao) SpringUtils.getBean(HRMDocumentDao.class);
+                HRMDocumentCommentDao hrmDocCommentDao = (HRMDocumentCommentDao) SpringUtils.getBean(HRMDocumentCommentDao.class);
+                HRMDocumentSubClassDao hrmDocSubClassDao = (HRMDocumentSubClassDao) SpringUtils.getBean(HRMDocumentSubClassDao.class);
+                HRMDocumentToDemographicDao hrmDocToDemoDao = (HRMDocumentToDemographicDao) SpringUtils.getBean(HRMDocumentToDemographicDao.class);
 
                 Reports[] repR = patientRec.getReportsArray();
                 List<Reports> HRMreports = new ArrayList<Reports>();
@@ -4115,7 +4115,7 @@ public class ImportDemographicDataAction4 extends Action {
 
 	private static Integer saveRxAllergy(Integer demographicNo, Date entryDate, String description, Integer typeCode, String reaction, Date startDate, String severity, String regionalId, String lifeStage, boolean intolerance, boolean nonDrug) {
 
-		AllergyDao allergyDao=(AllergyDao) SpringUtils.getBean("allergyDao");
+		AllergyDao allergyDao=(AllergyDao) SpringUtils.getBean(AllergyDao.class);
 
 		Allergy allergy=new Allergy();
 		allergy.setDemographicNo(demographicNo);

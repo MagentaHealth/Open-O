@@ -24,7 +24,7 @@
 package org.oscarehr.billing.CA.BC.dao;
 
 import org.oscarehr.billing.CA.BC.model.Hl7Pid;
-import org.oscarehr.common.dao.AbstractDao;
+import org.oscarehr.common.dao.AbstractDaoImpl;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -33,7 +33,7 @@ import java.util.List;
 
 @Repository
 @SuppressWarnings("unchecked")
-public class Hl7PidDao extends AbstractDao<Hl7Pid>{
+public class Hl7PidDao extends AbstractDaoImpl<Hl7Pid>{
 
 	public Hl7PidDao() {
 		super(Hl7Pid.class);

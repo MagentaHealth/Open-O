@@ -156,7 +156,7 @@
 		DocumentBrowserLink = true;
 	}
 %>
-<html:html locale="true">
+<html:html lang="en">
 	<head>
 
 		<title><bean:message key="dms.documentReport.msgDocuments"/> Manager</title>
@@ -181,7 +181,7 @@
 
 		<script src="${pageContext.request.contextPath}/js/global.js" type="text/javascript"></script>
 		<%
-			CtlDocClassDao docClassDao = (CtlDocClassDao) SpringUtils.getBean("ctlDocClassDao");
+			CtlDocClassDao docClassDao = (CtlDocClassDao) SpringUtils.getBean(CtlDocClassDao.class);
 			List<String> reportClasses = docClassDao.findUniqueReportClasses();
 			ArrayList<String> subClasses = new ArrayList<String>();
 			ArrayList<String> consultA = new ArrayList<String>();

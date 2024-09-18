@@ -31,7 +31,6 @@ public class DownloadEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testDownload_Batch_Edit_And_Remittance_Advice_File_SUCCESS() {
         System.out.println("--------------- testDownload_Batch_Edit_And_Remittance_Advice_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -70,7 +69,6 @@ public class DownloadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDownload_Five_Files_SUCCESS() {
         System.out.println("--------------- testDownload_Five_Files_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -112,7 +110,6 @@ public class DownloadEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testDownload_Six_Files_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testDownload_Six_Files_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -148,7 +145,6 @@ public class DownloadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDownload_Claim_File_SUCCESS() {
         System.out.println("--------------- testDownload_Claim_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -180,7 +176,6 @@ public class DownloadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDownload_With_Invalid_MOHID__FAILED_EEDTS0012() {
         System.out.println("--------------- testDownload_With_Invalid_MOHID__FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
 
@@ -215,7 +210,6 @@ public class DownloadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDownload_With_Invalid_Resource_ID__FAILED_EEDTS0056() {
         System.out.println("--------------- testDownload_With_Invalid_Resource_ID__FAILED_EEDTS0056 ---------------\n" + "Actual Results:");
 
@@ -243,7 +237,6 @@ public class DownloadEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testDownload_With_Invalid_Resource_ID__FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testDownload_With_Invalid_Resource_ID__FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -272,7 +265,6 @@ public class DownloadEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testDownload_With_Blank_Resource_ID_And_Blank_MOHID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testDownload_With_Blank_Resource_ID_And_Blank_MOHID_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -294,7 +286,6 @@ public class DownloadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDownload_PDF_Report_SUCCESS() {
         System.out.println("--------------- testDownload_PDF_Report_SUCCESS ---------------\n" + "Actual Results:");
 

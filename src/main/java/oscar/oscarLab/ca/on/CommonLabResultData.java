@@ -282,7 +282,7 @@ public class CommonLabResultData {
 
 		if (scannedDocStatus != null && (scannedDocStatus.equals("O") || scannedDocStatus.equals("I") || scannedDocStatus.equals(""))) {
 
-			DocumentResultsDao documentResultsDao = (DocumentResultsDao) SpringUtils.getBean("documentResultsDao");
+			DocumentResultsDao documentResultsDao = (DocumentResultsDao) SpringUtils.getBean(DocumentResultsDao.class);
 			ArrayList<LabResultData> docs = documentResultsDao.populateDocumentResultsDataOfAllProviders(providerNo, demographicNo, status);
 			labs.addAll(docs);
 		}
@@ -302,7 +302,7 @@ public class CommonLabResultData {
 	public ArrayList<LabResultData> populateDocumentDataSpecificProvider(String providerNo, String demographicNo, String patientFirstName, String patientLastName, String patientHealthNumber, String status, String scannedDocStatus) {
 		ArrayList<LabResultData> labs = new ArrayList<LabResultData>();
 		if (scannedDocStatus != null && (scannedDocStatus.equals("O") || scannedDocStatus.equals("I") || scannedDocStatus.equals(""))) {
-			DocumentResultsDao documentResultsDao = (DocumentResultsDao) SpringUtils.getBean("documentResultsDao");
+			DocumentResultsDao documentResultsDao = (DocumentResultsDao) SpringUtils.getBean(DocumentResultsDao.class);
 			ArrayList<LabResultData> docs = documentResultsDao.populateDocumentResultsDataLinkToProvider(providerNo, demographicNo, status);
 			return docs;
 		}
@@ -312,7 +312,7 @@ public class CommonLabResultData {
 	public ArrayList<LabResultData> populateDocumentData(String providerNo, String demographicNo, String patientFirstName, String patientLastName, String patientHealthNumber, String status, String scannedDocStatus) {
 		ArrayList<LabResultData> labs = new ArrayList<LabResultData>();
 		if (scannedDocStatus != null && (scannedDocStatus.equals("O") || scannedDocStatus.equals("I") || scannedDocStatus.equals(""))) {
-			DocumentResultsDao documentResultsDao = (DocumentResultsDao) SpringUtils.getBean("documentResultsDao");
+			DocumentResultsDao documentResultsDao = (DocumentResultsDao) SpringUtils.getBean(DocumentResultsDao.class);
 			ArrayList<LabResultData> docs = documentResultsDao.populateDocumentResultsData(providerNo, demographicNo, status);
 			return docs;
 		}
@@ -699,7 +699,7 @@ public class CommonLabResultData {
 	public boolean isHRMLinkedWithPatient(String labId, String labType) {
 		boolean ret = false;
 		try {
-			HRMDocumentToDemographicDao hrmDocumentToDemographicDao = (HRMDocumentToDemographicDao)  SpringUtils.getBean("HRMDocumentToDemographicDao");
+			HRMDocumentToDemographicDao hrmDocumentToDemographicDao = (HRMDocumentToDemographicDao)  SpringUtils.getBean(HRMDocumentToDemographicDao.class);
 			List<HRMDocumentToDemographic> docToDemo = hrmDocumentToDemographicDao.findByHrmDocumentId(Integer.parseInt(labId));
 			if(docToDemo != null && docToDemo.size() > 0){
 				ret = true;
@@ -785,7 +785,7 @@ public class CommonLabResultData {
 	}
 	
 	public List<LabIdAndType> getCmlAndEpsilonLabResultsSince(Integer demographicNo, Date updateDate) {
-		LabPatientPhysicianInfoDao labPatientPhysicianInfoDao = (LabPatientPhysicianInfoDao) SpringUtils.getBean("labPatientPhysicianInfoDao");
+		LabPatientPhysicianInfoDao labPatientPhysicianInfoDao = (LabPatientPhysicianInfoDao) SpringUtils.getBean(LabPatientPhysicianInfoDao.class);
 		
 		//This case handles Epsilon and the old CML data
 		List<Integer> ids = labPatientPhysicianInfoDao.getLabResultsSince(demographicNo,updateDate);

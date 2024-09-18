@@ -44,7 +44,7 @@ pageContext.setAttribute("isMobileDevice", isMobileDevice);
 <jsp:useBean id="LoginResourceBean" beanName="oscar.login.LoginResourceBean" type="oscar.login.LoginResourceBean" />
 <c:set var="login_error" value="" scope="page" />
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 
     <head>
     <title>
@@ -571,7 +571,7 @@ pageContext.setAttribute("isMobileDevice", isMobileDevice);
    				    	<html:form action="login" method="POST" >
    				    
    							<div class="form-group ${ login_error }"> 
-   	                        	<input type="text" name="username" placeholder="Enter your username" 
+   	                        	<input type="text" name="username" placeholder="Enter your username"
    	                        	value="" size="15" maxlength="15" autocomplete="off" 
    	                        	class="form-control" required/>
    	                        </div>

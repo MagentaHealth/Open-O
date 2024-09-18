@@ -56,8 +56,8 @@ import java.net.SocketException;
  */
 public final class ImageRenderingServlet extends HttpServlet {
 	private static Logger logger = MiscUtils.getLogger();
-	private static ClientImageDAO clientImageDAO = (ClientImageDAO) SpringUtils.getBean("clientImageDAO");
-	private static DigitalSignatureDao digitalSignatureDao = (DigitalSignatureDao) SpringUtils.getBean("digitalSignatureDao");
+	private static ClientImageDAO clientImageDAO = (ClientImageDAO) SpringUtils.getBean(ClientImageDAO.class);
+	private static DigitalSignatureDao digitalSignatureDao = (DigitalSignatureDao) SpringUtils.getBean(DigitalSignatureDao.class);
 
 	public static enum Source {
 		local_client, hnr_client, integrator_client, signature_preview, signature_stored,clinic_logo

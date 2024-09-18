@@ -25,7 +25,6 @@ public class UploadEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testUpload_Valid_Claim_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -43,7 +42,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Stale_Dated_Claim_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_Stale_Dated_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -61,7 +59,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_OBEC_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_OBEC_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -79,7 +76,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Vendor_Claim_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_Vendor_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -97,7 +93,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Vendor_Stale_Dated_Claim_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_Vendor_Stale_Dated_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -115,7 +110,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Vendor_OBEC_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_Vendor_OBEC_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -133,7 +127,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Claim_File_And_Stale_Dated_Claim_File_And_OBEC_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Valid_Claim_File_And_Stale_Dated_Claim_File_And_OBEC_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -153,7 +146,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Five_Valid_Claim_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Five_Valid_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -175,7 +167,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Five_Valid_Stale_Dated_Claim_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Five_Valid_Stale_Dated_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -197,7 +188,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Five_Valid_OBEC_File_SUCCESS_IEDTS0001() throws Exception {
         System.out.println("--------------- testUpload_Five_Valid_OBEC_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -225,7 +215,6 @@ public class UploadEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testUpload_Six_Valid_Claim_File_FAILED_Rejected() {
         System.out.println("--------------- testUpload_Six_Valid_Claim_File_FAILED_Rejected ---------------\n");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -245,7 +234,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Claim_File_With_Invalid_Header_FAILED_ECLAM0002() throws Exception {
         System.out.println("--------------- testUpload_Claim_File_With_Invalid_Header_FAILED_ECLAM0002 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -265,7 +253,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Claim_File_With_Invalid_Length_FAILED_ECLAM0008() throws Exception {
         System.out.println("--------------- testUpload_Claim_File_With_Invalid_Length_FAILED_ECLAM0008 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -285,7 +272,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Stale_Dated_Claim_File_With_Invalid_Header_FAILED_ECLAM0002() throws Exception {
         System.out.println("--------------- testUpload_Stale_Dated_Claim_File_With_Invalid_Header_FAILED_ECLAM0002 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -305,7 +291,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Stale_Dated_Claim_File_With_Invalid_Length_FAILED_ECLAM0008() throws Exception {
         System.out.println("--------------- testUpload_Stale_Dated_Claim_File_With_Invalid_Length_FAILED_ECLAM0008 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -325,7 +310,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_With_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testUpload_With_Invalid_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -343,7 +327,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Claim_File_With_OBEC_Resource_Type_FAILED_EEDTU0006() throws Exception {
         System.out.println("--------------- testUpload_Claim_File_With_OBEC_Resource_Type_FAILED_EEDTU0006 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -363,7 +346,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Claim_File_With_Invalid_Resource_Type_FAILED_EEDTS0003() throws Exception {
         System.out.println("--------------- testUpload_Claim_File_With_Invalid_Resource_Type_FAILED_EEDTS0003 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -385,7 +367,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Missing_Bill_Number_Claim_File_FAILED_ECLAM0003() throws Exception {
         System.out.println("--------------- testUpload_Missing_Bill_Number_Claim_File_FAILED_ECLAM0003 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -405,7 +386,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Mismatched_Header_Count_Claim_File_FAILED_ECLAM0005() throws Exception {
         System.out.println("--------------- testUpload_Mismatched_Header_Count_Claim_File_FAILED_ECLAM0005 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -425,7 +405,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Mismatched_Record_Count_Claim_File_FAILED_ECLAM0007() throws Exception {
         System.out.println("--------------- testUpload_Mismatched_Record_Count_Claim_File_FAILED_ECLAM0007 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -445,7 +424,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Invalid_Length_Health_Number_OBEC_File_FAILED_EOBEC0004() throws Exception {
         System.out.println("--------------- testUpload_Invalid_Length_Health_Number_OBEC_File_FAILED_EOBEC0004 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -465,7 +443,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Non_Numeric_Health_Number_OBEC_File_FAILED_EOBEC0005() throws Exception {
         System.out.println("--------------- testUpload_Non_Numeric_Health_Number_OBEC_File_FAILED_EOBEC0005 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -485,7 +462,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Mismatched_2_Header_Count_Claim_File_FAILED_ECLAM0006() throws Exception {
         System.out.println("--------------- testUpload_Mismatched_2_Header_Count_Claim_File_FAILED_ECLAM0006 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -505,7 +481,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Large_Claim_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testUpload_Valid_Large_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -523,7 +498,6 @@ public class UploadEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_Vendor_Large_Claim_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testUpload_Valid_Vendor_Large_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();

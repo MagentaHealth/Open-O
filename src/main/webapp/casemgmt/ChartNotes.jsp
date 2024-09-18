@@ -457,7 +457,7 @@ try
 						<option value="-1">------------------</option>
 						</security:oscarSec>
 						<%
-							EncounterTemplateDao encounterTemplateDao=(EncounterTemplateDao)SpringUtils.getBean("encounterTemplateDao");
+							EncounterTemplateDao encounterTemplateDao=(EncounterTemplateDao)SpringUtils.getBean(EncounterTemplateDao.class);
 							List<EncounterTemplate> allTemplates=encounterTemplateDao.findAll();
 
 							for (EncounterTemplate encounterTemplate : allTemplates)

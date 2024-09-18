@@ -26,7 +26,6 @@ public class ListEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testList_All_Claim_Files_Uploaded_SUCCESS() {
         System.out.println("--------------- testList_All_Valid_Claim_Files_Uploaded_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -43,7 +42,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_All_Stale_Dated_Claim_Files_Uploaded_SUCCESS() {
         System.out.println("--------------- testList_All_Stale_Dated_Claim_Files_Uploaded_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -60,7 +58,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_All_OBEC_Files_Uploaded_SUCCESS() {
         System.out.println("--------------- testList_All_OBEC_Files_Uploaded_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -77,7 +74,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_All_Reports_Downloadable_SUCCESS() {
         System.out.println("--------------- testList_All_Reports_Downloadable_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -94,7 +90,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_Claim_And_Stale_Dated_Claim_And_OBEC_Files_Deleted_SUCCESS() {
         System.out.println("--------------- testList_Claim_And_Stale_Dated_Claim_And_OBEC_Files_Deleted_SUCCESS ---------------\n" + "Actual Results:");
         Detail claimFilesDetailList = null;
@@ -118,7 +113,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_All_Resources_SUCCESS() {
         System.out.println("--------------- testList_All_Resources_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -135,7 +129,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_All_Resources_With_Invalid_Resource_Type_FAILED_EEDTS0003() {
         System.out.println("--------------- testList_All_Resources_With_Invalid_Resource_Type_FAILED_EEDTS0003 ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -154,7 +147,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_Downloadable_Resources_With_Invalid_MOHID_FAILED_EEDTS0061() {
         System.out.println("--------------- testList_Downloadable_Resources_With_Invalid_MOHID_FAILED_EEDTS0061 ---------------\n" + "Actual Results:");
         edtDelegate = DelegateFactory.getEDTDelegateInstance("001CF");
@@ -177,7 +169,6 @@ public class ListEDTTest extends EDTBaseTest {
      * This test only works when there are more than 50 resources uploaded.
      */
     @Test
-    @Ignore
     public void testTotal_Resources_On_First_Page_50_SUCCESS() {
         System.out.println("--------------- testTotal_Resources_On_First_Page_50_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -198,7 +189,6 @@ public class ListEDTTest extends EDTBaseTest {
      * This test only works when there are more than 100 resources uploaded.
      */
     @Test
-    @Ignore
     public void testTotal_Resources_On_Second_Page_50_SUCCESS() {
         System.out.println("--------------- testTotal_Resources_On_Second_Page_50_SUCCESS ---------------\n" + "Actual Results:");
         Detail detailList = null;
@@ -216,7 +206,6 @@ public class ListEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testList_Resources_With_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testList_Resources_With_Invalid_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
         edtDelegate = DelegateFactory.getEDTDelegateInstance("999999");

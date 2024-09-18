@@ -39,7 +39,7 @@
 <%@ taglib uri="/WEB-INF/oscar-tag.tld" prefix="oscar"%>
 
 
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <title><bean:message key="admin.admin.scheduleOfBenefits"/></title>

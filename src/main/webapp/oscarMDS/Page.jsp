@@ -64,7 +64,7 @@ String selectedCategoryPatient = request.getParameter("selectedCategoryPatient")
 String selectedCategoryType = request.getParameter("selectedCategoryType");
 boolean isListView = Boolean.valueOf(request.getParameter("isListView"));
 
-OscarLogDao oscarLogDao = (OscarLogDao) SpringUtils.getBean("oscarLogDao");
+OscarLogDao oscarLogDao = (OscarLogDao) SpringUtils.getBean(OscarLogDao.class);
 String curUser_no = (String) session.getAttribute("user");
 
 %>

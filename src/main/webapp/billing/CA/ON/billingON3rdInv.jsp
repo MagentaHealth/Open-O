@@ -64,7 +64,7 @@ boolean isMulitSites = oscarProp.getBooleanProperty("multisites", "on");
 
 
     
-    BillingONCHeader1Dao bCh1Dao = (BillingONCHeader1Dao) SpringUtils.getBean("billingONCHeader1Dao");
+    BillingONCHeader1Dao bCh1Dao = (BillingONCHeader1Dao) SpringUtils.getBean(BillingONCHeader1Dao.class);
     BillingONCHeader1 bCh1 = null;
     
     if (invoiceNo != null) 
@@ -86,7 +86,7 @@ boolean isMulitSites = oscarProp.getBooleanProperty("multisites", "on");
     String dueDateStr = "";
     String paymentDescription = "";
     
-    ClinicDAO clinicDao = (ClinicDAO) SpringUtils.getBean("clinicDAO");
+    ClinicDAO clinicDao = (ClinicDAO) SpringUtils.getBean(ClinicDAO.class);
     Clinic clinic = clinicDao.getClinic();              
     oscar.OscarProperties props = oscar.OscarProperties.getInstance();
 
@@ -103,15 +103,15 @@ boolean isMulitSites = oscarProp.getBooleanProperty("multisites", "on");
 	}
 
     if (bCh1 != null) {
-        BillingONExtDao billExtDao = (BillingONExtDao) SpringUtils.getBean("billingONExtDao");
-        BillingONPaymentDao billPaymentDao = (BillingONPaymentDao) SpringUtils.getBean("billingONPaymentDao");
-        DemographicDao demoDAO = (DemographicDao)SpringUtils.getBean("demographicDao");
-        ProviderDao providerDao = (ProviderDao) SpringUtils.getBean("providerDao");
+        BillingONExtDao billExtDao = (BillingONExtDao) SpringUtils.getBean(BillingONExtDao.class);
+        BillingONPaymentDao billPaymentDao = (BillingONPaymentDao) SpringUtils.getBean(BillingONPaymentDao.class);
+        DemographicDao demoDAO = (DemographicDao)SpringUtils.getBean(DemographicDao.class);
+        ProviderDao providerDao = (ProviderDao) SpringUtils.getBean(ProviderDao.class);
         
         billingDateStr = DateUtils.formatDate(bCh1.getBillingDate(),request.getLocale());
         invoiceRefNum = bCh1.getRefNum();
         
-        BillingONService billingONService = (BillingONService) SpringUtils.getBean("billingONService");
+        BillingONService billingONService = (BillingONService) SpringUtils.getBean(BillingONService.class);
         billingItems = billingONService.getNonDeletedInvoices(bCh1.getId());
 
         invoiceComment = bCh1.getComment(); 
@@ -373,7 +373,7 @@ boolean isMulitSites = oscarProp.getBooleanProperty("multisites", "on");
                 <th>Amount</th>
             </tr>
             <%
-            BillingServiceDao billingServiceDao = (BillingServiceDao) SpringUtils.getBean("billingServiceDao");
+            BillingServiceDao billingServiceDao = (BillingServiceDao) SpringUtils.getBean(BillingServiceDao.class);
             
             for(BillingONItem billItem : billingItems) { 	
                 BillingService bs = null;

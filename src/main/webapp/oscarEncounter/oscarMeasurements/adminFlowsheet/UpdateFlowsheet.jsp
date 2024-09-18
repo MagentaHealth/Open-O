@@ -57,7 +57,7 @@ if(!authed2) {
     if(session.getAttribute("userrole") == null )  response.sendRedirect("../logout.jsp");
  //TODO: MOVE THIS TO AN ACTION
 WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) ctx.getBean("flowSheetCustomizationDao");
+FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) ctx.getBean(FlowSheetCustomizationDao.class);
 MeasurementTemplateFlowSheetConfig templateConfig = MeasurementTemplateFlowSheetConfig.getInstance();
 
 String flowsheet   = request.getParameter("flowsheet");
@@ -98,7 +98,7 @@ FlowSheetItem fsi =mFlowsheet.getFlowSheetItem(measurement);
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <title>Update Flowsheet <%=flowsheet%>  <oscar:nameage demographicNo="<%=demographic%>"/></title><!--I18n-->

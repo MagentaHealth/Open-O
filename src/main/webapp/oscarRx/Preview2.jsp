@@ -71,7 +71,7 @@
 %>
 
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <%--<script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>--%>
 <%--<script type="text/javascript" src="../share/javascript/prototype.js"></script>--%>
@@ -278,7 +278,7 @@ boolean showPatientDOB=false;
 
 //check if user prefer to show dob in print
 WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
-UserPropertyDAO userPropertyDAO = (UserPropertyDAO) ctx.getBean("UserPropertyDAO");
+UserPropertyDAO userPropertyDAO = (UserPropertyDAO) ctx.getBean(UserPropertyDAO.class);
 UserProperty prop = userPropertyDAO.getProp(signingProvider, UserProperty.RX_SHOW_PATIENT_DOB);
 if(prop!=null && prop.getValue().equalsIgnoreCase("yes")){
     showPatientDOB=true;

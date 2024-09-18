@@ -40,7 +40,7 @@ import org.oscarehr.util.SpringUtils;
 import oscar.oscarRx.data.RxPrescriptionData;
 
 public class NoteDisplayLocal implements NoteDisplay {
-	private CaseManagementIssueNotesDao caseManagementIssueNotesDao=(CaseManagementIssueNotesDao)SpringUtils.getBean("caseManagementIssueNotesDao");
+	private CaseManagementIssueNotesDao caseManagementIssueNotesDao=(CaseManagementIssueNotesDao)SpringUtils.getBean(CaseManagementIssueNotesDao.class);
 
 	private CaseManagementNote caseManagementNote;
 	private boolean editable = false;
@@ -177,7 +177,7 @@ public class NoteDisplayLocal implements NoteDisplay {
 	}
 
 	public CaseManagementNoteLink getNoteLink() {
-		CaseManagementNoteLinkDAO cmDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean("CaseManagementNoteLinkDAO");
+		CaseManagementNoteLinkDAO cmDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean(CaseManagementNoteLinkDAO.class);
 		return cmDao.getLastLinkByNote(caseManagementNote.getId());
 	}
 

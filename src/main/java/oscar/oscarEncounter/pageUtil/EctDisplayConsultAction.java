@@ -76,7 +76,7 @@ public class EctDisplayConsultAction extends EctDisplayAction {
             theRequests.estConsultationVecByDemographic(loggedInInfo, bean.demographicNo);
             
             //determine cut off period for highlighting
-            UserPropertyDAO pref = (UserPropertyDAO) WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext()).getBean("UserPropertyDAO");     
+            UserPropertyDAO pref = (UserPropertyDAO) WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext()).getBean(UserPropertyDAO.class);     
 
             UserProperty up = pref.getProp(bean.providerNo, UserProperty.CONSULTATION_TIME_PERIOD_WARNING);           
             String timeperiod = null;           

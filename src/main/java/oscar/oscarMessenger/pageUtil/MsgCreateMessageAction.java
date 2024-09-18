@@ -35,6 +35,7 @@ import org.oscarehr.common.dao.UserPropertyDAO;
 import org.oscarehr.common.model.OscarMsgType;
 import org.oscarehr.common.model.UserProperty;
 import org.oscarehr.managers.MessagingManager;
+import org.oscarehr.managers.MessagingManagerImpl;
 import org.oscarehr.managers.MessengerDemographicManager;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
@@ -116,7 +117,7 @@ public class MsgCreateMessageAction extends Action {
             		&& ("1".equals( userPropertyDao.getProp( UserProperty.INTEGRATOR_PATIENT_CONSENT ).getValue()) 
             				|| "1".equals( userPropertyDao.getProp( UserProperty.INTEGRATOR_DEMOGRAPHIC_CONSENT ).getValue())))
             {
-            	if( MessagingManager.doesContainRemoteRecipient(loggedInInfo, providerListing)
+            	if( MessagingManagerImpl.doesContainRemoteRecipient(loggedInInfo, providerListing)
             			&& ! messengerDemographicManager.isPatientConsentedForIntegrator(loggedInInfo, Integer.parseInt(demographic_no)))
             	{
             		return error(mapping, request, (MsgCreateMessageForm) form, "oscarMessenger.CreateMessage.patientConsentError");
@@ -126,7 +127,7 @@ public class MsgCreateMessageAction extends Action {
             /*
              * The Integrator does not support attachments at this time.  Stop attachments from being sent externally. 
              */
-            if( (att != null || pdfAtt != null) &&  MessagingManager.doesContainRemoteRecipient(loggedInInfo, providerListing))
+            if( (att != null || pdfAtt != null) &&  MessagingManagerImpl.doesContainRemoteRecipient(loggedInInfo, providerListing))
             {
             	return error(mapping, request, (MsgCreateMessageForm) form, "oscarMessenger.CreateMessage.attachmentsNotPermitted");
             }
@@ -154,7 +155,7 @@ public class MsgCreateMessageAction extends Action {
 			request.setAttribute("messageSubject", form.getSubject());
 			request.setAttribute("messageBody", form.getMessage());
 			request.setAttribute("demographic_no", form.getDemographic_no());
-			List<ContactIdentifier> replyList = MessagingManager.createContactIdentifierList(form.getProvider());
+			List<ContactIdentifier> replyList = MessagingManagerImpl.createContactIdentifierList(form.getProvider());
             JSONArray jsonArray = new JSONArray();
 			request.setAttribute("replyList", jsonArray.addAll(replyList));
 	    	return mapping.findForward("error");

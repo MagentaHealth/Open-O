@@ -57,10 +57,10 @@ import org.oscarehr.common.model.ConsultationRequestExt;
 import org.oscarehr.common.model.Demographic;
 import org.oscarehr.common.model.DemographicExt;
 import org.oscarehr.common.model.DemographicExt.DemographicProperty;
-import org.oscarehr.common.model.enumerator.ConsultationRequestExtKey;
 import org.oscarehr.common.model.Hl7TextMessage;
 import org.oscarehr.common.model.ProfessionalSpecialist;
 import org.oscarehr.common.model.Provider;
+import org.oscarehr.common.model.enumerator.ConsultationRequestExtKey;
 import org.oscarehr.managers.ConsultationManager;
 import org.oscarehr.managers.DemographicManager;
 import org.oscarehr.managers.SecurityInfoManager;
@@ -136,8 +136,8 @@ public class EctViewRequestAction extends Action {
             ConsultationRequestExtDao consultationRequestExtDao = SpringUtils.getBean(ConsultationRequestExtDao.class);
             List<ConsultationRequestExt> extras = consultationRequestExtDao.getConsultationRequestExts(requestId);
             Map<String, String> extraMap = consultationManager.getExtValuesAsMap(extras);
-
-            ConsultationRequestDao consultDao = (ConsultationRequestDao)SpringUtils.getBean("consultationRequestDao");
+        	
+            ConsultationRequestDao consultDao = (ConsultationRequestDao)SpringUtils.getBean(ConsultationRequestDao.class);;
             ConsultationRequest consult = consultDao.find(requestId);
 
             thisForm.setAllergies(consult.getAllergies());
@@ -188,7 +188,7 @@ public class EctViewRequestAction extends Action {
             thisForm.setPatientEmail(demo.getEmail());
             thisForm.setPatientAge(demo.getAge());
 
-            ProviderDao provDao = (ProviderDao)SpringUtils.getBean("providerDao");
+            ProviderDao provDao = (ProviderDao)SpringUtils.getBean(ProviderDao.class);
             Provider prov = provDao.getProvider(consult.getProviderNo());
             thisForm.setProviderName(prov.getFormattedName());
 
@@ -254,7 +254,7 @@ public class EctViewRequestAction extends Action {
 	
 	public static void fillFormValues(EctConsultationFormRequestForm thisForm, String segmentId) throws HL7Exception, UnsupportedEncodingException, Base64DecodingException
 	{
-		Hl7TextMessageDao hl7TextMessageDao=(Hl7TextMessageDao) SpringUtils.getBean("hl7TextMessageDao");
+		Hl7TextMessageDao hl7TextMessageDao=(Hl7TextMessageDao) SpringUtils.getBean(Hl7TextMessageDao.class);
 		Hl7TextMessage hl7TextMessage=hl7TextMessageDao.find(Integer.parseInt(segmentId));
 		
 		String encodedMessage=hl7TextMessage.getBase64EncodedeMessage();

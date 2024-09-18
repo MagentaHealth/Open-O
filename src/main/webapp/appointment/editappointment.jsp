@@ -115,7 +115,7 @@
   if (request.getParameter("bFirstDisp")!=null) bFirstDisp = ("true".equals(request.getParameter("bFirstDisp")));
 
     String mrpName = "";
-	DemographicCustDao demographicCustDao = (DemographicCustDao)SpringUtils.getBean("demographicCustDao");
+	DemographicCustDao demographicCustDao = (DemographicCustDao)SpringUtils.getBean(DemographicCustDao.class);
 	EncounterFormDao encounterFormDao = SpringUtils.getBean(EncounterFormDao.class);
     ProviderPreference providerPreference=(ProviderPreference)session.getAttribute(SessionConstants.LOGGED_IN_PROVIDER_PREFERENCE);
     DemographicManager demographicManager = SpringUtils.getBean(DemographicManager.class);
@@ -123,7 +123,7 @@
     ProviderDataDao providerDao = SpringUtils.getBean(ProviderDataDao.class);
     SiteDao siteDao = SpringUtils.getBean(SiteDao.class);
 	ProviderDao pDao = SpringUtils.getBean(ProviderDao.class);
-	BillingONCHeader1Dao cheader1Dao = (BillingONCHeader1Dao)SpringUtils.getBean("billingONCHeader1Dao");
+	BillingONCHeader1Dao cheader1Dao = SpringUtils.getBean(BillingONCHeader1Dao.class);
 
     ProviderManager providerManager = SpringUtils.getBean(ProviderManager.class);
 	ProgramManager programManager = SpringUtils.getBean(ProgramManager.class);
@@ -169,7 +169,7 @@
     boolean locationEnabled = caisiEnabled && (useProgramLocation != null && useProgramLocation.equals("true"));
 
 	String annotation_display = org.oscarehr.casemgmt.model.CaseManagementNoteLink.DISP_APPOINTMENT;
-	CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
+	CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
 
 
     boolean isSiteSelected = false;
@@ -227,7 +227,7 @@
         boolean bMultipleSameDayGroupAppt = false;
 %>
 
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <title><bean:message key="appointment.editappointment.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1126,7 +1126,7 @@ function locale(){
                 <select name="type" id="type" title="<bean:message key="billing.billingCorrection.msgSelectVisitType"/>" >
                 <option data-dur="" data-reason=""></option><!-- important leave a blank top entry  -->
 
-        <% AppointmentTypeDao appDao = (AppointmentTypeDao) SpringUtils.getBean("appointmentTypeDao");
+        <% AppointmentTypeDao appDao = (AppointmentTypeDao) SpringUtils.getBean(AppointmentTypeDao.class);
            List<AppointmentType> types = appDao.listAll();
                 for(int j = 0;j < types.size(); j++) {
 %>

@@ -27,7 +27,6 @@ public class SubmitEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testSubmit_Valid_Claim_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testSubmit_Valid_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -46,7 +45,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testSubmit_Valid_Stale_Dated_Claim_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testSubmit_Valid_Stale_Dated_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -65,7 +63,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testSubmit_Valid_OBEC_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testSubmit_Valid_OBEC_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -84,7 +81,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testSubmit_Valid_Claim_File_And_Stale_Dated_Claim_File_And_OBEC_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testSubmit_Valid_Claim_File_And_Stale_Dated_Claim_File_And_OBEC_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -106,7 +102,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testSubmit_Five_Valid_Claim_File_SUCCESS_IEDTS0001() {
         System.out.println("--------------- testSubmit_Five_Valid_Claim_File_SUCCESS_IEDTS0001 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -134,7 +129,6 @@ public class SubmitEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated, "You’re triggering all expected logic here. Please proceed."
      */
     @Test
-    @Ignore
     public void testSubmit_With_Valid_ResourceID_And_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testSubmit_With_Valid_ResourceID_And_Invalid_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();
@@ -154,7 +148,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testSubmit_With_Invalid_ResourceID_And_Valid_MOHID_FAILED_EEDTS0056() {
         System.out.println("--------------- testSubmit_With_Invalid_ResourceID_And_Valid_MOHID_FAILED_EEDTS0056 ---------------\n" + "Actual Results:");
         List<BigInteger> ids = Arrays.asList(new BigInteger("99988888"));
@@ -175,7 +168,6 @@ public class SubmitEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testSubmit_With_Invalid_ResourceID_And_Valid_MOHID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testSubmit_With_Invalid_ResourceID_And_Valid_MOHID_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
         List<BigInteger> ids = Arrays.asList(new BigInteger("$$$$$$"));
@@ -197,7 +189,6 @@ public class SubmitEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testSubmit_With_Blank_ResourceID_And_Blank_MOHID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testSubmit_With_Blank_ResourceID_And_Blank_MOHID_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
         edtDelegate = newDelegate("");
@@ -213,7 +204,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpload_Valid_File_Then_Submit_With_Valid_ResourceID_And_Invalid_MOHID_FAILED_EEDTS0054() {
         System.out.println("--------------- testUpload_Valid_File_Then_Submit_With_Valid_ResourceID_And_Invalid_MOHID_FAILED_EEDTS0054 ---------------\n" + "Actual Results:");
         List<UploadData> uploads = new ArrayList<UploadData>();
@@ -233,7 +223,6 @@ public class SubmitEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testSubmit_Already_Submitted_File_FAILED_EEDTS0055() {
         System.out.println("--------------- testSubmit_Already_Submitted_File_FAILED_EEDTS0055 ---------------\n" + "Actual Results:");
 		List<UploadData> uploads = new ArrayList<UploadData>();

@@ -44,10 +44,10 @@ public class CkdScreener {
 	
 	private Logger logger = MiscUtils.getLogger();
 
-	private DxresearchDAO dxResearchDao = (DxresearchDAO)SpringUtils.getBean("DxresearchDAO");
+	private DxresearchDAO dxResearchDao = (DxresearchDAO)SpringUtils.getBean(DxresearchDAO.class);
 	private MeasurementDao measurementDao = SpringUtils.getBean(MeasurementDao.class);
-	private CaseManagementNoteDAO caseManagementNoteDao = (CaseManagementNoteDAO)SpringUtils.getBean("caseManagementNoteDAO");
-	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean("IssueDAO");
+	private CaseManagementNoteDAO caseManagementNoteDao = (CaseManagementNoteDAO)SpringUtils.getBean(CaseManagementNoteDAO.class);
+	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean(IssueDAO.class);
 	private DemographicExtDao demographicExtDao = SpringUtils.getBean(DemographicExtDao.class);
 	private BillingONCHeader1Dao billingDao = SpringUtils.getBean(BillingONCHeader1Dao.class);
 	private DemographicDao demographicDao = SpringUtils.getBean(DemographicDao.class);

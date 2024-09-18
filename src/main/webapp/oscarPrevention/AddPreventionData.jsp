@@ -130,7 +130,7 @@ if(!authed) {
      extraData = PreventionData.getPreventionKeyValues(id);
      lot = (String) extraData.get("lot");
      expiryDate = (String) extraData.get("expiryDate");
-	CaseManagementManager cmm = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
+	CaseManagementManager cmm = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
 	List<CaseManagementNoteLink> cml = cmm.getLinkByTableId(CaseManagementNoteLink.PREVENTIONS, Long.valueOf(id));
 	hasImportExtra = (cml.size()>0);
 	 snomedId = (String) existingPrevention.get("snomedId");
@@ -265,7 +265,7 @@ if(!authed) {
 %>
 
 
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <title>

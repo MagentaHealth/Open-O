@@ -42,14 +42,14 @@
 <%@ page import="org.oscarehr.common.dao.ScheduleTemplateDao" %>
 <%
 	ScheduleDateDao scheduleDateDao = SpringUtils.getBean(ScheduleDateDao.class);
-	RScheduleDao rScheduleDao = (RScheduleDao)SpringUtils.getBean("rScheduleDao");
+	RScheduleDao rScheduleDao = (RScheduleDao)SpringUtils.getBean(RScheduleDao.class);
 	ScheduleTemplateDao scheduleTemplateDao = SpringUtils.getBean(ScheduleTemplateDao.class);
 %>
 <%@ page import="org.oscarehr.common.dao.SiteDao"%>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@ page import="org.oscarehr.common.model.Site"%>
 <%@ page import="org.owasp.encoder.Encode" %>
-<html:html locale="true">
+<html:html lang="en">
 
 <%
     if(session.getAttribute("user") == null ) response.sendRedirect("../logout.jsp");
@@ -85,7 +85,7 @@
 
   if (bMultisites) {
 	//multisite starts =====================
-	  SiteDao siteDao = (SiteDao)WebApplicationContextUtils.getWebApplicationContext(application).getBean("siteDao");
+	  SiteDao siteDao = (SiteDao)WebApplicationContextUtils.getWebApplicationContext(application).getBean(SiteDao.class);
       List<Site> sites = siteDao.getActiveSitesByProviderNo(request.getParameter("provider_no"));
       List<Site> managerSites;
 

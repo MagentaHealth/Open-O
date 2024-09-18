@@ -69,7 +69,7 @@
 %>
 
 
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>
@@ -154,7 +154,7 @@ if(bMultisites) {
 
     java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("oscarResources",request.getLocale());
 
-	SiteDao siteDao = (SiteDao)WebApplicationContextUtils.getWebApplicationContext(application).getBean("siteDao");
+	SiteDao siteDao = (SiteDao)WebApplicationContextUtils.getWebApplicationContext(application).getBean(SiteDao.class);
 	List<Site> sites = siteDao.getActiveSitesByProviderNo((String) session.getAttribute("user"));
 
 	for (int i=0;i<sites.size();i++) {

@@ -20,8 +20,8 @@ import org.oscarehr.PMmodule.service.ProgramManager;
 import org.oscarehr.casemgmt.model.CaseManagementNote;
 import org.oscarehr.casemgmt.model.CaseManagementNoteLink;
 import org.oscarehr.casemgmt.service.CaseManagementManager;
-import org.oscarehr.common.dao.EmailConfigDao;
-import org.oscarehr.common.dao.EmailLogDao;
+import org.oscarehr.common.dao.EmailConfigDaoImpl;
+import org.oscarehr.common.dao.EmailLogDaoImpl;
 import org.oscarehr.common.model.Demographic;
 import org.oscarehr.common.model.EmailAttachment;
 import org.oscarehr.common.model.EmailConfig;
@@ -55,10 +55,9 @@ public class EmailManager {
     private final Logger logger = MiscUtils.getLogger();
 
     @Autowired
-    private EmailConfigDao emailConfigDao;
+    private EmailConfigDaoImpl emailConfigDao;
     @Autowired
-    private EmailLogDao emailLogDao;
-
+    private EmailLogDaoImpl emailLogDao;
     @Autowired
     private CaseManagementManager caseManagementManager;
     @Autowired
@@ -269,7 +268,7 @@ public class EmailManager {
 
     private Path concatPDFs(List<EmailAttachment> attachments) throws PDFGenerationException {
         if (attachments == null || attachments.isEmpty()) { return null; }
-        
+
         List<Path> attachmentPathList = new ArrayList<>();
         for (EmailAttachment emailAttachment : attachments) {
             attachmentPathList.add(Paths.get(emailAttachment.getFilePath()));

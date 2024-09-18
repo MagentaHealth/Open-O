@@ -113,7 +113,7 @@
                
                 //single line or 'normal' view.
                 boolean singleLine = Boolean.valueOf(oscar.OscarProperties.getInstance().getProperty("echart.cpp.single_line","false"));
-                UserPropertyDAO userPropertyDao = (UserPropertyDAO)SpringUtils.getBean("UserPropertyDAO");
+                UserPropertyDAO userPropertyDao = (UserPropertyDAO)SpringUtils.getBean(UserPropertyDAO.class);
                 UserProperty prop = userPropertyDao.getProp(loggedInInfo.getLoggedInProviderNo(),UserProperty.CPP_SINGLE_LINE);
                 if(prop != null) {
                 	singleLine = Boolean.valueOf((prop.getValue().equals("yes")?true:false));

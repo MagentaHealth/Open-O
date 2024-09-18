@@ -83,7 +83,7 @@ if(!authed2) {
     Hashtable<String, String> flowsheetNames = templateConfig.getFlowsheetDisplayNames();
 
     WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-    FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) ctx.getBean("flowSheetCustomizationDao");
+    FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) ctx.getBean(FlowSheetCustomizationDao.class);
     List<FlowSheetCustomization> custList = null;
     if("clinic".equals(scope)) {
     	custList = flowSheetCustomizationDao.getFlowSheetCustomizations(flowsheet);

@@ -113,7 +113,7 @@
     String queueIdStr = IncomingDocUtil.getAndSetIncomingDocQueue(user_no, request.getParameter("defaultQueue"));
     String entryMode = IncomingDocUtil.getAndSetEntryMode(user_no, request.getParameter("entryMode"));
 
-    UserPropertyDAO userPropertyDAO = (UserPropertyDAO)SpringUtils.getBean("UserPropertyDAO");
+    UserPropertyDAO userPropertyDAO = (UserPropertyDAO)SpringUtils.getBean(UserPropertyDAO.class);
     UserProperty uProp = userPropertyDAO.getProp(user_no, UserProperty.DOCUMENT_DESCRIPTION_TEMPLATE);                        
     String useDocumentDescriptionTemplateType=UserProperty.CLINIC;
     if( uProp != null && uProp.getValue().equals(UserProperty.USER)) {
@@ -137,12 +137,12 @@
         
     java.util.Locale vLocale = (java.util.Locale) session.getAttribute(org.apache.struts.Globals.LOCALE_KEY);
     WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-    ProviderLabRoutingDao providerLabRoutingDao = (ProviderLabRoutingDao) ctx.getBean("providerLabRoutingDao");
-    ProviderDao providerDao = (ProviderDao) ctx.getBean("providerDao");
-    DemographicDao demographicDao = (DemographicDao) ctx.getBean("demographicDao");
-    QueueDao queueDao = (QueueDao) ctx.getBean("queueDao");
+    ProviderLabRoutingDao providerLabRoutingDao = (ProviderLabRoutingDao) ctx.getBean(ProviderLabRoutingDao.class);
+    ProviderDao providerDao = (ProviderDao) ctx.getBean(ProviderDao.class);
+    DemographicDao demographicDao = (DemographicDao) ctx.getBean(DemographicDao.class);
+    QueueDao queueDao = (QueueDao) ctx.getBean(QueueDao.class);
 
-    CtlDocClassDao docClassDao = (CtlDocClassDao) ctx.getBean("ctlDocClassDao");
+    CtlDocClassDao docClassDao = (CtlDocClassDao) ctx.getBean(CtlDocClassDao.class);
     List<String> reportClasses = docClassDao.findUniqueReportClasses();
     ArrayList<String> subClasses = new ArrayList<String>();
     ArrayList<String> consultA = new ArrayList<String>();

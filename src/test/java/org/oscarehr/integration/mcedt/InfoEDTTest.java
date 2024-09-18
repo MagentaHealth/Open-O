@@ -29,7 +29,6 @@ public class InfoEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testInfo_Of_Submitted_Claim_File_SUCCESS() {
         System.out.println("--------------- testInfo_Of_Submitted_Claim_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -61,7 +60,6 @@ public class InfoEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testInfo_Of_Batch_Edit_File_SUCCESS() {
         System.out.println("--------------- testInfo_Of_Batch_Edit_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -93,7 +91,6 @@ public class InfoEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testInfo_Of_Claim_File_AND_OBEC_File_And_Batch_Edit_Report_SUCCESS() {
         System.out.println("--------------- testInfo_Of_Claim_File_AND_OBEC_File_And_Batch_Edit_Report_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -144,7 +141,6 @@ public class InfoEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testInfo_Without_Resource_Id_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testInfo_Without_Resource_Id_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -164,7 +160,6 @@ public class InfoEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated, "You’re triggering all expected logic here. Please proceed."
      */
     @Test
-    @Ignore
     public void testInfo_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testInfo_Invalid_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
 
@@ -199,7 +194,6 @@ public class InfoEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testInfo_Invalid_Resource_ID_FAILED_EEDTS0056() {
         System.out.println("--------------- testInfo_Invalid_MOHID_FAILED_EEDTS0056 ---------------\n" + "Actual Results:");
 
@@ -228,7 +222,6 @@ public class InfoEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testInfo_Invalid_Resource_ID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testInfo_Invalid_MOHID_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -258,7 +251,6 @@ public class InfoEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testInfo_With_Blank_Resource_ID_And_Blank_MOHID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testInfo_With_Blank_Resource_ID_And_Blank_MOHID_Rejected_By_Policy ---------------\n" + "Actual Results:");
 

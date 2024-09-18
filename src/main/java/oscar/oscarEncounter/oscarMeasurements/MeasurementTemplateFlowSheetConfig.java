@@ -203,7 +203,7 @@ public class MeasurementTemplateFlowSheetConfig implements InitializingBean {
     }
 
     public void enableFlowsheet(String name)  {
-    	FlowsheetDao flowsheetDao = (FlowsheetDao)SpringUtils.getBean("flowsheetDao");
+    	FlowsheetDao flowsheetDao = (FlowsheetDao)SpringUtils.getBean(FlowsheetDao.class);
     	Flowsheet fs = flowsheetDao.findByName(name);
     	if(fs != null) {
     		fs.setEnabled(true);
@@ -220,7 +220,7 @@ public class MeasurementTemplateFlowSheetConfig implements InitializingBean {
     }
 
     public void disableFlowsheet(String name)  {
-    	FlowsheetDao flowsheetDao = (FlowsheetDao)SpringUtils.getBean("flowsheetDao");
+    	FlowsheetDao flowsheetDao = (FlowsheetDao)SpringUtils.getBean(FlowsheetDao.class);
     	Flowsheet fs = flowsheetDao.findByName(name);
     	if(fs != null) {
     		fs.setEnabled(false);
@@ -249,8 +249,8 @@ public class MeasurementTemplateFlowSheetConfig implements InitializingBean {
     }
 
     void loadFlowsheets() {
-    	FlowsheetDao flowsheetDao = (FlowsheetDao)SpringUtils.getBean("flowsheetDao");
-    	FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean("flowSheetUserCreatedDao");
+    	FlowsheetDao flowsheetDao = (FlowsheetDao)SpringUtils.getBean(FlowsheetDao.class);
+    	FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean(FlowSheetUserCreatedDao.class);
 
         flowsheets = new Hashtable<String, MeasurementFlowSheet>();
         flowsheetSettings = new HashMap<String,Flowsheet>();
@@ -814,7 +814,7 @@ public class MeasurementTemplateFlowSheetConfig implements InitializingBean {
 
     public MeasurementFlowSheet getFlowSheet(String flowsheetName, String providerNo, Integer demographicNo) {
     	//flowsheetName is the out-of-the-box name,
-        FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean("flowSheetUserCreatedDao");
+        FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean(FlowSheetUserCreatedDao.class);
 
         MeasurementFlowSheet m = null;
         FlowSheetUserCreated fsuc = null;
@@ -844,7 +844,7 @@ public class MeasurementTemplateFlowSheetConfig implements InitializingBean {
     }
 
     public MeasurementFlowSheet getFlowSheetByName(String flowsheetName, String providerNo, Integer demographicNo) {
-    	FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean("flowSheetUserCreatedDao");
+    	FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean(FlowSheetUserCreatedDao.class);
 
         MeasurementFlowSheet m = null;
         FlowSheetUserCreated fsuc = null;

@@ -59,7 +59,7 @@ import java.util.*;
 
 public class RenalAction extends DispatchAction {
 
-	private DxresearchDAO dxResearchDao = (DxresearchDAO)SpringUtils.getBean("DxresearchDAO");
+	private DxresearchDAO dxResearchDao = (DxresearchDAO)SpringUtils.getBean(DxresearchDAO.class);
 	private MeasurementDao measurementDao = SpringUtils.getBean(MeasurementDao.class);
 	private DemographicDao demographicDao = SpringUtils.getBean(DemographicDao.class);
 	private ProviderDao providerDao = SpringUtils.getBean(ProviderDao.class);
@@ -351,7 +351,7 @@ public class RenalAction extends DispatchAction {
 		        
 		//        final String letter=VelocityUtils.velocityEvaluate(velocityContext, template);
 		       
-		//        JavaMailSender mailSender = (JavaMailSender) SpringUtils.getBean("mailSender");
+		//        JavaMailSender mailSender = (JavaMailSender) SpringUtils.getBean(MailSender.class);
 		       
 		//        MimeMessagePreparator preparator = new MimeMessagePreparator() {
 		//            public void prepare(MimeMessage mimeMessage) throws Exception {

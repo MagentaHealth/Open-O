@@ -52,7 +52,7 @@ import java.util.Vector;
 
 public class EctDisplayMeasurementsAction extends EctDisplayAction {
 	private static final String cmd = "measurements";
-	FlowsheetDao flowsheetDao = (FlowsheetDao) SpringUtils.getBean("flowsheetDao");
+	FlowsheetDao flowsheetDao = (FlowsheetDao) SpringUtils.getBean(FlowsheetDao.class);
 	Logger logger = MiscUtils.getLogger();
 
 	public boolean getInfo(EctSessionBean bean, HttpServletRequest request, NavBarDisplayDAO Dao, MessageResources messages) {
@@ -183,7 +183,7 @@ public class EctDisplayMeasurementsAction extends EctDisplayAction {
 */			
 			//next we add program based flowsheets
 			List<String> programs = new ArrayList<String>();
-			AdmissionDao admissionDao = (AdmissionDao) SpringUtils.getBean("admissionDao");
+			AdmissionDao admissionDao = (AdmissionDao) SpringUtils.getBean(AdmissionDao.class);
 			List<Admission> admissions = admissionDao.getCurrentAdmissions(Integer.parseInt(bean.demographicNo));
 			for (Admission admission : admissions) {
 				programs.add(String.valueOf(admission.getProgramId()));

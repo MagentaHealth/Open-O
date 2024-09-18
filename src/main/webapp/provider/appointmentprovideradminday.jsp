@@ -451,7 +451,7 @@
     <c:set var="masterLinkRights" value="true" scope="page" />
 </security:oscarSec>
 
-<html:html locale="true">
+<html:html lang="en">
     <head>
         <title><%=WordUtils.capitalize(userlastname + ", " + org.apache.commons.lang.StringUtils.substring(userfirstname, 0, 1)) + "-"%><bean:message
                 key="provider.appointmentProviderAdminDay.title"/></title>

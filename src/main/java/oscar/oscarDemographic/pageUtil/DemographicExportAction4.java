@@ -191,16 +191,16 @@ import oscar.util.UtilDateUtilities;
 public class DemographicExportAction4 extends Action {
 
 	private static final Logger logger = MiscUtils.getLogger();
-	private static final DemographicArchiveDao demoArchiveDao = (DemographicArchiveDao) SpringUtils.getBean("demographicArchiveDao");
-	private static final DemographicContactDao contactDao = (DemographicContactDao) SpringUtils.getBean("demographicContactDao");
-	private static final PartialDateDao partialDateDao = (PartialDateDao) SpringUtils.getBean("partialDateDao");
-	private static final HRMDocumentToDemographicDao hrmDocToDemographicDao = (HRMDocumentToDemographicDao) SpringUtils.getBean("HRMDocumentToDemographicDao");
-	private static final HRMDocumentDao hrmDocDao = (HRMDocumentDao) SpringUtils.getBean("HRMDocumentDao");
-	private static final HRMDocumentCommentDao hrmDocCommentDao = (HRMDocumentCommentDao) SpringUtils.getBean("HRMDocumentCommentDao");
-	private static final CaseManagementManager cmm = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
-	private static final Hl7TextInfoDao hl7TxtInfoDao = (Hl7TextInfoDao)SpringUtils.getBean("hl7TextInfoDao");
-	private static final Hl7TextMessageDao hl7TxtMssgDao = (Hl7TextMessageDao)SpringUtils.getBean("hl7TextMessageDao");
-	private static final DemographicExtDao demographicExtDao = (DemographicExtDao) SpringUtils.getBean("demographicExtDao");
+	private static final DemographicArchiveDao demoArchiveDao = (DemographicArchiveDao) SpringUtils.getBean(DemographicArchiveDao.class);
+	private static final DemographicContactDao contactDao = (DemographicContactDao) SpringUtils.getBean(DemographicContactDao.class);
+	private static final PartialDateDao partialDateDao = (PartialDateDao) SpringUtils.getBean(PartialDateDao.class);
+	private static final HRMDocumentToDemographicDao hrmDocToDemographicDao = (HRMDocumentToDemographicDao) SpringUtils.getBean(HRMDocumentToDemographicDao.class);
+	private static final HRMDocumentDao hrmDocDao = (HRMDocumentDao) SpringUtils.getBean(HRMDocumentDao.class);
+	private static final HRMDocumentCommentDao hrmDocCommentDao = (HRMDocumentCommentDao) SpringUtils.getBean(HRMDocumentCommentDao.class);
+	private static final CaseManagementManager cmm = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
+	private static final Hl7TextInfoDao hl7TxtInfoDao = (Hl7TextInfoDao)SpringUtils.getBean(Hl7TextInfoDao.class);
+	private static final Hl7TextMessageDao hl7TxtMssgDao = (Hl7TextMessageDao)SpringUtils.getBean(Hl7TextMessageDao.class);
+	private static final DemographicExtDao demographicExtDao = (DemographicExtDao) SpringUtils.getBean(DemographicExtDao.class);
 	private static final String PATIENTID = "Patient";
 	private static final String ALERT = "Alert";
 	private static final String ALLERGY = "Allergy";
@@ -1555,7 +1555,7 @@ public class DemographicExportAction4 extends Action {
 					}
 					addOneEntry(MEDICATION);
 
-					DrugReasonDao drugReasonDao = (DrugReasonDao) SpringUtils.getBean("drugReasonDao");
+					DrugReasonDao drugReasonDao = (DrugReasonDao) SpringUtils.getBean(DrugReasonDao.class);
 					List<DrugReason> drugReasons = drugReasonDao.getReasonsForDrugID(arr[p].getDrugId(), true);
 					if (drugReasons.size()>0 && StringUtils.filled(drugReasons.get(0).getCode()))
 						medi.setProblemCode(drugReasons.get(0).getCode());

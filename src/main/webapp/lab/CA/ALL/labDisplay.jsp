@@ -101,7 +101,7 @@ if(providerNo == null) {
 }
 
 
-UserPropertyDAO userPropertyDAO = (UserPropertyDAO)SpringUtils.getBean("UserPropertyDAO");
+UserPropertyDAO userPropertyDAO = (UserPropertyDAO)SpringUtils.getBean(UserPropertyDAO.class);
 UserProperty uProp = userPropertyDAO.getProp(providerNo, UserProperty.LAB_ACK_COMMENT);
 boolean skipComment = false;
 if( uProp != null && uProp.getValue().equalsIgnoreCase("yes")) {
@@ -127,8 +127,8 @@ if(getRecallTicklerAssignee.getValue().equals("yes")){
 
 
 //Need date lab was received by OSCAR
-Hl7TextMessageDao hl7TxtMsgDao = (Hl7TextMessageDao)SpringUtils.getBean("hl7TextMessageDao");
-MeasurementMapDao measurementMapDao = (MeasurementMapDao) SpringUtils.getBean("measurementMapDao");
+Hl7TextMessageDao hl7TxtMsgDao = (Hl7TextMessageDao)SpringUtils.getBean(Hl7TextMessageDao.class);
+MeasurementMapDao measurementMapDao = (MeasurementMapDao) SpringUtils.getBean(MeasurementMapDao.class);
 Hl7TextMessage hl7TextMessage = hl7TxtMsgDao.find(Integer.parseInt(segmentID));
 
 String dateLabReceived = "n/a";
@@ -248,7 +248,7 @@ if (request.getAttribute("printError") != null && (Boolean) request.getAttribute
 
 
 	String annotation_display = org.oscarehr.casemgmt.model.CaseManagementNoteLink.DISP_LABTEST;
-	CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
+	CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
 
 %>
 
@@ -690,7 +690,7 @@ input[type=button], button, input[id^='acklabel_']{ font-size:12px !important;pa
         		    }
         		}
         		
-        		Hl7TextInfoDao hl7TextInfoDao = (Hl7TextInfoDao) SpringUtils.getBean("hl7TextInfoDao");
+        		Hl7TextInfoDao hl7TextInfoDao = (Hl7TextInfoDao) SpringUtils.getBean(Hl7TextInfoDao.class);
         		int lab_no = Integer.parseInt(segmentID);
         		Hl7TextInfo hl7Lab = hl7TextInfoDao.findLabId(lab_no);
         		String label = "";

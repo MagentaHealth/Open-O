@@ -129,7 +129,7 @@ if (heading != null){
 
         <%
 	        List<Drug> prescriptDrugs = null;
-            CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
+            CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
 
             if(showall) {
             	prescriptDrugs = caseManagementManager.getPrescriptions(loggedInInfo, patient.getDemographicNo(), showall);
@@ -138,7 +138,7 @@ if (heading != null){
                 prescriptDrugs = caseManagementManager.getCurrentPrescriptions(patient.getDemographicNo());
             }
 
-            DrugReasonDao drugReasonDao  = (DrugReasonDao) SpringUtils.getBean("drugReasonDao");
+            DrugReasonDao drugReasonDao  = (DrugReasonDao) SpringUtils.getBean(DrugReasonDao.class);
 			
             DrugDispensingManager drugDispensingManager = SpringUtils.getBean(DrugDispensingManager.class);
             List<String> reRxDrugList=bean.getReRxDrugIdList();

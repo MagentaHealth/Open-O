@@ -87,14 +87,14 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 
 	private static final Integer MAX_INVOICES = 20;
 	private static Logger logger = MiscUtils.getLogger();
-	private CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
-	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean("IssueDAO");
-	private CaseManagementNoteDAO caseManagementNoteDao = (CaseManagementNoteDAO) SpringUtils.getBean("caseManagementNoteDAO");
-	private SecUserRoleDao secUserRoleDao = (SecUserRoleDao) SpringUtils.getBean("secUserRoleDao");
-	private GroupNoteDao groupNoteDao = (GroupNoteDao) SpringUtils.getBean("groupNoteDao");
-	private DemographicDao demographicDao = (DemographicDao) SpringUtils.getBean("demographicDao");
-	private CaseManagementIssueNotesDao cmeIssueNotesDao = (CaseManagementIssueNotesDao) SpringUtils.getBean("caseManagementIssueNotesDao");
-	private BillingONCHeader1Dao billingONCHeader1Dao = (BillingONCHeader1Dao) SpringUtils.getBean("billingONCHeader1Dao");
+	private CaseManagementManager caseManagementManager = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
+	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean(IssueDAO.class);
+	private CaseManagementNoteDAO caseManagementNoteDao = (CaseManagementNoteDAO) SpringUtils.getBean(CaseManagementNoteDAO.class);
+	private SecUserRoleDao secUserRoleDao = (SecUserRoleDao) SpringUtils.getBean(SecUserRoleDao.class);
+	private GroupNoteDao groupNoteDao = (GroupNoteDao) SpringUtils.getBean(GroupNoteDao.class);
+	private DemographicDao demographicDao = (DemographicDao) SpringUtils.getBean(DemographicDao.class);
+	private CaseManagementIssueNotesDao cmeIssueNotesDao = (CaseManagementIssueNotesDao) SpringUtils.getBean(CaseManagementIssueNotesDao.class);
+	private BillingONCHeader1Dao billingONCHeader1Dao = (BillingONCHeader1Dao) SpringUtils.getBean(BillingONCHeader1Dao.class);
 	private NoteService noteService = SpringUtils.getBean(NoteService.class);
 	private TicklerManager ticklerManager = SpringUtils.getBean(TicklerManager.class);
 
@@ -337,7 +337,7 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 			request.setAttribute("teamMembers", teamMembers);
 
 			/* prepare new form list for patient */
-			EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean("encounterFormDao");
+			EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean(EncounterFormDao.class);
 			se.setAttribute("casemgmt_newFormBeans", encounterFormDao.findAll());
 
 			/* prepare messenger list */
@@ -1518,7 +1518,7 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 	}
 
 	public ActionForward run_macro_script(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		MacroDao macroDao = (MacroDao) SpringUtils.getBean("MacroDAO");
+		MacroDao macroDao = (MacroDao) SpringUtils.getBean(MacroDao.class);
 		Macro macro = macroDao.find(Integer.parseInt(request.getParameter("id")));
 		logger.info("loaded macro " + macro.getLabel());
 		StringBuilder sb = new StringBuilder();
@@ -1557,7 +1557,7 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 	public ActionForward run_macro(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoggedInInfo loggedInInfo=LoggedInInfo.getLoggedInInfoFromSession(request);
 
-		MacroDao macroDao = (MacroDao) SpringUtils.getBean("MacroDAO");
+		MacroDao macroDao = (MacroDao) SpringUtils.getBean(MacroDao.class);
 		Macro macro = macroDao.find(Integer.parseInt(request.getParameter("id")));
 		logger.info("loaded macro " + macro.getLabel());
 
@@ -1768,7 +1768,7 @@ public class CaseManagementViewAction extends BaseCaseManagementViewAction {
 	}
 
 	public static CaseManagementNote getLatestCppNote(String demographicNo, long issueId, int appointmentNo, boolean filterByAppointment) {
-		CaseManagementManager caseManagementMgr = (CaseManagementManager) SpringUtils.getBean("caseManagementManager");
+		CaseManagementManager caseManagementMgr = (CaseManagementManager) SpringUtils.getBean(CaseManagementManager.class);
 		Collection<CaseManagementNote> notes = caseManagementMgr.getActiveNotes(demographicNo, new String[] { String.valueOf(issueId) });
 		List<CaseManagementNote> filteredNotes = new ArrayList<CaseManagementNote>();
 

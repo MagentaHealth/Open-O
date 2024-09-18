@@ -39,7 +39,7 @@
     String providerNo = (String) session.getAttribute("user");
     String temp = "diab3";
 
-    AllergyDao allergyDao = (AllergyDao)SpringUtils.getBean("allergyDao");
+    AllergyDao allergyDao = (AllergyDao)SpringUtils.getBean(AllergyDao.class);
 %>
     <security:oscarSec roleName="<%=roleName$%>" objectName="_flowsheet" rights="r" reverse="<%=true%>">
         "You have no right to access this page!"

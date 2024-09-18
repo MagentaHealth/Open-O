@@ -62,8 +62,8 @@ import oscar.oscarEncounter.oscarMeasurements.util.TargetCondition;
 public class FlowSheetCustomAction extends DispatchAction {
     private static final Logger logger = MiscUtils.getLogger();
 
-    private FlowSheetCustomizationDao flowSheetCustomizationDao =  (FlowSheetCustomizationDao) SpringUtils.getBean("flowSheetCustomizationDao");
-    private FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean("flowSheetUserCreatedDao");
+    private FlowSheetCustomizationDao flowSheetCustomizationDao =  (FlowSheetCustomizationDao) SpringUtils.getBean(FlowSheetCustomizationDao.class);
+    private FlowSheetUserCreatedDao flowSheetUserCreatedDao = (FlowSheetUserCreatedDao) SpringUtils.getBean(FlowSheetUserCreatedDao.class);
     private SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
     
     public void setFlowSheetCustomizationDao(FlowSheetCustomizationDao flowSheetCustomizationDao) {

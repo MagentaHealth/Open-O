@@ -44,9 +44,9 @@
 	String[] measurements = request.getParameterValues("measurement");
 	String temp = request.getParameter("template");
 
-	FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) SpringUtils.getBean("flowSheetCustomizationDao");
-	ValidationsDao validationsDao = (ValidationsDao) SpringUtils.getBean("validationsDao");
-	MeasurementTemplateFlowSheetConfig templateConfig = MeasurementTemplateFlowSheetConfig.getInstance();
+  FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) SpringUtils.getBean(FlowSheetCustomizationDao.class);
+  ValidationsDao validationsDao = (ValidationsDao) SpringUtils.getBean(ValidationsDao.class);
+  MeasurementTemplateFlowSheetConfig templateConfig = MeasurementTemplateFlowSheetConfig.getInstance();
 
 
 	MeasurementFlowSheet mFlowsheet = templateConfig.getFlowSheet(temp, LoggedInInfo.getLoggedInInfoFromSession(request).getLoggedInProviderNo(), Integer.parseInt(demographic_no));
@@ -68,7 +68,7 @@
 %>
 
 
-<html:html locale="true">
+<html:html lang="en">
 
 	<head>
 		<title>

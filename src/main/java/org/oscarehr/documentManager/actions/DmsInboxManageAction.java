@@ -70,8 +70,8 @@ public class DmsInboxManageAction extends DispatchAction {
 	private ProviderInboxRoutingDao providerInboxRoutingDAO = null;
 	private QueueDocumentLinkDao queueDocumentLinkDAO = null;
 	private SecObjectNameDao secObjectNameDao = null;
-	private SecUserRoleDao secUserRoleDao = (SecUserRoleDao) SpringUtils.getBean("secUserRoleDao");
-	private QueueDao queueDAO = (QueueDao) SpringUtils.getBean("queueDao");
+	private SecUserRoleDao secUserRoleDao = (SecUserRoleDao) SpringUtils.getBean(SecUserRoleDao.class);
+	private QueueDao queueDAO = (QueueDao) SpringUtils.getBean(QueueDao.class);
 
 	public void setProviderInboxRoutingDAO(ProviderInboxRoutingDao providerInboxRoutingDAO) {
 		this.providerInboxRoutingDAO = providerInboxRoutingDAO;
@@ -351,7 +351,7 @@ public class DmsInboxManageAction extends DispatchAction {
 			docQueue.put(i.toString(), n.toString());
 		}
 
-		InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean("inboxResultsDao");
+		InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean(InboxResultsDao.class);
 		String patientFirstName = StringEscapeUtils.escapeSql(request.getParameter("fname"));
 		String patientLastName = StringEscapeUtils.escapeSql(request.getParameter("lname"));
 		String patientHealthNumber = StringEscapeUtils.escapeSql(request.getParameter("hnum"));
@@ -601,7 +601,7 @@ public class DmsInboxManageAction extends DispatchAction {
 			String qn = request.getParameter("newQueueName");
 			qn = qn.trim();
 			if (qn != null && qn.length() > 0) {
-				QueueDao queueDao = (QueueDao) SpringUtils.getBean("queueDao");
+				QueueDao queueDao = (QueueDao) SpringUtils.getBean(QueueDao.class);
 				success = queueDao.addNewQueue(qn);
 				addQueueSecObjectName(qn, queueDao.getLastId());
 			}
@@ -737,7 +737,7 @@ public class DmsInboxManageAction extends DispatchAction {
 		HashMap<Integer, List<Integer>> queueDocNos = new HashMap<Integer, List<Integer>>();
 		HashMap<Integer, String> docType = new HashMap<Integer, String>();
 		HashMap<Integer, List<Integer>> patientDocs = new HashMap<Integer, List<Integer>>();
-		DocumentDao documentDao = (DocumentDao) SpringUtils.getBean("documentDao");
+		DocumentDao documentDao = (DocumentDao) SpringUtils.getBean(DocumentDao.class);
 		Demographic demo = new Demographic();
 		List<Integer> docsWithPatient = new ArrayList<Integer>();
 		HashMap<Integer, String> patientIdNames = new HashMap<Integer, String>();// lbData.patientName = demo.getLastName()+ ", "+demo.getFirstName();

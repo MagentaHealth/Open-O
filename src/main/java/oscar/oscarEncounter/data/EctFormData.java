@@ -58,7 +58,7 @@ import oscar.util.SqlUtils;
 public class EctFormData {
 
 	private static Logger logger = MiscUtils.getLogger();
-	private static EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean("encounterFormDao");
+	private static EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean(EncounterFormDao.class);
 	
 	public static final String DATE_FORMAT = "dd-MM-yyyy";
 	public static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
@@ -114,7 +114,7 @@ public class EctFormData {
 
 	public static ArrayList<PatientForm> getGroupedPatientFormsFromAllTables(Integer demographicId) {
 		// grab all of the forms
-		EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean("encounterFormDao");
+		EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean(EncounterFormDao.class);
 		List<EncounterForm> encounterForms = encounterFormDao.findAll();
 		Collections.sort(encounterForms, EncounterForm.BC_FIRST_COMPARATOR);
 
@@ -173,7 +173,7 @@ public class EctFormData {
 
 	public static ArrayList<PatientForm> getAllPatientFormsFromAllTables(Integer demographicId) {
 		// grab all of the forms
-		EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean("encounterFormDao");
+		EncounterFormDao encounterFormDao = (EncounterFormDao) SpringUtils.getBean(EncounterFormDao.class);
 		List<EncounterForm> encounterForms = encounterFormDao.findAll();
 		Collections.sort(encounterForms, EncounterForm.BC_FIRST_COMPARATOR);
 

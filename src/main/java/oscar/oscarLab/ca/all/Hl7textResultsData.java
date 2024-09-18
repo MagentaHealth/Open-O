@@ -70,7 +70,7 @@ import oscar.util.UtilDateUtilities;
 public class Hl7textResultsData {
 
 	private static Logger logger = MiscUtils.getLogger();
-	private static MeasurementsDeletedDao measurementsDeletedDao = (MeasurementsDeletedDao) SpringUtils.getBean("measurementsDeletedDao");
+	private static MeasurementsDeletedDao measurementsDeletedDao = (MeasurementsDeletedDao) SpringUtils.getBean(MeasurementsDeletedDao.class);
 	private static MeasurementDao measurementDao = SpringUtils.getBean(MeasurementDao.class);
 	private static MeasurementsExtDao measurementsExtDao = SpringUtils.getBean(MeasurementsExtDao.class);
 	private static MeasurementMapDao measurementMapDao = SpringUtils.getBean(MeasurementMapDao.class);

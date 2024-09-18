@@ -98,7 +98,7 @@ if( outcome !=null){
 
 <%
 	List<Demographic> demoList = null;  //demographicDao.getDemographicByProvider( "55");
-	DemographicDao demographicDao = (DemographicDao)SpringUtils.getBean("demographicDao");
+	DemographicDao demographicDao = (DemographicDao)SpringUtils.getBean(DemographicDao.class);
 
 	String dboperation = request.getParameter("dboperation");
 	String keyword=request.getParameter("keyword");

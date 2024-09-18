@@ -65,7 +65,7 @@
 	}
 
 %>
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <script src="<%= request.getContextPath() %>/js/global.js"></script>
 <title>Manage Flowsheets</title>

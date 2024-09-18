@@ -65,7 +65,7 @@
 	pageContext.setAttribute("cppPreferences", cppPreferences, PageContext.PAGE_SCOPE);
 %>
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 <head>
 	<title>
 		Encounter

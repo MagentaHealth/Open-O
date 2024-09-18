@@ -671,8 +671,8 @@ public class NotesService extends AbstractServiceImpl {
 		cpp = copyNote2cpp(cpp, note.getNote(), note.getSummaryCode());
 		}
 		
-		ProgramManager programManager = (ProgramManager) SpringUtils.getBean("programManager");
-		AdmissionManager admissionManager = (AdmissionManager) SpringUtils.getBean("admissionManager");
+		ProgramManager programManager = (ProgramManager) SpringUtils.getBean(ProgramManager.class);
+		AdmissionManager admissionManager = (AdmissionManager) SpringUtils.getBean(AdmissionManager.class);
 
 		String role = null;
 		String team = null;
@@ -930,7 +930,7 @@ public class NotesService extends AbstractServiceImpl {
 		long newNoteId =  Long.valueOf(note.getNoteId());
 		
 		logger.debug("ISSUES LIST START for note " + newNoteId);
-		CaseManagementIssueNotesDao cmeIssueNotesDao = (CaseManagementIssueNotesDao) SpringUtils.getBean("caseManagementIssueNotesDao");
+		CaseManagementIssueNotesDao cmeIssueNotesDao = (CaseManagementIssueNotesDao) SpringUtils.getBean(CaseManagementIssueNotesDao.class);
 		List<CaseManagementIssue> issuesList = cmeIssueNotesDao.getNoteIssues(note.getNoteId());
 		for (CaseManagementIssue issueItem : issuesList) {
 			logger.debug("ISSUES LIST " + issueItem + " for note " + newNoteId);
@@ -1681,7 +1681,7 @@ public class NotesService extends AbstractServiceImpl {
 		link.setTableId(ticklerId.longValue());
 		link.setTableName(CaseManagementNoteLink.TICKLER);
 		
-		CaseManagementNoteLinkDAO caseManagementNoteLinkDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean("CaseManagementNoteLinkDAO");
+		CaseManagementNoteLinkDAO caseManagementNoteLinkDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean(CaseManagementNoteLinkDAO.class);
 		caseManagementNoteLinkDao.save(link);
 		
 		

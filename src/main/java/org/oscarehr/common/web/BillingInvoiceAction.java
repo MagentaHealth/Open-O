@@ -130,7 +130,7 @@ public class BillingInvoiceAction extends DispatchAction {
         // String actionResult = "failure";
         
         // if (invoiceNo != null) {
-        //     BillingONManager billingManager = (BillingONManager) SpringUtils.getBean("billingONManager");
+        //     BillingONManager billingManager = (BillingONManager) SpringUtils.getBean(BillingONManager.class);
         //     billingManager.sendInvoiceEmailNotification(invoiceNo, locale);
         //     billingManager.addEmailedBillingComment(invoiceNo, locale); 
         //     actionResult = "success";
@@ -159,7 +159,7 @@ public class BillingInvoiceAction extends DispatchAction {
         // if (invoiceNos != null) {
         //     for (String invoiceNoStr : invoiceNos) {
         //         Integer invoiceNo = Integer.parseInt(invoiceNoStr);
-        //         BillingONManager billingManager = (BillingONManager) SpringUtils.getBean("billingONManager");
+        //         BillingONManager billingManager = (BillingONManager) SpringUtils.getBean(BillingONManager.class);
         //         billingManager.sendInvoiceEmailNotification(invoiceNo, locale);
         //         billingManager.addEmailedBillingComment(invoiceNo, locale);               
         //     }
@@ -178,7 +178,7 @@ public class BillingInvoiceAction extends DispatchAction {
             PdfRecordPrinter printer = new PdfRecordPrinter(os);                           
             printer.printBillingInvoice(invoiceNo, locale);
 
-            BillingONManager billingManager = (BillingONManager) SpringUtils.getBean("billingONManager");
+            BillingONManager billingManager = (BillingONManager) SpringUtils.getBean(BillingONManager.class);
             billingManager.addPrintedBillingComment(invoiceNo, locale);
             bResult = true;          
         }

@@ -23,7 +23,6 @@ public class GetTypeListEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testGet_Type_List_With_Valid_MOHID_SUCCESS() {
         System.out.println("--------------- testGet_Type_List_With_Valid_MOHID_SUCCESS ---------------\n" + "Actual Results:");
         TypeListResult typeListData = null;
@@ -45,7 +44,6 @@ public class GetTypeListEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated, "You’re triggering all expected logic here. Please proceed."
      */
     @Test
-    @Ignore
     public void testGet_Type_List_With_Blank_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testGet_Type_List_With_Blank_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
         edtDelegate = newDelegate("");
@@ -65,7 +63,6 @@ public class GetTypeListEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated, "You’re triggering all expected logic here. Please proceed."
      */
     @Test
-    @Ignore
     public void testGet_Type_List_With_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testGet_Type_List_With_Blank_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
         edtDelegate = newDelegate("999999");

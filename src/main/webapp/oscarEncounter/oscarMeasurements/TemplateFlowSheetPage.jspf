@@ -107,9 +107,9 @@
     boolean dsProblems = false;
 
 
-    FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) SpringUtils.getBean("flowSheetCustomizationDao");
-    FlowSheetDrugDao flowSheetDrugDao = (FlowSheetDrugDao) SpringUtils.getBean("flowSheetDrugDao");
-	FlowSheetDxDao flowSheetDxDao = (FlowSheetDxDao) SpringUtils.getBean("flowSheetDxDao");
+    FlowSheetCustomizationDao flowSheetCustomizationDao = (FlowSheetCustomizationDao) SpringUtils.getBean(FlowSheetCustomizationDao.class);
+    FlowSheetDrugDao flowSheetDrugDao = (FlowSheetDrugDao) SpringUtils.getBean(FlowSheetDrugDao.class);
+	FlowSheetDxDao flowSheetDxDao = (FlowSheetDxDao) SpringUtils.getBean(FlowSheetDxDao.class);
 
     MeasurementTemplateFlowSheetConfig templateConfig = MeasurementTemplateFlowSheetConfig.getInstance();
 
@@ -153,7 +153,7 @@
 
 %>
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <title><%=flowSheet%> - <oscar:nameage demographicNo="<%=demographic_no%>"/></title><!--I18n-->

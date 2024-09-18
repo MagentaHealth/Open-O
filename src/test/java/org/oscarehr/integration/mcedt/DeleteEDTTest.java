@@ -30,7 +30,6 @@ public class DeleteEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testDelete_Uploaded_Claim_File_SUCCESS() {
         System.out.println("--------------- testDelete_Uploaded_Claim_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -63,7 +62,6 @@ public class DeleteEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDelete_Submited_Claim_File_FAILED_EEDTS0057() {
         System.out.println("--------------- testDelete_Submited_Claim_File_FAILED_EEDTS0057 ---------------\n" + "Actual Results:");
 
@@ -97,7 +95,6 @@ public class DeleteEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDelete_Downloadable_Batch_Edit_File_FAILED_EEDTS0057() {
         System.out.println("--------------- testDelete_Downloadable_Batch_Edit_File_FAILED_EEDTS0057 ---------------\n" + "Actual Results:");
 
@@ -131,7 +128,6 @@ public class DeleteEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDelete_Uploaded_Claim_File_With_Different_MOHID_FAILED_EEDTS0058() {
         System.out.println("--------------- testDelete_Uploaded_Claim_File_With_Different_MOHID_FAILED_EEDTS0058 ---------------\n" + "Actual Results:");
 
@@ -170,7 +166,6 @@ public class DeleteEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated, "You’re triggering all expected logic here. Please proceed."
      */
     @Test
-    @Ignore
     public void testDelete_Uploaded_Claim_File_With_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testDelete_Uploaded_Claim_File_With_Invalid_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
 
@@ -205,7 +200,6 @@ public class DeleteEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testDelete_Uploaded_Claim_File_With_Invalid_Resource_Id_FAILED_EEDTS0056() {
         System.out.println("--------------- testDelete_Uploaded_Claim_File_With_Invalid_Resource_Id_FAILED_EEDTS0056 ---------------\n" + "Actual Results:");
 
@@ -235,7 +229,6 @@ public class DeleteEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testDelete_Uploaded_Claim_File_With_Invalid_Resource_Id_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testDelete_Uploaded_Claim_File_With_Invalid_Resource_Id_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -266,7 +259,6 @@ public class DeleteEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testDelete_With_Blank_Resource_ID_And_Blank_MOHID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testDelete_With_Blank_Resource_ID_And_Blank_MOHID_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 

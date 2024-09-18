@@ -75,11 +75,11 @@ public class AppointmentMailer implements MessageMailer{
     private Integer apptNo;
     private Demographic demographic;
     
-    OscarAppointmentDao dao=(OscarAppointmentDao)SpringUtils.getBean("oscarAppointmentDao");
+    OscarAppointmentDao dao=(OscarAppointmentDao)SpringUtils.getBean(OscarAppointmentDao.class);
 
     
     public AppointmentMailer(Integer apptNo, Demographic demographic) {
-        this.mailSender = (MailSender) SpringUtils.getBean("asyncMailSender");
+        this.mailSender = (MailSender) SpringUtils.getBean(MailSender.class);
         this.message = null;
         this.msgTextTemplate = new StringBuilder();
         this.apptNo = apptNo;
@@ -211,7 +211,7 @@ public class AppointmentMailer implements MessageMailer{
 
             Appointment a = dao.find(this.apptNo);
            
-            ClinicDAO clinicDao = (ClinicDAO)SpringUtils.getBean("clinicDAO");
+            ClinicDAO clinicDao = (ClinicDAO)SpringUtils.getBean(ClinicDAO.class);
             Clinic clinic = clinicDao.getClinic();
             
             if (a == null) {

@@ -83,13 +83,13 @@
 
 <jsp:useBean id="apptMainBean" class="oscar.AppointmentMainBean" scope="session" />
 <%!
-	ProfessionalSpecialistDao professionalSpecialistDao = (ProfessionalSpecialistDao) SpringUtils.getBean("professionalSpecialistDao");
+	ProfessionalSpecialistDao professionalSpecialistDao = (ProfessionalSpecialistDao) SpringUtils.getBean(ProfessionalSpecialistDao.class);
 	ProviderDao providerDao = SpringUtils.getBean(ProviderDao.class);
 	ProgramManager pm = SpringUtils.getBean(ProgramManager.class);
 	DemographicDao demographicDao = SpringUtils.getBean(DemographicDao.class);
 	WaitingListNameDao waitingListNameDao = SpringUtils.getBean(WaitingListNameDao.class);
-	EFormDao eformDao = (EFormDao)SpringUtils.getBean("EFormDao");
-	ProgramDao programDao = (ProgramDao)SpringUtils.getBean("programDao");
+	EFormDao eformDao = (EFormDao)SpringUtils.getBean(EFormDao.class);
+	ProgramDao programDao = (ProgramDao)SpringUtils.getBean(ProgramDao.class);
 	ProgramManager2 programManager2 = SpringUtils.getBean(ProgramManager2.class);
     String privateConsentEnabledProperty = OscarProperties.getInstance().getProperty("privateConsentEnabled");
     boolean privateConsentEnabled = privateConsentEnabledProperty != null && privateConsentEnabledProperty.equals("true");
@@ -156,7 +156,7 @@
 	String today = fmt.format(new Date());
 %>
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 	<script src="${pageContext.request.contextPath}/csrfguard"></script>
 <head>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>

@@ -33,7 +33,6 @@ public class UpdateEDTTest extends EDTBaseTest {
      */
 
     @Test
-    @Ignore
     public void testUpdate_Claim_File_SUCCESS() {
         System.out.println("--------------- testUpdate_Claim_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -67,7 +66,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_OBEC_File_SUCCESS() {
         System.out.println("--------------- testUpdate_OBEC_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -101,7 +99,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Stale_Dated_Claim_File_SUCCESS() {
         System.out.println("--------------- testUpdate_Stale_Dated_Claim_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -135,7 +132,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Five_Claim_File_SUCCESS() {
         System.out.println("--------------- testUpdate_Claim_File_SUCCESS ---------------\n" + "Actual Results:");
 
@@ -178,7 +174,6 @@ public class UpdateEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testUpdate_Six_Claim_Files_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testUpdate_Six_Claim_Files_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
         // Upload file(s) and get resource id(s)
@@ -217,7 +212,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Claim_File_With_Different_MOHID_FAILED_EEDTS0060() {
         System.out.println("--------------- testUpdate_Claim_File_With_Different_MOHID_FAILED_EEDTS0060 ---------------\n" + "Actual Results:");
 
@@ -253,7 +247,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Submited_File_FAILED_EEDTS0059() {
         System.out.println("--------------- testUpdate_Submited_File_FAILED_EEDTS0059 ---------------\n" + "Actual Results:");
 
@@ -288,7 +281,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Claim_File_With_Invalid_Resource_ID_FAILED_EEDTS0056() {
         System.out.println("--------------- testUpdate_Claim_File_With_Invalid_Resource_ID_FAILED_EEDTS0056 ---------------\n" + "Actual Results:");
 
@@ -318,7 +310,6 @@ public class UpdateEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated that "catching exceptions isn’t possible is fine here".
      */
     @Test
-    @Ignore
     public void testUpdate_Claim_File_With_Invalid_Resource_ID_FAILED_Rejected_By_Policy() {
         System.out.println("--------------- testUpdate_Claim_File_With_Invalid_Resource_ID_FAILED_Rejected_By_Policy ---------------\n" + "Actual Results:");
 
@@ -346,7 +337,6 @@ public class UpdateEDTTest extends EDTBaseTest {
      * This has been confirmed with the MOH MCEDT Conformance Testing team, who stated, "You’re triggering all expected logic here. Please proceed."
      */
     @Test
-    @Ignore
     public void testUpdate_Claim_File_With_Invalid_MOHID_FAILED_EEDTS0012() {
         System.out.println("--------------- testUpdate_Claim_File_With_Invalid_MOHID_FAILED_EEDTS0012 ---------------\n" + "Actual Results:");
 
@@ -380,7 +370,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Mal_Formed_Header_Claim_File_FAILED_ECLAM0002() {
         System.out.println("--------------- testUpdate_Mal_Formed_Header_Claim_File_FAILED_ECLAM0002 ---------------\n" + "Actual Results:");
 
@@ -413,7 +402,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Missing_Bill_Number_Claim_File_FAILED_ECLAM0003() {
         System.out.println("--------------- testUpdate_Missing_Bill_Number_Claim_File_FAILED_ECLAM0003 ---------------\n" + "Actual Results:");
 
@@ -446,7 +434,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Mismatched_Header_Count_Claim_File_FAILED_ECLAM0005() {
         System.out.println("--------------- testUpdate_Mismatched_Header_Count_Claim_File_FAILED_ECLAM0005 ---------------\n" + "Actual Results:");
 
@@ -479,7 +466,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Mismatched_Record_Count_Claim_File_FAILED_ECLAM0007() {
         System.out.println("--------------- testUpdate_Mismatched_Record_Count_Claim_File_FAILED_ECLAM0007 ---------------\n" + "Actual Results:");
 
@@ -512,7 +498,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Less_Than_79_Bytes_Claim_File_FAILED_ECLAM0008() {
         System.out.println("--------------- testUpdate_Less_Than_79_Bytes_Claim_File_FAILED_ECLAM0008 ---------------\n" + "Actual Results:");
 
@@ -545,7 +530,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Invalid_Transaction_Code_OBEC_File_FAILED_EOBEC0003() {
         System.out.println("--------------- testUpdate_Invalid_Transaction_Code_OBEC_File_FAILED_EOBEC0003 ---------------\n" + "Actual Results:");
 
@@ -578,7 +562,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Invalid_Length_Health_Number_OBEC_File_FAILED_EOBEC0004() {
         System.out.println("--------------- testUpdate_Invalid_Length_Health_Number_OBEC_File_FAILED_EOBEC0004 ---------------\n" + "Actual Results:");
 
@@ -611,7 +594,6 @@ public class UpdateEDTTest extends EDTBaseTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate_Non_Numeric_Health_Number_OBEC_File_FAILED_EOBEC0005() {
         System.out.println("--------------- testUpdate_Non_Numeric_Health_Number_OBEC_File_FAILED_EOBEC0005 ---------------\n" + "Actual Results:");
 

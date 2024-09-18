@@ -94,7 +94,7 @@ if(!authed) {
 
 <jsp:useBean id="displayServiceUtil" scope="request" class="oscar.oscarEncounter.oscarConsultationRequest.config.pageUtil.EctConDisplayServiceUtil" />
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 
 <%! boolean bMultisites=org.oscarehr.common.IsPropertiesOn.isMultisitesEnable(); %>
 
@@ -113,7 +113,7 @@ if(!authed) {
 	Vector<String> bgColor = new Vector<String>() ;
 	Vector<Integer> siteIds = new Vector<Integer>();
 	if (bMultisites) {
-		SiteDao siteDao = (SiteDao)WebApplicationContextUtils.getWebApplicationContext(application).getBean("siteDao");
+		SiteDao siteDao = (SiteDao)WebApplicationContextUtils.getWebApplicationContext(application).getBean(SiteDao.class);
 
 		List<Site> sites = siteDao.getActiveSitesByProviderNo((String) session.getAttribute("user"));
 		if (sites != null) {
@@ -1313,7 +1313,7 @@ for (Provider providerItem: prList) {
 <%	}
 }
 
-ProgramDao programDao = (ProgramDao) SpringUtils.getBean("programDao");
+ProgramDao programDao = (ProgramDao) SpringUtils.getBean(ProgramDao.class);
 List<Program> programList = programDao.getAllActivePrograms();
 
 if (OscarProperties.getInstance().getBooleanProperty("consultation_program_letterhead_enabled", "true")) {

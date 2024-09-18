@@ -145,7 +145,7 @@ Facility currentFacility = loggedInInfo73557.getCurrentFacility();
 String programId = (String)request.getSession().getAttribute("case_program_id");
 Program currentProgram = null;
 if (programId != null) {
-    ProgramDao programDao=(ProgramDao)SpringUtils.getBean("programDao");
+    ProgramDao programDao=(ProgramDao)SpringUtils.getBean(ProgramDao.class);
     currentProgram = programDao.getProgram(Integer.valueOf(programId));
 }
 if(currentFacility.isEnableEncounterTime() || (currentProgram != null && currentProgram.getEnableEncounterTime())) {  

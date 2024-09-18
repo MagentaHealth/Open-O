@@ -92,8 +92,8 @@
 	OscarProperties props = OscarProperties.getInstance();
 
 	List<Demographic> demoList = null;  
-	DemographicDao demographicDao = (DemographicDao)SpringUtils.getBean("demographicDao");
-	OscarLogDao oscarLogDao = (OscarLogDao)SpringUtils.getBean("oscarLogDao");
+	DemographicDao demographicDao = (DemographicDao)SpringUtils.getBean(DemographicDao.class);
+	OscarLogDao oscarLogDao = (OscarLogDao)SpringUtils.getBean(OscarLogDao.class);
 	String providerNo = loggedInInfo.getLoggedInProviderNo();
 	boolean outOfDomain = true;
 	if(OscarProperties.getInstance().getProperty("ModuleNames","").indexOf("Caisi") != -1) {

@@ -48,7 +48,7 @@ public class BaseCaseManagementEntryAction extends JSONAction {
 	protected CaseManagementManager caseManagementMgr;
 	protected ClientImageManager clientImageMgr;
     protected ProviderManager providerMgr;
-    protected DxDao dxDao = (DxDao) SpringUtils.getBean("dxDao");
+    protected DxDao dxDao = (DxDao) SpringUtils.getBean(DxDao.class);
 
     public void setProviderManager(ProviderManager pmgr ) {
         this.providerMgr = pmgr;

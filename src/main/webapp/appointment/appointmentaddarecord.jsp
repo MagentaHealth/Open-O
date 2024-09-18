@@ -54,7 +54,7 @@
 <%@page import="org.oscarehr.managers.DemographicManager" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>
 </head>
@@ -70,7 +70,7 @@
 
 LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
 
-OscarAppointmentDao appointmentDao = (OscarAppointmentDao)SpringUtils.getBean("oscarAppointmentDao");
+OscarAppointmentDao appointmentDao = (OscarAppointmentDao)SpringUtils.getBean(OscarAppointmentDao.class);
 WaitingListDao waitingListDao = SpringUtils.getBean(WaitingListDao.class);
 
 String createDateTime = UtilDateUtilities.DateToString(new java.util.Date(),"yyyy-MM-dd HH:mm:ss");

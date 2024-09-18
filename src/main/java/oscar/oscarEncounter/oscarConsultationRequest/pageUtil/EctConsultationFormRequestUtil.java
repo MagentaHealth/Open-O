@@ -103,7 +103,7 @@ public class EctConsultationFormRequestUtil {
 	
 	private final ConsultationRequestDao consultationRequestDao = SpringUtils.getBean(ConsultationRequestDao.class);
 	private final ConsultationRequestExtDao consultationRequestExtDao = SpringUtils.getBean(ConsultationRequestExtDao.class);
-	private final ConsultationServiceDao consultationServiceDao = SpringUtils.getBean(ConsultationServiceDao.class);
+	private final ConsultationServiceDao consultationServiceDao = (ConsultationServiceDao) SpringUtils.getBean(ConsultationServiceDao.class);
 	private final DemographicManager demographicManager = SpringUtils.getBean(DemographicManager.class);
 	private final ContactDao contactDao = SpringUtils.getBean(ContactDao.class);
 	private final FaxJobDao faxJobDao = SpringUtils.getBean(FaxJobDao.class);
@@ -214,6 +214,7 @@ public class EctConsultationFormRequestUtil {
 		boolean verdict = true;
 		getSpecailistsName(id);
 	
+
 		ConsultationRequest cr = consultationRequestDao.find(Integer.parseInt(id));
 		
 		if (cr != null) {
@@ -492,7 +493,7 @@ public class EctConsultationFormRequestUtil {
 	}
 
 	public String getClinicName() {
-		ClinicDAO clinicDao = (ClinicDAO) SpringUtils.getBean("clinicDAO");
+		ClinicDAO clinicDao = (ClinicDAO) SpringUtils.getBean(ClinicDAO.class);
 
 		String retval = new String();
 		Clinic clinic = clinicDao.getClinic();

@@ -292,8 +292,8 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 
 		String filename = "";
 		if(props.getProperty("multisites")!=null && "on".equalsIgnoreCase(props.getProperty("multisites"))) {
-			DocumentDao documentDao = (DocumentDao) SpringUtils.getBean("documentDao");
-			SiteDao siteDao = (SiteDao) SpringUtils.getBean("siteDao");
+			DocumentDao documentDao = (DocumentDao) SpringUtils.getBean(DocumentDao.class);
+			SiteDao siteDao = (SiteDao) SpringUtils.getBean(SiteDao.class);
 			Site site = siteDao.getById(Integer.valueOf(reqFrm.siteName));
 			if(site!=null) {
 				if(site.getSiteLogoId()!=null) {
@@ -692,7 +692,7 @@ public class ConsultationPDFCreator extends PdfPageEventHelper {
 	}
 
 	private PdfPTable createReferringPracAndMRPDetailTable(LoggedInInfo loggedInInfo) {
-		ProviderDao proDAO = (ProviderDao) SpringUtils.getBean("providerDao");
+		ProviderDao proDAO = (ProviderDao) SpringUtils.getBean(ProviderDao.class);
 		org.oscarehr.common.model.Provider pro = proDAO.getProvider(reqFrm.providerNo);
 		DemographicManager demographicManager = SpringUtils.getBean(DemographicManager.class);
 		Demographic demo = demographicManager.getDemographic( loggedInInfo, Integer.parseInt( reqFrm.demoNo ) );

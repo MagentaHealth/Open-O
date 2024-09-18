@@ -46,7 +46,7 @@
 	}
 %>
 <!DOCTYPE HTML>
-<html:html locale="true">
+<html:html lang="en">
 	<head>
 		<title><bean:message key="SelectPharmacy.title"/></title>
 		<html:base/>

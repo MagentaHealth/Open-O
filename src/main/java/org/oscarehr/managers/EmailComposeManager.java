@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.validator.EmailValidator;
 import org.apache.logging.log4j.Logger;
-import org.oscarehr.common.dao.EmailConfigDao;
-import org.oscarehr.common.dao.EmailLogDao;
+import org.oscarehr.common.dao.EmailConfigDaoImpl;
+import org.oscarehr.common.dao.EmailLogDaoImpl;
 import org.oscarehr.common.dao.UserPropertyDAO;
 import org.oscarehr.common.model.Consent;
 import org.oscarehr.common.model.ConsentType;
@@ -41,9 +41,9 @@ public class EmailComposeManager {
     private final Logger logger = MiscUtils.getLogger();
 
     @Autowired
-    private EmailConfigDao emailConfigDao;
+    private EmailConfigDaoImpl emailConfigDao;
     @Autowired
-    private EmailLogDao emailLogDao;
+    private EmailLogDaoImpl emailLogDao;
     @Autowired
     private UserPropertyDAO userPropertyDAO;
 

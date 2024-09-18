@@ -55,7 +55,7 @@ if(!authed) {
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.util.ArrayList" %>
 <%
-	BillingreferralDao billingReferralDao = (BillingreferralDao)SpringUtils.getBean("BillingreferralDAO");
+	BillingreferralDao billingReferralDao = (BillingreferralDao)SpringUtils.getBean(BillingreferralDAO.class);
 %>
 <%
 

@@ -1846,31 +1846,40 @@ show('classic');
 <hr>
 <span class="h2">1. <bean:message key="eFormGenerator.loadImage"/>:</span> <a onclick="show('Section1');"><bean:message key="eFormGenerator.expand"/></a>/<a onclick="hide('Section1');"><bean:message key="eFormGenerator.collapse"/></a>
 <div id="Section1">
- <p><select name="imageName" id="imageName">
-                 <option value=""><bean:message key="eFormGenerator.imageChooseSelect"/>...</option>
-                    <%
-                    /**
-                        this function/scriplet look in images directory and populate the selection
-                        so that the user can select which image they want to use for generating an eform
-                    */
-                    String imagePath = OscarProperties.getInstance().getProperty("eform_image");
-                    if (imagePath == null) {
-                        MiscUtils.getLogger().debug("Please provide a valid image path for eform_image in properties");
-                    }
-                    String[] fileINames = new File(imagePath).list();
-                    if (fileINames == null) {
-                        MiscUtils.getLogger().debug("Strange, no files found in the supplied eform_image directory");
-                    }
-                    Arrays.sort(fileINames);
-
-                    for (int i = 0; i < fileINames.length; i++) {  %>
-                       <option value="<%= fileINames[i] %>"  ><%= fileINames[i] %></option>
-
-                       <%
-                      }
-                     %>
-            </select> <bean:message key="eFormGenerator.page"/> <input type="text" name="page" id="page" style="width:30px" value="" readonly>
-        </p>
+	<p>
+		<select name="imageName" id="imageName">
+			<option value=""><bean:message key="eFormGenerator.imageChooseSelect"/>...</option>
+			<%
+				/**
+					This function/scriplet looks in the images directory and populates the selection
+					so that the user can select which image they want to use for generating an eform
+				*/
+				String imagePath = OscarProperties.getInstance().getProperty("eform_image");
+				if (imagePath == null) {
+					MiscUtils.getLogger().debug("Please provide a valid image path for eform_image in properties");
+				}
+	
+				// Fetch file names from the specified directory
+				String[] fileINames = new File(imagePath).list();
+				if (fileINames == null) {
+					MiscUtils.getLogger().debug("Strange, no files found in the supplied eform_image directory");
+					fileINames = new String[0]; // Initialize to an empty array to avoid NullPointerException
+				} else {
+					Arrays.sort(fileINames); // Sort only if fileINames is not null
+				}
+	
+				// Populate the dropdown options
+				for (int i = 0; i < fileINames.length; i++) {
+			%>
+					<option value="<%= fileINames[i] %>"><%= fileINames[i] %></option>
+			<%
+				}
+			%>
+		</select>
+		<bean:message key="eFormGenerator.page"/>
+		<input type="text" name="page" id="page" style="width:30px" value="" readonly>
+	</p>
+	
 
 	<!-- <p><b>Image Name:</b><input type="text" name="imageName" id="imageName"></p> -->
 	<p>	- <bean:message key="eFormGenerator.imageUploadPrompt"/> <bean:message key="eFormGenerator.imageUploadLink"/> </p>

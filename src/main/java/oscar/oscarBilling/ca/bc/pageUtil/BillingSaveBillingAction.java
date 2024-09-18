@@ -56,8 +56,8 @@ import java.util.Date;
 public class BillingSaveBillingAction extends Action {
 
     private static Logger log = MiscUtils.getLogger();
-    private AppointmentArchiveDao appointmentArchiveDao = (AppointmentArchiveDao)SpringUtils.getBean("appointmentArchiveDao");
-    private OscarAppointmentDao appointmentDao = (OscarAppointmentDao)SpringUtils.getBean("oscarAppointmentDao");
+    private AppointmentArchiveDao appointmentArchiveDao = (AppointmentArchiveDao)SpringUtils.getBean(AppointmentArchiveDao.class);
+    private OscarAppointmentDao appointmentDao = (OscarAppointmentDao)SpringUtils.getBean(OscarAppointmentDao.class);
 
     private BillingmasterDAO billingmasterDAO = SpringUtils.getBean(BillingmasterDAO.class);
 

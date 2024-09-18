@@ -72,7 +72,7 @@
 
 %>
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 	<title>BC Antenatal Record 2020 Part 1</title>

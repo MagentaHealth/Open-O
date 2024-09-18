@@ -23,9 +23,6 @@
  */
 package org.oscarehr.ws.rest.conversion;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.oscarehr.common.model.Demographic;
 import org.oscarehr.common.model.DemographicExt;
@@ -34,6 +31,9 @@ import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.ws.rest.to.model.AgeTo1;
 import org.oscarehr.ws.rest.to.model.DemographicExtTo1;
 import org.oscarehr.ws.rest.to.model.DemographicTo1;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DemographicConverter extends AbstractConverter<Demographic, DemographicTo1> {
 	

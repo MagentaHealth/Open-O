@@ -125,7 +125,7 @@ public class BillingONManager {
         //             }  
         //         }
                                         
-        //         BillingONService billingONService = (BillingONService) SpringUtils.getBean("billingONService");
+        //         BillingONService billingONService = (BillingONService) SpringUtils.getBean(BillingONService.class);
         //         BigDecimal bdBalance = billingONService.calculateBalanceOwing(invoiceNo);
                 
         //         //Compile email                    

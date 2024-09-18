@@ -122,8 +122,8 @@ if(!authed) {
 	OscarProperties oscarProps = OscarProperties.getInstance();
 	String privateConsentEnabledProperty = oscarProps.getProperty("privateConsentEnabled");
 	boolean privateConsentEnabled = (privateConsentEnabledProperty != null && privateConsentEnabledProperty.equals("true"));
-	ProfessionalSpecialistDao professionalSpecialistDao = (ProfessionalSpecialistDao) SpringUtils.getBean("professionalSpecialistDao");
-	DemographicCustDao demographicCustDao = (DemographicCustDao)SpringUtils.getBean("demographicCustDao");
+	ProfessionalSpecialistDao professionalSpecialistDao = (ProfessionalSpecialistDao) SpringUtils.getBean(ProfessionalSpecialistDao.class);
+	DemographicCustDao demographicCustDao = (DemographicCustDao)SpringUtils.getBean(DemographicCustDao.class);
 	DemographicDao demographicDao = SpringUtils.getBean(DemographicDao.class);
 	ProviderDao providerDao = SpringUtils.getBean(ProviderDao.class);
 	List<Provider> providers = providerDao.getActiveProviders();
@@ -144,7 +144,7 @@ if(!authed) {
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/oscar-tag.tld" prefix="oscar"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic"%>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/special_tag.tld" prefix="special" %>
 
 <c:set var="ctx" value="${ pageContext.request.contextPath }" />
@@ -249,7 +249,7 @@ if(!authed) {
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@ page import="org.owasp.encoder.Encode" %>
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <title><bean:message key="demographic.demographiceditdemographic.title" /></title>
@@ -1632,8 +1632,8 @@ if(oscarProps.getProperty("new_label_print") != null && oscarProps.getProperty("
 						<bean:message key="demographic.demographiceditdemographic.msgManageContacts"/><!--i18n--></a></b></h3>
 						<ul>
 						<%
-							ContactDao contactDao = (ContactDao)SpringUtils.getBean("contactDao");
-							DemographicContactDao dContactDao = (DemographicContactDao)SpringUtils.getBean("demographicContactDao");
+							ContactDao contactDao = (ContactDao)SpringUtils.getBean(ContactDao.class);
+							DemographicContactDao dContactDao = (DemographicContactDao)SpringUtils.getBean(DemographicContactDao.class);
 							List<DemographicContact> dContacts = dContactDao.findByDemographicNo(demographic.getDemographicNo());
 							dContacts = ContactAction.fillContactNames(dContacts);
 							for(DemographicContact dContact:dContacts) {

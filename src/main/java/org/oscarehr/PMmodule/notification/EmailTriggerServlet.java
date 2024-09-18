@@ -93,8 +93,8 @@ public class EmailTriggerServlet extends HttpServlet {
 			
 		// 	String[] programIdsStringSplit=programIdsString.split(",");
 			
-		// 	WaitListManager waitListManager=(WaitListManager) SpringUtils.getBean("waitListManager");
-		// 	programDao = (ProgramDao) SpringUtils.getBean("programDao");
+		// 	WaitListManager waitListManager=(WaitListManager) SpringUtils.getBean(WaitListManager.class);
+		// 	programDao = (ProgramDao) SpringUtils.getBean(ProgramDao.class);
 			
 		// 	for (String programIdString : programIdsStringSplit)
 		// 	{

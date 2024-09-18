@@ -1409,7 +1409,7 @@ public class EFormUtil {
 		cmNote.setSigned(true);
 		cmNote.setHistory("");
 
-		SecRoleDao secRoleDao = (SecRoleDao) SpringUtils.getBean("secRoleDao");
+		SecRoleDao secRoleDao = (SecRoleDao) SpringUtils.getBean(SecRoleDao.class);
 		SecRole doctorRole = secRoleDao.findByName("doctor");
 		cmNote.setReporter_caisi_role(doctorRole.getId().toString());
 

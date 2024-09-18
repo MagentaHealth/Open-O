@@ -137,7 +137,7 @@
     pageContext.setAttribute("clinicData", new ClinicData());
 %>
 
-<html:html locale="true">
+<html:html lang="en">
     <head>
         <title>Billing Settings</title>
         <script src="<%=request.getContextPath()%>/csrfguard" type="text/javascript"></script>

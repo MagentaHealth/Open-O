@@ -4,15 +4,15 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.oscarehr.common.dao.EReferAttachmentDao;
-import org.oscarehr.common.dao.EReferAttachmentDataDao;
+import org.oscarehr.common.dao.EReferAttachmentDaoImpl;
+import org.oscarehr.common.dao.EReferAttachmentDataDaoImpl;
 import org.oscarehr.common.model.EReferAttachment;
 import org.oscarehr.common.model.EReferAttachmentData;
 import org.oscarehr.util.SpringUtils;
 
 public class OceanEReferralAttachmentUtil {
-    private static EReferAttachmentDataDao eReferAttachmentDataDao = SpringUtils.getBean(EReferAttachmentDataDao.class);
-    private static EReferAttachmentDao eReferAttachmentDao = SpringUtils.getBean(EReferAttachmentDao.class);
+    private static EReferAttachmentDataDaoImpl eReferAttachmentDataDao = SpringUtils.getBean(EReferAttachmentDataDaoImpl.class);
+    private static EReferAttachmentDaoImpl eReferAttachmentDao = SpringUtils.getBean(EReferAttachmentDaoImpl.class);
 
     public static void detachOceanEReferralConsult(String docId, String type) {
         Calendar calendar = Calendar.getInstance();

@@ -91,10 +91,10 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 
 	private static Logger logger = MiscUtils.getLogger();
 
-	private CaseManagementNoteDAO caseManagementNoteDao = (CaseManagementNoteDAO) SpringUtils.getBean("caseManagementNoteDAO");
-	private CaseManagementIssueDAO caseManagementIssueDao = (CaseManagementIssueDAO) SpringUtils.getBean("caseManagementIssueDAO");
-	private CaseManagementNoteExtDAO caseManagementNoteExtDao = (CaseManagementNoteExtDAO) SpringUtils.getBean("CaseManagementNoteExtDAO");
-	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean("IssueDAO");
+	private CaseManagementNoteDAO caseManagementNoteDao = (CaseManagementNoteDAO) SpringUtils.getBean(CaseManagementNoteDAO.class);
+	private CaseManagementIssueDAO caseManagementIssueDao = (CaseManagementIssueDAO) SpringUtils.getBean(CaseManagementIssueDAO.class);
+	private CaseManagementNoteExtDAO caseManagementNoteExtDao = (CaseManagementNoteExtDAO) SpringUtils.getBean(CaseManagementNoteExtDAO.class);
+	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean(IssueDAO.class);
 	private CasemgmtNoteLockDao casemgmtNoteLockDao = SpringUtils.getBean(CasemgmtNoteLockDao.class);
 	private TicklerManager ticklerManager = SpringUtils.getBean(TicklerManager.class);
 
@@ -664,7 +664,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 				Date now = new Date();
 				ResourceBundle props = ResourceBundle.getBundle("oscarResources", Locale.ENGLISH);
 
-				ProviderDao providerDao = (ProviderDao) SpringUtils.getBean("providerDao");
+				ProviderDao providerDao = (ProviderDao) SpringUtils.getBean(ProviderDao.class);
 				String providerName = providerDao.getProviderName(providerNo);
 
 				String signature = "[" + props.getString("oscarEncounter.class.EctSaveEncounterAction.msgSigned") + " " + dt.format(now) + " " + props.getString("oscarEncounter.class.EctSaveEncounterAction.msgSigBy") + " " + providerName + "]";
@@ -672,7 +672,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 			}
 
 			if (request.getParameter("signAndExit") != null && request.getParameter("signAndExit").equalsIgnoreCase("true")) {
-				OscarAppointmentDao appointmentDao = (OscarAppointmentDao) SpringUtils.getBean("oscarAppointmentDao");
+				OscarAppointmentDao appointmentDao = (OscarAppointmentDao) SpringUtils.getBean(OscarAppointmentDao.class);
 				try {
 					Appointment appointment = appointmentDao.find(Integer.parseInt(appointmentNo));
 					if (appointment != null) {
@@ -690,8 +690,8 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		}
 
 		// Determines what program & role to assign the note to
-		ProgramProviderDAO programProviderDao = (ProgramProviderDAO) SpringUtils.getBean("programProviderDAO");
-		ProviderDefaultProgramDao defaultProgramDao = (ProviderDefaultProgramDao) SpringUtils.getBean("providerDefaultProgramDao");
+		ProgramProviderDAO programProviderDao = (ProgramProviderDAO) SpringUtils.getBean(ProgramProviderDAO.class);
+		ProviderDefaultProgramDao defaultProgramDao = (ProviderDefaultProgramDao) SpringUtils.getBean(ProviderDefaultProgramDao.class);
 		boolean programSet = false;
 
 		List<ProviderDefaultProgram> programs = defaultProgramDao.getProgramByProviderNo(providerNo);
@@ -838,8 +838,8 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 
 		WebApplicationContext ctx = this.getSpringContext();
 
-		ProgramManager programManager = (ProgramManager) ctx.getBean("programManager");
-		AdmissionManager admissionManager = (AdmissionManager) ctx.getBean("admissionManager");
+		ProgramManager programManager = (ProgramManager) ctx.getBean(ProgramManager.class);
+		AdmissionManager admissionManager = (AdmissionManager) ctx.getBean(AdmissionManager.class);
 
 		String role = null;
 		String team = null;
@@ -1703,8 +1703,8 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		note.setProgram_no(programId);
 
 		WebApplicationContext ctx = this.getSpringContext();
-		ProgramManager programManager = (ProgramManager) ctx.getBean("programManager");
-		AdmissionManager admissionManager = (AdmissionManager) ctx.getBean("admissionManager");
+		ProgramManager programManager = (ProgramManager) ctx.getBean(ProgramManager.class);
+		AdmissionManager admissionManager = (AdmissionManager) ctx.getBean(AdmissionManager.class);
 
 		String role = null;
 		try {
@@ -2877,7 +2877,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 	public ActionForward runMacro(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
 		CaseManagementEntryFormBean cform = (CaseManagementEntryFormBean) form;
-		MacroDao macroDao = (MacroDao) SpringUtils.getBean("macroDao");
+		MacroDao macroDao = (MacroDao) SpringUtils.getBean(MacroDao.class);
 		Macro macro = macroDao.find(Integer.parseInt(request.getParameter("macro.id")));
 		logger.debug("loaded macro " + macro.getLabel());
 		/*
@@ -2958,11 +2958,11 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 
 			// billing
 			if (macro.getBillingCodes() != null && macro.getBillingCodes().length() > 0) {
-				GstControlDao gstControlDao = (GstControlDao) SpringUtils.getBean("gstControlDao");
-				BillingServiceDao billingServiceDao = (BillingServiceDao) SpringUtils.getBean("billingServiceDao");
-				DemographicDao demographicDao = (DemographicDao) SpringUtils.getBean("demographicDao");
+				GstControlDao gstControlDao = (GstControlDao) SpringUtils.getBean(GstControlDao.class);
+				BillingServiceDao billingServiceDao = (BillingServiceDao) SpringUtils.getBean(BillingServiceDao.class);
+				DemographicDao demographicDao = (DemographicDao) SpringUtils.getBean(DemographicDao.class);
 				Provider provider = loggedInInfo.getLoggedInProvider();
-				OscarAppointmentDao apptDao = (OscarAppointmentDao) SpringUtils.getBean("oscarAppointmentDao");
+				OscarAppointmentDao apptDao = (OscarAppointmentDao) SpringUtils.getBean(OscarAppointmentDao.class);
 
 				Appointment appt = null;
 				if (cform.getAppointmentNo() != null && cform.getAppointmentNo().length() > 0 && !cform.getAppointmentDate().equals("0")) {
@@ -3393,7 +3393,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		link.setTableId(Long.parseLong(ticklerNo));
 		link.setTableName(CaseManagementNoteLink.TICKLER);
 
-		CaseManagementNoteLinkDAO caseManagementNoteLinkDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean("CaseManagementNoteLinkDAO");
+		CaseManagementNoteLinkDAO caseManagementNoteLinkDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean(CaseManagementNoteLinkDAO.class);
 		caseManagementNoteLinkDao.save(link);
 
 		Issue issue = this.issueDao.findIssueByTypeAndCode("system", "TicklerNote");
@@ -3428,7 +3428,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 	public ActionForward ticklerGetNote(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ticklerNo = request.getParameter("ticklerNo");
 
-		CaseManagementNoteLinkDAO caseManagementNoteLinkDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean("CaseManagementNoteLinkDAO");
+		CaseManagementNoteLinkDAO caseManagementNoteLinkDao = (CaseManagementNoteLinkDAO) SpringUtils.getBean(CaseManagementNoteLinkDAO.class);
 		CaseManagementNoteLink link = caseManagementNoteLinkDao.getLastLinkByTableId(CaseManagementNoteLink.TICKLER, Long.valueOf(ticklerNo));
 		JSONObject json = JSONObject.fromObject("{}");
 
@@ -3457,8 +3457,8 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 
 	public static boolean determineNoteRole(CaseManagementNote note, String providerNo, String demographicNo) {
 		// Determines what program & role to assign the note to
-		ProgramProviderDAO programProviderDao = (ProgramProviderDAO) SpringUtils.getBean("programProviderDAO");
-		ProviderDefaultProgramDao defaultProgramDao = (ProviderDefaultProgramDao) SpringUtils.getBean("providerDefaultProgramDao");
+		ProgramProviderDAO programProviderDao = (ProgramProviderDAO) SpringUtils.getBean(ProgramProviderDAO.class);
+		ProviderDefaultProgramDao defaultProgramDao = (ProviderDefaultProgramDao) SpringUtils.getBean(ProviderDefaultProgramDao.class);
 		boolean programSet = false;
 
 		if (note.getProgram_no() != null && note.getProgram_no().length() > 0 && !"null".equals(note.getProgram_no())) {

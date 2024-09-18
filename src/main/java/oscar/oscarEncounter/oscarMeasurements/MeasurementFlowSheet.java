@@ -25,6 +25,20 @@
 
 package oscar.oscarEncounter.oscarMeasurements;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections.OrderedMapIterator;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
@@ -37,16 +51,13 @@ import org.oscarehr.common.dao.DxDao;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
+
 import oscar.OscarProperties;
 import oscar.oscarEncounter.oscarMeasurements.bean.EctMeasurementsDataBean;
 import oscar.oscarEncounter.oscarMeasurements.util.MeasurementDSHelper;
 import oscar.oscarEncounter.oscarMeasurements.util.Recommendation;
 import oscar.oscarEncounter.oscarMeasurements.util.RuleBaseCreator;
 import oscar.oscarEncounter.oscarMeasurements.util.TargetColour;
-
-import java.io.*;
-import java.net.URL;
-import java.util.*;
 
 /**
  *

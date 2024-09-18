@@ -78,7 +78,10 @@
         eForm = new EForm(fdid);
         eForm.setContextPath(request.getContextPath());
         eForm.setOscarOPEN(request.getRequestURI());
-        eForm.setFdid(fdid);
+
+        if (fdid != null) {
+            eForm.setFdid(fdid);
+        }
         
         if ( appointmentNo != null ) eForm.setAppointmentNo(appointmentNo);
         if ( eformLink != null ) eForm.setEformLink(eformLink);

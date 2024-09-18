@@ -32,7 +32,7 @@ public class FaxConfig extends AbstractModel<Integer> {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer Id;
 	
 	private String url = "";

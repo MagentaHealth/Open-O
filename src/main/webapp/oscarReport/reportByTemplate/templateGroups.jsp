@@ -31,7 +31,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
-<html:html locale="true">
+<html:html lang="en">
 <head>
     <title>Report by Template Groups</title>
 

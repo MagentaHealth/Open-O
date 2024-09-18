@@ -45,7 +45,7 @@
 </security:oscarSec>
 <!DOCTYPE html>
 
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <title>Report by Template</title>
 

@@ -57,7 +57,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EForm extends EFormBase {
-	private static EFormDataDao eFormDataDao = (EFormDataDao) SpringUtils.getBean("EFormDataDao");
+	private static EFormDataDao eFormDataDao = (EFormDataDao) SpringUtils.getBean(EFormDataDao.class);
 	private static Logger log = MiscUtils.getLogger();
 
 	private String appointment_no = "-1";
@@ -389,7 +389,9 @@ public class EForm extends EFormBase {
 	}
 	
 	public void setFdid(String fdid) {
-		this.formHtml = this.formHtml.replace(fdidMarker, fdid);
+		if (this.formHtml != null && this.fdidMarker != null && fdid != null) {
+			this.formHtml = this.formHtml.replace(fdidMarker, fdid);
+		} 
 	}
 	
 	public void setSource(String source) {

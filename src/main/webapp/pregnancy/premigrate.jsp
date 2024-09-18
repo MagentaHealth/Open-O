@@ -52,7 +52,7 @@ if(!authed) {
 <%
 	Properties props = (Properties)request.getAttribute("props");
 %>
-<html:html locale="true">
+<html:html lang="en">
 <head>
 <title>Migration Tool</title>
 

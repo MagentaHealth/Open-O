@@ -115,7 +115,7 @@
 	}
 
 %>
-<html:html locale="true">
+<html:html lang="en">
 	<script src="${pageContext.request.contextPath}/csrfguard"></script>
 <head>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>
@@ -277,9 +277,9 @@
                 </th>
 	</tr>
 	<%
-	DemographicDao demographicDao = (DemographicDao)SpringUtils.getBean("demographicDao");
-        OscarLogDao oscarLogDao = (OscarLogDao)SpringUtils.getBean("oscarLogDao");
-	CaseManagementManager caseManagementManager=(CaseManagementManager)SpringUtils.getBean("caseManagementManager");
+	DemographicDao demographicDao = (DemographicDao)SpringUtils.getBean(DemographicDao.class);
+        OscarLogDao oscarLogDao = (OscarLogDao)SpringUtils.getBean(OscarLogDao.class);
+	CaseManagementManager caseManagementManager=(CaseManagementManager)SpringUtils.getBean(CaseManagementManager.class);
 	String providerNo = loggedInInfo.getLoggedInProviderNo();
 	boolean outOfDomain = true;
 	if(OscarProperties.getInstance().getProperty("ModuleNames","").indexOf("Caisi") != -1) {

@@ -265,7 +265,7 @@ public class EditTicklerAction extends DispatchAction{
              return mapping.findForward("failure");
          }
          
-         TicklerTextSuggestDao ticklerTextSuggestDao = (TicklerTextSuggestDao) SpringUtils.getBean("ticklerTextSuggestDao");
+         TicklerTextSuggestDao ticklerTextSuggestDao = (TicklerTextSuggestDao) SpringUtils.getBean(TicklerTextSuggestDao.class);
          
          
          for (String activeTextStr : activeText) {

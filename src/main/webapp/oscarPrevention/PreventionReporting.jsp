@@ -62,10 +62,10 @@ if(!authed) {
 
   String eformSearch = (String) request.getAttribute("eformSearch");
   //EfmData efData = new EfmData();
-  BillingONCHeader1Dao bCh1Dao = (BillingONCHeader1Dao)SpringUtils.getBean("billingONCHeader1Dao");
+  BillingONCHeader1Dao bCh1Dao = (BillingONCHeader1Dao)SpringUtils.getBean(BillingONCHeader1Dao.class);
 %>
 
-<html:html locale="true">
+<html:html lang="en">
 
 <head>
 <html:base/>
