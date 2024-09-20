@@ -2866,14 +2866,6 @@
     "integrity" : "sha512:LxeBfAPgMYEJEBPdut8FKDWaq87nihpYJxFizkhG6h75yuwApVjRuvtqexLMf9Z2V1w2+d6+VyC2ciR1WDiirw=="
   }, {
     "groupId" : "org.oscarehr.integration.ebs",
-    "artifactId" : "ebs-client",
-    "version" : "0.0.6",
-    "scope" : "compile",
-    "type" : "jar",
-    "optional" : false,
-    "integrity" : "sha512:ZJECLuT7yyuqFYiU3vjci4/Y9zNs97ilHDIOfGmQp6Fltr5NkNhZGfxfyXyTT6loZBEDlYljBN1eSS2yyuhXLw=="
-  }, {
-    "groupId" : "org.oscarehr.integration.ebs",
     "artifactId" : "edt-stubs",
     "version" : "0.0.1-20140911.161211-1",
     "scope" : "compile",

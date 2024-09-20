@@ -1332,7 +1332,7 @@
 			<version>1.0</version>
 		</dependency>
 
-        <dependency>
+        <!-- <dependency>
                 <groupId>org.oscarehr.integration.ebs</groupId>
                 <artifactId>ebs-client</artifactId>
                 <version>0.0.6</version>
@@ -1346,7 +1346,7 @@
 						<artifactId>log4j</artifactId>
 					</exclusion>
 				</exclusions>
-        </dependency>
+        </dependency> -->
         <dependency>
                 <groupId>org.oscarehr.integration.ebs</groupId>
                 <artifactId>edt-stubs</artifactId>
