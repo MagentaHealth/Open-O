@@ -31,11 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
 <!DOCTYPE html>
 
-<%
-    CategoryData categoryData = (CategoryData) request.getAttribute("categoryData");
-    InboxhubQuery query = (InboxhubQuery) request.getAttribute("query");
-%>
-
 <!-- Search form Accordion -->
 <div class="accordion" id="inbox-hub-search">
     <div class="accordion-item">
@@ -46,10 +41,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </h2>
         <div id="collapseSearch" class="accordion-collapse collapse show" aria-labelledby="headingSearch" data-bs-parent="#inbox-hub-search">
             <div class="accordion-body">
-                <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post" id="myForm">
+                <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post" id="inboxSearchForm" onsubmit="return validatePatientOptions();">
                     <div class="m-2">
                         <div class="d-grid mb-2">
-                            <input type="checkbox" class="btn-check btn-sm" name="viewMode" <% if (query.getViewMode()) { %> checked <% } %>
+                            <input type="checkbox" class="btn-check btn-sm" name="viewMode" ${query.viewMode ? 'checked' : ''}
                                 id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
                             <label class="btn btn-outline-primary btn-sm" for="btnViewMode"><bean:message key="inbox.inboxmanager.msgPreviewModes"/></label>
                         </div>
@@ -59,26 +54,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <label class="fw-bold text-uppercase">
                                 <bean:message key="inbox.inboxmanager.msgProviders"/>
                             </label>
-                            <input type="hidden" name="searchAll" id="searchProviderAll" value="<%=query.getSearchAll()%>"/>
+                            <input type="hidden" name="searchAll" id="searchProviderAll" value="${query.searchAll}"/>
                             <!-- Any Provider -->
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" onClick="changeValueElementByName('searchAll', 'true');"/>
+                                <input class="btn-check-input" type="radio" name="providerRadios" value="option1" id="anyProvider" ${query.searchAll eq 'true' ? 'checked' : ''} onClick="changeValueElementByName('searchAll', 'true');toggleInputVisibility('specificProvider', 'specificProviderId', 200);"/>
                                 <label class="form-check-label" for="anyProvider"><bean:message key="oscarMDS.search.formAnyProvider"/></label>
                             </div>
                             <!-- No Provier -->
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" onClick="changeValueElementByName('searchAll', 'false');"/>
+                                <input class="btn-check-input" type="radio" name="providerRadios" value="option2" id="noProvider" ${query.searchAll eq 'false' ? 'checked' : ''} onClick="changeValueElementByName('searchAll', 'false');toggleInputVisibility('specificProvider', 'specificProviderId', 200);"/>
                                 <label class="form-check-label" for="noProvider"><bean:message key="oscarMDS.search.formNoProvider"/></label>
                             </div>
                             <!-- Specific Provider -->
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" checked
-                                    onClick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', document.getElementsByName('searchProviderNo')[0].value);" />
+                                <input class="btn-check-input" type="radio" name="providerRadios" value="option3" id="specificProvider" ${query.searchAll eq '' ? 'checked' : ''} onclick="changeValueElementByName('searchAll', ''); changeValueElementByName('searchProviderNo', document.getElementsByName('searchProviderNo')[0].value);toggleInputVisibility('specificProvider', 'specificProviderId', 200);" />
                                 <label class="form-check-label" for="specificProvider"><bean:message key="oscarMDS.search.formSpecificProvider"/></label>
                                 <div id="specificProviderId" class="ms-3">
-                                    <input type="hidden" name="searchProviderNo" id="findProvider" value="<%=query.getSearchProviderNo()%>"/>
+                                    <input type="hidden" name="searchProviderNo" id="findProvider" value="${query.searchProviderNo}"/>
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 m-1" type="text" id="autocompleteProvider" name="searchProviderName" value="<%=query.getSearchProviderName()%>" placeholder="Provider"/>
+                                        <input class="form-control pe-0 m-1" type="text" id="autocompleteProvider" name="searchProviderName" value="${query.searchProviderName}" placeholder="Provider"/>
                                     </div>
                                 </div>
                             </div>
@@ -90,30 +84,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <bean:message key="inbox.inboxmanager.msgPatinets"/>
                             </label>
                             <!-- All Patients (including unmatched) -->
-                            <input type="hidden" name="unmatched" id="unmatchedId" value="<%=query.getUnmatched()%>"/>
+                            <input type="hidden" name="unmatched" id="unmatchedId" value="${query.unmatched}"/>
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" onClick="changeValueElementByName('unmatched', 'false'); changeValueElementByName('patientFirstName', '')" checked/>
+                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" ${query.unmatched eq 'false' and query.patientFirstName eq '' ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'false');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);"/>
                                 <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
                             </div>
                             <!-- Unmatched to Existing Patient -->
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" onClick="changeValueElementByName('unmatched', 'true')" />
+                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption2" id="unmatchedPatients" ${query.unmatched eq 'true' ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'true');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);" />
                                 <label class="form-check-label" for="unmatchedPatients"><bean:message key="oscarMDS.search.formExistingPatient"/></label>
                             </div>
                             <!-- Specific Patient(s) -->
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients" onClick="changeValueElementByName('unmatched', 'false')"/>
+                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients" ${query.unmatched eq 'false' and query.patientFirstName ne '' ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'false');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);"/>
                                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                                 <div id="specificPatientsId" class="d-grid ms-3">
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 m-1" type="text" name="patientFirstName" id="inputFirstName" value="<%=query.getPatientFirstName()%>" placeholder="<bean:message key='admin.provider.formFirstName'/>"/>
+                                        <input class="form-control pe-0 m-1" type="text" name="patientFirstName" id="inputFirstName" value="${query.patientFirstName}" placeholder="<bean:message key='admin.provider.formFirstName'/>"/>
                                     </div>
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientLastName" id="inputLastName" value="<%=query.getPatientLastName()%>" placeholder="<bean:message key='admin.provider.formLastName'/>"/>
+                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientLastName" id="inputLastName" value="${query.patientLastName}" placeholder="<bean:message key='admin.provider.formLastName'/>"/>
                                     </div>
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientHealthNumber" id="inputHIN" value="<%=query.getPatientHealthNumber()%>" placeholder="<bean:message key='oscarMDS.index.msgHealthNumber'/>"/>
+                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientHealthNumber" id="inputHIN" value="${query.patientHealthNumber}" placeholder="<bean:message key='oscarMDS.index.msgHealthNumber'/>"/>
                                     </div>
+                                    <div class="text-danger d-none ms-1" id="specificPatientErrorMessage">Please fill at least one field for the specific patient.</div>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +122,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <div class="inbox-form-datepicker-wrapper mb-1 d-flex">
                                     <label class="my-auto pe" for="startDate">Start</label>
                                     <div class="input-group input-group-sm d-inline-flex">
-                                        <input class="form-control pe-0 inbox-form-datepicker-input" type="text" placeholder="yyyy-mm-dd" id="startDate" name="startDate" value="<%=query.getStartDate()%>"/>
+                                        <input class="form-control pe-0 inbox-form-datepicker-input" type="text" placeholder="yyyy-mm-dd" id="startDate" name="startDate" value="${query.startDate}"/>
                                         <span class="input-group-text" for="startDate" id="startDateIcon"><i class="icon-calendar"></i></span>
                                     </div>
                                     <i class="icon-remove-sign clear-btn" aria-hidden="true" id="clearStartDate"></i>
@@ -135,7 +130,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <div class="inbox-form-datepicker-wrapper d-flex">
                                     <label class="my-auto" for="endDate">End</label>
                                     <div class="input-group input-group-sm d-inline-flex">
-                                        <input class="form-control pe-0 inbox-form-datepicker-input" type="text" placeholder="yyyy-mm-dd" id="endDate" name="endDate" value="<%=query.getEndDate()%>"/>
+                                        <input class="form-control pe-0 inbox-form-datepicker-input" type="text" placeholder="yyyy-mm-dd" id="endDate" name="endDate" value="${query.endDate}"/>
                                         <span class="input-group-text" for="endDate" id="endDateIcon"><i class="icon-calendar"></i></span>
                                     </div>
                                     <i class="icon-remove-sign clear-btn" aria-hidden="true" id="clearEndDate"></i>
@@ -149,23 +144,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <bean:message key="inbox.inboxmanager.msgType"/>
                             </label>
                             <div class="form-check">
-                                <input type="checkbox" class="btn-check-input" name="doc" <% if (query.getDoc() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnDoc"
-                                    autocomplete="off">
+                                <input type="checkbox" class="btn-check-input" name="doc" ${query.doc || (!query.doc && !query.lab && !query.hrm) ? 'checked' : ''} id="btnDoc" autocomplete="off">
                                 <label class="form-check-label" for="btnDoc"><bean:message key="inbox.inboxmanager.msgTypeDocs"/></label><br>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="btn-check-input" name="lab" <% if (query.getLab() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnLab"
-                                autocomplete="off">
-                            <label class="form-check-label" for="btnLab"><bean:message key="inbox.inboxmanager.msgTypeLabs"/></label><br>
+                                <input type="checkbox" class="btn-check-input" name="lab" ${query.lab || (!query.doc && !query.lab && !query.hrm) ? 'checked' : ''} id="btnLab" autocomplete="off">
+                                <label class="form-check-label" for="btnLab"><bean:message key="inbox.inboxmanager.msgTypeLabs"/></label><br>
                             </div>
 
-                            <% if (!OscarProperties.getInstance().isBritishColumbiaBillingRegion()) { %>
-                            <div class="form-check">
-                                <input type="checkbox" class="btn-check-input" name="hrm" <% if (query.getHrm() || (!query.getDoc() && !query.getLab() && !query.getHrm())) { %> checked <% } %> id="btnHRM"
-                                autocomplete="off">
-                                <label class="form-checkbox-label" for="btnHRM"><bean:message key="inbox.inboxmanager.msgTypeHRM"/></label><br>
-                            </div>
-                            <% } %>
+                            <c:if test="${!OscarProperties.getInstance().isBritishColumbiaBillingRegion()}">
+                                <div class="form-check">
+                                    <input type="checkbox" class="btn-check-input" name="hrm" ${query.hrm || (!query.doc && !query.lab && !query.hrm) ? 'checked' : ''} id="btnHRM" autocomplete="off">
+                                    <label class="form-checkbox-label" for="btnHRM"><bean:message key="inbox.inboxmanager.msgTypeHRM"/></label><br>
+                                </div>
+                            </c:if>
                         </div>
 
                         <div class="mb-1">
@@ -173,24 +165,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <label class="fw-bold text-uppercase">
                                 <bean:message key="inbox.inboxmanager.msgReviewStatus"/>
                             </label>
+                            <input type="hidden" name="status" id="statusId" value="${query.status}"/>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="status" id="statusAll" id="All" value="All"
-                                    <% if (Objects.equals(query.getStatus(), "")) { %> checked <% } %> onclick="changeValueElementByName('status', '')">
+                                <input type="radio" class="btn-check-input" name="statusReview" id="statusAll" id="All" value="All"
+                                    ${empty query.status ? 'checked' : ''} onclick="changeValueElementByName('status', '')">
                                 <label class="form-check-label" for="statusAll"><bean:message key="inbox.inboxmanager.msgAll"/>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="status" id="statusNew" value="N"
-                                    <% if (Objects.equals(query.getStatus(), "N")) { %> checked <% } %> onclick="changeValueElementByName('status', 'N')">
+                                <input type="radio" class="btn-check-input" name="statusReview" id="statusNew" value="N"
+                                    ${query.status eq 'N' ? 'checked' : ''} onclick="changeValueElementByName('status', 'N')">
                                 <label class="form-check-label" for="statusNew"><bean:message key="inbox.inboxmanager.msgNew"/></label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="status" id="statusAcknowledged" value="A"
-                                    onclick="changeValueElementByName('status', 'A')">
+                                <input type="radio" class="btn-check-input" name="statusReview" id="statusAcknowledged" value="A"
+                                    ${query.status eq 'A' ? 'checked' : ''} onclick="changeValueElementByName('status', 'A')">
                                 <label class="form-check-label" for="statusAcknowledged"><bean:message key="inbox.inboxmanager.msgAcknowledged"/></label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="status" id="statusFiled" value="F"
-                                    onclick="changeValueElementByName('status', 'F')">
+                                <input type="radio" class="btn-check-input" name="statusReview" id="statusFiled" value="F"
+                                    ${query.status eq 'F' ? 'checked' : ''} onclick="changeValueElementByName('status', 'F')">
                                 <label class="form-check-label" for="statusFiled"><bean:message key="inbox.inboxmanager.msgFiled"/></label>
                             </div>
                         </div>
@@ -200,26 +193,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <label class="fw-bold text-uppercase">
                                 <bean:message key="inbox.inboxmanager.msgResultStatus"/>
                             </label>
+                            <input type="hidden" name="abnormal" id="abnormalId" value="${query.abnormal}"/>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="abnormal" id="All" value="All" checked
-                                    <% if (Objects.equals(query.getAbnormal(), "All")) { %> checked <% } %> onclick="changeValueElementByName('abnormal', 'All')">
+                                <input type="radio" class="btn-check-input" name="abnormalResult" id="All" value="All"
+                                    ${query.abnormal eq 'All' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'All')">
                                 <label class="form-check-label" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="abnormal" id="Abnormal" value="Abnormal"
-                                    onclick="changeValueElementByName('abnormal', 'Abnormal')">
+                                <input type="radio" class="btn-check-input" name="abnormalResult" id="Abnormal" value="Abnormal"
+                                    ${query.abnormal eq 'Abnormal' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'Abnormal')">
                                 <label class="form-check-label" for="Abnormal"><bean:message key="global.abnormal"/></label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="btn-check-input" name="abnormal" id="Normal" value="Normal"
-                                    onclick="changeValueElementByName('abnormal', 'Normal')">
+                                <input type="radio" class="btn-check-input" name="abnormalResult" id="Normal" value="Normal"
+                                    ${query.abnormal eq 'Normal' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'Normal')">
                                 <label class="form-check-label" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/></label>
                             </div>
                         </div>
 
                         <!--Search Button-->
                         <div class="d-grid">
-                            <input class="btn btn-primary btn-sm"type="submit"value='<bean:message key="oscarMDS.search.btnSearch"/>'>
+                            <input class="btn btn-primary btn-sm" type="submit" value='<bean:message key="oscarMDS.search.btnSearch"/>'>
                         </div>
                     </div>
                 </form>
@@ -229,105 +223,111 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </div>
 <!-- End of the Search form Accordion -->
 
-<!-- Unmatched List Accordion -->
-<div class="accordion mt-1" id="inbox-hub-unmatched-list">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingUnmatchedList">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnmatched" aria-expanded="false" aria-controls="collapseUnmatched">
-                Unmatched
-            </button>
-        </h2>
-        <div id="collapseUnmatched" class="accordion-collapse collapse" aria-labelledby="headingUnmatchedList" data-bs-parent="#inbox-hub-unmatched-list">
-            <div class="accordion-body">
-                <div> TEST </div>
+<c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 or not empty requestScope.categoryData.patientList }">
+<div class="category-list"> 
+    <!-- Unmatched List Accordion -->
+    <c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 }">
+    <div class="accordion mt-1" id="inbox-hub-unmatched-list">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingUnmatchedList">
+                <a class="text-decoration-none accordion-button ${ param.providerNo eq 0 ? '' : 'collapsed' }" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnmatched" aria-expanded="false" aria-controls="collapseUnmatched">
+                    Unmatched
+                </a>
+            </h2>
+            <div id="collapseUnmatched" class="accordion-collapse collapse ${ param.providerNo eq 0 ? 'show' : '' }" aria-labelledby="headingUnmatchedList" data-bs-parent="#inbox-hub-unmatched-list">
+                <div class="accordion-body my-2 ms-3">
+                    <div class="accordion-item border-0">
+                        <div class="accordion-header category-list-header d-flex" id="headingUnmatchedAll">
+                            <span class="collapse-btn" data-bs-toggle="collapse" data-bs-target="#collapseUnmatchedAll" aria-expanded="true" aria-controls="collapseUnmatchedAll"></span>
+                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,0)">
+                                All (<span id="patientNumDocs0"><c:out value="${requestScope.categoryData.unmatchedDocs + requestScope.categoryData.unmatchedLabs}" /></span>)
+                            </a>
+                        </div>
+                        <div id="collapseUnmatchedAll" class="accordion-collapse collapse show" aria-labelledby="headingUnmatchedAll">
+                            <div class="accordion-body collapse-sub-category-list">
+                                <ul class="list-unstyled" id="labdoc0showSublist">
+                                    <c:if test="${ categoryData.unmatchedDocs gt 0}" >
+                                    <li>
+                                        <a id="patient0docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,0,CATEGORY_TYPE_DOC);" title="Documents">
+                                            Documents (<span id="pDocNum_0"><c:out value="${categoryData.unmatchedDocs}" /></span>)
+                                        </a>
+                                    </li>
+                                    </c:if>
+                                    <c:if test="${ categoryData.unmatchedLabs gt 0 }" >
+                                    <li>
+                                        <a id="patient0hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,0,CATEGORY_TYPE_HL7);" title="HL7">
+                                            HL7 (<span id="pLabNum_0"><c:out value="${categoryData.unmatchedLabs}" /></span>)
+                                        </a>
+                                    </li>
+                                    </c:if>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- End of the Unmatched Accordion -->
+    </c:if>
+    <!-- End of the Unmatched Accordion -->
 
-<!-- Matched List Accordion -->
-<div class="accordion mt-1" id="inbox-hub-matched-list">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingMatchedList">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMatched" aria-expanded="false" aria-controls="collapseMatched">
-                Matched
-            </button>
-        </h2>
-        <div id="collapseMatched" class="accordion-collapse collapse" aria-labelledby="headingMatchedList" data-bs-parent="#inbox-hub-matched-list">
-            <div class="accordion-body">
-                <div> TEST </div>
+    <!-- Matched List Accordion -->
+    <div class="accordion mt-1" id="inbox-hub-matched-list">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingMatchedList">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMatched" aria-expanded="false" aria-controls="collapseMatched">
+                    Matched
+                </button>
+            </h2>
+            <div id="collapseMatched" class="accordion-collapse collapse show" aria-labelledby="headingMatchedList" data-bs-parent="#inbox-hub-matched-list">
+                <div class="accordion-body my-2 ms-3">
+                    <c:forEach items="${requestScope.categoryData.patientList}" var="patient">
+                    <c:set var="patientId" value="${patient.id}" />
+                    <c:set var="patientName" value="${ patient.lastName }, ${patient.firstName}" />
+                    <c:set var="numDocs" value="${ patient.docCount + patient.labCount }" />
+                    <c:set var="docCount" value="${ patient.docCount }" />
+                    <c:set var="labCount" value="${ patient.labCount }" />
+                    <div class="accordion-item border-0">
+                        <div class="accordion-header category-list-header d-flex" id="headingPatient${patientId}MatchedAll">
+                            <span class="collapse-btn collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePatient${patientId}MatchedAll" aria-expanded="true" aria-controls="collapsePatient${patientId}MatchedAll"></span>
+                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,${patientId});" title="<c:out value='${patientName}' />">
+                                <c:out value='${patientName}' /> (<span id="patientNumDocs${patientId}">${numDocs}</span>)
+                            </a>
+                        </div>
+                        <div id="collapsePatient${patientId}MatchedAll" class="accordion-collapse collapse" aria-labelledby="headingPatient${patientId}MatchedAll">
+                            <div class="accordion-body collapse-sub-category-list">
+                                <ul class="list-unstyled" id="labdoc${patientId}showSublist">
+                                    <c:if test="${not empty docCount}">
+                                    <li>
+                                        <a id="patient${patientId}docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,${patientId},CATEGORY_TYPE_DOC);" title="Documents">
+                                            Documents (<span id="pDocNum_${patientId}">${docCount}</span>)
+                                        </a>
+                                    </li>
+                                    </c:if>
+                                    <c:if test="${not empty labCount}">
+                                    <li>
+                                        <a id="patient${patientId}hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,${patientId},CATEGORY_TYPE_HL7);" title="HL7">
+                                            HL7 (<span id="pLabNum_${patientId}">${labCount}</span>)
+                                        </a>
+                                    </li>
+                                    </c:if>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </c:forEach>
+                </div>
             </div>
         </div>
     </div>
+    <!-- End of the Matched Accordion -->
 </div>
-<!-- End of the Matched Accordion -->
+</c:if>
 
 <script>
-    function changeValueElementByName(name, value) {
-        let inPatient = document.getElementsByName(name);
-        inPatient[0].value = value;
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('myForm');
-
-        // Provider
-        const providerRadios = form.elements['providerRadios'];
-        for (var i = 0; i < providerRadios.length; i++) {
-            providerRadios[i].addEventListener('change', function() {
-                sessionStorage.setItem('selectedProviderRadio', this.value);
-                //updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
-                toggleInputVisibility('specificProvider', 'specificProviderId');
-            });
-        }
-        const selectedProviderRadio = sessionStorage.getItem('selectedProviderRadio');
-        if (selectedProviderRadio) {
-            document.querySelector('input[value="' + selectedProviderRadio + '"]').checked = true;
-            //updateInputDisabled('selectedProviderRadio', 'specificProviderId', 'option3');
-        }
-
-        // Patients
-        const patientsRadios = form.elements['patientsRadios'];
-        for (var i = 0; i < patientsRadios.length; i++) {
-            patientsRadios[i].addEventListener('change', function() {
-                sessionStorage.setItem('selectedPatientsRadio', this.value);
-                //updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
-                toggleInputVisibility('specificPatients', 'specificPatientsId');
-            });
-        }
-        const selectedPatientsRadio = sessionStorage.getItem('selectedPatientsRadio');
-        if (selectedPatientsRadio) {
-            document.querySelector('input[value="' + selectedPatientsRadio + '"]').checked = true;
-            //updateInputDisabled('selectedPatientsRadio', 'specificPatientsId', 'patientsOption3');
-        }
-
-        toggleInputVisibility('specificProvider', 'specificProviderId');
-        toggleInputVisibility('specificPatients', 'specificPatientsId');
-
-        // Result status
-        const resultStatusRadios = form.elements['status'];
-        for (var i = 0; i < resultStatusRadios.length; i++) {
-            resultStatusRadios[i].addEventListener('change', function() {
-                sessionStorage.setItem('selectedResultStatusRadio', this.value);
-            });
-        }
-        const selectedResultStatusRadio = sessionStorage.getItem('selectedResultStatusRadio');
-        if (selectedResultStatusRadio) {
-            document.querySelector('input[value="' + selectedResultStatusRadio + '"]').checked = true;
-        }
-
-        // Abnormal
-        const resultAbnormalRadios = form.elements['abnormal'];
-        for (var i = 0; i < resultAbnormalRadios.length; i++) {
-            resultAbnormalRadios[i].addEventListener('change', function() {
-                sessionStorage.setItem('selectedAbnormalRadio', this.value);
-            });
-        }
-        const selectedAbnormalRadio = sessionStorage.getItem('selectedAbnormalRadio');
-        if (selectedAbnormalRadio) {
-            document.querySelector('input[value="' + selectedAbnormalRadio + '"]').checked = true;
-        }
+    $(document).ready( function() {
+        toggleInputVisibility('specificProvider', 'specificProviderId', 0);
+        toggleInputVisibility('specificPatients', 'specificPatientsId', 0);
 
         document.getElementById('startDateIcon').addEventListener('click', function() {
             document.getElementById('startDate').focus();
@@ -339,15 +339,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         // Initialize datepickers and clear buttons
         setupDatepicker('#startDate', '#clearStartDate');
         setupDatepicker('#endDate', '#clearEndDate');
+
+        // Adds a click event to all links within the '.category-list' to highlight the clicked link.
+        highlightClickedLink();
     });
 
-    function toggleInputVisibility(selectedRadioId, inputDivId) {
+    function changeValueElementByName(name, value) {
+        let inPatient = document.getElementsByName(name);
+        inPatient[0].value = value;
+    }
+
+    function toggleInputVisibility(selectedRadioId, inputDivId, animationTime) {
         const selectedRadio = document.getElementById(selectedRadioId);
         const inputDiv = $('#' + inputDivId);
         if (selectedRadio.checked) {
-            inputDiv.hide().removeClass('d-none').slideDown(200);  // Show with animation and remove 'd-none'
+            inputDiv.hide().removeClass('d-none').slideDown(animationTime);  // Show with animation and remove 'd-none'
         } else {
-            inputDiv.slideUp(200, function() {
+            inputDiv.slideUp(animationTime, function() {
                 inputDiv.addClass('d-none');  // Hide with animation and add 'd-none'
             });
         }
@@ -392,5 +400,68 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
         // Initialize clear button visibility
         clearBtn.toggle(!!dateInput.val());
+    }
+
+    /**
+     * Adds a click event to all links within the '.category-list' to highlight the clicked link.
+     */
+    function highlightClickedLink() {
+        document.querySelectorAll('.category-list a').forEach(link => {
+            link.addEventListener('click', function() {
+            // Remove 'selected' class from all links
+            document.querySelectorAll('.category-list a').forEach(item => {
+                item.classList.remove('selected');
+            });
+            // Add 'selected' class to the clicked link
+            this.classList.add('selected');
+            });
+        });
+    }
+
+    function validatePatientOptions() {
+        // Get the selected patient option value
+        const selectedValue = document.querySelector('input[name="patientsRadios"]:checked').value;
+
+        // If the "patientsOption1" radio is selected, clear the patient details fields
+        if (selectedValue === "patientsOption1") {
+            ['patientFirstName', 'patientLastName', 'patientHealthNumber'].forEach(fieldName => 
+                changeValueElementByName(fieldName, '')
+            );
+        }
+
+        // If "patientsOption3" is selected, validate the patient details fields
+        if (selectedValue === "patientsOption3") {
+            // Retrieve the values of the specific patient input fields (first name, last name, health number)
+            const fields = ['inputFirstName', 'inputLastName', 'inputHIN'].map(id => 
+                document.getElementById(id).value.trim()
+            );
+
+            const errorMessage = document.getElementById('specificPatientErrorMessage');
+            
+            const isAllFieldsEmpty = fields.every(field => field === '');
+            
+            // If all fields are empty, display the error message and prevent form submission
+            if (isAllFieldsEmpty) {
+                errorMessage.classList.remove('d-none'); // Show error message
+                return false; // Prevent form submission
+            }
+
+            // If at least one field is filled, hide the error message
+            errorMessage.classList.add('d-none'); // Hide error message
+        }
+
+        return true;
+    }
+
+    function test() {
+        $.ajax({
+			url: "${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm",
+			method: 'POST',
+			data: $('#inboxSearchForm').serialize(),			
+			success: function(data) {
+			},
+            error: function(xhr, status, error) {
+            }
+        });
     }
 </script>

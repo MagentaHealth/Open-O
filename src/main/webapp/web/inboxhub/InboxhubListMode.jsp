@@ -45,7 +45,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </script>
 <div class="bg-light text-light">
     <row>
-        <div id="categoryList"></div>
         <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('<%=searchProviderNumber%>')">
         <input id="topFileBtn" type="button" class="btn btn-primary btn-sm" value="File" onclick="submitFile('<%=searchProviderNumber%>')"/>
     </row>

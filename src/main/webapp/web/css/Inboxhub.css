@@ -113,7 +113,7 @@ input {
     height: calc(100vh - 5em);
     overflow-y: auto;
     overflow-x: hidden;
-    min-width: 300px;
+    min-width: 310px;
 }
 
 .inbox-form .accordion-body {
@@ -123,6 +123,11 @@ input {
 .bootstrap-datetimepicker-widget.dropdown-menu {
     width: auto;
     height: auto;
+}
+
+.bootstrap-datetimepicker-widget table td.today::before {
+    bottom: 1px;
+    right: 1px;
 }
 
 .inbox-form-datepicker-wrapper {
@@ -150,6 +155,71 @@ input {
 
 .inbox-form-datepicker-input {
     width: 100px !important;
+}
+
+.category-btn {
+    font-size: small !important;
+}
+
+.collapse-btn {
+    position: relative;
+    padding-left: 2px;
+}
+
+.collapse-btn:after {
+    content: "\f105"; /* Font Awesome chevron-right */
+    font-family: "FontAwesome";
+    position: absolute;
+    left: 5px;
+    top: 0;
+    transform: rotate(0deg);
+    transition: transform 0.2s ease-in-out;
+    font-size: 22px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.collapse-btn:not(.collapsed):after {
+    transform: rotate(90deg); /* Rotate the arrow on open */
+    top: 2px;
+}
+
+.collapse-heading {
+    font-weight: 500;
+    color: #444444;
+    max-width: 200px;
+}
+
+.collapse-heading:hover {
+    background-color: #e7f1ff !important;
+    border-radius: 3px;
+}
+
+.category-list-header a.selected {
+    font-weight: 700;
+    color: #000;
+}
+
+.collapse-sub-category-list {
+    margin-left: 19px;
+}
+
+/* Custom styles for links */
+.collapse-sub-category-list a {
+    padding: 0px;
+    margin-bottom: 2px;
+    font-weight: 400;
+    color: grey;
+}
+
+.collapse-sub-category-list a:hover {
+    font-weight: 500;
+    background-color: #e7f1ff !important;
+}
+
+.collapse-sub-category-list a.selected {
+    font-weight: 600;
+    color: #000;
 }
 
 @media (max-width: 1400px) {
