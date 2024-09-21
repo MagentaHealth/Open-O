@@ -152,6 +152,9 @@ public class LabResultData implements Comparable<LabResultData> {
 
 	}
 
+	public String getLabType() {
+		return labType;
+	}
 
 	public boolean isFinal(){ return finalRes ;}
 
@@ -243,6 +246,10 @@ public class LabResultData implements Comparable<LabResultData> {
 
 	public String getSex(){
 		return this.sex;
+	}
+
+	public String getResultStatus(){
+		return this.resultStatus;
 	}
 
 	public boolean isMatchedToPatient(){

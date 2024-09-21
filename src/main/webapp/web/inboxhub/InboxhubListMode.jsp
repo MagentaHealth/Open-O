@@ -24,29 +24,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/security.tld" prefix="security" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" prefix="e" %>
 <%@page import="org.oscarehr.util.MiscUtils,org.apache.commons.lang.StringEscapeUtils" %>
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
-<!DOCTYPE html>
-
-<html>
-<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.theme-1.12.1.min.css" />
-<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.css" />
-<link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.structure-1.12.1.min.css" />
-    <%
-        List labDocs = (List) request.getAttribute("labDocs");
-        List labLinks = (List) request.getAttribute("labLinks");
-        String searchProviderNumber = (String) session.getAttribute("user");
-    %>
 <script>
-    ctx = '<%=request.getContextPath()%>';
-    const searchProviderNo = '<%=(String) session.getAttribute("user")%>';
+    ctx = "<e:forJavaScriptBlock value='${pageContext.request.contextPath}' />";
+    const searchProviderNo = "<e:forJavaScriptBlock value='${sessionScope.user}' />";
 </script>
 <div class="bg-light text-light">
     <row>
-        <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('<%=searchProviderNumber%>')">
-        <input id="topFileBtn" type="button" class="btn btn-primary btn-sm" value="File" onclick="submitFile('<%=searchProviderNumber%>')"/>
+        <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('${sessionScope.user}')">
+        <input id="topFileBtn" type="button" class="btn btn-primary btn-sm" value="File" onclick="submitFile('${sessionScope.user}')"/>
     </row>
     <row>
         <div class="inbox-table-responsive">
@@ -69,45 +59,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </tr>
             </thead>
             <tbody>
-            <%
-                for (int i = 0; i < labDocs.size(); i++) {
-                    LabResultData labResult = (LabResultData) labDocs.get(i);
-            %>
-            <tr id="labdoc_<%=labResult.getSegmentID()%>" class="<%=(Objects.equals(labResult.resultStatus, "A") ? "table-danger" : "")%>">
-                <td>
-                    <%
-                        String disabled = "";
-                        if (!labResult.isMatchedToPatient() && !Objects.equals(labResult.labType, "DOC"))
-                        {
-                            disabled = "disabled";
-                        };
-                    %>
-                    <input type="checkbox" name="flaggedLabs" value="<%=labResult.getSegmentID() + ":" + labResult.labType%>" <%= disabled %>>
-                </td>
-                <td><%=labResult.getHealthNumber()%></td>
-                <td><a href="javascript:void(0);"
-                       onclick="reportWindow('<%=labLinks.get(i).toString()%>',window.innerHeight, window.innerWidth); return false;"><%=labResult.getPatientName()%>
-                </a></td>
-                <td><%=labResult.getSex()%>
-                </td>
-                <td><%=(Objects.equals(labResult.resultStatus, "A") ? "Abnormal" : "")%>
-                </td>
-                <td><%=labResult.getDateTime()%>
-                </td>
-                <td><%=labResult.getPriority()%>
-                </td>
-                <td><%=labResult.getRequestingClient()%>
-                </td>
-                <td><%=(Objects.equals(labResult.getDisciplineDisplayString(), "D") ? "" : labResult.getDisciplineDisplayString())%>
-                </td>
-                <td><%=(Objects.equals(labResult.getReportStatus(), "F") ? "Final" : "Partial")%>
-                </td>
-                <td><%=(Objects.equals(labResult.getAcknowledgedStatus(), "Y") ? 1 : 0)%>
-                </td>
-            </tr>
-            <%
-                }
-            %>
+            <c:forEach var="labResult" items="${labDocs}" varStatus="loopStatus">
+                <tr id="labdoc_${labResult.segmentID}" class="${labResult.resultStatus == 'A' ? 'table-danger' : ''}">
+                    <td>
+                        <c:set var="disabled" value="${!labResult.matchedToPatient && labResult.labType != 'DOC' ? 'disabled' : ''}"/>
+                        <input type="checkbox" name="flaggedLabs" value="${labResult.segmentID}:${labResult.labType}" ${disabled}>
+                    </td>
+                    <td><e:forHtmlContent value='${labResult.healthNumber}' /></td>
+                    <td>
+                        <a href="javascript:void(0);" 
+                        onclick="reportWindow('${labLinks[loopStatus.index]}', window.innerHeight, window.innerWidth); return false;">
+                            <e:forHtmlContent value='${labResult.patientName}' />
+                        </a>
+                    </td>
+                    <td>${labResult.sex}</td>
+                    <td>${labResult.resultStatus == 'A' ? 'Abnormal' : ''}</td>
+                    <td>${labResult.dateTime}</td>
+                    <td>${labResult.priority}</td>
+                    <td>${labResult.requestingClient}</td>
+                    <td>${labResult.disciplineDisplayString == 'D' ? '' : labResult.disciplineDisplayString}</td>
+                    <td>${labResult.reportStatus == 'F' ? 'Final' : 'Partial'}</td>
+                    <td>${labResult.acknowledgedStatus == 'Y' ? 1 : 0}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
         </div>

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/security.tld" prefix="security" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" prefix="e" %>
 <%@page import="org.oscarehr.util.MiscUtils,org.apache.commons.lang.StringEscapeUtils" %>
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
@@ -72,7 +73,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <div id="specificProviderId" class="ms-3">
                                     <input type="hidden" name="searchProviderNo" id="findProvider" value="${query.searchProviderNo}"/>
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 m-1" type="text" id="autocompleteProvider" name="searchProviderName" value="${query.searchProviderName}" placeholder="Provider"/>
+                                        <input class="form-control pe-0 m-1" type="text" id="autocompleteProvider" name="searchProviderName" value="<e:forHtmlAttribute value='${query.searchProviderName}' />" placeholder="Provider"/>
                                     </div>
                                 </div>
                             </div>
@@ -100,13 +101,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                                 <div id="specificPatientsId" class="d-grid ms-3">
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 m-1" type="text" name="patientFirstName" id="inputFirstName" value="${query.patientFirstName}" placeholder="<bean:message key='admin.provider.formFirstName'/>"/>
+                                        <input class="form-control pe-0 m-1" type="text" name="patientFirstName" id="inputFirstName" value="<e:forHtmlAttribute value='${query.patientFirstName}'/>" placeholder="<bean:message key='admin.provider.formFirstName'/>"/>
                                     </div>
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientLastName" id="inputLastName" value="${query.patientLastName}" placeholder="<bean:message key='admin.provider.formLastName'/>"/>
+                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientLastName" id="inputLastName" value="<e:forHtmlAttribute value='${query.patientLastName}'/>" placeholder="<bean:message key='admin.provider.formLastName'/>"/>
                                     </div>
                                     <div class="input-group input-group-sm">
-                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientHealthNumber" id="inputHIN" value="${query.patientHealthNumber}" placeholder="<bean:message key='oscarMDS.index.msgHealthNumber'/>"/>
+                                        <input class="form-control pe-0 mb-1 mx-1" type="text" name="patientHealthNumber" id="inputHIN" value="<e:forHtmlAttribute value='${query.patientHealthNumber}'/>" placeholder="<bean:message key='oscarMDS.index.msgHealthNumber'/>"/>
                                     </div>
                                     <div class="text-danger d-none ms-1" id="specificPatientErrorMessage">Please fill at least one field for the specific patient.</div>
                                 </div>
@@ -290,8 +291,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingPatient${patientId}MatchedAll">
                             <span class="collapse-btn collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePatient${patientId}MatchedAll" aria-expanded="true" aria-controls="collapsePatient${patientId}MatchedAll"></span>
-                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,${patientId});" title="<c:out value='${patientName}' />">
-                                <c:out value='${patientName}' /> (<span id="patientNumDocs${patientId}">${numDocs}</span>)
+                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,${patientId});" title="<e:forHtmlAttribute value='${patientName}' />">
+                                <e:forHtmlContent value='${patientName}' /> (<span id="patientNumDocs${patientId}">${numDocs}</span>)
                             </a>
                         </div>
                         <div id="collapsePatient${patientId}MatchedAll" class="accordion-collapse collapse" aria-labelledby="headingPatient${patientId}MatchedAll">

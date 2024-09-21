@@ -32,32 +32,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" type="text/css" media="all" href="<%=request.getContextPath()%>/css/bootstrap-datetimepicker-standalone.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="<%=request.getContextPath()%>/css/bootstrap-datetimepicker.min.css" /> 
-    <link href="<%=request.getContextPath()%>/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="<%=request.getContextPath()%>/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/web/css/Inboxhub.css"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.servletContext.contextPath}/library/DataTables/DataTables-1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/css/bootstrap-datetimepicker-standalone.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/css/bootstrap-datetimepicker.min.css" /> 
+    <link href="${pageContext.servletContext.contextPath}/library/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.theme-1.12.1.min.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui.structure-1.12.1.min.css" />
+    <link href="${pageContext.servletContext.contextPath}/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${pageContext.servletContext.contextPath}/web/css/Inboxhub.css"/>
 
-    <script type="text/javascript" src="<%=request.getContextPath()%>/library/moment.js"></script>
-    <script src="<%=request.getContextPath()%>/library/bootstrap/5.0.2/js/bootstrap.bundle.js"></script>
-    <script src="<%=request.getContextPath()%>/library/jquery/jquery-3.6.4.min.js"></script>
-    <script src="<%=request.getContextPath()%>/library/jquery/jquery-ui-1.12.1.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/library/DataTables/DataTables-1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/web/inboxhub/inboxhubController.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/library/bootstrap-datetimepicker.min.js" ></script>
+    <script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/moment.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/library/bootstrap/5.0.2/js/bootstrap.bundle.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/library/jquery/jquery-3.6.4.min.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="${pageContext.servletContext.contextPath}/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/DataTables/DataTables-1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="${pageContext.servletContext.contextPath}/web/inboxhub/inboxhubController.js"></script>
+    <script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/bootstrap-datetimepicker.min.js" ></script>
     <title>Inboxhub</title>
 </head>
 <body>
 
-<%
-    Boolean viewMode = (Boolean) request.getAttribute("viewMode");
-%>
 <script>
-    const contextPath = "<%=request.getContextPath()%>";
+    const contextPath = "<e:forJavaScriptBlock value='${pageContext.request.contextPath}' />";
 </script>
-<input type="hidden" id="ctx" value="<%=request.getContextPath()%>"/>
+<input type="hidden" id="ctx" value="<e:forHtmlAttribute value='${pageContext.request.contextPath}' />";/>
 
 <div class="container-fluid">
     <div class="row">
