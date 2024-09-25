@@ -1,22 +1,3 @@
-<!--
-Copyright (c) 2023. Magenta Health Inc. All Rights Reserved.
-
-This software is published under the GPL GNU General Public License.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
--->
-
 <%@ page import="java.util.*" %>
 <%@ page import="oscar.oscarLab.ca.on.*" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
@@ -29,10 +10,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
-<script>
-    ctx = "<e:forJavaScriptBlock value='${pageContext.request.contextPath}' />";
-    const searchProviderNo = "<e:forJavaScriptBlock value='${sessionScope.user}' />";
-</script>
+<c:if test="${page eq 1}">
 <div class="bg-light text-light">
     <row>
         <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('${sessionScope.user}')">
@@ -58,7 +36,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <th>Ack #</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="inoxhubListModeTableBody">
+</c:if>
+            <c:if test="${page ge 1}">
             <c:forEach var="labResult" items="${labDocs}" varStatus="loopStatus">
                 <tr id="labdoc_${labResult.segmentID}" class="${labResult.resultStatus == 'A' ? 'table-danger' : ''}">
                     <td>
@@ -82,9 +62,60 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <td>${labResult.acknowledgedStatus == 'Y' ? 1 : 0}</td>
                 </tr>
             </c:forEach>
+            </c:if>
+<c:if test="${page eq 1}">
             </tbody>
         </table>
         </div>
     </row>
 </div>
-<script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>
+<script>
+    ctx = "<e:forJavaScript value='${pageContext.request.contextPath}' />";
+
+    $('#inbox_table').DataTable({
+        autoWidth: false,
+        searching: false,
+        scrollCollapse: true,
+        paging: false,
+        columnDefs: [
+            {type: 'non-empty-string', targets: "_all"},
+            {orderable: false, targets: 0}
+        ],
+        order: [[1, 'asc']],
+    });
+
+    //Opens a popup window to a given inbox item.
+    function reportWindow(page, height, width) {
+        if (height && width) {
+            windowprops = "height=" + height + ", width=" + width + ", location=no, scrollbars=yes, menubars=no, toolbars=no, resizable=yes, top=0, left=0";
+        } else {
+            windowprops = "height=660, width=960, location=no, scrollbars=yes, menubars=no, toolbars=no, resizable=yes, top=0, left=0";
+        }
+        var popup = window.open(encodeURI(page), "labreport", windowprops);
+        popup.focus();
+    }
+    
+    //Data table custom sorting to move empty or null slots on any selected sort to the bottom.
+    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+        "non-empty-string-asc": function (str1, str2) {
+            if (str1 == "")
+                return 1;
+            if (str2 == "")
+                return -1;
+            return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+        },
+        "non-empty-string-desc": function (str1, str2) {
+            if (str1 == "")
+                return 1;
+            if (str2 == "")
+                return -1;
+            return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+        }
+    });
+</script>
+</c:if>
+<c:if test="${!hasMoreListData}">
+<script>
+    hasMoreData = false;
+</script>
+</c:if>

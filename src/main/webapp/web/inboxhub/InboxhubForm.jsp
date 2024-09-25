@@ -46,7 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <div class="m-2">
                         <div class="d-grid mb-2">
                             <input type="checkbox" class="btn-check btn-sm" name="viewMode" ${query.viewMode ? 'checked' : ''}
-                                id="btnViewMode" autocomplete="off" onchange="this.form.submit()">
+                                id="btnViewMode" autocomplete="off" onchange="fetchInboxhubData()">
                             <label class="btn btn-outline-primary btn-sm" for="btnViewMode"><bean:message key="inbox.inboxmanager.msgPreviewModes"/></label>
                         </div>
 
@@ -240,7 +240,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingUnmatchedAll">
                             <span class="collapse-btn" data-bs-toggle="collapse" data-bs-target="#collapseUnmatchedAll" aria-expanded="true" aria-controls="collapseUnmatchedAll"></span>
-                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,0)">
+                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,0)">
                                 All (<span id="patientNumDocs0"><c:out value="${requestScope.categoryData.unmatchedDocs + requestScope.categoryData.unmatchedLabs}" /></span>)
                             </a>
                         </div>
@@ -291,7 +291,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingPatient${patientId}MatchedAll">
                             <span class="collapse-btn collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePatient${patientId}MatchedAll" aria-expanded="true" aria-controls="collapsePatient${patientId}MatchedAll"></span>
-                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,${patientId});" title="<e:forHtmlAttribute value='${patientName}' />">
+                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,${patientId});" title="<e:forHtmlAttribute value='${patientName}' />">
                                 <e:forHtmlContent value='${patientName}' /> (<span id="patientNumDocs${patientId}">${numDocs}</span>)
                             </a>
                         </div>
@@ -326,6 +326,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </c:if>
 
 <script>
+    var page = 1;
+    var pageSize = 40;
+    var hasMoreData = true;
+    var isFetchingData = false;
+    var filter = "";
+    var searchProviderNo = "<e:forJavaScript value='${sessionScope.user}' />";
+
     $(document).ready( function() {
         toggleInputVisibility('specificProvider', 'specificProviderId', 0);
         toggleInputVisibility('specificPatients', 'specificPatientsId', 0);
@@ -343,6 +350,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
         // Adds a click event to all links within the '.category-list' to highlight the clicked link.
         highlightClickedLink();
+        fetchInboxhubData();
+        autoCompleteProvider();
     });
 
     function changeValueElementByName(name, value) {
@@ -454,15 +463,116 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         return true;
     }
 
-    function test() {
+    function fetchInboxhubData() {
+        resetDataPageCount();
+        const viewMode = document.getElementById("btnViewMode").checked;
+        if (viewMode) {
+            fetchInboxhubViewData();
+        } else {
+            fetchInboxhubListData();
+        }
+    }
+
+    function fetchInboxhubListData() {
+        if (!hasMoreData || isFetchingData) { return; }
+        isFetchingData = true; 
+        const url = "<e:forJavaScript value='${pageContext.request.contextPath}' />/web/inboxhub/Inboxhub.do?method=displayInboxList";
         $.ajax({
-			url: "${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm",
+			url: url,
 			method: 'POST',
-			data: $('#inboxSearchForm').serialize(),			
+			data: "page=" + page + "&pageSize=" + pageSize + filter,			
 			success: function(data) {
+                addDataInInboxhubListTable(data);
+                isFetchingData = false;
+                loadMoreListData();
 			},
             error: function(xhr, status, error) {
             }
         });
     }
+
+    function fetchInboxhubViewData() {
+        if (!hasMoreData || isFetchingData) { return; }
+        isFetchingData = true;
+        const url = "<e:forJavaScript value='${pageContext.request.contextPath}' />/web/inboxhub/Inboxhub.do?method=displayInboxView";
+        $.ajax({
+			url: url,
+			method: 'POST',
+			data: "page=" + page + "&pageSize=" + pageSize + filter,			
+			success: function(data) {
+                addDataInInboxhubViewTable(data);
+                isFetchingData = false;
+                page++;
+			},
+            error: function(xhr, status, error) {
+            }
+        });
+    }
+
+    function addDataInInboxhubListTable(data) {
+        if (page == 1) {
+            $("#inboxhubMode").html(data);
+            return;
+        }
+
+        let inboxhubListTable = $('#inbox_table').DataTable();
+
+        // Destroy DataTable to include new rows and ensure they are visible
+        inboxhubListTable.destroy();
+
+        // Append the new rows directly to the tbody
+        $('#inoxhubListModeTableBody').append(data);
+
+        // Re-initialize DataTable after adding the new rows
+        inboxhubListTable = $('#inbox_table').DataTable({
+            autoWidth: false,
+            searching: false,
+            scrollCollapse: true,
+            paging: false,
+            columnDefs: [
+                { type: 'non-empty-string', targets: "_all" },
+                { orderable: false, targets: 0 }
+            ],
+            order: [[1, 'asc']],
+        });
+    }
+
+    function addDataInInboxhubViewTable(data) {
+        if (page == 1) {
+            $("#inboxhubMode").html(data);
+        } else {
+            $("#inboxViewItems").append(data);
+        }
+    }
+
+    function autoCompleteProvider() {
+        $("#autocompleteProvider").autocomplete({
+            source: contextPath + "/provider/SearchProvider.do?method=labSearch",
+            minLength: 2,
+            focus: function (event, ui) {
+                $("#autocompleteProvider").val(ui.item.label);
+                return false;
+            },
+            select: function (event, ui) {
+                $("#autocompleteProvider").val(ui.item.label);
+                $("#findProvider").val(ui.item.value);
+                return false;
+            }
+        })
+    }
+
+    function loadMoreListData() {
+        page++;
+        fetchInboxhubListData();
+    }
+
+    function resetDataPageCount() {
+        page = 1;
+        hasMoreData = true;
+    }
+
+    // Function to check if the div is scrollable
+    // function isInboxViewItemsDivScrollable() {
+    //     return $("#inboxViewItems")[0].scrollHeight > $("#inboxViewItems").innerHeight();
+    // }
 </script>

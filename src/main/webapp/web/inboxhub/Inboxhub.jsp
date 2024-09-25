@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/security.tld" prefix="security" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" prefix="e" %>
 <%@page import="org.oscarehr.util.MiscUtils,org.apache.commons.lang.StringEscapeUtils" %>
 <%@page import="org.apache.logging.log4j.Logger,org.oscarehr.common.dao.OscarLogDao,org.oscarehr.util.SpringUtils" %>
 <%@page import="org.oscarehr.inboxhub.query.InboxhubQuery" %>
@@ -48,14 +49,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <script src="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript" charset="utf8" src="${pageContext.servletContext.contextPath}/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/DataTables/DataTables-1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script type="text/javascript" src="${pageContext.servletContext.contextPath}/web/inboxhub/inboxhubController.js"></script>
     <script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/bootstrap-datetimepicker.min.js" ></script>
+    <script src="<%=request.getContextPath()%>/share/javascript/oscarMDSIndex.js"></script>
     <title>Inboxhub</title>
 </head>
 <body>
 
 <script>
-    const contextPath = "<e:forJavaScriptBlock value='${pageContext.request.contextPath}' />";
+    const contextPath = "<e:forJavaScript value='${pageContext.request.contextPath}' />";
 </script>
 <input type="hidden" id="ctx" value="<e:forHtmlAttribute value='${pageContext.request.contextPath}' />";/>
 
@@ -73,14 +74,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </div>
         <div class="col px-0 m-1">
             <div class="bg-light text-dark">
-                <c:choose>
-                    <c:when test="${viewMode}">
-                        <jsp:include page="InboxhubViewMode.jsp"/>
-                    </c:when>
-                    <c:otherwise>
-                        <jsp:include page="InboxhubListMode.jsp"/>
-                    </c:otherwise>
-                </c:choose>
+                <div id="inboxhubMode"> 
+                </div>
             </div>
         </div>
     </div>

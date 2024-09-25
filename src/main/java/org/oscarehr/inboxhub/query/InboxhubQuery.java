@@ -42,6 +42,8 @@ public class InboxhubQuery extends ActionForm {
     private String status;
     private String startDate;
     private String endDate;
+    private int page;
+    private int pageSize;
 
     public String getEndDate() {
         return endDate;
@@ -181,6 +183,22 @@ public class InboxhubQuery extends ActionForm {
 
     public void setViewMode(Boolean viewMode) {
         this.viewMode = viewMode;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
     @Override

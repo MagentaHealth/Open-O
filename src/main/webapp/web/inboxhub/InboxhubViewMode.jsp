@@ -21,20 +21,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/security.tld" prefix="security" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<div id="inboxItems"></div>
-<script>
-    function displayInboxItems(amount) {
-        for (let i = 0; i < amount; i++) {
-            jQuery('<div>').appendTo('#inboxItems').load('Inboxhub.do?method=displayInboxItem');
-        }
-    }
+<%@ taglib uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" prefix="e" %>
 
-    $(window).ready(function(){
-        displayInboxItems(3);
-    });
-    $(window).scroll(function() {
-        if($(window).scrollTop() > $(document).height() - $(window).height() - 50) {
-            displayInboxItems(1);
+<c:if test="${page eq 1}">
+<div id="inboxViewItems" class="inbox-view-items pe-1">
+</c:if>
+    <c:if test="${page ge 1}">
+    <c:forEach var="labResult" items="${labDocs}" varStatus="loopStatus">
+        <c:set var="labResultTitle" value="${labResult.isDocument() ? 'Document: ' : (labResult.isHRM() ? 'HRM: ' : 'Lab: ')}"/>
+        <div class="document-card card mb-1 shadow-sm" id="labdoc_${labResult.segmentID}">
+            <div class="card-body">
+                <div class="card-title fw-bold"><c:out value="${labResultTitle}" /><e:forHtmlContent value='${labResult.patientName}' /></div>
+                <object type="text/html" width="100%" onload="this.style.height = (this.contentDocument.body.scrollHeight) + 'px';" data="${e:forHtml(labLinks[loopStatus.index])}">
+                    <!-- Optional fallback content -->
+                    Unable to display the document.
+                </object>
+            </div>
+        </div>
+    </c:forEach>
+    </c:if>
+<c:if test="${page eq 1}">
+</div>
+<script>
+    // Scroll event handler to fetch more data when reaching the bottom
+    $("#inboxViewItems").on('scroll', function() {
+        if ($("#inboxViewItems").scrollTop() + $("#inboxViewItems").innerHeight() >= $("#inboxViewItems")[0].scrollHeight - 10) {
+            if (!isFetchingData) {
+                fetchInboxhubViewData();
+            }
         }
     });
 </script>
+</c:if>
+<c:if test="${!hasMoreViewData}">
+<script>
+    hasMoreData = false;
+</script>
+</c:if>

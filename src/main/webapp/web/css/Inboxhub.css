@@ -91,6 +91,13 @@ input {
     width: 1px;
 }
 
+.inbox-view-items {
+    height: calc(100vh - 5em);
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 .inbox-table-responsive {
     height: calc(100vh - 7em);
     width: 100%;
@@ -105,6 +112,7 @@ input {
 .inbox-table-sticky-header th {
     position: sticky !important;
     top: 0;
+    padding-left: 0.25rem !important;
     background-color: #fff; /* Background color to prevent transparency when scrolled */
     z-index: 100; /* Ensure the header stays on top when scrolling */
 }
@@ -171,7 +179,7 @@ input {
     font-family: "FontAwesome";
     position: absolute;
     left: 5px;
-    top: 0;
+    top: -2px;
     transform: rotate(0deg);
     transition: transform 0.2s ease-in-out;
     font-size: 22px;
@@ -181,7 +189,7 @@ input {
 
 .collapse-btn:not(.collapsed):after {
     transform: rotate(90deg); /* Rotate the arrow on open */
-    top: 2px;
+    top: 0;
 }
 
 .collapse-heading {

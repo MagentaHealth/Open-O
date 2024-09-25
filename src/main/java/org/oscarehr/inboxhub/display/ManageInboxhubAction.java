@@ -21,14 +21,15 @@ package org.oscarehr.inboxhub.display;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import org.oscarehr.inboxhub.inboxdata.LabDataController;
 import org.oscarehr.inboxhub.query.InboxhubQuery;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
-import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
 import oscar.oscarLab.ca.on.LabResultData;
 import oscar.oscarMDS.data.CategoryData;
@@ -36,37 +37,45 @@ import oscar.oscarMDS.data.CategoryData;
 import java.util.*;
 
 public class ManageInboxhubAction extends DispatchAction {
-    int currentDoc ;
-    InboxhubQuery query;
-    ArrayList<LabResultData> labDocs;
+    private InboxhubQuery query;
+    private ArrayList<LabResultData> labDocs;
     private SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
 
     public ActionForward undefined(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         return mapping.findForward("error");
     }
 
-    public ActionForward displayInboxItem(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward displayInboxView(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
-        if (labDocs.isEmpty()) {
-            return mapping.findForward("error");
+        if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
+            return mapping.findForward("unauthorized");
         }
-        else {
-            if (currentDoc < labDocs.size()) {
-                LabResultData result = labDocs.get(currentDoc);
-                request.setAttribute("searchProviderNo", query.getSearchProviderNo());
-                request.setAttribute("labResult", result);
-                currentDoc++;
-                return mapping.findForward("displayItem");
-            }
+
+        String page = request.getParameter("page");
+        String pageSize = request.getParameter("pageSize");
+        query.setPage(Integer.parseInt(page));
+        query.setPageSize(Integer.parseInt(pageSize));
+
+        LabDataController labDataController = new LabDataController();
+        labDocs = labDataController.getLabData(loggedInInfo, query);
+        if (labDocs.size() > 0) {
+            String providerNo = request.getSession().getAttribute("user").toString();
+            ArrayList<String> labLinks = labDataController.getLabLink(labDocs, query, request.getContextPath(), providerNo);
+            request.setAttribute("labLinks", labLinks);
         }
-        return null;
+        request.setAttribute("page", page);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("hasMoreViewData", labDocs.size() > 0);
+        request.setAttribute("searchProviderNo", query.getSearchProviderNo());
+        request.setAttribute("labDocs", labDocs);
+
+        return mapping.findForward("displayView");
     }
 
     public ActionForward displayInboxForm(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         LabDataController labDataController = new LabDataController();
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
         String unclaimed = (String) request.getAttribute("unclaimed");
-        currentDoc = 0;
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
             return mapping.findForward("unauthorized");
         }
@@ -75,12 +84,9 @@ public class ManageInboxhubAction extends DispatchAction {
         if (query.getClearFilters()) {
             query.reset(mapping, request);
         }
-        labDocs = labDataController.getLabData(loggedInInfo, query);
+        
+        labDataController.sanitizeInboxFormQuery(loggedInInfo, query);
         CategoryData categoryData = labDataController.getCategoryData(query);
-        if (labDocs.size() > 0) {
-            ArrayList<String> labLinks = labDataController.getLabLink(labDocs, query, request);
-            request.setAttribute("labLinks", labLinks);
-        }
         if (Objects.equals(unclaimed, "1")) {
             query.reset(mapping,request);
             query.setSearchProviderNo("0");
@@ -89,8 +95,32 @@ public class ManageInboxhubAction extends DispatchAction {
         }
         request.setAttribute("viewMode", query.getViewMode());
         request.setAttribute("categoryData", categoryData);
-        request.setAttribute("labDocs", labDocs);
         return mapping.findForward("success");
+    }
+
+    public ActionForward displayInboxList(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+        LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+        if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
+            return mapping.findForward("unauthorized");
+        }
+
+        String page = request.getParameter("page");
+        String pageSize = request.getParameter("pageSize");
+        query.setPage(Integer.parseInt(page));
+        query.setPageSize(Integer.parseInt(pageSize));
+
+        LabDataController labDataController = new LabDataController();
+        labDocs = labDataController.getLabData(loggedInInfo, query);
+        if (labDocs.size() > 0) {
+            String providerNo = request.getSession().getAttribute("user").toString();
+            ArrayList<String> labLinks = labDataController.getLabLink(labDocs, query, request.getContextPath(), providerNo);
+            request.setAttribute("labLinks", labLinks);
+        }
+        request.setAttribute("page", page);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("hasMoreListData", labDocs.size() > 0);
+        request.setAttribute("labDocs", labDocs);
+        return mapping.findForward("displayList");
     }
 }
  

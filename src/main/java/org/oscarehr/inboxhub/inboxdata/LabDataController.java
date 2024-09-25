@@ -60,10 +60,10 @@ public class LabDataController {
         return null;
     }
     //Grabs lab link for specific inbox item.
-    public ArrayList<String> getLabLink(ArrayList<LabResultData> results, InboxhubQuery query, HttpServletRequest request) {
+    public ArrayList<String> getLabLink(ArrayList<LabResultData> results, InboxhubQuery query, String contextPath, String providerNo) {
         ArrayList<String> labLinks = new ArrayList<String>();
         for (int i = 0; i < results.size(); i++) {
-            StringBuilder url = new StringBuilder(request.getContextPath());
+            StringBuilder url = new StringBuilder(contextPath);
             LabResultData labResult = results.get(i);
             //Setting inbox item type:
             if (labResult.isMDS()) {
@@ -96,8 +96,10 @@ public class LabDataController {
                     if (duplicateLabIds.length()>0) duplicateLabIds.append(',');
                     duplicateLabIds.append(duplicateLabId);
                 }
-                url.append("&duplicateLabIds=");
+                url.append("duplicateLabIds=");
                 url.append((duplicateLabIds.toString()));
+                url.append("&id=");
+                url.append((labResult.getSegmentID()));
             }
             else {
                 url.append("/lab/CA/BC/labDisplay.jsp?");
@@ -105,14 +107,13 @@ public class LabDataController {
             url.append("&segmentID=");
             url.append((labResult.getSegmentID()));
             url.append("&providerNo=");
-            url.append((query.getSearchProviderNo()));
+            url.append(providerNo);
             url.append("&searchProviderNo=");
             url.append((query.getSearchProviderNo()));
             url.append("&status=");
             url.append((labResult.resultStatus));
             url.append("&demoName=");
             url.append((labResult.getPatientName()));
-            url.append("&isListView=false");
             labLinks.add(url.toString());
         }
         return labLinks;
@@ -138,18 +139,37 @@ public class LabDataController {
     }
     //Returns lab data based on the query. If lab, doc, and hrm flags are not set in the query returns all data from all data types.
     public ArrayList<LabResultData> getLabData(LoggedInInfo loggedInInfo, InboxhubQuery query) {
-        Integer page = 0;
-        Integer pageSize = Integer.MAX_VALUE;
+        Integer page = query.getPage() - 1;
+        Integer pageSize = query.getPageSize();
         //Whether to use the paging functionality. Currently setting this to false does not function and crashes the inbox.
         Boolean isPaged = true;
         Boolean mixLabsAndDocs = true;
         Date startDate = convertDate(query.getStartDate());
         Date endDate= convertDate(query.getEndDate());
-        String loggedInProviderNo = (String) loggedInInfo.getSession().getAttribute("user");
-        String loggedInName = ProviderData.getProviderName(loggedInProviderNo);
         CommonLabResultData comLab = new CommonLabResultData();
         InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean("inboxResultsDao");
         ArrayList<LabResultData> labDocs = new ArrayList<LabResultData>();
+
+        Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
+        if (query.getDoc() || all) {
+            labDocs.addAll(inboxResultsDao.populateDocumentResultsData(query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
+                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));
+        }
+        if (query.getLab() || all) {
+            labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
+                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
+        }
+        if (query.getHrm() || all) {
+            HRMResultsData hrmResult = new HRMResultsData();
+            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, query.getSearchProviderNo(), query.getPatientFirstName(),
+                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getDemographicNo(), query.getStatus(), startDate, endDate, isPaged, page, pageSize));
+        }
+        return labDocs;
+    }
+
+    public void sanitizeInboxFormQuery(LoggedInInfo loggedInInfo, InboxhubQuery query) {
+        String loggedInProviderNo = (String) loggedInInfo.getSession().getAttribute("user");
+        String loggedInName = ProviderData.getProviderName(loggedInProviderNo);
 
         //Checking unclaimed vs claimed physician. If no searchAll/provider search filter is provided reset search to logged in provider.
         if (Objects.equals(query.getSearchAll(), "true")) {//All
@@ -172,21 +192,5 @@ public class LabDataController {
             query.setPatientLastName("");
             query.setPatientHealthNumber("");
         }
-
-        Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
-        if (query.getDoc() || all) {
-            labDocs.addAll(inboxResultsDao.populateDocumentResultsData(query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
-                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));
-        }
-        if (query.getLab() || all) {
-            labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
-                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
-        }
-        if (query.getHrm() || all) {
-            HRMResultsData hrmResult = new HRMResultsData();
-            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, query.getSearchProviderNo(), query.getPatientFirstName(),
-                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getDemographicNo(), query.getStatus(), startDate, endDate, isPaged, page, pageSize));
-        }
-        return labDocs;
     }
 }
