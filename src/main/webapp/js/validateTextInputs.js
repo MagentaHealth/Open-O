@@ -52,7 +52,7 @@ function sanitizeAllTextAreas() {
 // General function to sanitize elements based on a provided regex pattern
 function sanitizeElementsByPattern(elements, pattern) {
     for (let i = 0; i < elements.length; i++) {
-        sanitizeElementByPattern(pattern, elements[i]);
+        sanitizeElementByPattern(elements[i], pattern);
     }
 }
 
