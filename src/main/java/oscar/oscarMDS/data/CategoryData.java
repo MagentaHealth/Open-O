@@ -72,6 +72,10 @@ public class CategoryData {
 		return unmatchedDocs;
 	}
 
+	public int getUnmatchedHRMCount() {
+		return unmatchedHRMCount;
+	}
+
 	public int getTotalNumDocs() {
 		return totalNumDocs;
 	}
@@ -451,11 +455,13 @@ public class CategoryData {
 			if (patients.containsKey(id)) {
 				info = patients.get(id);
 				info.setDocCount(info.getDocCount() + hrmCount);
+				info.setHrmCount(hrmCount);
 			}
 			// Otherwise adding a new patient record.
 			else {
 				info = new PatientInfo(id, rs.getString("first_name"), rs.getString("last_name"));
 				info.setDocCount(hrmCount);
+				info.setHrmCount(hrmCount);
 				patients.put(info.getId(), info);
 			}
 

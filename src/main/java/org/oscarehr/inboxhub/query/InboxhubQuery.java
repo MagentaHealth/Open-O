@@ -45,6 +45,22 @@ public class InboxhubQuery extends ActionForm {
     private int page;
     private int pageSize;
 
+    public enum TypeFilter {
+        ALL("all"),
+        DOC("doc"),
+        LAB("lab"),
+        HRM("hrm");
+
+        private final String value;
+        TypeFilter(String value) { this.value = value; }
+        public String getValue() { return value; }
+        public static TypeFilter fromValue(String value) {
+            return "doc".equals(value) ? DOC :
+                   "lab".equals(value) ? LAB :
+                   "hrm".equals(value) ? HRM : ALL;
+        }
+    }
+
     public String getEndDate() {
         return endDate;
     }

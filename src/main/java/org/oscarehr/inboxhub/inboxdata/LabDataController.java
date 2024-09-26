@@ -167,7 +167,7 @@ public class LabDataController {
         return labDocs;
     }
 
-    public void sanitizeInboxFormQuery(LoggedInInfo loggedInInfo, InboxhubQuery query) {
+    public void sanitizeInboxFormQuery(LoggedInInfo loggedInInfo, InboxhubQuery query, String demographicFilter, String typeFilterValue) {
         String loggedInProviderNo = (String) loggedInInfo.getSession().getAttribute("user");
         String loggedInName = ProviderData.getProviderName(loggedInProviderNo);
 
@@ -191,6 +191,23 @@ public class LabDataController {
             query.setPatientFirstName("");
             query.setPatientLastName("");
             query.setPatientHealthNumber("");
+        }
+
+        if (demographicFilter != null) {
+            query.setDemographicNo(demographicFilter);
+        }
+
+        if (typeFilterValue != null) {
+            InboxhubQuery.TypeFilter typeFilter = InboxhubQuery.TypeFilter.fromValue(typeFilterValue.toLowerCase());
+            query.setLab(false);
+            query.setDoc(false);
+            query.setHrm(false);
+            switch (typeFilter) {
+                case DOC: query.setDoc(true); break;
+                case LAB: query.setLab(true); break;
+                case HRM: query.setHrm(true); break;
+                default: break;
+            }
         }
     }
 }

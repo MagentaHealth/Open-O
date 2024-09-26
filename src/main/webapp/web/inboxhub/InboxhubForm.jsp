@@ -224,10 +224,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </div>
 <!-- End of the Search form Accordion -->
 
-<c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 or not empty requestScope.categoryData.patientList }">
+<c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 or categoryData.unmatchedHRMCount gt 0 or not empty requestScope.categoryData.patientList }">
 <div class="category-list"> 
-    <!-- Unmatched List Accordion -->
     <c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 }">
+    <!-- Unmatched List Accordion -->
     <div class="accordion mt-1" id="inbox-hub-unmatched-list">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingUnmatchedList">
@@ -240,24 +240,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingUnmatchedAll">
                             <span class="collapse-btn" data-bs-toggle="collapse" data-bs-target="#collapseUnmatchedAll" aria-expanded="true" aria-controls="collapseUnmatchedAll"></span>
-                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,0)">
-                                All (<span id="patientNumDocs0"><c:out value="${requestScope.categoryData.unmatchedDocs + requestScope.categoryData.unmatchedLabs}" /></span>)
+                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(0, 'all')">
+                                All (<span id="patientNumDocs0"><c:out value="${categoryData.unmatchedDocs + categoryData.unmatchedLabs + categoryData.unmatchedHRMCount}" /></span>)
                             </a>
                         </div>
                         <div id="collapseUnmatchedAll" class="accordion-collapse collapse show" aria-labelledby="headingUnmatchedAll">
                             <div class="accordion-body collapse-sub-category-list">
                                 <ul class="list-unstyled" id="labdoc0showSublist">
-                                    <c:if test="${ categoryData.unmatchedDocs gt 0}" >
+                                    <c:if test="${ not empty categoryData.unmatchedDocs }" >
                                     <li>
-                                        <a id="patient0docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,0,CATEGORY_TYPE_DOC);" title="Documents">
+                                        <a id="patient0docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'doc');" title="Documents">
                                             Documents (<span id="pDocNum_0"><c:out value="${categoryData.unmatchedDocs}" /></span>)
                                         </a>
                                     </li>
                                     </c:if>
-                                    <c:if test="${ categoryData.unmatchedLabs gt 0 }" >
+                                    <c:if test="${ not empty categoryData.unmatchedLabs }" >
                                     <li>
-                                        <a id="patient0hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,0,CATEGORY_TYPE_HL7);" title="HL7">
+                                        <a id="patient0hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'lab');" title="HL7">
                                             HL7 (<span id="pLabNum_0"><c:out value="${categoryData.unmatchedLabs}" /></span>)
+                                        </a>
+                                    </li>
+                                    </c:if>
+                                    <c:if test="${ not empty categoryData.unmatchedHRMCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion() }" >
+                                    <li>
+                                        <a id="patient0hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'hrm');" title="HRM">
+                                            HRM (<span id="pHRMNum_0"><c:out value="${categoryData.unmatchedHRMCount}" /></span>)
                                         </a>
                                     </li>
                                     </c:if>
@@ -269,9 +276,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             </div>
         </div>
     </div>
-    </c:if>
     <!-- End of the Unmatched Accordion -->
-
+    </c:if>
+    <c:if test="${ not empty requestScope.categoryData.patientList }">
     <!-- Matched List Accordion -->
     <div class="accordion mt-1" id="inbox-hub-matched-list">
         <div class="accordion-item">
@@ -288,27 +295,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <c:set var="numDocs" value="${ patient.docCount + patient.labCount }" />
                     <c:set var="docCount" value="${ patient.docCount }" />
                     <c:set var="labCount" value="${ patient.labCount }" />
+                    <c:set var="hrmCount" value="${ patient.hrmCount }" />
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingPatient${patientId}MatchedAll">
                             <span class="collapse-btn collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePatient${patientId}MatchedAll" aria-expanded="true" aria-controls="collapsePatient${patientId}MatchedAll"></span>
-                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="changeView(CATEGORY_PATIENT,${patientId});" title="<e:forHtmlAttribute value='${patientName}' />">
+                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(${patientId}, 'all');" title="<e:forHtmlAttribute value='${patientName}' />">
                                 <e:forHtmlContent value='${patientName}' /> (<span id="patientNumDocs${patientId}">${numDocs}</span>)
                             </a>
                         </div>
                         <div id="collapsePatient${patientId}MatchedAll" class="accordion-collapse collapse" aria-labelledby="headingPatient${patientId}MatchedAll">
                             <div class="accordion-body collapse-sub-category-list">
                                 <ul class="list-unstyled" id="labdoc${patientId}showSublist">
-                                    <c:if test="${not empty docCount}">
+                                    <c:if test="${not empty (docCount - hrmCount)}">
                                     <li>
-                                        <a id="patient${patientId}docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,${patientId},CATEGORY_TYPE_DOC);" title="Documents">
-                                            Documents (<span id="pDocNum_${patientId}">${docCount}</span>)
+                                        <a id="patient${patientId}docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'doc');" title="Documents">
+                                            Documents (<span id="pDocNum_${patientId}">${docCount - hrmCount}</span>)
                                         </a>
                                     </li>
                                     </c:if>
                                     <c:if test="${not empty labCount}">
                                     <li>
-                                        <a id="patient${patientId}hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="changeView(CATEGORY_PATIENT_SUB,${patientId},CATEGORY_TYPE_HL7);" title="HL7">
+                                        <a id="patient${patientId}hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'lab');" title="HL7">
                                             HL7 (<span id="pLabNum_${patientId}">${labCount}</span>)
+                                        </a>
+                                    </li>
+                                    </c:if>
+                                    <c:if test="${not empty hrmCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion()}">
+                                    <li>
+                                        <a id="patient${patientId}hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'hrm');" title="HRM">
+                                            HRM (<span id="pLabNum_${patientId}">${hrmCount}</span>)
                                         </a>
                                     </li>
                                     </c:if>
@@ -322,14 +337,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         </div>
     </div>
     <!-- End of the Matched Accordion -->
+    </c:if>
 </div>
 </c:if>
 
 <script>
     var page = 1;
-    var pageSize = 40;
+    var pageSize = 30;
     var hasMoreData = true;
     var isFetchingData = false;
+    var inboxSearchFormData = "";
     var filter = "";
     var searchProviderNo = "<e:forJavaScript value='${sessionScope.user}' />";
 
@@ -350,7 +367,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
         // Adds a click event to all links within the '.category-list' to highlight the clicked link.
         highlightClickedLink();
+
+        inboxSearchFormData = $("#inboxSearchForm").serialize();
         fetchInboxhubData();
+
         autoCompleteProvider();
     });
 
@@ -463,6 +483,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         return true;
     }
 
+    function filterView(demographicFilter, typeFilter) {
+        filter = "&demographicFilter=" + demographicFilter + "&typeFilter=" + typeFilter;
+        fetchInboxhubData();
+    }
+
     function fetchInboxhubData() {
         resetDataPageCount();
         const viewMode = document.getElementById("btnViewMode").checked;
@@ -480,7 +505,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         $.ajax({
 			url: url,
 			method: 'POST',
-			data: "page=" + page + "&pageSize=" + pageSize + filter,			
+			data: inboxSearchFormData + filter + "&page=" + page + "&pageSize=" + pageSize,		
 			success: function(data) {
                 addDataInInboxhubListTable(data);
                 isFetchingData = false;
@@ -498,7 +523,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         $.ajax({
 			url: url,
 			method: 'POST',
-			data: "page=" + page + "&pageSize=" + pageSize + filter,			
+			data: inboxSearchFormData + filter + "&page=" + page + "&pageSize=" + pageSize,			
 			success: function(data) {
                 addDataInInboxhubViewTable(data);
                 isFetchingData = false;

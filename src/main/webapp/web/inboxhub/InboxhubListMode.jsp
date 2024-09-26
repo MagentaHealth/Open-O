@@ -114,7 +114,7 @@
     });
 </script>
 </c:if>
-<c:if test="${!hasMoreListData}">
+<c:if test="${!hasMoreData}">
 <script>
     hasMoreData = false;
 </script>

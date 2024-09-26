@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         <div class="document-card card mb-1 shadow-sm" id="labdoc_${labResult.segmentID}">
             <div class="card-body">
                 <div class="card-title fw-bold"><c:out value="${labResultTitle}" /><e:forHtmlContent value='${labResult.patientName}' /></div>
-                <object type="text/html" width="100%" onload="this.style.height = (this.contentDocument.body.scrollHeight) + 'px';" data="${e:forHtml(labLinks[loopStatus.index])}">
+                <object type="text/html" width="100%" onload="this.style.height = (this.contentDocument.body.scrollHeight + 40) + 'px';" data="${e:forHtml(labLinks[loopStatus.index])}">
                     <!-- Optional fallback content -->
                     Unable to display the document.
                 </object>
@@ -53,7 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     });
 </script>
 </c:if>
-<c:if test="${!hasMoreViewData}">
+<c:if test="${!hasMoreData}">
 <script>
     hasMoreData = false;
 </script>
