@@ -8168,7 +8168,7 @@ CREATE TABLE IF NOT EXISTS hl7TextInfo(
 	discipline varchar(100),
 	last_name varchar(30),
 	first_name varchar(30),
-	report_status varchar(10) NOT NULL,
+	report_status varchar(20) NOT NULL,
 	accessionNum varchar(255),
 	filler_order_num varchar(50),
 	sending_facility varchar(50),

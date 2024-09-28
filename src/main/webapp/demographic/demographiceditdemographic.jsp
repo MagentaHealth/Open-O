@@ -261,9 +261,8 @@ if(!authed) {
 </oscar:oscarPropertiesCheck>
 
 <!-- calendar stylesheet -->
-<link rel="stylesheet" type="text/css" media="all"
-	href="../share/calendar/calendar.css" title="win2k-cold-1" />
-
+    <link rel="stylesheet" type="text/css" media="all" href="../share/calendar/calendar.css" title="win2k-cold-1" />
+	<link rel="stylesheet" type="text/css" media="all" href="<%=request.getContextPath()%>/library/jquery/jquery-ui-1.12.1.min.css" />
 	<script type="text/javascript" src="<%=request.getContextPath()%>/library/jquery/jquery-1.12.0.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/library/jquery/jquery-ui-1.12.1.min.js"></script>
 <% if (oscarProps.getBooleanProperty("workflow_enhance", "true")) { %>
@@ -406,10 +405,10 @@ function checkHin() {
 	if (!isValidHin(hin, province))
 	{
 		alert ("<bean:message key="demographic.demographiceditdemographic.msgWrongHIN"/>");
-		return(false);
+		return false;
 	}
 
-	return(true);
+	return true;
 }
 
 
@@ -641,9 +640,10 @@ function hideItem(id){
 
 <security:oscarSec roleName="<%= roleName$ %>" objectName="_eChart" rights="r" reverse="<%= false %>" >
 var numMenus = 1;
-var encURL = "<c:out value="${ctx}"/>/oscarEncounter/IncomingEncounter.do?providerNo=<%=curProvider_no%>&appointmentNo=&demographicNo=<%=demographic_no%>&curProviderNo=&reason=<%=URLEncoder.encode(noteReason)%>&encType=<%=URLEncoder.encode("telephone encounter with client")%>&userName=<%=URLEncoder.encode( userfirstname+" "+userlastname) %>&curDate=<%=dateString%>&appointmentDate=&startTime=&status=";
+var encURL = "${ctx}/oscarEncounter/IncomingEncounter.do?providerNo=<%=curProvider_no%>&appointmentNo=&demographicNo=<%=demographic_no%>&curProviderNo=&reason=<%=URLEncoder.encode(noteReason)%>&encType=<%=URLEncoder.encode("telephone encounter with client")%>&userName=<%=URLEncoder.encode( userfirstname+" "+userlastname) %>&curDate=<%=dateString%>&appointmentDate=&startTime=&status=";
+
 function showMenu(menuNumber, eventObj) {
-    var menuId = 'menu' + menuNumber;
+    let menuId = 'menu' + menuNumber;
     return showPopup(menuId, eventObj);
 }
 
@@ -1070,7 +1070,7 @@ if(wLReadonly.equals("")){
 					else if("ON".equals(prov)) 
 					{
 					%>
-						<a href="javascript: function myFunction() {return false; }"
+						<a href="javascript:void(0)"
 							onClick="popupPage(500,800,'../billing/CA/ON/billinghistory.jsp?demographic_no=<%=demographic.getDemographicNo()%>&last_name=<%=URLEncoder.encode(demographic.getLastName())%>&first_name=<%=URLEncoder.encode(demographic.getFirstName())%>&orderby=appointment_date&displaymode=appt_history&dboperation=appt_history&limit1=0&limit2=10')">
 						<bean:message key="demographic.demographiceditdemographic.msgBillHistory"/></a>
 					<%
@@ -1078,15 +1078,18 @@ if(wLReadonly.equals("")){
 					else
 					{
 					%>
-						<a href="#"
-							onclick="popupPage(800,1000,'../billing/CA/BC/billStatus.jsp?lastName=<%=URLEncoder.encode(demographic.getLastName())%>&firstName=<%=URLEncoder.encode(demographic.getFirstName())%>&filterPatient=true&demographicNo=<%=demographic.getDemographicNo()%>');return false;">
+						<a href="javascript:void(0)" onclick="popupPage(800,1000,'../billing/CA/BC/billStatus.jsp?lastName=<%=URLEncoder.encode(demographic.getLastName())%>&firstName=<%=URLEncoder.encode(demographic.getFirstName())%>&filterPatient=true&demographicNo=<%=demographic.getDemographicNo()%>');return false;">
 						<bean:message key="demographic.demographiceditdemographic.msgInvoiceList"/></a>
 
 
 						<br/>
-						<a  href="javascript:void(0);" onclick="return !showMenu('2', event);" onmouseover="callEligibilityWebService('../billing/CA/BC/ManageTeleplan.do','returnTeleplanMsg');"><bean:message key="demographic.demographiceditdemographic.btnCheckElig"/></a>
-						<div id='menu2' class='menu' onclick='event.cancelBubble = true;' style="width:350px;">
-							<span id="search_spinner" ><bean:message key="demographic.demographiceditdemographic.msgLoading"/></span>
+						<a href="javascript:void(0);" onclick="checkInsuranceEligibility()">
+							<bean:message key="demographic.demographiceditdemographic.btnCheckElig"/>
+						</a>
+						<div id='menu2' style="display:none;width:350px;">
+							<span id="search_spinner" >
+								<bean:message key="demographic.demographiceditdemographic.msgLoading"/>
+							</span>
 							<span id="returnTeleplanMsg"></span>
 						</div>
 					<%}%>
@@ -1094,7 +1097,7 @@ if(wLReadonly.equals("")){
 			</tr>
 			<tr>
 				<td><a
-					href="javascript: function myFunction() {return false; }"
+					href="javascript:void(0)"
 					onClick="popupPage(700, 1000, '../billing.do?billRegion=<%=URLEncoder.encode(prov)%>&billForm=<%=URLEncoder.encode(oscarProps.getProperty("default_view"))%>&hotclick=&appointment_no=0&demographic_name=<%=URLEncoder.encode(demographic.getLastName())%>%2C<%=URLEncoder.encode(demographic.getFirstName())%>&demographic_no=<%=demographic.getDemographicNo()%>&providerview=<%=demographic.getProviderNo()%>&user_no=<%=curProvider_no%>&apptProvider_no=none&appointment_date=<%=dateString%>&start_time=00:00:00&bNewForm=1&status=t');return false;"
 					title="<bean:message key="demographic.demographiceditdemographic.msgBillPatient"/>"><bean:message key="demographic.demographiceditdemographic.msgCreateInvoice"/></a></td>
 			</tr>
@@ -4240,17 +4243,20 @@ Calendar.setup({ inputField : "waiting_list_referral_date", ifFormat : "%Y-%m-%d
 
 Calendar.setup({ inputField : "paper_chart_archived_date", ifFormat : "%Y-%m-%d", showsTime :false, button : "archive_date_cal", singleClick : true, step : 1 });
 
-function callEligibilityWebService(url,id){
-
-       var ran_number=Math.round(Math.random()*1000000);
-       var params = "demographic=<%=demographic_no%>&method=checkElig&rand="+ran_number;  //hack to get around ie caching the page
-		 var response;
-       new Ajax.Request(url+'?'+params, {
-           onSuccess: function(response) {
-                document.getElementById(id).innerHTML=response.responseText ;
-                document.getElementById('search_spinner').innerHTML="";
-           }
-        } );
+function checkInsuranceEligibility() {
+	let params = {};
+	params.demographic =<%=demographic_no%>;
+	params.method = 'checkElig';
+	params.rand = Math.round(Math.random()*1000000);  //hack to get around ie caching the page
+    let url = '${ctx}/billing/CA/BC/ManageTeleplan.do';
+	jQuery.post(url, params, function() {
+		jQuery('#menu2').dialog({
+			title: "MSP Eligibility"
+		});
+	}).done(function(data){
+		jQuery('#menu2 #search_spinner').text("");
+		jQuery('#menu2 #returnTeleplanMsg').text(data);
+	})
  }
 
 <%
