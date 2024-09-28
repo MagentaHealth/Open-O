@@ -44,8 +44,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </div>
 <script>
     // Scroll event handler to fetch more data when reaching the bottom
-    $("#inboxViewItems").on('scroll', function() {
-        if ($("#inboxViewItems").scrollTop() + $("#inboxViewItems").innerHeight() >= $("#inboxViewItems")[0].scrollHeight - 10) {
+    jQuery("#inboxViewItems").on('scroll', function() {
+        if (jQuery("#inboxViewItems").scrollTop() + jQuery("#inboxViewItems").innerHeight() >= jQuery("#inboxViewItems")[0].scrollHeight - 10) {
             if (!isFetchingData) {
                 fetchInboxhubViewData();
             }

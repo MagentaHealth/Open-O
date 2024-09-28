@@ -91,6 +91,23 @@ input {
     width: 1px;
 }
 
+/* Override jQuery UI dialog default styles to make it look like a card */
+.ui-dialog {
+    border: none !important;
+    padding: 0 !important;
+}
+.ui-dialog-titlebar {
+    padding: 0 !important;
+    border-bottom: none !important;
+}
+.ui-dialog-content {
+    padding: 0 !important;
+}
+.ui-dialog-buttonpane {
+    padding: 0 !important;
+    border-top: none !important;
+}
+
 .inbox-view-items {
     height: calc(100vh - 5em);
     width: 100%;

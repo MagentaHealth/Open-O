@@ -72,7 +72,7 @@
 <script>
     ctx = "<e:forJavaScript value='${pageContext.request.contextPath}' />";
 
-    $('#inbox_table').DataTable({
+    jQuery('#inbox_table').DataTable({
         autoWidth: false,
         searching: false,
         scrollCollapse: true,

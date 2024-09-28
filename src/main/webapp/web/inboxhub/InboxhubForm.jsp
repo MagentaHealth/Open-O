@@ -350,7 +350,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     var filter = "";
     var searchProviderNo = "<e:forJavaScript value='${sessionScope.user}' />";
 
-    $(document).ready( function() {
+    jQuery(document).ready( function() {
         toggleInputVisibility('specificProvider', 'specificProviderId', 0);
         toggleInputVisibility('specificPatients', 'specificPatientsId', 0);
 
@@ -368,7 +368,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         // Adds a click event to all links within the '.category-list' to highlight the clicked link.
         highlightClickedLink();
 
-        inboxSearchFormData = $("#inboxSearchForm").serialize();
+        inboxSearchFormData = jQuery("#inboxSearchForm").serialize();
         fetchInboxhubData();
 
         autoCompleteProvider();
@@ -381,7 +381,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     function toggleInputVisibility(selectedRadioId, inputDivId, animationTime) {
         const selectedRadio = document.getElementById(selectedRadioId);
-        const inputDiv = $('#' + inputDivId);
+        const inputDiv = jQuery('#' + inputDivId);
         if (selectedRadio.checked) {
             inputDiv.hide().removeClass('d-none').slideDown(animationTime);  // Show with animation and remove 'd-none'
         } else {
@@ -405,8 +405,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     }
 
     function setupDatepicker(dateInputId, clearBtnId) {
-        let dateInput = $(dateInputId);
-        let clearBtn = $(clearBtnId);
+        let dateInput = jQuery(dateInputId);
+        let clearBtn = jQuery(clearBtnId);
         
         dateInput.datetimepicker({
             format: 'YYYY-MM-DD',
@@ -502,7 +502,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (!hasMoreData || isFetchingData) { return; }
         isFetchingData = true; 
         const url = "<e:forJavaScript value='${pageContext.request.contextPath}' />/web/inboxhub/Inboxhub.do?method=displayInboxList";
-        $.ajax({
+        jQuery.ajax({
 			url: url,
 			method: 'POST',
 			data: inboxSearchFormData + filter + "&page=" + page + "&pageSize=" + pageSize,		
@@ -520,7 +520,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (!hasMoreData || isFetchingData) { return; }
         isFetchingData = true;
         const url = "<e:forJavaScript value='${pageContext.request.contextPath}' />/web/inboxhub/Inboxhub.do?method=displayInboxView";
-        $.ajax({
+        jQuery.ajax({
 			url: url,
 			method: 'POST',
 			data: inboxSearchFormData + filter + "&page=" + page + "&pageSize=" + pageSize,			
@@ -536,20 +536,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     function addDataInInboxhubListTable(data) {
         if (page == 1) {
-            $("#inboxhubMode").html(data);
+            jQuery("#inboxhubMode").html(data);
             return;
         }
 
-        let inboxhubListTable = $('#inbox_table').DataTable();
+        let inboxhubListTable = jQuery('#inbox_table').DataTable();
 
         // Destroy DataTable to include new rows and ensure they are visible
         inboxhubListTable.destroy();
 
         // Append the new rows directly to the tbody
-        $('#inoxhubListModeTableBody').append(data);
+        jQuery('#inoxhubListModeTableBody').append(data);
 
         // Re-initialize DataTable after adding the new rows
-        inboxhubListTable = $('#inbox_table').DataTable({
+        inboxhubListTable = jQuery('#inbox_table').DataTable({
             autoWidth: false,
             searching: false,
             scrollCollapse: true,
@@ -564,23 +564,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     function addDataInInboxhubViewTable(data) {
         if (page == 1) {
-            $("#inboxhubMode").html(data);
+            jQuery("#inboxhubMode").html(data);
         } else {
-            $("#inboxViewItems").append(data);
+            jQuery("#inboxViewItems").append(data);
         }
     }
 
     function autoCompleteProvider() {
-        $("#autocompleteProvider").autocomplete({
+        jQuery("#autocompleteProvider").autocomplete({
             source: contextPath + "/provider/SearchProvider.do?method=labSearch",
             minLength: 2,
             focus: function (event, ui) {
-                $("#autocompleteProvider").val(ui.item.label);
+                jQuery("#autocompleteProvider").val(ui.item.label);
                 return false;
             },
             select: function (event, ui) {
-                $("#autocompleteProvider").val(ui.item.label);
-                $("#findProvider").val(ui.item.value);
+                jQuery("#autocompleteProvider").val(ui.item.label);
+                jQuery("#findProvider").val(ui.item.value);
                 return false;
             }
         })
