@@ -159,7 +159,7 @@ public class LabDataController {
             labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
                     query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatus(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
         }
-        if (query.getHrm() || all) {
+        if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
             HRMResultsData hrmResult = new HRMResultsData();
             labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, query.getSearchProviderNo(), query.getPatientFirstName(),
                     query.getPatientLastName(), query.getPatientHealthNumber(), query.getDemographicNo(), query.getStatus(), startDate, endDate, isPaged, page, pageSize));

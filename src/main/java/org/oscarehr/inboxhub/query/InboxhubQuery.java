@@ -190,7 +190,7 @@ public class InboxhubQuery extends ActionForm {
     }
 
     public Boolean getAbnormalBool() {
-        return Objects.equals(abnormal, "All") ? null : Objects.equals(abnormal, "Normal") ? false : true;
+        return Objects.equals(abnormal, "all") ? null : Objects.equals(abnormal, "normalOnly") ? false : true;
     }
 
     public Boolean getViewMode() {
@@ -233,7 +233,7 @@ public class InboxhubQuery extends ActionForm {
         this.lab = false;
         this.hrm = false;
         this.unmatched = false;
-        this.abnormal = "All";
+        this.abnormal = "all";
         this.searchAll = "";
         this.viewMode = false;
         super.reset(mapping, request);

@@ -197,17 +197,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <input type="hidden" name="abnormal" id="abnormalId" value="${query.abnormal}"/>
                             <div class="form-check">
                                 <input type="radio" class="btn-check-input" name="abnormalResult" id="All" value="All"
-                                    ${query.abnormal eq 'All' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'All')">
+                                    ${query.abnormal eq 'all' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'all')">
                                 <label class="form-check-label" for="All"><bean:message key="inbox.inboxmanager.msgAll"/></label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="btn-check-input" name="abnormalResult" id="Abnormal" value="Abnormal"
-                                    ${query.abnormal eq 'Abnormal' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'Abnormal')">
+                                    ${query.abnormal eq 'abnormalOnly' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'abnormalOnly')">
                                 <label class="form-check-label" for="Abnormal"><bean:message key="global.abnormal"/></label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="btn-check-input" name="abnormalResult" id="Normal" value="Normal"
-                                    ${query.abnormal eq 'Normal' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'Normal')">
+                                    ${query.abnormal eq 'normalOnly' ? 'checked' : ''} onclick="changeValueElementByName('abnormal', 'normalOnly')">
                                 <label class="form-check-label" for="Normal"><bean:message key="inbox.inboxmanager.msgNormal"/></label>
                             </div>
                         </div>
@@ -341,11 +341,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </div>
 </c:if>
 
+<div aria-live="polite" aria-atomic="true" class="position-absolute bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="ajaxErrorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="d-flex">
+            <div class="toast-body">
+                An error occurred. Please try again later.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <script>
     var page = 1;
     var pageSize = 30;
     var hasMoreData = true;
     var isFetchingData = false;
+    var currentFetchRequest = null;
     var inboxSearchFormData = "";
     var filter = "";
     var searchProviderNo = "<e:forJavaScript value='${sessionScope.user}' />";
@@ -480,6 +492,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             errorMessage.classList.add('d-none'); // Hide error message
         }
 
+        ShowSpin(true);
         return true;
     }
 
@@ -489,9 +502,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     }
 
     function fetchInboxhubData() {
+        const viewModeBtn = document.getElementById("btnViewMode");
+        viewModeBtn.disabled = true;
         resetDataPageCount();
-        const viewMode = document.getElementById("btnViewMode").checked;
-        if (viewMode) {
+        if (viewModeBtn.checked) {
             fetchInboxhubViewData();
         } else {
             fetchInboxhubListData();
@@ -502,34 +516,45 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (!hasMoreData || isFetchingData) { return; }
         isFetchingData = true; 
         const url = "<e:forJavaScript value='${pageContext.request.contextPath}' />/web/inboxhub/Inboxhub.do?method=displayInboxList";
-        jQuery.ajax({
+        currentFetchRequest = jQuery.ajax({
 			url: url,
 			method: 'POST',
 			data: inboxSearchFormData + filter + "&page=" + page + "&pageSize=" + pageSize,		
 			success: function(data) {
+                HideSpin();
                 addDataInInboxhubListTable(data);
                 isFetchingData = false;
+                jQuery('#btnViewMode').prop('disabled', false);
                 loadMoreListData();
 			},
             error: function(xhr, status, error) {
+                if (status !== 'abort') { toastErrorMessage(); }
+                jQuery('#btnViewMode').prop('disabled', false);
+                HideSpin();
             }
         });
     }
 
     function fetchInboxhubViewData() {
+        ShowSpin(true);
         if (!hasMoreData || isFetchingData) { return; }
         isFetchingData = true;
         const url = "<e:forJavaScript value='${pageContext.request.contextPath}' />/web/inboxhub/Inboxhub.do?method=displayInboxView";
-        jQuery.ajax({
+        currentFetchRequest = jQuery.ajax({
 			url: url,
 			method: 'POST',
 			data: inboxSearchFormData + filter + "&page=" + page + "&pageSize=" + pageSize,			
 			success: function(data) {
+                HideSpin();
                 addDataInInboxhubViewTable(data);
                 isFetchingData = false;
+                jQuery('#btnViewMode').prop('disabled', false);
                 page++;
 			},
             error: function(xhr, status, error) {
+                if (status !== 'abort') { toastErrorMessage(); }
+                jQuery('#btnViewMode').prop('disabled', false);
+                HideSpin();
             }
         });
     }
@@ -541,6 +566,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         }
 
         let inboxhubListTable = jQuery('#inbox_table').DataTable();
+
+        // Get the current sorting order before destroying the table
+        let currentOrder = inboxhubListTable.order();
 
         // Destroy DataTable to include new rows and ensure they are visible
         inboxhubListTable.destroy();
@@ -558,7 +586,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 { type: 'non-empty-string', targets: "_all" },
                 { orderable: false, targets: 0 }
             ],
-            order: [[1, 'asc']],
+            order: currentOrder // Apply the previous sorting order
         });
     }
 
@@ -592,8 +620,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     }
 
     function resetDataPageCount() {
+        ShowSpin(true);
+        if (currentFetchRequest) {
+            currentFetchRequest.abort();  // Cancel the ongoing AJAX request
+        }
+        jQuery("#inboxhubMode").empty();
         page = 1;
         hasMoreData = true;
+        isFetchingData = false;
+    }
+
+    function toastErrorMessage() {
+        const toastElement = new bootstrap.Toast(document.getElementById('ajaxErrorToast'));
+        toastElement.show();
     }
 
     // Function to check if the div is scrollable

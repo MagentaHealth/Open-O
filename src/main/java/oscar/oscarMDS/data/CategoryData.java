@@ -104,6 +104,7 @@ public class CategoryData {
 	private String patientLastName;
 	private String searchProviderNo;
 	private String status;
+	private String abnormalStatus;
 	private String patientFirstName;
 	private String patientHealthNumber;
 	private boolean patientSearch;
@@ -127,6 +128,7 @@ public class CategoryData {
 		this.patientHealthNumber = patientHealthNumber;
 		this.patientSearch = patientSearch;
 		this.providerSearch = providerSearch;
+		this.abnormalStatus = abnormalStatus;
 
 		SystemPreferencesDao systemPreferencesDao = SpringUtils.getBean(SystemPreferencesDao.class);
 		String dateSearchType = "serviceObservation";
@@ -204,7 +206,9 @@ public class CategoryData {
         totalLabs += getLabCountForPatientSearch();
 
         //Checking for HRM counts for Logged in Doctor
-        matchedHRMCount = getHRMDocumentCountForPatient();
+		if (abnormalStatus == null || !abnormalStatus.equals("abnormalOnly")) {
+			matchedHRMCount = getHRMDocumentCountForPatient();
+		}
 
         //Adding matched HRM count to total docs
         totalDocs += matchedHRMCount;
@@ -215,7 +219,9 @@ public class CategoryData {
             unmatchedLabs += getLabCountForUnmatched();
 
             //Unmatched Counts for HRM
-            unmatchedHRMCount += getHRMDocumentCountForUnmatched();
+			if (abnormalStatus == null || !abnormalStatus.equals("abnormalOnly")) {
+				unmatchedHRMCount += getHRMDocumentCountForUnmatched();
+			}
 
             //Adding Unmatched HRM to totalDocs
 			totalDocs += unmatchedHRMCount;

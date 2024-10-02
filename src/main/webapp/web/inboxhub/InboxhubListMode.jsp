@@ -40,16 +40,17 @@
 </c:if>
             <c:if test="${page ge 1}">
             <c:forEach var="labResult" items="${labDocs}" varStatus="loopStatus">
-                <tr id="labdoc_${labResult.segmentID}" class="${labResult.resultStatus == 'A' ? 'table-danger' : ''}">
+                <tr id="labdoc_${labResult.segmentID}" class="${!labResult.isMatchedToPatient() ? 'table-warning' : (labResult.resultStatus == 'A' ? 'table-danger' : '')}">
                     <td>
                         <c:set var="disabled" value="${!labResult.matchedToPatient && labResult.labType != 'DOC' ? 'disabled' : ''}"/>
                         <input type="checkbox" name="flaggedLabs" value="${labResult.segmentID}:${labResult.labType}" ${disabled}>
                     </td>
                     <td><e:forHtmlContent value='${labResult.healthNumber}' /></td>
                     <td>
+                        <c:set var="labRead" value="${labResult.hasRead(sessionScope.user) ? '' : '*'}"/>
                         <a href="javascript:void(0);" 
                         onclick="reportWindow('${labLinks[loopStatus.index]}', window.innerHeight, window.innerWidth); return false;">
-                            <e:forHtmlContent value='${labResult.patientName}' />
+                            <e:forHtmlContent value='${labRead}${labResult.patientName}' />
                         </a>
                     </td>
                     <td>${labResult.sex}</td>
@@ -58,7 +59,7 @@
                     <td>${labResult.priority}</td>
                     <td>${labResult.requestingClient}</td>
                     <td>${labResult.disciplineDisplayString == 'D' ? '' : labResult.disciplineDisplayString}</td>
-                    <td>${labResult.reportStatus == 'F' ? 'Final' : 'Partial'}</td>
+                    <td>${labResult.reportStatus}</td>
                     <td>${labResult.acknowledgedStatus == 'Y' ? 1 : 0}</td>
                 </tr>
             </c:forEach>

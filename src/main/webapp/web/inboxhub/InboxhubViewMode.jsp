@@ -29,10 +29,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <c:if test="${page ge 1}">
     <c:forEach var="labResult" items="${labDocs}" varStatus="loopStatus">
         <c:set var="labResultTitle" value="${labResult.isDocument() ? 'Document: ' : (labResult.isHRM() ? 'HRM: ' : 'Lab: ')}"/>
-        <div class="document-card card mb-1 shadow-sm" id="labdoc_${labResult.segmentID}">
+        <div class="document-card card mb-1 shadow-sm" id="labdoc_${labResult.segmentID}" style="height: 100%;">
             <div class="card-body">
                 <div class="card-title fw-bold"><c:out value="${labResultTitle}" /><e:forHtmlContent value='${labResult.patientName}' /></div>
-                <object type="text/html" width="100%" onload="this.style.height = (this.contentDocument.body.scrollHeight + 40) + 'px';" data="${e:forHtml(labLinks[loopStatus.index])}">
+                <object type="text/html" width="100%" height="100%"
+                    style="padding-bottom: 25px;"
+                    data="${e:forHtml(labLinks[loopStatus.index])}">
                     <!-- Optional fallback content -->
                     Unable to display the document.
                 </object>
@@ -43,13 +45,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <c:if test="${page eq 1}">
 </div>
 <script>
-    // Scroll event handler to fetch more data when reaching the bottom
-    jQuery("#inboxViewItems").on('scroll', function() {
-        if (jQuery("#inboxViewItems").scrollTop() + jQuery("#inboxViewItems").innerHeight() >= jQuery("#inboxViewItems")[0].scrollHeight - 10) {
-            if (!isFetchingData) {
-                fetchInboxhubViewData();
+    jQuery(document).ready(function() {
+        // Scroll event handler to fetch more data when reaching the bottom
+        jQuery("#inboxViewItems").on('scroll', function() {
+            if (jQuery("#inboxViewItems").scrollTop() + jQuery("#inboxViewItems").innerHeight() >= jQuery("#inboxViewItems")[0].scrollHeight - 10) {
+                if (!isFetchingData) {
+                    fetchInboxhubViewData();
+                }
             }
-        }
+        });
     });
 </script>
 </c:if>
