@@ -49,7 +49,7 @@
                     <td>
                         <c:set var="labRead" value="${labResult.hasRead(sessionScope.user) ? '' : '*'}"/>
                         <a href="javascript:void(0);" 
-                        onclick="reportWindow('${labLinks[loopStatus.index]}', window.innerHeight, window.innerWidth); return false;">
+                        onclick="reportWindow('${e:forJavaScript(labLinks[loopStatus.index])}', window.innerHeight, window.innerWidth); return false;">
                             <e:forHtmlContent value='${labRead}${labResult.patientName}' />
                         </a>
                     </td>
