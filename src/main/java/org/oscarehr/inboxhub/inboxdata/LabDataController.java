@@ -19,8 +19,8 @@
 
 package org.oscarehr.inboxhub.inboxdata;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.oscarehr.common.dao.InboxResultsDao;
+import org.oscarehr.common.model.Provider;
 import org.oscarehr.inboxhub.query.InboxhubQuery;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
@@ -31,7 +31,6 @@ import oscar.oscarLab.ca.on.LabResultData;
 import oscar.oscarMDS.data.CategoryData;
 import oscar.oscarMDS.data.ProviderData;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -147,7 +146,7 @@ public class LabDataController {
         Date startDate = convertDate(query.getStartDate());
         Date endDate= convertDate(query.getEndDate());
         CommonLabResultData comLab = new CommonLabResultData();
-        InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean("inboxResultsDao");
+        InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean(InboxResultsDao.class);
         ArrayList<LabResultData> labDocs = new ArrayList<LabResultData>();
 
         Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
@@ -169,7 +168,7 @@ public class LabDataController {
 
     public void sanitizeInboxFormQuery(LoggedInInfo loggedInInfo, InboxhubQuery query, String demographicFilter, String typeFilterValue) {
         String loggedInProviderNo = (String) loggedInInfo.getSession().getAttribute("user");
-        String loggedInName = ProviderData.getProviderName(loggedInProviderNo);
+        Provider loggedInProvider = ProviderData.getProvider(loggedInProviderNo);
 
         //Checking unclaimed vs claimed physician. If no searchAll/provider search filter is provided reset search to logged in provider.
         if (Objects.equals(query.getSearchAll(), "true")) {//All
@@ -182,7 +181,7 @@ public class LabDataController {
         }
         else if (Objects.equals(query.getSearchProviderNo(), "0") || Objects.equals(query.getSearchProviderNo(), "-1")) {
             query.setSearchProviderNo(loggedInProviderNo);
-            query.setSearchProviderName(loggedInName);
+            query.setSearchProviderName(loggedInProvider == null ? "" : loggedInProvider.getFormattedName());
         }
 
         //checking unmatched vs matched patient. Setting demographic number to 0 will grab inbox objects with no patient attached. This should overwrite all current patient queries.
