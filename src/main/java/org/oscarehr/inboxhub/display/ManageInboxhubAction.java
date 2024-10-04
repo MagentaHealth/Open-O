@@ -49,10 +49,13 @@ public class ManageInboxhubAction extends DispatchAction {
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.READ, null)) {
             return mapping.findForward("unauthorized");
         }
-        InboxhubQuery query = (InboxhubQuery) form;
-        request.setAttribute("query", query);
 
         LabDataController labDataController = new LabDataController();
+        String unclaimed = (String) request.getParameter("unclaimed");
+        InboxhubQuery query = (InboxhubQuery) form;
+        labDataController.setInboxFormQueryUnclaimed(query, unclaimed);
+        request.setAttribute("query", query);
+
         labDataController.sanitizeInboxFormQuery(loggedInInfo, query, null, null);
         CategoryData categoryData = labDataController.getCategoryData(query);
         

@@ -209,4 +209,11 @@ public class LabDataController {
             }
         }
     }
+
+    public void setInboxFormQueryUnclaimed(InboxhubQuery query, String unclaimed) {
+        if (unclaimed == null || !unclaimed.equals("1")) { return; }
+        query.reset(null, null);
+        query.setSearchAll("false");
+        query.setStatus("N");
+    }
 }
