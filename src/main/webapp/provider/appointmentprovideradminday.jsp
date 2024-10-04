@@ -924,7 +924,7 @@
 
                                         <c:if test="${doctorLinkRights}">
                                         <li>
-                                       <a HREF="#" id="inboxLink"
+                                       <a HREF="#" id="inboxLink">
                                                 <span id="oscar_new_lab"><bean:message key="global.lab"/></span>
                                             </a>
                                             <oscar:newUnclaimedLab>
