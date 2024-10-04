@@ -116,6 +116,8 @@ public class CategoryData {
 	private String labAbnormalSql = "";
 	private String hrmDateSql = "";
 	private String hrmProviderSql = "";
+	private String hrmViewed = "";
+	private String hrmSignedOff = "";
 
 	public CategoryData(String patientLastName, String patientFirstName, String patientHealthNumber, boolean patientSearch,
 					    boolean providerSearch, String searchProviderNo, String status, String abnormalStatus, 
@@ -186,6 +188,17 @@ public class CategoryData {
 			} else{
 				hrmProviderSql += " AND hp.providerNo ='" + searchProviderNo +"' ";
 			}
+		}
+
+		hrmViewed = " AND hp.viewed = 1 ";
+		hrmSignedOff = " AND hp.signedOff = 0 ";
+		if (status == null || status.equalsIgnoreCase("N")) {
+			hrmViewed = "";
+		} else if (status.equalsIgnoreCase("A") || status.equalsIgnoreCase("F")) {
+			hrmSignedOff = " AND hp.signedOff = 1 ";
+		} else if (status.isEmpty()) { // checks if status is an empty string
+			hrmViewed = "";
+			hrmSignedOff = "";
 		}
 
     	totalDocs = 0;
@@ -445,7 +458,8 @@ public class CategoryData {
 						+ " 	AND d.last_name " + (StringUtils.isEmpty(patientLastName) ? " IS NOT NULL " : " like '%"+patientLastName+"%' ")
 						+ "		AND d.hin " + (StringUtils.isEmpty(patientHealthNumber) ? " IS NOT NULL " : " like '%"+patientHealthNumber+"%' ")
 						+ "		AND d.first_name " + (StringUtils.isEmpty(patientFirstName) ? " IS NOT NULL " : " like '%"+patientFirstName+"%' ")
-						+ "		AND hp.signedOff = 0 "
+						+ hrmViewed
+						+ hrmSignedOff
 						+ hrmDateSql
 						+ hrmProviderSql
 						+ "GROUP BY demographic_no ";
@@ -482,7 +496,9 @@ public class CategoryData {
 		String sql = " SELECT HIGH_PRIORITY COUNT( distinct h.id) as count "
 					+" FROM HRMDocument h"
 					+" LEFT JOIN HRMDocumentToProvider hp ON h.id = hp.hrmDocumentId"
-					+" WHERE h.id NOT IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic) AND hp.signedOff=0 "
+					+" WHERE h.id NOT IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic) "
+					+ hrmViewed
+					+ hrmSignedOff
 					+ hrmDateSql
 					+ hrmProviderSql;
 
