@@ -76,6 +76,10 @@ public class CategoryData {
 		return unmatchedHRMCount;
 	}
 
+	public int getMatchedHRMCount() {
+		return matchedHRMCount;
+	}
+
 	public int getTotalNumDocs() {
 		return totalNumDocs;
 	}
@@ -372,23 +376,24 @@ public class CategoryData {
 		Connection c  = DbConnectionFilter.getThreadLocalDbConnection();
 		PreparedStatement ps = c.prepareStatement(sql);
 		ResultSet rs= ps.executeQuery(sql);
-        int count = 0;
+        int totalCount = 0;
         while(rs.next()){
         	int id = rs.getInt("demographic_no");
+			int count = rs.getInt("count");
         	// Updating patient info if it already exists.
         	if (patients.containsKey(id)) {
         		info = patients.get(id);
-        		info.setLabCount(rs.getInt("count"));
+        		info.setLabCount(count);
         	}
         	// Otherwise adding a new patient record.
         	else {
         		info = new PatientInfo(id, rs.getString("first_name"), rs.getString("last_name"));
-        		info.setLabCount(rs.getInt("count"));
+        		info.setLabCount(count);
         		patients.put(info.getId(), info);
         	}
-        	count += info.getLabCount();
+        	totalCount += count;
         }
-        return count;
+        return totalCount;
 	}
 
 	public int getLabCountForDemographic(String demographicNo) throws SQLException {
