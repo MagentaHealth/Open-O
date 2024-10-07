@@ -15,6 +15,14 @@
     <row>
         <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('${sessionScope.user}')">
         <input id="topFileBtn" type="button" class="btn btn-primary btn-sm" value="File" onclick="submitFile('${sessionScope.user}')"/>
+        <div class="d-flex align-items-center position-relative w-25 float-end">
+            <div class="progress me-3" id="loadInboxListProgress" style="height: 25px; display: none; flex-grow: 1;">
+                <div id="loadInboxListProgressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <span id="inboxListProgressCount" class="count">0%</span>
+                </div>
+            </div>
+            <button id="stopLoadingInboxList" onclick="stopInboxhubListProgress(0)" class="btn btn-sm btn-danger" style="display: none;">Stop</button>
+        </div>
     </row>
     <row>
         <div class="inbox-table-responsive">

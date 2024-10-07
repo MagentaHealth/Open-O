@@ -58,7 +58,9 @@ public class ManageInboxhubAction extends DispatchAction {
 
         labDataController.sanitizeInboxFormQuery(loggedInInfo, query, null, null);
         CategoryData categoryData = labDataController.getCategoryData(query);
-        
+        int totalResultsCount = labDataController.getTotalResultsCountBasedOnQuery(query, categoryData);
+
+        request.setAttribute("totalResultsCount", totalResultsCount);
         request.setAttribute("viewMode", query.getViewMode());
         request.setAttribute("categoryData", categoryData);
         return mapping.findForward("success");

@@ -216,4 +216,21 @@ public class LabDataController {
         query.setSearchAll("false");
         query.setStatus("N");
     }
+
+    public int getTotalResultsCountBasedOnQuery(InboxhubQuery query, CategoryData categoryData) {
+        int totalResultsCount = 0;
+        Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
+        if (query.getDoc() || all) {
+            // Subtracting MatchedHRMCount and UnmatchedHRMCount from total docs 
+            // because totalDocs include both documents and HRMs
+            totalResultsCount += (categoryData.getTotalDocs() - categoryData.getMatchedHRMCount() - categoryData.getUnmatchedHRMCount());
+        }
+        if (query.getLab() || all) {
+            totalResultsCount += categoryData.getTotalLabs();
+        }
+        if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
+            totalResultsCount += (categoryData.getMatchedHRMCount() + categoryData.getUnmatchedHRMCount());
+        }
+        return totalResultsCount;
+    }
 }

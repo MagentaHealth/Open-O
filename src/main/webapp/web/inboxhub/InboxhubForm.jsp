@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
 <!DOCTYPE html>
 
+<input type="hidden" class="totalResultsCount" id="totalResultsCount" value="${totalResultsCount}" />
 <!-- Search form Accordion -->
 <div class="accordion" id="inbox-hub-search">
     <div class="accordion-item">
@@ -214,7 +215,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
                         <!--Search Button-->
                         <div class="d-grid">
-                            <input class="btn btn-primary btn-sm" type="submit" value='<bean:message key="oscarMDS.search.btnSearch"/>'>
+                            <button id="inboxhubFormSearchBtn" class="btn btn-primary btn-sm" type="submit" value='<bean:message key="oscarMDS.search.btnSearch"/>'>
+                                <span id="inboxhubFormSearchSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                <span id="inboxhubFormSearchText"><bean:message key="oscarMDS.search.btnSearch"/></span>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -355,6 +359,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <script>
     var page = 1;
     var pageSize = 20;
+    var inboxhubListProgressWidth = 0;
     var hasMoreData = true;
     var isFetchingData = false;
     var currentFetchRequest = null;
@@ -562,6 +567,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     function addDataInInboxhubListTable(data) {
         if (page == 1) {
             jQuery("#inboxhubMode").html(data);
+            startInboxhubListProgress();
+            updateInboxhubListProgress();
             return;
         }
 
@@ -588,6 +595,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             ],
             order: currentOrder // Apply the previous sorting order
         });
+
+        updateInboxhubListProgress();
     }
 
     function addDataInInboxhubViewTable(data) {
@@ -633,6 +642,56 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     function toastErrorMessage() {
         const toastElement = new bootstrap.Toast(document.getElementById('ajaxErrorToast'));
         toastElement.show();
+    }
+
+    function startInboxhubListProgress() {
+        const totalResultsCount = jQuery("#totalResultsCount").val();
+        inboxhubListProgressWidth = 0;
+        jQuery('#loadInboxListProgressBar').attr('aria-valuemax', totalResultsCount);
+        jQuery('#loadInboxListProgressBar').css('width', inboxhubListProgressWidth + '%').attr('aria-valuenow', inboxhubListProgressWidth);
+        jQuery('#inboxListProgressCount').text(inboxhubListProgressWidth + '%');
+        
+        jQuery('#inboxhubFormSearchBtn').prop('disabled', true); // Disable button
+        jQuery('#inboxhubFormSearchSpinner').show(); // Show spinner
+        jQuery('#stopLoadingInboxList').show(); // Show stop button
+        jQuery('#loadInboxListProgress').show(); // Show progress bar
+    }
+
+    function stopInboxhubListProgress(hideTime) {
+        if (currentFetchRequest) {
+            currentFetchRequest.abort();  // Cancel the ongoing AJAX request
+        }
+        hasMoreData = false;
+        jQuery('#inboxhubFormSearchBtn').prop('disabled', false); // Enable search button
+        jQuery('#inboxhubFormSearchSpinner').hide(); // Hide spinner
+        setInterval(function() {
+            jQuery('#stopLoadingInboxList').hide(); // Hide stop button
+            jQuery('#loadInboxListProgress').hide(); // Hide progress bar
+        }, hideTime);
+    }
+
+    function updateInboxhubListProgress() {
+        const totalResultsCount = jQuery("#totalResultsCount").val();
+        const currentlyLoadedResultsCount = jQuery('#inoxhubListModeTableBody tr').length;
+        console.log("totalResultsCount: " + totalResultsCount +" currentlyLoadedResultsCount: " + currentlyLoadedResultsCount + " totalResultsCount >= currentlyLoadedResultsCount: " + (totalResultsCount>=currentlyLoadedResultsCount) + " totalResultsCount >= currentlyLoadedResultsCount && hasMoreData: " + (totalResultsCount >= currentlyLoadedResultsCount && hasMoreData));
+
+        if (totalResultsCount < currentlyLoadedResultsCount && hasMoreData) {
+            return;
+        }
+
+        if (totalResultsCount >= currentlyLoadedResultsCount && hasMoreData) {
+            const percentage = (currentlyLoadedResultsCount / totalResultsCount) * 100;
+            const formattedPercentage = percentage.toFixed(2); // Keep 2 digits after decimal
+            jQuery('#loadInboxListProgressBar').css('width', formattedPercentage + '%').attr('aria-valuenow', currentlyLoadedResultsCount);
+            jQuery('#inboxListProgressCount').text(formattedPercentage + '%');
+            return;
+        }
+
+        if (!hasMoreData) {
+            jQuery('#loadInboxListProgressBar').css('width', 100 + '%').attr('aria-valuenow', totalResultsCount);
+            jQuery('#inboxListProgressCount').text(100 + '%');
+            stopInboxhubListProgress(1000);
+        }
     }
 
     // Function to check if the div is scrollable
