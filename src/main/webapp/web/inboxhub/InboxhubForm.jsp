@@ -230,6 +230,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 <c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 or categoryData.unmatchedHRMCount gt 0 or not empty requestScope.categoryData.patientList }">
 <div class="category-list"> 
+    <c:set var="allTypes" value="${!query.doc and !query.lab and !query.hrm}" />
+    <c:set var="showHRM" value="${(query.hrm or allTypes) and (query.abnormalBool == null or !query.abnormalBool)}" />
+
     <c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 }">
     <!-- Unmatched List Accordion -->
     <div class="accordion mt-1" id="inbox-hub-unmatched-list">
@@ -243,29 +246,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <div class="accordion-body my-2 ms-3">
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingUnmatchedAll">
+                            <c:set var="unmatchedDocCount" value="${ categoryData.unmatchedDocs }" />
+                            <c:set var="unmatchedLabCount" value="${ categoryData.unmatchedLabs }" />
+                            <c:set var="unmatchedHrmCount" value="${ categoryData.unmatchedHRMCount }" />
+                            <c:set var="totalUnmatchedCount" value="0" />
+                            <c:set var="totalUnmatchedCount" value="${totalUnmatchedCount
+                                + (query.doc or allTypes ? categoryData.unmatchedDocs : 0)
+                                + (query.lab or allTypes ? categoryData.unmatchedLabs : 0)
+                                + (showHRM ? categoryData.unmatchedHRMCount : 0)}" />
                             <span class="collapse-btn" data-bs-toggle="collapse" data-bs-target="#collapseUnmatchedAll" aria-expanded="true" aria-controls="collapseUnmatchedAll"></span>
                             <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(0, 'all')">
-                                All (<span id="patientNumDocs0"><c:out value="${categoryData.unmatchedDocs + categoryData.unmatchedLabs + categoryData.unmatchedHRMCount}" /></span>)
+                                All (<span id="patientNumDocs0"><c:out value="${totalUnmatchedCount}" /></span>)
                             </a>
                         </div>
                         <div id="collapseUnmatchedAll" class="accordion-collapse collapse show" aria-labelledby="headingUnmatchedAll">
                             <div class="accordion-body collapse-sub-category-list">
                                 <ul class="list-unstyled" id="labdoc0showSublist">
-                                    <c:if test="${ not empty categoryData.unmatchedDocs }" >
+                                    <c:if test="${ not empty categoryData.unmatchedDocs and (query.doc or allTypes) }" >
                                     <li>
                                         <a id="patient0docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'doc');" title="Documents">
                                             Documents (<span id="pDocNum_0"><c:out value="${categoryData.unmatchedDocs}" /></span>)
                                         </a>
                                     </li>
                                     </c:if>
-                                    <c:if test="${ not empty categoryData.unmatchedLabs }" >
+                                    <c:if test="${ not empty categoryData.unmatchedLabs and (query.lab or allTypes) }" >
                                     <li>
                                         <a id="patient0hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'lab');" title="HL7">
                                             HL7 (<span id="pLabNum_0"><c:out value="${categoryData.unmatchedLabs}" /></span>)
                                         </a>
                                     </li>
                                     </c:if>
-                                    <c:if test="${ not empty categoryData.unmatchedHRMCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion() }" >
+                                    <c:if test="${ not empty categoryData.unmatchedHRMCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion() and showHRM}" >
                                     <li>
                                         <a id="patient0hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'hrm');" title="HRM">
                                             HRM (<span id="pHRMNum_0"><c:out value="${categoryData.unmatchedHRMCount}" /></span>)
@@ -282,7 +293,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     </div>
     <!-- End of the Unmatched Accordion -->
     </c:if>
-    <c:if test="${ not empty requestScope.categoryData.patientList }">
+    <c:if test="${ not empty requestScope.categoryData.patientList and !query.unmatched}">
     <!-- Matched List Accordion -->
     <div class="accordion mt-1" id="inbox-hub-matched-list">
         <div class="accordion-item">
@@ -296,10 +307,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <c:forEach items="${requestScope.categoryData.patientList}" var="patient">
                     <c:set var="patientId" value="${patient.id}" />
                     <c:set var="patientName" value="${ patient.lastName }, ${patient.firstName}" />
-                    <c:set var="numDocs" value="${ patient.docCount + patient.labCount }" />
-                    <c:set var="docCount" value="${ patient.docCount }" />
+                    <%-- Subtracting hrm count from document count because document count include both documents and HRMs --%>
+                    <c:set var="docCount" value="${ patient.docCount - patient.hrmCount }" />
                     <c:set var="labCount" value="${ patient.labCount }" />
                     <c:set var="hrmCount" value="${ patient.hrmCount }" />
+                    <c:set var="numDocs" value="0" />
+                    <c:set var="numDocs" value="${numDocs
+                                + (query.doc or allTypes ? docCount : 0)
+                                + (query.lab or allTypes ? labCount : 0)
+                                + (showHRM ? hrmCount : 0)}" />
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingPatient${patientId}MatchedAll">
                             <span class="collapse-btn collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePatient${patientId}MatchedAll" aria-expanded="true" aria-controls="collapsePatient${patientId}MatchedAll"></span>
@@ -310,21 +326,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                         <div id="collapsePatient${patientId}MatchedAll" class="accordion-collapse collapse" aria-labelledby="headingPatient${patientId}MatchedAll">
                             <div class="accordion-body collapse-sub-category-list">
                                 <ul class="list-unstyled" id="labdoc${patientId}showSublist">
-                                    <c:if test="${not empty (docCount - hrmCount)}">
+                                    <c:if test="${not empty docCount and (query.doc or allTypes)}">
                                     <li>
                                         <a id="patient${patientId}docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'doc');" title="Documents">
-                                            Documents (<span id="pDocNum_${patientId}">${docCount - hrmCount}</span>)
+                                            Documents (<span id="pDocNum_${patientId}">${docCount}</span>)
                                         </a>
                                     </li>
                                     </c:if>
-                                    <c:if test="${not empty labCount}">
+                                    <c:if test="${not empty labCount and (query.lab or allTypes)}">
                                     <li>
                                         <a id="patient${patientId}hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'lab');" title="HL7">
                                             HL7 (<span id="pLabNum_${patientId}">${labCount}</span>)
                                         </a>
                                     </li>
                                     </c:if>
-                                    <c:if test="${not empty hrmCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion()}">
+                                    <c:if test="${not empty hrmCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion() and showHRM}">
                                     <li>
                                         <a id="patient${patientId}hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'hrm');" title="HRM">
                                             HRM (<span id="pLabNum_${patientId}">${hrmCount}</span>)
@@ -630,6 +646,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     function resetDataPageCount() {
         ShowSpin(true);
+
+        // Enable search and hide the spinner if it is present.
+        jQuery('#inboxhubFormSearchBtn').prop('disabled', false); // Enable search button
+        jQuery('#inboxhubFormSearchSpinner').hide(); // Hide spinner
+
         if (currentFetchRequest) {
             currentFetchRequest.abort();  // Cancel the ongoing AJAX request
         }
@@ -673,7 +694,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     function updateInboxhubListProgress() {
         const totalResultsCount = jQuery("#totalResultsCount").val();
         const currentlyLoadedResultsCount = jQuery('#inoxhubListModeTableBody tr').length;
-        console.log("totalResultsCount: " + totalResultsCount +" currentlyLoadedResultsCount: " + currentlyLoadedResultsCount + " totalResultsCount >= currentlyLoadedResultsCount: " + (totalResultsCount>=currentlyLoadedResultsCount) + " totalResultsCount >= currentlyLoadedResultsCount && hasMoreData: " + (totalResultsCount >= currentlyLoadedResultsCount && hasMoreData));
 
         if (totalResultsCount < currentlyLoadedResultsCount && hasMoreData) {
             return;

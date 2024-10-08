@@ -198,13 +198,10 @@ public class LabDataController {
 
         if (typeFilterValue != null) {
             InboxhubQuery.TypeFilter typeFilter = InboxhubQuery.TypeFilter.fromValue(typeFilterValue.toLowerCase());
-            query.setLab(false);
-            query.setDoc(false);
-            query.setHrm(false);
             switch (typeFilter) {
-                case DOC: query.setDoc(true); break;
-                case LAB: query.setLab(true); break;
-                case HRM: query.setHrm(true); break;
+                case DOC: query.setLab(false); query.setDoc(true); query.setHrm(false); break;
+                case LAB: query.setLab(true); query.setDoc(false); query.setHrm(false); break;
+                case HRM: query.setLab(false); query.setDoc(false); query.setHrm(true); break;
                 default: break;
             }
         }
