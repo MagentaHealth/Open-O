@@ -146,7 +146,7 @@ public class LabDataController {
         Date startDate = convertDate(query.getStartDate());
         Date endDate= convertDate(query.getEndDate());
         CommonLabResultData comLab = new CommonLabResultData();
-        InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean(InboxResultsDao.class);
+        InboxResultsDao inboxResultsDao = (InboxResultsDao) SpringUtils.getBean("inboxResultsDao");
         ArrayList<LabResultData> labDocs = new ArrayList<LabResultData>();
 
         Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
