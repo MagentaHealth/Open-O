@@ -262,7 +262,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 + (query.lab or allTypes ? categoryData.unmatchedLabs : 0)
                                 + (showHRM ? categoryData.unmatchedHRMCount : 0)}" />
                             <span class="collapse-btn" data-bs-toggle="collapse" data-bs-target="#collapseUnmatchedAll" aria-expanded="true" aria-controls="collapseUnmatchedAll"></span>
-                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(0, 'all')">
+                            <a id="patient0all" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(0, 'all', this)">
                                 All (<span id="patientNumDocs0"><c:out value="${totalUnmatchedCount}" /></span>)
                             </a>
                         </div>
@@ -271,21 +271,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <ul class="list-unstyled" id="labdoc0showSublist">
                                     <c:if test="${ not empty categoryData.unmatchedDocs and (query.doc or allTypes) }" >
                                     <li>
-                                        <a id="patient0docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'doc');" title="Documents">
+                                        <a id="patient0docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'doc', this);" title="Documents">
                                             Documents (<span id="pDocNum_0"><c:out value="${categoryData.unmatchedDocs}" /></span>)
                                         </a>
                                     </li>
                                     </c:if>
                                     <c:if test="${ not empty categoryData.unmatchedLabs and (query.lab or allTypes) }" >
                                     <li>
-                                        <a id="patient0hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'lab');" title="HL7">
+                                        <a id="patient0hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'lab', this);" title="HL7">
                                             HL7 (<span id="pLabNum_0"><c:out value="${categoryData.unmatchedLabs}" /></span>)
                                         </a>
                                     </li>
                                     </c:if>
                                     <c:if test="${ not empty categoryData.unmatchedHRMCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion() and showHRM}" >
                                     <li>
-                                        <a id="patient0hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'hrm');" title="HRM">
+                                        <a id="patient0hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(0, 'hrm', this);" title="HRM">
                                             HRM (<span id="pHRMNum_0"><c:out value="${categoryData.unmatchedHRMCount}" /></span>)
                                         </a>
                                     </li>
@@ -326,7 +326,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     <div class="accordion-item border-0">
                         <div class="accordion-header category-list-header d-flex" id="headingPatient${patientId}MatchedAll">
                             <span class="collapse-btn collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePatient${patientId}MatchedAll" aria-expanded="true" aria-controls="collapsePatient${patientId}MatchedAll"></span>
-                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(${patientId}, 'all');" title="<e:forHtmlAttribute value='${patientName}' />">
+                            <a id="patient${patientId}all" href="javascript:void(0);" class="text-decoration-none text-wrap text-start collapse-heading btn category-btn py-1 px-0 ms-3" onclick="filterView(${patientId}, 'all', this);" title="<e:forHtmlAttribute value='${patientName}' />">
                                 <e:forHtmlContent value='${patientName}' /> (<span id="patientNumDocs${patientId}">${numDocs}</span>)
                             </a>
                         </div>
@@ -335,21 +335,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                                 <ul class="list-unstyled" id="labdoc${patientId}showSublist">
                                     <c:if test="${not empty docCount and (query.doc or allTypes)}">
                                     <li>
-                                        <a id="patient${patientId}docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'doc');" title="Documents">
+                                        <a id="patient${patientId}docs" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'doc', this);" title="Documents">
                                             Documents (<span id="pDocNum_${patientId}">${docCount}</span>)
                                         </a>
                                     </li>
                                     </c:if>
                                     <c:if test="${not empty labCount and (query.lab or allTypes)}">
                                     <li>
-                                        <a id="patient${patientId}hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'lab');" title="HL7">
+                                        <a id="patient${patientId}hl7s" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'lab', this);" title="HL7">
                                             HL7 (<span id="pLabNum_${patientId}">${labCount}</span>)
                                         </a>
                                     </li>
                                     </c:if>
                                     <c:if test="${not empty hrmCount and !OscarProperties.getInstance().isBritishColumbiaBillingRegion() and showHRM}">
                                     <li>
-                                        <a id="patient${patientId}hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'hrm');" title="HRM">
+                                        <a id="patient${patientId}hrms" href="javascript:void(0);" class="btn category-btn text-decoration-none" onclick="filterView(${patientId}, 'hrm', this);" title="HRM">
                                             HRM (<span id="pLabNum_${patientId}">${hrmCount}</span>)
                                         </a>
                                     </li>
@@ -404,9 +404,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         // Initialize datepickers and clear buttons
         setupDatepicker('#startDate', '#clearStartDate');
         setupDatepicker('#endDate', '#clearEndDate');
-
-        // Adds a click event to all links within the '.category-list' to highlight the clicked link.
-        highlightClickedLink();
 
         inboxSearchFormData = jQuery("#inboxSearchForm").serialize();
         fetchInboxhubData();
@@ -475,17 +472,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     /**
      * Adds a click event to all links within the '.category-list' to highlight the clicked link.
      */
-    function highlightClickedLink() {
-        document.querySelectorAll('.category-list a').forEach(link => {
-            link.addEventListener('click', function() {
-            // Remove 'selected' class from all links
+    function highlightClickedLink(link) {
+        // If the clicked link already has the 'selected' class, remove it
+        if (link.classList.contains('selected')) {
+            link.classList.remove('selected');
+        } else {
+            // Otherwise, remove 'selected' from all links and add it to the clicked link
             document.querySelectorAll('.category-list a').forEach(item => {
                 item.classList.remove('selected');
             });
-            // Add 'selected' class to the clicked link
-            this.classList.add('selected');
-            });
-        });
+            link.classList.add('selected');
+        }
     }
 
     function validatePatientOptions() {
@@ -524,8 +521,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         return true;
     }
 
-    function filterView(demographicFilter, typeFilter) {
-        filter = "&demographicFilter=" + demographicFilter + "&typeFilter=" + typeFilter;
+    function filterView(demographicFilter, typeFilter, link) {
+        // Adds a click event to all links within the '.category-list' to highlight the clicked link.
+        highlightClickedLink(link);
+
+        filter = link.classList.contains("selected") ? ("&demographicFilter=" + demographicFilter + "&typeFilter=" + typeFilter) : "";
         fetchInboxhubData();
     }
 
