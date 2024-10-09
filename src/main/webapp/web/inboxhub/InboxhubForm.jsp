@@ -33,6 +33,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <!DOCTYPE html>
 
 <input type="hidden" class="totalResultsCount" id="totalResultsCount" value="${totalResultsCount}" />
+
+<!-- Preview button -->
+<div class="card mb-1 shadow-sm rounded-1">
+  <div class="card-body p-2">
+    <div class="d-grid">
+        <input type="checkbox" class="btn-check btn-sm" name="viewMode2" id="btnViewMode2" autocomplete="off" onchange="fetchInboxhubDataByMode(this)" ${query.viewMode ? 'checked' : ''}>
+        <label class="btn btn-secondary btn-sm" id="btnViewModeLabel" for="btnViewMode2"><c:out value="${query.viewMode ? 'List Mode' : 'Preview Mode'}" /></label>
+    </div>
+  </div>
+</div>
+
 <!-- Search form Accordion -->
 <div class="accordion" id="inbox-hub-search">
     <div class="accordion-item">
@@ -45,11 +56,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             <div class="accordion-body">
                 <form action="${pageContext.request.contextPath}/web/inboxhub/Inboxhub.do?method=displayInboxForm" method="post" id="inboxSearchForm" onsubmit="return validatePatientOptions();">
                     <div class="m-2">
-                        <div class="d-grid mb-2">
-                            <input type="checkbox" class="btn-check btn-sm" name="viewMode" ${query.viewMode ? 'checked' : ''}
-                                id="btnViewMode" autocomplete="off" onchange="fetchInboxhubData()">
-                            <label class="btn btn-outline-primary btn-sm" for="btnViewMode"><bean:message key="inbox.inboxmanager.msgPreviewModes"/></label>
-                        </div>
+                        <input type="checkbox" name="viewMode" id="btnViewMode" autocomplete="off" hidden ${query.viewMode ? 'checked' : ''}>
 
                         <div class="mb-1">
                         <!--Provider-->
@@ -519,6 +526,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
     function filterView(demographicFilter, typeFilter) {
         filter = "&demographicFilter=" + demographicFilter + "&typeFilter=" + typeFilter;
+        fetchInboxhubData();
+    }
+
+    function fetchInboxhubDataByMode(btnViewMode2) {
+        jQuery('#btnViewMode').prop('checked', btnViewMode2.checked);
+    	jQuery("#btnViewModeLabel").html(btnViewMode2.checked ? 'List Mode' : 'Preview Mode');
         fetchInboxhubData();
     }
 
