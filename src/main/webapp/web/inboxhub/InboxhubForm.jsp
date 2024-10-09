@@ -698,7 +698,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         hasMoreData = false;
         jQuery('#inboxhubFormSearchBtn').prop('disabled', false); // Enable search button
         jQuery('#inboxhubFormSearchSpinner').hide(); // Hide spinner
-        setInterval(function() {
+        setTimeout(function() {
             jQuery('#stopLoadingInboxList').hide(); // Hide stop button
             jQuery('#loadInboxListProgress').hide(); // Hide progress bar
         }, hideTime);
