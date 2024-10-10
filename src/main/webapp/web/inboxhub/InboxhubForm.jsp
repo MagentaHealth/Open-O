@@ -683,12 +683,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         inboxhubListProgressWidth = 0;
         jQuery('#loadInboxListProgressBar').attr('aria-valuemax', totalResultsCount);
         jQuery('#loadInboxListProgressBar').css('width', inboxhubListProgressWidth + '%').attr('aria-valuenow', inboxhubListProgressWidth);
-        jQuery('#inboxListProgressCount').text(inboxhubListProgressWidth + '%');
+        jQuery('#inboxListProgressCount').text(inboxhubListProgressWidth + '% Complete');
         
         jQuery('#inboxhubFormSearchBtn').prop('disabled', true); // Disable button
         jQuery('#inboxhubFormSearchSpinner').show(); // Show spinner
         jQuery('#stopLoadingInboxList').show(); // Show stop button
         jQuery('#loadInboxListProgress').show(); // Show progress bar
+        jQuery('#loadingLabel').show();
     }
 
     function stopInboxhubListProgress(hideTime) {
@@ -701,6 +702,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         setTimeout(function() {
             jQuery('#stopLoadingInboxList').hide(); // Hide stop button
             jQuery('#loadInboxListProgress').hide(); // Hide progress bar
+            jQuery('#loadingLabel').hide();
         }, hideTime);
     }
 
@@ -714,15 +716,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
         if (totalResultsCount >= currentlyLoadedResultsCount && hasMoreData) {
             const percentage = (currentlyLoadedResultsCount / totalResultsCount) * 100;
-            const formattedPercentage = percentage.toFixed(2); // Keep 2 digits after decimal
+            const formattedPercentage = percentage === 100 ? '100' : percentage.toFixed(2); // Keep 2 digits after decimal
             jQuery('#loadInboxListProgressBar').css('width', formattedPercentage + '%').attr('aria-valuenow', currentlyLoadedResultsCount);
-            jQuery('#inboxListProgressCount').text(formattedPercentage + '%');
+            jQuery('#inboxListProgressCount').text(formattedPercentage + '% Complete');
             return;
         }
 
         if (!hasMoreData) {
             jQuery('#loadInboxListProgressBar').css('width', 100 + '%').attr('aria-valuenow', totalResultsCount);
-            jQuery('#inboxListProgressCount').text(100 + '%');
+            jQuery('#inboxListProgressCount').text(100 + '% Complete');
             stopInboxhubListProgress(1000);
         }
     }
