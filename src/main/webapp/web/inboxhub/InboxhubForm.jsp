@@ -596,6 +596,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     function addDataInInboxhubListTable(data) {
         if (page == 1) {
             jQuery("#inboxhubMode").html(data);
+            jQuery('#inbox_table').DataTable().draw(false); // `draw(false)` prevents resetting the scroll position
             startInboxhubListProgress();
             updateInboxhubListProgress();
             return;
@@ -603,27 +604,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
         let inboxhubListTable = jQuery('#inbox_table').DataTable();
 
-        // Get the current sorting order before destroying the table
-        let currentOrder = inboxhubListTable.order();
+        // Check if the string contains <script> tags
+        if (!/<script\b[^>]*>([\s\S]*?)<\/script>/gi.test(data)) {
+            // Split the concatenated rows by the closing </tr> tag, and re-add </tr> to each split part
+            const splitRows = data.split(/<\/tr>/i).map(row => row + '</tr>').filter(row => row.trim() !== '</tr>');
+            // Add rows to DataTable without destroying it
+            jQuery.each(splitRows, function(index, row) {
+                console.log(row)
+                inboxhubListTable.row.add(jQuery(row));
+            });
 
-        // Destroy DataTable to include new rows and ensure they are visible
-        inboxhubListTable.destroy();
-
-        // Append the new rows directly to the tbody
-        jQuery('#inoxhubListModeTableBody').append(data);
-
-        // Re-initialize DataTable after adding the new rows
-        inboxhubListTable = jQuery('#inbox_table').DataTable({
-            autoWidth: false,
-            searching: false,
-            scrollCollapse: true,
-            paging: false,
-            columnDefs: [
-                { type: 'non-empty-string', targets: "_all" },
-                { orderable: false, targets: 0 }
-            ],
-            order: currentOrder // Apply the previous sorting order
-        });
+            // Redraw the table
+            inboxhubListTable.draw(false); // `draw(false)` prevents resetting the scroll position
+        } else {
+            jQuery("#inboxhubMode").append(data);
+        }
 
         updateInboxhubListProgress();
     }
