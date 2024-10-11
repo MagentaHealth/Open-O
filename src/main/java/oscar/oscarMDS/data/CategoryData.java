@@ -498,14 +498,23 @@ public class CategoryData {
 
 	public int getHRMDocumentCountForUnmatched() throws SQLException{
 		int count = 0;
-		String sql = " SELECT HIGH_PRIORITY COUNT( distinct h.id) as count "
-					+" FROM HRMDocument h"
-					+" LEFT JOIN HRMDocumentToProvider hp ON h.id = hp.hrmDocumentId"
-					+" WHERE h.id NOT IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic) "
-					+ hrmViewed
-					+ hrmSignedOff
-					+ hrmDateSql
-					+ hrmProviderSql;
+		// String sql = " SELECT HIGH_PRIORITY COUNT( distinct h.id) as count "
+		// 			+" FROM HRMDocument h"
+		// 			+" LEFT JOIN HRMDocumentToProvider hp ON h.id = hp.hrmDocumentId"
+		// 			+" WHERE h.id NOT IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic) "
+		// 			+ hrmViewed
+		// 			+ hrmSignedOff
+		// 			+ hrmDateSql
+		// 			+ hrmProviderSql;
+		String sql = "SELECT HIGH_PRIORITY COUNT(DISTINCT h.id) AS count "
+						+ " FROM HRMDocumentToProvider hp"
+						+ " LEFT JOIN HRMDocument h ON h.id = hp.hrmDocumentId "
+						+ " LEFT JOIN HRMDocumentToDemographic hd ON hd.hrmDocumentId = hp.hrmDocumentId "
+						+ " WHERE hd.hrmDocumentId IS NULL "
+						+ hrmViewed
+						+ hrmSignedOff
+						+ hrmDateSql
+						+ hrmProviderSql;
 
 		Connection c  = DbConnectionFilter.getThreadLocalDbConnection();
 		PreparedStatement ps = c.prepareStatement(sql);
