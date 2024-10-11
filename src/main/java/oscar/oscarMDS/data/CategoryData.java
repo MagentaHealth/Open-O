@@ -463,7 +463,8 @@ public class CategoryData {
 						+ " 	AND d.last_name " + (StringUtils.isEmpty(patientLastName) ? " IS NOT NULL " : " like '%"+patientLastName+"%' ")
 						+ "		AND d.hin " + (StringUtils.isEmpty(patientHealthNumber) ? " IS NOT NULL " : " like '%"+patientHealthNumber+"%' ")
 						+ "		AND d.first_name " + (StringUtils.isEmpty(patientFirstName) ? " IS NOT NULL " : " like '%"+patientFirstName+"%' ")
-						+ "		AND hp.signedOff = 0 "
+						+ hrmViewed
+						+ hrmSignedOff
 						+ hrmDateSql
 						+ hrmProviderSql
 						+ "GROUP BY demographic_no ";
@@ -500,7 +501,9 @@ public class CategoryData {
 		String sql = " SELECT HIGH_PRIORITY COUNT( distinct h.id) as count "
 					+" FROM HRMDocument h"
 					+" LEFT JOIN HRMDocumentToProvider hp ON h.id = hp.hrmDocumentId"
-					+" WHERE h.id NOT IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic) AND hp.signedOff=0 "
+					+" WHERE h.id NOT IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic) "
+					+ hrmViewed
+					+ hrmSignedOff
 					+ hrmDateSql
 					+ hrmProviderSql;
 
