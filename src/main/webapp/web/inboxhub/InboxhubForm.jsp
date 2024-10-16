@@ -368,7 +368,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </div>
 </c:if>
 
-<div aria-live="polite" aria-atomic="true" class="position-absolute bottom-0 end-0 p-3" style="z-index: 11">
+<div aria-live="polite" aria-atomic="true" class="position-absolute bottom-0 end-0 p-3" style="z-index: 11; display: none;">
     <div id="ajaxErrorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
         <div class="d-flex">
             <div class="toast-body">
@@ -610,7 +610,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             const splitRows = data.split(/<\/tr>/i).map(row => row + '</tr>').filter(row => row.trim() !== '</tr>');
             // Add rows to DataTable without destroying it
             jQuery.each(splitRows, function(index, row) {
-                console.log(row)
                 inboxhubListTable.row.add(jQuery(row));
             });
 
@@ -668,10 +667,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         isFetchingData = false;
     }
 
+    // Show the toast and wrapper div
     function toastErrorMessage() {
-        const toastElement = new bootstrap.Toast(document.getElementById('ajaxErrorToast'));
-        toastElement.show();
+        jQuery('#ajaxErrorToast').parent().css('display', 'block'); // Show the wrapper
+        jQuery('#ajaxErrorToast').toast('show'); // Show the toast
     }
+
+    // Hide the toast and wrapper div completely when the toast is dismissed
+    jQuery('#ajaxErrorToast').on('hidden.bs.toast', function () {
+        jQuery(this).parent().css('display', 'none'); // Hide the wrapper to prevent background blocking
+    });
 
     function startInboxhubListProgress() {
         const totalResultsCount = jQuery("#totalResultsCount").val();
@@ -723,9 +728,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
             stopInboxhubListProgress(1000);
         }
     }
-
-    // Function to check if the div is scrollable
-    // function isInboxViewItemsDivScrollable() {
-    //     return $("#inboxViewItems")[0].scrollHeight > $("#inboxViewItems").innerHeight();
-    // }
 </script>
