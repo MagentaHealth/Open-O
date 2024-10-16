@@ -454,12 +454,26 @@ public class CategoryData {
 		int count = 0;
 		PatientInfo info;
 
-		String sql = " SELECT HIGH_PRIORITY demographic_no, first_name, last_name, COUNT( distinct h.id) as count "
-						+ " FROM HRMDocument h "
-						+ " LEFT JOIN HRMDocumentToDemographic hd ON h.id = hd.hrmDocumentId"
-						+ " LEFT JOIN HRMDocumentToProvider hp ON h.id = hp.hrmDocumentId"
-						+ " LEFT JOIN demographic d ON hd.demographicNo = d.demographic_no"
-						+ " WHERE h.id IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic hd)"
+		// String sql = " SELECT HIGH_PRIORITY demographic_no, first_name, last_name, COUNT( distinct h.id) as count "
+		// 				+ " FROM HRMDocument h "
+		// 				+ " LEFT JOIN HRMDocumentToDemographic hd ON h.id = hd.hrmDocumentId"
+		// 				+ " LEFT JOIN HRMDocumentToProvider hp ON h.id = hp.hrmDocumentId"
+		// 				+ " LEFT JOIN demographic d ON hd.demographicNo = d.demographic_no"
+		// 				+ " WHERE h.id IN (SELECT hrmDocumentId FROM HRMDocumentToDemographic hd)"
+		// 				+ " 	AND d.last_name " + (StringUtils.isEmpty(patientLastName) ? " IS NOT NULL " : " like '%"+patientLastName+"%' ")
+		// 				+ "		AND d.hin " + (StringUtils.isEmpty(patientHealthNumber) ? " IS NOT NULL " : " like '%"+patientHealthNumber+"%' ")
+		// 				+ "		AND d.first_name " + (StringUtils.isEmpty(patientFirstName) ? " IS NOT NULL " : " like '%"+patientFirstName+"%' ")
+		// 				+ hrmViewed
+		// 				+ hrmSignedOff
+		// 				+ hrmDateSql
+		// 				+ hrmProviderSql
+		// 				+ "GROUP BY demographic_no ";
+		String sql = "SELECT HIGH_PRIORITY demographic_no, first_name, last_name, COUNT(DISTINCT h.id) AS count "
+						+ " FROM HRMDocumentToDemographic hd "
+						+ " LEFT JOIN HRMDocumentToProvider hp ON hd.hrmDocumentId = hp.hrmDocumentId "
+						+ " LEFT JOIN HRMDocument h ON hd.hrmDocumentId = h.id "
+						+ " JOIN demographic d ON hd.demographicNo = d.demographic_no "
+						+ " WHERE 1=1 "
 						+ " 	AND d.last_name " + (StringUtils.isEmpty(patientLastName) ? " IS NOT NULL " : " like '%"+patientLastName+"%' ")
 						+ "		AND d.hin " + (StringUtils.isEmpty(patientHealthNumber) ? " IS NOT NULL " : " like '%"+patientHealthNumber+"%' ")
 						+ "		AND d.first_name " + (StringUtils.isEmpty(patientFirstName) ? " IS NOT NULL " : " like '%"+patientFirstName+"%' ")
