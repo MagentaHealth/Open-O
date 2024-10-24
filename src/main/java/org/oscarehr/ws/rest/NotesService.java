@@ -46,10 +46,12 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.oscarehr.PMmodule.dao.ProviderDao;
 import org.oscarehr.PMmodule.model.ProgramProvider;
 import org.oscarehr.PMmodule.service.AdmissionManager;
 import org.oscarehr.PMmodule.service.ProgramManager;
 import org.oscarehr.PMmodule.service.ProviderManager;
+import org.oscarehr.casemgmt.dao.CaseManagementNoteDAO;
 import org.oscarehr.casemgmt.dao.CaseManagementNoteLinkDAO;
 import org.oscarehr.casemgmt.dao.IssueDAO;
 import org.oscarehr.casemgmt.model.CaseManagementCPP;
@@ -66,8 +68,14 @@ import org.oscarehr.casemgmt.web.CaseManagementEntryAction;
 import org.oscarehr.casemgmt.web.NoteDisplay;
 import org.oscarehr.casemgmt.web.NoteDisplayLocal;
 import org.oscarehr.common.dao.CaseManagementIssueNotesDao;
+import org.oscarehr.common.dao.ClinicDAO;
+import org.oscarehr.common.dao.ConsultResponseDao;
 import org.oscarehr.common.model.CaseManagementTmpSave;
+import org.oscarehr.common.model.Clinic;
+import org.oscarehr.common.model.ConsultationResponse;
+import org.oscarehr.common.model.ProfessionalSpecialist;
 import org.oscarehr.common.model.Provider;
+import org.oscarehr.managers.ConsultationManager;
 import org.oscarehr.managers.ProgramManager2;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.EncounterUtil;
@@ -127,7 +135,163 @@ public class NotesService extends AbstractServiceImpl {
 	
 	@Autowired
 	private SecurityInfoManager securityInfoManager;
-	
+
+	@Autowired
+	private ConsultResponseDao consultResponseDao;
+
+	@Autowired
+	private CaseManagementNoteDAO caseManagementNoteDAO;
+
+	@Autowired
+	private ConsultationManager consultationManager;
+
+	@Autowired
+	private ClinicDAO clinicDAO;
+
+	@Autowired
+	private ProviderDao providerDao;
+
+	@POST
+	@Path("/consultResponseToNote")
+	@Produces("application/json")
+	public void convertConsultResposeToNote() {
+		LoggedInInfo loggedInInfo = getLoggedInInfo();
+		int startIndex = 0, fetchLimit = 40, saveBatchSize = 20;
+		List<ConsultationResponse> consultationResponses;
+
+		do {
+			consultationResponses = consultResponseDao.fetchConsultationResponses(startIndex, fetchLimit);
+			List<CaseManagementNote> caseManagementNotes = convertConsultResposeToNote(loggedInInfo, consultationResponses);
+			caseManagementNoteDAO.saveNotesInBatch(caseManagementNotes, saveBatchSize);
+			startIndex += fetchLimit;
+		} while (!consultationResponses.isEmpty());
+	}
+
+	private List<CaseManagementNote> convertConsultResposeToNote(LoggedInInfo loggedInInfo, List<ConsultationResponse> consultationResponses) {
+		String providerNo = loggedInInfo.getLoggedInProviderNo();
+        Date updateDate = new Date();
+
+		List<CaseManagementNote> caseManagementNotes = new ArrayList<>();
+		for (ConsultationResponse consultationResponse : consultationResponses) {
+			CaseManagementNote caseManagementNote = new CaseManagementNote();
+			String note = generateCounsultResponseNote(loggedInInfo, consultationResponse);
+			caseManagementNote.setUpdate_date(updateDate);
+			caseManagementNote.setObservation_date(consultationResponse.getResponseDate() == null ? updateDate : consultationResponse.getResponseDate());
+			caseManagementNote.setDemographic_no(String.valueOf(consultationResponse.getDemographicNo()));
+			caseManagementNote.setProviderNo(consultationResponse.getProviderNo());
+			caseManagementNote.setNote(note);
+			caseManagementNote.setSigned(true);
+			caseManagementNote.setIncludeissue(false);
+			caseManagementNote.setEncounter_type("");
+			caseManagementNote.setBilling_code("");
+			caseManagementNote.setSigning_provider_no("-1");
+			caseManagementNote.setReporter_program_team("null");
+			caseManagementNote.setHistory(note);
+
+			CaseManagementEntryAction.determineNoteRole(caseManagementNote, providerNo, String.valueOf(consultationResponse.getDemographicNo()));
+
+			caseManagementNotes.add(caseManagementNote);
+		}
+		return caseManagementNotes;
+	}
+
+	private String generateCounsultResponseNote(LoggedInInfo loggedInInfo, ConsultationResponse consultationResponse) {
+		ProfessionalSpecialist referringDoctorD = consultationManager.getProfessionalSpecialist(consultationResponse.getReferringDocId());
+		String referringDoctor = referringDoctorD.getLastName() + ", " + referringDoctorD.getFirstName();
+		String providerName = getLetterhead(consultationResponse.getProviderNo());
+		String letterheadName = getLetterhead(consultationResponse.getLetterheadName());
+		String urgency = getUrgencyText(Integer.valueOf(consultationResponse.getUrgency()));
+		String status = getStatusText(Integer.valueOf(consultationResponse.getStatus()));
+
+		StringBuilder note = new StringBuilder();
+		note.append(consultationResponse.getId() != null 
+					? "Response ID: " + consultationResponse.getId() + "\n" : "")
+			.append(consultationResponse.getResponseDate() != null 
+					? "Response Date: " + consultationResponse.getResponseDate() + "\n" : "")
+			.append(consultationResponse.getReferralDate() != null 
+					? "Referral Date: " + consultationResponse.getReferralDate() + "\n" : "")
+			.append(referringDoctor != null 
+					? "Referring Doctor: " + referringDoctor + "\n" : "")
+			.append(consultationResponse.getAppointmentDate() != null 
+					? "Appointment Date: " + consultationResponse.getAppointmentDate() + "\n" : "")
+			.append(consultationResponse.getAppointmentTime() != null 
+					? "Appointment Time: " + consultationResponse.getAppointmentTime() + "\n" : "")
+			.append(consultationResponse.getAppointmentNote() != null 
+					? "Appointment Note: " + consultationResponse.getAppointmentNote() + "\n" : "")
+			.append(consultationResponse.getReferralReason() != null 
+					? "Referral Reason: " + consultationResponse.getReferralReason() + "\n" : "")
+			.append(consultationResponse.getExamination() != null 
+					? "Examination: " + consultationResponse.getExamination() + "\n" : "")
+			.append(consultationResponse.getImpression() != null 
+					? "Impression: " + consultationResponse.getImpression() + "\n" : "")
+			.append(consultationResponse.getPlan() != null 
+					? "Plan: " + consultationResponse.getPlan() + "\n" : "")
+			.append(consultationResponse.getClinicalInfo() != null 
+					? "Clinical Info: " + consultationResponse.getClinicalInfo() + "\n" : "")
+			.append(consultationResponse.getCurrentMeds() != null 
+					? "Current Meds: " + consultationResponse.getCurrentMeds() + "\n" : "")
+			.append(consultationResponse.getAllergies() != null 
+					? "Allergies: " + consultationResponse.getAllergies() + "\n" : "")
+			.append(providerName != null 
+					? "Provider: " + providerName + "\n" : "")
+			.append(consultationResponse.getSendTo() != null 
+					? "Send To: " + consultationResponse.getSendTo() + "\n" : "")
+			.append(letterheadName != null 
+					? "Letterhead Name: " + letterheadName + "\n" : "")	
+			.append(consultationResponse.getLetterheadAddress() != null 
+					? "Letterhead Address: " + consultationResponse.getLetterheadAddress() + "\n" : "")
+			.append(consultationResponse.getLetterheadPhone() != null 
+					? "Letterhead Phone: " + consultationResponse.getLetterheadPhone() + "\n" : "")
+			.append(consultationResponse.getLetterheadFax() != null 
+					? "Letterhead Fax: " + consultationResponse.getLetterheadFax() + "\n" : "")
+			.append(status != null 
+					? "Status: " + status + "\n" : "")
+			.append(urgency != null 
+					? "Urgency: " + urgency + "\n" : "")
+			.append(consultationResponse.getFollowUpDate() != null 
+					? "Follow Up Date: " + consultationResponse.getFollowUpDate() + "\n" : "");
+
+		return note.toString();
+	}
+
+	// Helper method to map urgency value to text
+	private String getUrgencyText(Integer urgency) {
+		if (urgency == null) return null;
+		switch (urgency) {
+			case 2: return "Non-Urgent";
+			case 1: return "Urgent";
+			case 3: return "Return";
+			default: return ""+urgency;
+		}
+	}
+
+	// Helper method to map status value to text
+	private String getStatusText(Integer status) {
+		if (status == null) return null;
+		switch (status) {
+			case 1: return "Not Complete";
+			case 2: return "Pending Referring Doctor Callback";
+			case 3: return "Pending Patient Callback";
+			case 4: return "Completed";
+			case 5: return "Cancelled";
+			default: return ""+status;
+		}
+	}
+
+	private String getLetterhead(String letterHead) {		
+		//clinic letterhead
+		Clinic clinic = clinicDAO.getClinic();
+		if (letterHead.equals(clinic.getClinicName().trim())) {
+			return clinic.getClinicName();
+		}
+		
+		Provider provider = providerDao.getProvider(letterHead);
+		if (provider != null) {
+			return provider.getFormattedName();
+		}
+		
+		return null;
+	}
 	
 	@POST
 	@Path("/{demographicNo}/all")

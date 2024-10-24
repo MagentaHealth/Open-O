@@ -146,4 +146,14 @@ public class ConsultResponseDaoImpl extends AbstractDaoImpl<ConsultationResponse
 		
 		return sql.toString();
 	}
+
+	public List<ConsultationResponse> fetchConsultationResponses(int startIndex, int limit) {
+        String queryString = "SELECT c FROM ConsultationResponse c ORDER BY c.id";
+        Query query = entityManager.createQuery(queryString);
+        query.setFirstResult(startIndex);
+        query.setMaxResults(limit);
+
+        List<ConsultationResponse> results = query.getResultList();
+        return results;
+    }
 }
