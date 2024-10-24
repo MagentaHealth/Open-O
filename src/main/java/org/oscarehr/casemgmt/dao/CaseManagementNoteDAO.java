@@ -131,6 +131,8 @@ public interface CaseManagementNoteDAO {
 
 	public Object saveAndReturn(CaseManagementNote note);
 
+	public void saveNotesInBatch(List<CaseManagementNote> notes, int batchSize);
+
 	public List<CaseManagementNote> search(CaseManagementSearchBean searchBean);
 
 	public List<Long> getAllNoteIds();

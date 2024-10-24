@@ -119,6 +119,7 @@ if(!authed) {
   	</style>
 
     <script src="<%= request.getContextPath() %>/js/global.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/library/jquery/jquery-3.6.4.min.js" ></script>
 
 	<link href="<%=request.getContextPath() %>/css/bootstrap.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="${ pageContext.request.contextPath }/hospitalReportManager/inbox.css" >
@@ -186,11 +187,54 @@ if(!authed) {
 		fileItem.appendChild(uploadText);
 		fileList.appendChild(fileItem);
 	}
+
+	function convertConsultResponseToNote() {
+		const consultResponseIdsInput = document.getElementById("consultResponseIds").value.trim();
+    
+		// 1. Validate if input is empty
+		if (!consultResponseIdsInput) {
+			alert("Please enter at least one Consult Response ID.");
+			return;
+		}
+
+		// 2. Split the input by commas and trim whitespace
+		const consultResponseIds = consultResponseIdsInput.split(',').map(id => id.trim()).filter(id => id);
+
+		// 3. Validate each ID to ensure they are integers
+		const invalidIds = consultResponseIds.filter(id => !/^\d+$/.test(id)); // Check if each ID is a non-negative integer
+		if (invalidIds.length > 0) {
+			alert("Please enter valid integer Consult Response IDs. Invalid IDs: " + invalidIds.join(", "));
+			return;
+		}
+
+		ShowSpin(true); // Show the spinner while processing
+
+		jQuery.ajax({
+			url: "${pageContext.request.contextPath}/CaseManagementEntry.do?method=convertConsultResponseToNote&consultResponseIds=" + consultResponseIdsInput,
+			type: "POST",
+			contentType: "application/json",
+			success: function(response) {
+				alert("Consult responses converted to notes successfully.");
+				HideSpin(); // Hide the spinner after processing
+			},
+			error: function(xhr, status, error) {
+				console.error("AJAX Request Failed");
+				console.error("Status: " + status);
+				console.error("Error: " + error);
+				console.error("Response Text: " + xhr.responseText);
+				console.error("Response Status: " + xhr.status);
+				console.error("Response Headers: " + xhr.getAllResponseHeaders());
+				alert("An error occurred: " + error);
+				HideSpin(); // Hide the spinner even if there's an error
+			}
+		});
+	}
 	</script>
 
 
 </head>
 <body>
+<jsp:include page="../images/spinner.jsp" flush="true"/>
 <div class="container">
 <h4>Hospital Report Manager</h4>
 	<div class="loading-screen">
@@ -248,6 +292,23 @@ if(!authed) {
 	</div>
 </form>
 <input type="button" class="btn" value="I don't want to receive any more HRM outage messages for this outage instance" onclick="window.location='disable_msg_action.jsp'" >
+
+<hr/>
+<h3>Convert Consult Response to Note</h3>
+<div class="form-group" style="margin-bottom: 30px;">
+    <span>Enter specific consult response IDs separated by commas to convert them into case notes:</span>
+    <div> <!-- Added div for textarea -->
+        <textarea 
+            id="consultResponseIds" 
+            class="form-control" 
+            placeholder="Enter consult response IDs in CSV format" 
+            style="width: 100%; margin: 10px 0;" 
+            rows="10"></textarea>
+    </div>
+    <div> <!-- Added div for button -->
+        <input type="button" class="btn smallButton" value="Convert" onClick="convertConsultResponseToNote()" />
+    </div>
+</div>
 </div>
 </body>
 </html:html>
