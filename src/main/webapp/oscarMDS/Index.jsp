@@ -139,6 +139,7 @@ String patientHealthNumber = (String) request.getAttribute("patientHealthNumber"
                                 <% } %>
                                 <input type="button" class="smallButton" value="<bean:message key="oscarMDS.index.btnLoadAll"/>" onClick="showAllInbox()" />
                                 <input type="button" class="smallButton" value="<bean:message key="oscarMDS.index.btnClose"/>" onClick="wrapUp()" />
+								<input type="button" class="smallButton" value="Convert Consult Response to Note" onClick="convertConsultResponseToNote()" />
                       		</td>
 
                             <td align="right" valign="top">
@@ -446,6 +447,30 @@ String patientHealthNumber = (String) request.getAttribute("patientHealthNumber"
 			page = 1;
 			pageSize = 1000;
 			updateListView();
+		}
+
+		function convertConsultResponseToNote() {
+			ShowSpin(true); // Show the spinner while processing
+
+			jQuery.ajax({
+				url: "${pageContext.request.contextPath}/CaseManagementEntry.do?method=convertConsultResponseToNote",
+				type: "POST",
+				contentType: "application/json",
+				success: function(response) {
+					alert("Consult responses converted to notes successfully.");
+					HideSpin(); // Hide the spinner after processing
+				},
+				error: function(xhr, status, error) {
+					console.error("AJAX Request Failed");
+					console.error("Status: " + status);
+					console.error("Error: " + error);
+					console.error("Response Text: " + xhr.responseText);
+					console.error("Response Status: " + xhr.status);
+					console.error("Response Headers: " + xhr.getAllResponseHeaders());
+					alert("An error occurred: " + error);
+					HideSpin(); // Hide the spinner even if there's an error
+				}
+			});
 		}
 
 		function updateListView() {
