@@ -261,11 +261,12 @@ public class HRMReportParser {
 		}
 	}
 
-	private static void routeReportToDemographic(HRMReport report, HRMDocument mergedDocument) {
-		
+	public static boolean routeReportToDemographic(HRMReport report, HRMDocument mergedDocument) {
+		boolean foundMatch = false;
+
 		if(report == null) {
 			logger.info("routeReportToDemographic cannot continue, report parameter is null");
-			return;
+			return foundMatch;
 		}
 		
 
@@ -283,6 +284,7 @@ public class HRMReportParser {
 							&& report.getDateOfBirthAsString().equalsIgnoreCase(d.getBirthDayAsString())
 							&& report.getLegalLastName().equalsIgnoreCase(d.getLastName())) {
 						HRMReportParser.routeReportToDemographic(mergedDocument.getId(), d.getDemographicNo());
+						foundMatch = true;
 						break;
 					}
 				}
@@ -292,9 +294,11 @@ public class HRMReportParser {
 				// if not empty and DOB matches as well, route report to Demographic
 				if (report.getDateOfBirthAsString().equalsIgnoreCase(demographic.getBirthDayAsString())) {
 					HRMReportParser.routeReportToDemographic(mergedDocument.getId(), demographic.getDemographicNo());
+					foundMatch = true;
 				}
 			}
 		}
+		return foundMatch;
 	}
 
 

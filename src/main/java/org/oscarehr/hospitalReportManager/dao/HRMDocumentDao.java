@@ -267,4 +267,17 @@ public class HRMDocumentDao extends AbstractDaoImpl<HRMDocument> {
 
 		return count;
 	}
+
+	public List<HRMDocument> findHRMDocumentsWithoutDemographicLink(int startIndex, int limit) {
+		String sql = "select DISTINCT h from HRMDocumentToProvider x " +
+					 "JOIN HRMDocument h ON h.id = x.hrmDocumentId " +
+					 "LEFT JOIN HRMDocumentToDemographic d ON x.hrmDocumentId = d.hrmDocumentId " +
+					 "where d.hrmDocumentId IS NULL and x.providerNo != '-1'";
+		Query query = entityManager.createQuery(sql);
+		query.setFirstResult(startIndex);
+		query.setMaxResults(limit);
+		@SuppressWarnings("unchecked")
+		List<HRMDocument> hrmDocuments = query.getResultList();
+		return hrmDocuments;
+	}
 }

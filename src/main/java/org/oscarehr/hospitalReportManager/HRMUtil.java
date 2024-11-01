@@ -356,4 +356,77 @@ public class HRMUtil {
 		HRMDocument hrmDocument = hrmDocumentDao.find(hrmId);
 		return getHRMDocumentDisplayName(hrmDocument.getDescription(), "", hrmDocument.getReportType(), hrmDocument.getReportStatus());
 	}
+
+	public static Map<String, List<HRMDocument>> processUnlinkedHRMs(LoggedInInfo loggedInInfo) {
+		Map<String, List<HRMDocument>> result = initializeResultMap();
+		int startIndex = 0;
+		int batchSize = 20;
+		List<HRMDocument> unlinkedHRMs;
+
+		do {
+			unlinkedHRMs = hrmDocumentDao.findHRMDocumentsWithoutDemographicLink(startIndex, batchSize);
+			for (HRMDocument hrmDocument : unlinkedHRMs) {
+				processHRMDocument(loggedInInfo, hrmDocument, result);
+			}
+			startIndex += batchSize;
+		} while (!unlinkedHRMs.isEmpty());
+
+		return result;
+	}
+
+	private static Map<String, List<HRMDocument>> initializeResultMap() {
+		Map<String, List<HRMDocument>> result = new HashMap<>();
+		result.put("matchedToPatient", new ArrayList<>());
+		result.put("unmatchedToPatient", new ArrayList<>());
+		result.put("newbornsForManualReview", new ArrayList<>());
+		result.put("failedDueToMissingOrUnparsableReport", new ArrayList<>());
+		result.put("failedDueToMissingDOBOrReportDate", new ArrayList<>());
+		return result;
+	}
+
+	private static void processHRMDocument(LoggedInInfo loggedInInfo, HRMDocument hrmDocument, Map<String, List<HRMDocument>> result) {
+		HRMReport hrmReport = HRMReportParser.parseReport(loggedInInfo, hrmDocument.getReportFile());
+		if (hrmReport != null) {
+			boolean routed = HRMReportParser.routeReportToDemographic(hrmReport, hrmDocument);
+			if (routed) {
+				result.get("matchedToPatient").add(hrmDocument);
+			} else {
+				handleUnroutedDocument(hrmReport, hrmDocument, result);
+			}
+		} else {
+			result.get("failedDueToMissingOrUnparsableReport").add(hrmDocument);
+		}
+	}
+
+	private static void handleUnroutedDocument(HRMReport hrmReport, HRMDocument hrmDocument, Map<String, List<HRMDocument>> result) {
+		Date dob = extractDateOfBirth(hrmReport);
+		Date reportDate = hrmDocument.getReportDate();
+
+		if (dob != null && reportDate != null) {
+			long diffInDays = calculateDateDifferenceInDays(dob, reportDate);
+			if (diffInDays <= 14) {
+				result.get("newbornsForManualReview").add(hrmDocument);
+			} else {
+				HRMReportParser.routeReportToDemographic(hrmDocument.getId(), 511);
+				result.get("unmatchedToPatient").add(hrmDocument);
+			}
+		} else {
+			result.get("failedDueToMissingDOBOrReportDate").add(hrmDocument);
+		}
+	}
+
+	private static Date extractDateOfBirth(HRMReport hrmReport) {
+		List<Integer> dobList = hrmReport.getDateOfBirth();
+		if (dobList != null && dobList.size() == 3) {
+			Calendar dobCalendar = new GregorianCalendar(dobList.get(0), dobList.get(1) - 1, dobList.get(2));
+			return dobCalendar.getTime();
+		}
+		return null;
+	}
+
+	private static long calculateDateDifferenceInDays(Date date1, Date date2) {
+		long diffInMillies = Math.abs(date1.getTime() - date2.getTime());
+		return diffInMillies / (1000 * 60 * 60 * 24);
+	}
+	
 }

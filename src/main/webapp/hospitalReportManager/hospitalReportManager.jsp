@@ -119,6 +119,7 @@ if(!authed) {
   	</style>
 
     <script src="<%= request.getContextPath() %>/js/global.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/library/jquery/jquery-3.6.4.min.js" ></script>
 
 	<link href="<%=request.getContextPath() %>/css/bootstrap.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="${ pageContext.request.contextPath }/hospitalReportManager/inbox.css" >
@@ -186,11 +187,58 @@ if(!authed) {
 		fileItem.appendChild(uploadText);
 		fileList.appendChild(fileItem);
 	}
+
+	function fetchUnlinkedHRMs() {
+		ShowSpin(true);
+		jQuery.ajax({
+			url: "${pageContext.request.contextPath}/hospitalReportManager/Mapping.do?fetchUnlinkedHRMs=true",
+			type: "POST",
+			xhrFields: {
+                responseType: 'blob'  // Expecting a blob response
+            },
+            success: function (blobData, status, xhr) {
+				HideSpin();
+                // Get filename from Content-Disposition header
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                var filename = "hrm_results.zip"; // Default filename
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var matches = /filename="([^"]*)"/.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1];
+                }
+
+                // Create a temporary link element to trigger file download
+                var link = document.createElement('a');
+                var url = window.URL.createObjectURL(blobData);
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                window.URL.revokeObjectURL(url); // Clean up
+
+				alert("File download started successfully. The ZIP includes:\n" +
+					"- Successfully routed HRMs to patients.\n" +
+					"- Unmatched HRMs routed to 'Not Patient'.\n" +
+					"- Newborn HRMs flagged for manual review.\n" +
+					"- HRMs with invalid/unparsable reports.\n" +
+					"- HRMs missing DOB or report date.");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+				HideSpin();
+				console.error("Error details:", {
+					textStatus: textStatus,
+					errorThrown: errorThrown,
+					responseText: jqXHR.responseText
+				});
+				alert("Failed to generate file");
+			}
+		});
+	}
 	</script>
 
 
 </head>
 <body>
+<jsp:include page="../images/spinner.jsp" flush="true"/>
 <div class="container">
 <h4>Hospital Report Manager</h4>
 	<div class="loading-screen">
@@ -248,6 +296,10 @@ if(!authed) {
 	</div>
 </form>
 <input type="button" class="btn" value="I don't want to receive any more HRM outage messages for this outage instance" onclick="window.location='disable_msg_action.jsp'" >
+
+<hr/>
+<h3>HRM Documents Signed-off but Not Linked to Demographics</h3>
+<span style="margin-bottom: 15px;">Retrieve and process HRM documents not linked to demographics</span> <button type="button" class="btn" onclick="fetchUnlinkedHRMs()">Generate</button>
 </div>
 </body>
 </html:html>
