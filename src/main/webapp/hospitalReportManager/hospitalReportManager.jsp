@@ -188,6 +188,151 @@ if(!authed) {
 		fileList.appendChild(fileItem);
 	}
 
+	function validateHrmLimit(input) {
+		// Remove any decimal points and non-numeric characters
+		input.value = input.value.replace(/[^\d]/g, '');
+		
+		// Convert to number for validation
+		const value = parseInt(input.value);
+		
+		// Validate range
+		if (value > 1500) {
+			input.value = 1500;
+		}
+	}
+
+	function fetchUnlinkedHRMs() {
+		ShowSpin(true);
+		
+		const hrmLimit = jQuery("#hrmLimit").val().trim();
+		
+		// Final validation before submission
+		if (!hrmLimit || 
+			isNaN(hrmLimit) || 
+			parseInt(hrmLimit) < 1 || 
+			parseInt(hrmLimit) > 1500 || 
+			!Number.isInteger(parseFloat(hrmLimit))) {
+			
+			alert("Please enter a valid number between 1 and 1500.");
+			HideSpin();
+			return;
+		}
+		
+		jQuery.ajax({
+			url: "${pageContext.request.contextPath}/hospitalReportManager/Mapping.do?fetchUnlinkedHRMs=true&limit=" + hrmLimit,
+			type: "POST",
+			xhrFields: {
+				responseType: 'blob'  // Expecting a blob response
+			},
+			success: function (blobData, status, xhr) {
+				HideSpin();
+				// Get filename from Content-Disposition header
+				var disposition = xhr.getResponseHeader('Content-Disposition');
+				var filename = "hrm_results.zip"; // Default filename
+				if (disposition && disposition.indexOf('attachment') !== -1) {
+					var matches = /filename="([^"]*)"/.exec(disposition);
+					if (matches != null && matches[1]) filename = matches[1];
+				}
+
+				// Create a temporary link element to trigger file download
+				var link = document.createElement('a');
+				var url = window.URL.createObjectURL(blobData);
+				link.href = url;
+				link.download = filename;
+				document.body.appendChild(link);
+				link.click();
+				window.URL.revokeObjectURL(url); // Clean up
+
+				// Clear the input after successful submission
+				jQuery("#hrmLimit").val('');
+
+				alert("File download started successfully. The ZIP includes:\n" +
+					"- Successfully routed HRMs to patients.\n" +
+					"- Unmatched HRMs routed to 'Not Patient'.\n" +
+					"- Newborn HRMs flagged for manual review.\n" +
+					"- HRMs with invalid/unparsable reports.\n" +
+					"- HRMs missing DOB or report date.");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				HideSpin();
+				console.error("Error details:", {
+					textStatus: textStatus,
+					errorThrown: errorThrown,
+					responseText: jqXHR.responseText
+				});
+				alert("Failed to generate file");
+			}
+		});
+	}
+
+	function linkHrmDocumentIds() {
+		const hrmIdsInput = document.getElementById("hrmIds").value.trim();
+    
+		// 1. Validate if input is empty
+		if (!hrmIdsInput) {
+			alert("Please enter at least one HRM Document ID.");
+			return;
+		}
+
+		// 2. Split the input by commas and trim whitespace
+		const hrmIds = hrmIdsInput.split(',').map(id => id.trim()).filter(id => id);
+
+		// 3. Validate each ID to ensure they are integers
+		const invalidIds = hrmIds.filter(id => !/^\d+$/.test(id)); // Check if each ID is a non-negative integer
+		if (invalidIds.length > 0) {
+			alert("Please enter valid integer HRM Document IDs. Invalid IDs: " + invalidIds.join(", "));
+			return;
+		}
+
+		ShowSpin(true); // Show the spinner while processing
+
+		jQuery.ajax({
+			url: "${pageContext.request.contextPath}/hospitalReportManager/Mapping.do?linkHrmDocumentIds=true&hrmIds=" + hrmIdsInput,
+			type: "POST",
+			xhrFields: {
+				responseType: 'blob'  // Expecting a blob response
+			},
+			success: function (blobData, status, xhr) {
+				HideSpin();
+				// Get filename from Content-Disposition header
+				var disposition = xhr.getResponseHeader('Content-Disposition');
+				var filename = "hrm_results.zip"; // Default filename
+				if (disposition && disposition.indexOf('attachment') !== -1) {
+					var matches = /filename="([^"]*)"/.exec(disposition);
+					if (matches != null && matches[1]) filename = matches[1];
+				}
+
+				// Create a temporary link element to trigger file download
+				var link = document.createElement('a');
+				var url = window.URL.createObjectURL(blobData);
+				link.href = url;
+				link.download = filename;
+				document.body.appendChild(link);
+				link.click();
+				window.URL.revokeObjectURL(url); // Clean up
+
+				// Clear the input after successful submission
+				jQuery("#hrmLimit").val('');
+
+				alert("File download started successfully. The ZIP includes:\n" +
+					"- Successfully routed HRMs to patients.\n" +
+					"- Unmatched HRMs routed to 'Not Patient'.\n" +
+					"- Newborn HRMs flagged for manual review.\n" +
+					"- HRMs with invalid/unparsable reports.\n" +
+					"- HRMs missing DOB or report date.");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				HideSpin();
+				console.error("Error details:", {
+					textStatus: textStatus,
+					errorThrown: errorThrown,
+					responseText: jqXHR.responseText
+				});
+				alert("Failed to generate file");
+			}
+		});
+	}
+
 	function convertConsultResponseToNote() {
 		const consultResponseIdsInput = document.getElementById("consultResponseIds").value.trim();
     
@@ -292,6 +437,39 @@ if(!authed) {
 	</div>
 </form>
 <input type="button" class="btn" value="I don't want to receive any more HRM outage messages for this outage instance" onclick="window.location='disable_msg_action.jsp'" >
+
+<hr/>
+<h3>Link Unlinked HRM Documents Not Linked to Demographics</h3> <!-- Updated title -->
+<div class="form-group" style="margin-bottom: 30px;">
+    <span>Enter a limit (up to 1500) for unlinked HRM documents to link them with demographics:</span> <!-- Updated description -->
+    <input type="number" 
+           id="hrmLimit" 
+           class="form-control" 
+           placeholder="Enter a number up to 1500" 
+           style="width: 200px; margin: 10px 0;"
+           min="1" 
+           max="1500" 
+           step="1" 
+           onkeydown="return event.keyCode !== 190"
+           oninput="validateHrmLimit(this)">
+    <button type="button" class="btn" onclick="fetchUnlinkedHRMs()">Link</button>
+</div>
+<hr/>
+<h3>Link Unlinked HRM Document IDs with Demographics</h3>
+<div class="form-group" style="margin-bottom: 30px;">
+    <span>Enter specific unlinked HRM document IDs separated by commas to link them with demographics:</span> 
+    <div> <!-- Added div for textarea -->
+        <textarea 
+            id="hrmIds" 
+            class="form-control" 
+            placeholder="Enter unlinked HRM document IDs in CSV format" 
+            style="width: 100%; margin: 10px 0;" 
+            rows="10"></textarea>
+    </div>
+    <div> <!-- Added div for button -->
+        <input type="button" class="btn smallButton" value="Link IDs" onClick="linkHrmDocumentIds()" /> 
+    </div>
+</div>
 
 <hr/>
 <h3>Convert Consult Response to Note</h3>
