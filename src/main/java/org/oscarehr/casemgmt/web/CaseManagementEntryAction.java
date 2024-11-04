@@ -3580,13 +3580,13 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 						: "Plan: No Plan available\n")
 			.append(consultationResponse.getClinicalInfo() != null 
 						? "Clinical Info: " + consultationResponse.getClinicalInfo() + "\n" 
-						: "Clinical Info: No Clinical Info available\n")
+						: "Clinical Info: This section has no notes\n")
 			.append(consultationResponse.getCurrentMeds() != null 
 						? "Current Meds: " + consultationResponse.getCurrentMeds() + "\n" 
-						: "Current Meds: No Current Meds available\n")
+						: "Current Meds: This section has no notes\n")
 			.append(consultationResponse.getAllergies() != null 
 						? "Allergies: " + consultationResponse.getAllergies() + "\n" 
-						: "Allergies: No Allergies available\n")
+						: "Allergies: This section has no notes\n")
 			.append(providerName != null 
 						? "Provider: " + providerName + "\n" 
 						: "Provider: No Provider available\n")
