@@ -35,6 +35,12 @@ document.addEventListener("DOMContentLoaded", function(){
 		 *  Enable Are-you-sure dirty page detection.
 		 */
 		jQuery("form:first").areYouSure();
+
+	const isSuccessAndAutoclose = document.getElementById("isSuccess_Autoclose") &&
+		document.getElementById("isSuccess_Autoclose").value === 'true';
+	if (isSuccessAndAutoclose) {
+		showSuccessAlert(remoteClose);
+	}
 	});
 
 	window.onerror = function uncaughtExceptionHandler(message, source, lineNumber, colno, error) {
@@ -52,8 +58,9 @@ document.addEventListener("DOMContentLoaded", function(){
 	/**
 	 * Triggers the eForm save/submit function
 	 */
-	function remoteSave() {
+function remoteSave() {
 
+	try {
 		// bind the spinner to the form submit event.
 		jQuery('form').on('submit', function(e) {
 			ShowSpin(true);
@@ -61,8 +68,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 		moveSubject();
 
-		if(typeof releaseDirtyFlag === "function")
-		{
+		if (typeof releaseDirtyFlag === "function") {
 			console.log("Releasing dirty window flag by releaseDirtyFlag function")
 			window["releaseDirtyFlag"]();
 		}
@@ -72,24 +78,20 @@ document.addEventListener("DOMContentLoaded", function(){
 			jQuery("form:first").trigger('reinitialize.areYouSure');
 		}
 
-		if (typeof saveRTL === "function")
-		{
+		if (typeof saveRTL === "function") {
 			console.log("Saving RTL or RTL template");
 			window["saveRTL"]();
 			document.RichTextLetter.submit();
 			return true;
 		} 
 
-		if (document.getElementsByName("SubmitButton") && document.getElementsByName("SubmitButton")[0])
-		{
+		if (document.getElementsByName("SubmitButton") && document.getElementsByName("SubmitButton")[0]) {
 			console.log("Saving by remote click of the SubmitButton");
-			try
-			{
+			try {
 				document.getElementsByName("SubmitButton")[0].click();
 				return true;
-			}
-			catch(error) 
-			{
+			} catch (error) {
+				showErrorAlert();
 				console.log(error);
 			}
 		}
@@ -97,33 +99,34 @@ document.addEventListener("DOMContentLoaded", function(){
 		if(typeof submission === "function")
 		{
 			console.log("Executing submission method before submitting first form directly");
-			try
-			{
+			try {
 				window["submission"]();
 				document.forms[0].submit();
 				return true;
-			} 
-			catch(error) 
-			{
+			} catch (error) {
+				showErrorAlert();
 				console.log(error);
 			}
-		} 
+		}
 		
 		try
 		{
 			console.log("Submitting first form in document directly");
 			document.forms[0].submit();
 			return true;
-		} 
-		catch(error) 
-		{
+		} catch (error) {
+			showErrorAlert();
 			console.log(error);
 		}
 
 		HideSpin();
-
-		return false;
+	} catch (e) {
+		showErrorAlert();
+		console.error(e);
 	}
+
+	return false;
+}
 
 	/**
 	 * Triggers the eForm attach function

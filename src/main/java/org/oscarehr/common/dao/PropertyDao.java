@@ -26,13 +26,14 @@
  */
 package org.oscarehr.common.dao;
 
-import java.util.List;
-
 import org.oscarehr.common.model.Property;
+
+import java.util.List;
 
 public interface PropertyDao extends AbstractDao<Property>{
     List<Property> findByName(String name);
     List<Property> findGlobalByName(String name);
+    List<Property> findGlobalByName(Property.PROPERTY_KEY propertyName);
     List<Property> findByNameAndProvider(Property.PROPERTY_KEY propertyName, String providerNo);
     List<Property> findByNameAndProvider(String propertyName, String providerNo);
     List<Property> findByProvider(String providerNo);

@@ -476,8 +476,11 @@ public class EctConsultationFormRequestAction extends Action {
 			}
 
 			List<FaxConfig>	accounts = faxManager.getFaxGatewayAccounts(loggedInInfo);
-			
+
+			// fax number that will display on the letterhead
 	        request.setAttribute("letterheadFax", frm.getLetterheadFax());
+			// fax account that will be used to send the fax
+			request.setAttribute("faxAccount", frm.getFaxAccount());
 		  	request.setAttribute("documents", documents);			
 			request.setAttribute("copyToRecipients", copytoRecipients);
 			request.setAttribute("reqId", requestId);

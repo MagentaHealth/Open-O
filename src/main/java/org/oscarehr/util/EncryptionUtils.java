@@ -158,6 +158,15 @@ public final class EncryptionUtils extends PasswordHash {
      * @throws Exception If the secret key is not initialized, or if there is an error during encryption.
      */
     public static String encrypt(String plainText) throws Exception {
+
+        /*
+         * null will fail and empty string will be encrypted as a valid password.
+         * Exit this method in these cases.
+         */
+        if (plainText == null || plainText.isEmpty()) {
+            return plainText;
+        }
+
         if (Objects.isNull(SECRET_KEY_SPEC)) {
             throw new Exception("Secret key not found in environment variables.");
         }
@@ -191,6 +200,13 @@ public final class EncryptionUtils extends PasswordHash {
         if (Objects.isNull(SECRET_KEY_SPEC)) {
             throw new Exception("Secret key not found in environment variables.");
         }
+        
+        /*
+         * avoid nulls and empty strings.
+         */
+        if (encryptedText == null || encryptedText.isEmpty()) {
+            return encryptedText;
+        }
 
         if (isEncrypted(encryptedText)) {
             String base64Encoded = encryptedText.substring(ENCRYPTION_PREFIX.length());
@@ -222,11 +238,13 @@ public final class EncryptionUtils extends PasswordHash {
      * This method determines if the input string starts with the encryption prefix,
      * indicating that it has been encrypted.
      *
+     * NULL and empty strings are returned as encrypted = true
+     *
      * @param input The string to check for encryption.
      * @return True if the string is encrypted (starts with the encryption prefix), False otherwise.
      */
     public static boolean isEncrypted(String input) {
-        return input.startsWith(ENCRYPTION_PREFIX);
+        return input == null || input.isEmpty() || input.startsWith(ENCRYPTION_PREFIX);
     }
 
     /**

@@ -106,14 +106,14 @@ public class ConfigureFaxAction extends JSONAction {
 						savedFaxConfig.setUrl(faxUrl);
 						savedFaxConfig.setSiteUser(siteUser);
 						
-						if( ! PASSWORD_BLANKET.equals(sitePasswd) ) {
-							savedFaxConfig.setPasswd(sitePasswd);
+						if(sitePasswd != null && ! PASSWORD_BLANKET.equals(sitePasswd) ) {
+							savedFaxConfig.setPasswd(sitePasswd.trim());
 						}
 						
 						savedFaxConfig.setFaxUser(faxUsers[idx]);
 						
-						if( ! PASSWORD_BLANKET.equals(faxPasswds[idx]) ) {
-							savedFaxConfig.setFaxPasswd(faxPasswds[idx]);
+						if(faxPasswds[idx] != null && ! PASSWORD_BLANKET.equals(faxPasswds[idx])) {
+							savedFaxConfig.setFaxPasswd(faxPasswds[idx].trim());
 						}
 						
 						String faxNumber = faxNumbers[idx];
@@ -134,8 +134,8 @@ public class ConfigureFaxAction extends JSONAction {
 						faxConfig.setId(null);
 						faxConfig.setSiteUser(siteUser);
 
-						if( ! PASSWORD_BLANKET.equals(sitePasswd) ) {
-							faxConfig.setPasswd(sitePasswd);
+						if(sitePasswd != null && ! PASSWORD_BLANKET.equals(sitePasswd) ) {
+							faxConfig.setPasswd(sitePasswd.trim());
 						}
 						// the password carries over from the last configuration. Usually the first entry
 						else if((masterFaxConfig = savedFaxConfigList.get(0)) != null) {
@@ -145,8 +145,8 @@ public class ConfigureFaxAction extends JSONAction {
 						faxConfig.setUrl(faxUrl);
 						faxConfig.setFaxUser(faxUsers[idx]);
 						
-						if( ! PASSWORD_BLANKET.equals(faxPasswds[idx]) ) {
-							faxConfig.setFaxPasswd(faxPasswds[idx]);
+						if(faxPasswds[idx] != null && ! PASSWORD_BLANKET.equals(faxPasswds[idx]) ) {
+							faxConfig.setFaxPasswd(faxPasswds[idx].trim());
 						}
 						
 						faxConfig.setFaxNumber(faxNumbers[idx]);
@@ -182,8 +182,8 @@ public class ConfigureFaxAction extends JSONAction {
 				faxConfig.setUrl(faxUrl);
 				faxConfig.setSiteUser(siteUser);
 
-				if( ! PASSWORD_BLANKET.equals(sitePasswd) ) {
-					faxConfig.setPasswd(sitePasswd);
+				if(sitePasswd != null && ! PASSWORD_BLANKET.equals(sitePasswd) ) {
+					faxConfig.setPasswd(sitePasswd.trim());
 				}
 				// the password carries over from the last configuration. Usually the first entry
 				else if((masterFaxConfig = savedFaxConfigList.get(0)) != null) {

@@ -106,6 +106,12 @@
     eForm.addHeadJavascript(request.getContextPath()+"/library/jquery/jquery-ui-1.12.1.min.js");
     eForm.addHeadJavascript(request.getContextPath()+"/js/jquery.are-you-sure.js");
 
+    eForm.addCSS(request.getContextPath()+"/library/bootstrap/5.0.2/css/bootstrap.css", "all");
+    eForm.addHeadJavascript(request.getContextPath()+"/library/bootstrap/5.0.2/js/bootstrap.bundle.js");
+
+    eForm.addCSS(request.getContextPath()+"/css/oscar_alert.css", "all");
+    eForm.addBodyJavascript(request.getContextPath()+"/js/oscar-alert.js");
+
     eForm.addCSS(request.getContextPath()+"/library/jquery/jquery-ui-1.12.1.min.css", "all");
     eForm.addBodyJavascript(request.getContextPath()+"/eform/eformFloatingToolbar/eform_floating_toolbar.js");
     eForm.addFontLibrary(request.getContextPath()+"/share/javascript/eforms/dejavufonts/ttf/DejaVuSans.ttf");
@@ -123,6 +129,7 @@
     eForm.addHiddenInputElement("eFormPDF", (String) request.getAttribute("eFormPDF"));
     eForm.addHiddenInputElement("isDownloadEForm", (String) request.getAttribute("isDownload"));
     eForm.addHiddenInputElement("newForm", "false");
+    eForm.addHiddenInputElement("isSuccess_Autoclose", (String) request.getAttribute("isSuccess_Autoclose"));
     // Add EForm attachments
     LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
     addHiddenEFormAttachments(loggedInInfo, eForm, fdid);

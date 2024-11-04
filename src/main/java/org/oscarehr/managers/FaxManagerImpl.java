@@ -27,16 +27,7 @@
 
 package org.oscarehr.managers;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
-
+import net.sf.json.JSONObject;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.DynaActionForm;
 import org.oscarehr.common.dao.ClinicDAO;
@@ -48,21 +39,26 @@ import org.oscarehr.common.model.FaxClientLog;
 import org.oscarehr.common.model.FaxConfig;
 import org.oscarehr.common.model.FaxJob;
 import org.oscarehr.common.model.FaxJob.STATUS;
+import org.oscarehr.documentManager.EDocUtil;
 import org.oscarehr.fax.core.FaxAccount;
 import org.oscarehr.fax.core.FaxRecipient;
 import org.oscarehr.fax.core.FaxSchedulerJob;
 import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.util.MiscUtils;
-import org.oscarehr.util.SpringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import net.sf.json.JSONObject;
-import oscar.OscarProperties;
-import org.oscarehr.documentManager.EDocUtil;
 import oscar.form.util.FormTransportContainer;
 import oscar.log.LogAction;
 import oscar.util.ConcatPDF;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Service
 public class FaxManagerImpl implements FaxManager{
@@ -596,6 +592,7 @@ public class FaxManagerImpl implements FaxManager{
 
 	/**
 	 * Returns all the active sender accounts in this system.
+	 * Does not include password data.
 	 */
 	@Override
 	public List<FaxConfig> getFaxGatewayAccounts(LoggedInInfo loggedInInfo) {
@@ -604,12 +601,16 @@ public class FaxManagerImpl implements FaxManager{
 		}
 
 		List<FaxConfig> accounts = faxConfigDao.findAll(0,null);
-		List<FaxConfig> sanitizedAccounts = new ArrayList<FaxConfig>();
+		List<FaxConfig> sanitizedAccounts = new ArrayList<>();
+		/*
+		 * copy the entities in order to remove sensitive data.
+		 * in this case the faxPasswd and passwd data is left out.
+		 */
 		for (FaxConfig account : accounts) {
 			if (account.isActive()) {
-				account.setFaxPasswd(null);
-				account.setPasswd(null);
-				sanitizedAccounts.add(account);
+				FaxConfig sanitizedAccount = new FaxConfig();
+				BeanUtils.copyProperties(account, sanitizedAccount, "faxPasswd", "passwd");
+				sanitizedAccounts.add(sanitizedAccount);
 			}
 		}
 

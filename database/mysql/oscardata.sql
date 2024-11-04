@@ -2637,3 +2637,5 @@ bromyalgia', '41'), ('73390', 'osteopenia', '42'), ('7506', 'Hiatis Hernia', '43
 update ServiceClient set lifetime = -1 where lifetime is null;
 
 INSERT INTO `property`(`name`, `value`, `provider_no`) VALUES ('email_communication', 'electronic_communication_consent', NULL);
+INSERT INTO `property` (`name`, `value`, `provider_no`) VALUES ('default_ref_prac', '1', '999998');
+INSERT INTO `property` (`name`, `value`, `provider_no`) VALUES ('consultation_letterheadname_default', '1', '999998');

@@ -59,7 +59,7 @@ pageContext.setAttribute("isMobileDevice", isMobileDevice);
     </title>
     	
     <link rel="icon" href="${pageContext.request.contextPath}/images/Oscar.ico" />
-	<link href="${pageContext.request.contextPath}/css/Roboto.css" rel='stylesheet' type='text/css' />
+<%--	<link href="${pageContext.request.contextPath}/css/Roboto.css" rel='stylesheet' type='text/css' />--%>
     <script type="text/javascript">
     
         function showHideItem(id){

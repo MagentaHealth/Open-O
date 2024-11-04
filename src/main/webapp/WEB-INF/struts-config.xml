@@ -2053,7 +2053,7 @@
 		</action>
 		
 		<action input="/eform/efmformadd_data.jsp" path="/eform/addEForm" scope="request" type="oscar.eform.actions.AddEFormAction">
-			<forward name="close" path="/eform/efmclosewindow.jsp" />
+			<forward name="close" path="/eform/efmshowform_data.jsp" />
 			<forward name="fax" path="/fax/faxAction.do" />
 			<forward name="download" path="/eform/efmshowform_data.jsp"/>
 			<forward name="error" path="/eform/efmshowform_data.jsp?error=true"/>

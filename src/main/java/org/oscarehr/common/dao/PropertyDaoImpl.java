@@ -28,13 +28,12 @@
 
 package org.oscarehr.common.dao;
 
-import java.util.List;
+import org.oscarehr.common.model.Property;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-
-import org.oscarehr.common.model.Property;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public class PropertyDaoImpl extends AbstractDaoImpl<Property> implements PropertyDao{
@@ -69,6 +68,11 @@ public class PropertyDaoImpl extends AbstractDaoImpl<Property> implements Proper
 		Query query = entityManager.createQuery(sqlCommand);
 		query.setParameter(1, name);
 		return query.getResultList();
+	}
+
+	@Override
+	public List<Property> findGlobalByName(Property.PROPERTY_KEY propertyName) {
+		return findGlobalByName(propertyName.name());
 	}
 
 	public List<Property> findByNameAndProvider(Property.PROPERTY_KEY propertyName, String providerNo) {

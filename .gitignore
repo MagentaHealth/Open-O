@@ -28,3 +28,4 @@ src/main/resources/uiResources_*.properties
 tmp/
 .aider*
 /hs_err_pid*.log
+/release

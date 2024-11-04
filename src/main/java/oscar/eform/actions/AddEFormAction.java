@@ -430,9 +430,26 @@ public class AddEFormAction extends Action {
             	MiscUtils.getLogger().error("Error while processing MatchManager.processEvent(Client)",e);
             }
 		}
-		
 
-		return(mapping.findForward("close"));
+		String path = mapping.findForward("close").getPath() + "?fdid=" + prev_fdid + "&parentAjaxId=eforms";
+		ActionForward forward = new ActionForward(path);
+
+		String pdfBase64;
+		try {
+			Path eFormPdfPath = documentAttachmentManager.renderEFormWithAttachments(request, response);
+			pdfBase64 = documentAttachmentManager.convertPDFToBase64(eFormPdfPath);
+		} catch (PDFGenerationException e) {
+			logger.error(e.getMessage(), e);
+			String errorMessage = "This eForm (and attachments, if applicable) could not be downloaded. \\n\\n" + e.getMessage();
+			request.setAttribute("errorMessage", errorMessage);
+			return mapping.findForward("error");
+		}
+
+		request.setAttribute("eFormPDF", pdfBase64);
+		request.setAttribute("eFormPDFName", generateFileName(loggedInInfo, Integer.parseInt(demographic_no)));
+		request.setAttribute("isSuccess_Autoclose", "true");
+
+		return forward;
 	}
 	
 	private String generateFileName(LoggedInInfo loggedInInfo, int demographicNo) {
