@@ -3501,7 +3501,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		List<ConsultationResponse> consultationResponses;
 
 		// do {
-			consultationResponses = consultResponseDao.fetchConsultationResponses(9500, 9510);
+			consultationResponses = consultResponseDao.fetchConsultationResponses(9500, 11);
 			List<CaseManagementNote> caseManagementNotes = convertConsultResposeToNote(loggedInInfo, consultationResponses);
 			caseManagementNoteDAO.saveNotesInBatch(caseManagementNotes, saveBatchSize);
 			startIndex += fetchLimit;
@@ -3516,6 +3516,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		for (ConsultationResponse consultationResponse : consultationResponses) {
 			CaseManagementNote caseManagementNote = new CaseManagementNote();
 			String note = generateCounsultResponseNote(loggedInInfo, consultationResponse);
+			if (note == null) continue;
 			caseManagementNote.setUpdate_date(updateDate);
 			caseManagementNote.setObservation_date(consultationResponse.getResponseDate() == null ? updateDate : consultationResponse.getResponseDate());
 			caseManagementNote.setDemographic_no(String.valueOf(consultationResponse.getDemographicNo()));
@@ -3537,7 +3538,12 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 	}
 
 	private String generateCounsultResponseNote(LoggedInInfo loggedInInfo, ConsultationResponse consultationResponse) {
-		ProfessionalSpecialist referringDoctorD = consultationManager.getProfessionalSpecialist(consultationResponse.getReferringDocId());
+		if (consultationResponse == null) return null;
+
+		ProfessionalSpecialist referringDoctorD = null;
+		if (consultationResponse.getReferringDocId() != null) {
+			referringDoctorD = consultationManager.getProfessionalSpecialist(consultationResponse.getReferringDocId());
+		}
 		String referringDoctor = referringDoctorD != null ? referringDoctorD.getLastName() + ", " + referringDoctorD.getFirstName() : null;
 		String providerName = getLetterhead(consultationResponse.getProviderNo());
 		String letterheadName = getLetterhead(consultationResponse.getLetterheadName());
@@ -3639,7 +3645,8 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		}
 	}
 
-	private String getLetterhead(String letterHead) {		
+	private String getLetterhead(String letterHead) {
+		if (letterHead == null) return null;
 		//clinic letterhead
 		Clinic clinic = clinicDAO.getClinic();
 		if (letterHead.equals(clinic.getClinicName().trim())) {
