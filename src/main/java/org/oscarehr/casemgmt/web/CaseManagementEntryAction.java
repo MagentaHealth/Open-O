@@ -3573,32 +3573,35 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 						? "Appointment Time: " + consultationResponse.getAppointmentTime() + "\n" 
 						: "Appointment Time: No Appointment Time available\n")
 			.append(consultationResponse.getAppointmentNote() != null 
-						? "Appointment Note: " + consultationResponse.getAppointmentNote() + "\n" 
-						: "Appointment Note: No Appointment Note available\n")
+						? "Appointment Note: " + consultationResponse.getAppointmentNote() + "\n\n" 
+						: "Appointment Note: No Appointment Note available\n\n")
 			.append(consultationResponse.getReferralReason() != null 
-						? "Referral Reason: " + consultationResponse.getReferralReason() + "\n" 
-						: "Referral Reason: No Referral Reason available\n")
+						? "Referral Reason: " + consultationResponse.getReferralReason() + "\n\n" 
+						: "Referral Reason: No Referral Reason available\n\n")
 			.append(consultationResponse.getExamination() != null 
-						? "Examination: " + consultationResponse.getExamination() + "\n" 
-						: "Examination: No Examination available\n")
+						? "Examination: " + consultationResponse.getExamination() + "\n\n" 
+						: "Examination: No Examination available\n\n")
 			.append(consultationResponse.getImpression() != null 
 						? "Impression: " + consultationResponse.getImpression() + "\n" 
-						: "Impression: No Impression available\n")
+						: "Impression: No Impression info notes available\n")
 			.append(consultationResponse.getPlan() != null 
 						? "Plan: " + consultationResponse.getPlan() + "\n" 
-						: "Plan: No Plan available\n")
+						: "Plan: No Plan info notes available\n")
 			.append(consultationResponse.getClinicalInfo() != null 
 						? "Clinical Info: " + consultationResponse.getClinicalInfo() + "\n" 
-						: "Clinical Info: This section has no notes\n")
+						: "Clinical Info: No Clinical Info notes available\n")
 			.append(consultationResponse.getCurrentMeds() != null 
 						? "Current Meds: " + consultationResponse.getCurrentMeds() + "\n" 
-						: "Current Meds: This section has no notes\n")
+						: "Current Meds: No Current Medication info notes available\n")
 			.append(consultationResponse.getAllergies() != null 
 						? "Allergies: " + consultationResponse.getAllergies() + "\n" 
-						: "Allergies: This section has no notes\n")
+						: "Allergies: No Allergy info notes available\n")
 			.append(providerName != null 
 						? "Provider: " + providerName + "\n" 
 						: "Provider: No Provider available\n")
+			.append(consultationResponse.getConcurrentProblems() != null
+						? "Concurrent Problems: " + consultationResponse.getConcurrentProblems() + "\n" 
+						: "Concurrent Problems: No concurrent problems info notes available\n")
 			.append(letterheadName != null 
 						? "Letterhead Name: " + letterheadName + "\n" 
 						: "Letterhead Name: No Letterhead Name available\n")
