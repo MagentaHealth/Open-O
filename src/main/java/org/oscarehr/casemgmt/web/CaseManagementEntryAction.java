@@ -3500,15 +3500,18 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 		int startIndex = 0, fetchLimit = 40, saveBatchSize = 20;
 		List<ConsultationResponse> consultationResponses;
 
+		ProgramProviderDAO programProviderDao = (ProgramProviderDAO) SpringUtils.getBean(ProgramProviderDAO.class);
+		ProgramProvider programProviders = programProviderDao.getAllProgramProviders().get(0);
+
 		// do {
 			consultationResponses = consultResponseDao.fetchConsultationResponses(9500, 11);
-			List<CaseManagementNote> caseManagementNotes = convertConsultResposeToNote(loggedInInfo, consultationResponses);
+			List<CaseManagementNote> caseManagementNotes = convertConsultResposeToNote(loggedInInfo, consultationResponses, programProviders.getProgramId().toString(), programProviders.getRoleId().toString());
 			caseManagementNoteDAO.saveNotesInBatch(caseManagementNotes, saveBatchSize);
 			startIndex += fetchLimit;
 		// } while (!consultationResponses.isEmpty());
 	}
 
-	private List<CaseManagementNote> convertConsultResposeToNote(LoggedInInfo loggedInInfo, List<ConsultationResponse> consultationResponses) {
+	private List<CaseManagementNote> convertConsultResposeToNote(LoggedInInfo loggedInInfo, List<ConsultationResponse> consultationResponses, String programNo, String roleId) {
 		String providerNo = loggedInInfo.getLoggedInProviderNo();
         Date updateDate = new Date();
 
@@ -3529,8 +3532,8 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 			caseManagementNote.setSigning_provider_no("-1");
 			caseManagementNote.setReporter_program_team("null");
 			caseManagementNote.setHistory(note);
-
-			CaseManagementEntryAction.determineNoteRole(caseManagementNote, providerNo, String.valueOf(consultationResponse.getDemographicNo()));
+			caseManagementNote.setProgram_no(programNo);
+			caseManagementNote.setReporter_caisi_role(roleId);
 
 			caseManagementNotes.add(caseManagementNote);
 		}
