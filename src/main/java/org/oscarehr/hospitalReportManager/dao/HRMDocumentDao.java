@@ -274,7 +274,7 @@ public class HRMDocumentDao extends AbstractDaoImpl<HRMDocument> {
 			9979, 9991, 99977, 34002, 288783, 282852, 282853, 282855,
 			282726, 226789, 160865, 168176, 168255, 193543, 194595, 
 			194602, 203644, 130308, 129059, 100220, 100221, 10008, 
-			1001, 10003, 10006
+			1001, 10003, 10006, 212986, 213552, 226762
 		};
 
 		String sql = "select DISTINCT h from HRMDocumentToProvider x " +
