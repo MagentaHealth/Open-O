@@ -188,32 +188,63 @@ if(!authed) {
 		fileList.appendChild(fileItem);
 	}
 
+	function validateHrmLimit(input) {
+		// Remove any decimal points and non-numeric characters
+		input.value = input.value.replace(/[^\d]/g, '');
+		
+		// Convert to number for validation
+		const value = parseInt(input.value);
+		
+		// Validate range
+		if (value > 500) {
+			input.value = 500;
+		}
+	}
+
 	function fetchUnlinkedHRMs() {
 		ShowSpin(true);
+		
+		const hrmLimit = jQuery("#hrmLimit").val().trim();
+		
+		// Final validation before submission
+		if (!hrmLimit || 
+			isNaN(hrmLimit) || 
+			parseInt(hrmLimit) < 1 || 
+			parseInt(hrmLimit) > 500 || 
+			!Number.isInteger(parseFloat(hrmLimit))) {
+			
+			alert("Please enter a valid number between 1 and 500.");
+			HideSpin();
+			return;
+		}
+		
 		jQuery.ajax({
-			url: "${pageContext.request.contextPath}/hospitalReportManager/Mapping.do?fetchUnlinkedHRMs=true",
+			url: "${pageContext.request.contextPath}/hospitalReportManager/Mapping.do?fetchUnlinkedHRMs=true&limit=" + hrmLimit,
 			type: "POST",
 			xhrFields: {
-                responseType: 'blob'  // Expecting a blob response
-            },
-            success: function (blobData, status, xhr) {
+				responseType: 'blob'  // Expecting a blob response
+			},
+			success: function (blobData, status, xhr) {
 				HideSpin();
-                // Get filename from Content-Disposition header
-                var disposition = xhr.getResponseHeader('Content-Disposition');
-                var filename = "hrm_results.zip"; // Default filename
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    var matches = /filename="([^"]*)"/.exec(disposition);
-                    if (matches != null && matches[1]) filename = matches[1];
-                }
+				// Get filename from Content-Disposition header
+				var disposition = xhr.getResponseHeader('Content-Disposition');
+				var filename = "hrm_results.zip"; // Default filename
+				if (disposition && disposition.indexOf('attachment') !== -1) {
+					var matches = /filename="([^"]*)"/.exec(disposition);
+					if (matches != null && matches[1]) filename = matches[1];
+				}
 
-                // Create a temporary link element to trigger file download
-                var link = document.createElement('a');
-                var url = window.URL.createObjectURL(blobData);
-                link.href = url;
-                link.download = filename;
-                document.body.appendChild(link);
-                link.click();
-                window.URL.revokeObjectURL(url); // Clean up
+				// Create a temporary link element to trigger file download
+				var link = document.createElement('a');
+				var url = window.URL.createObjectURL(blobData);
+				link.href = url;
+				link.download = filename;
+				document.body.appendChild(link);
+				link.click();
+				window.URL.revokeObjectURL(url); // Clean up
+
+				// Clear the input after successful submission
+				jQuery("#hrmLimit").val('');
 
 				alert("File download started successfully. The ZIP includes:\n" +
 					"- Successfully routed HRMs to patients.\n" +
@@ -221,8 +252,8 @@ if(!authed) {
 					"- Newborn HRMs flagged for manual review.\n" +
 					"- HRMs with invalid/unparsable reports.\n" +
 					"- HRMs missing DOB or report date.");
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
 				HideSpin();
 				console.error("Error details:", {
 					textStatus: textStatus,
@@ -299,7 +330,20 @@ if(!authed) {
 
 <hr/>
 <h3>HRM Documents Signed-off but Not Linked to Demographics</h3>
-<span style="margin-bottom: 15px;">Retrieve and process HRM documents not linked to demographics</span> <button type="button" class="btn" onclick="fetchUnlinkedHRMs()">Generate</button>
+<div class="form-group" style="margin-bottom: 30px;">
+    <span>Retrieve and process HRM documents not linked to demographics</span>
+    <input type="number" 
+           id="hrmLimit" 
+           class="form-control" 
+           placeholder="Enter a number up to 500" 
+           style="width: 200px; margin: 10px 0;"
+           min="1" 
+           max="500" 
+           step="1" 
+           onkeydown="return event.keyCode !== 190"
+           oninput="validateHrmLimit(this)">
+    <button type="button" class="btn" onclick="fetchUnlinkedHRMs()">Generate</button>
+</div>
 </div>
 </body>
 </html:html>

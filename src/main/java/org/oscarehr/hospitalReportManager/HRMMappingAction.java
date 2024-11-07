@@ -88,7 +88,16 @@ public class HRMMappingAction extends DispatchAction {
 
 	private void generateUnlinkedHRMsFile(HttpServletRequest request, HttpServletResponse response) {
 		LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
-		Map<String, List<HRMDocument>> hrmResults = HRMUtil.processUnlinkedHRMs(loggedInInfo);
+
+		// Retrieve hrmIds from the request
+		String limitString = request.getParameter("limit");
+		Integer limit = 0;
+		if (limitString != null && !limitString.trim().isEmpty()) {
+			limit = Integer.parseInt(limitString);
+		} 
+
+		// Pass the list to HRMUtil.processUnlinkedHRMs
+		Map<String, List<HRMDocument>> hrmResults = HRMUtil.processUnlinkedHRMs(loggedInInfo, limit);
 
 		response.setContentType("application/zip");
 		response.setHeader("Content-Disposition", "attachment;filename=\"hrm_results.zip\"");

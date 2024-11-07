@@ -357,11 +357,15 @@ public class HRMUtil {
 		return getHRMDocumentDisplayName(hrmDocument.getDescription(), "", hrmDocument.getReportType(), hrmDocument.getReportStatus());
 	}
 
-	public static Map<String, List<HRMDocument>> processUnlinkedHRMs(LoggedInInfo loggedInInfo) {
+	public static Map<String, List<HRMDocument>> processUnlinkedHRMs(LoggedInInfo loggedInInfo, Integer limit) {
 		Map<String, List<HRMDocument>> result = initializeResultMap();
 		int startIndex = 0;
 		int batchSize = 20;
 		List<HRMDocument> unlinkedHRMs;
+
+		if (batchSize > limit) {
+			batchSize = limit;
+		}
 
 		do {
 			unlinkedHRMs = hrmDocumentDao.findHRMDocumentsWithoutDemographicLink(startIndex, batchSize);
@@ -369,7 +373,7 @@ public class HRMUtil {
 				processHRMDocument(loggedInInfo, hrmDocument, result);
 			}
 			startIndex += batchSize;
-		} while (!unlinkedHRMs.isEmpty());
+		} while (!unlinkedHRMs.isEmpty() && startIndex < limit);
 
 		return result;
 	}

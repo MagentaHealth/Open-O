@@ -270,21 +270,12 @@ public class HRMDocumentDao extends AbstractDaoImpl<HRMDocument> {
 	}
 
 	public List<HRMDocument> findHRMDocumentsWithoutDemographicLink(int startIndex, int limit) {
-		Integer[] SPECIFIC_HRM_IDS = {
-			9979, 9991, 99977, 34002, 288783, 282852, 282853, 282855,
-			282726, 226789, 160865, 168176, 168255, 193543, 194595, 
-			194602, 203644, 130308, 129059, 100220, 100221, 10008, 
-			1001, 10003, 10006, 212986, 213552, 226762
-		};
-
 		String sql = "select DISTINCT h from HRMDocumentToProvider x " +
 					"JOIN HRMDocument h ON h.id = x.hrmDocumentId " +
 					"LEFT JOIN HRMDocumentToDemographic d ON x.hrmDocumentId = d.hrmDocumentId " +
-					"where d.hrmDocumentId IS NULL and x.providerNo != '-1' " +
-					"and h.id IN :specificIds";
+					"where d.hrmDocumentId IS NULL and x.providerNo != '-1' ORDER BY h.id ASC";
     
 		Query query = entityManager.createQuery(sql);
-		query.setParameter("specificIds", Arrays.asList(SPECIFIC_HRM_IDS));
 		query.setFirstResult(startIndex);
 		query.setMaxResults(limit);
 		@SuppressWarnings("unchecked")
