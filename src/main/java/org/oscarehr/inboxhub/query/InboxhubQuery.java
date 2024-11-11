@@ -25,6 +25,98 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class InboxhubQuery extends ActionForm {
+    public enum TypeFilter {
+        ALL("all"),
+        DOC("doc"),
+        LAB("lab"),
+        HRM("hrm");
+
+        private final String value;
+        TypeFilter(String value) { this.value = value; }
+        public String getValue() { return value; }
+        public static TypeFilter fromValue(String value) {
+            return "doc".equals(value) ? DOC :
+                   "lab".equals(value) ? LAB :
+                   "hrm".equals(value) ? HRM : ALL;
+        }
+    }
+
+    public enum AbnormalFilter {
+        ALL("all"),
+        NORMAL_ONLY("normalOnly"),
+        ABNORMAL_ONLY("abnormalOnly");
+    
+        private final String value;
+    
+        AbnormalFilter(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    
+        public static AbnormalFilter fromValue(String value) {
+            for (AbnormalFilter filter : values()) {
+                if (filter.value.equals(value)) {
+                    return filter;
+                }
+            }
+            return ALL;
+        }
+    }
+
+    public enum StatusFilter {
+        ALL(""),
+        NEW("N"),
+        ACKNOWLEDGED("A"),
+        FILED("F");
+
+        private final String value;
+
+        StatusFilter(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static StatusFilter fromValue(String value) {
+            for (StatusFilter filter : values()) {
+                if (filter.value.equals(value)) {
+                    return filter;
+                }
+            }
+            return ALL;
+        }
+    }
+
+    public enum ProviderSearchFilter {
+        ANY_PROVIDER("true"),
+        NO_PROVIDER("false"),
+        SPECIFIC_PROVIDER("");
+    
+        private final String value;
+    
+        ProviderSearchFilter(String value) {
+            this.value = value;
+        }
+    
+        public String getValue() {
+            return value;
+        }
+    
+        public static ProviderSearchFilter fromValue(String value) {
+            for (ProviderSearchFilter filter : values()) {
+                if (filter.value.equals(value)) {
+                    return filter;
+                }
+            }
+            return SPECIFIC_PROVIDER;
+        }
+    }
+    
     private Boolean viewMode;
     private Boolean clearFilters;
     private Boolean doc;
@@ -44,22 +136,6 @@ public class InboxhubQuery extends ActionForm {
     private String endDate;
     private int page;
     private int pageSize;
-
-    public enum TypeFilter {
-        ALL("all"),
-        DOC("doc"),
-        LAB("lab"),
-        HRM("hrm");
-
-        private final String value;
-        TypeFilter(String value) { this.value = value; }
-        public String getValue() { return value; }
-        public static TypeFilter fromValue(String value) {
-            return "doc".equals(value) ? DOC :
-                   "lab".equals(value) ? LAB :
-                   "hrm".equals(value) ? HRM : ALL;
-        }
-    }
 
     public String getEndDate() {
         return endDate;
@@ -109,6 +185,10 @@ public class InboxhubQuery extends ActionForm {
         return searchAll;
     }
 
+    public ProviderSearchFilter getProviderSearchFilter() {
+        return ProviderSearchFilter.fromValue(searchAll);
+    }
+
     public void setSearchProviderName(String searchProviderName) {
         this.searchProviderName = searchProviderName;
     }
@@ -153,6 +233,10 @@ public class InboxhubQuery extends ActionForm {
         return status;
     }
 
+    public StatusFilter getStatusFilter() {
+        return StatusFilter.fromValue(status);
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -189,8 +273,12 @@ public class InboxhubQuery extends ActionForm {
         this.abnormal = abnormal;
     }
 
+    public AbnormalFilter getAbnormalFilter() {
+        return AbnormalFilter.fromValue(abnormal);
+    }
+
     public Boolean getAbnormalBool() {
-        return Objects.equals(abnormal, "all") ? null : Objects.equals(abnormal, "normalOnly") ? false : true;
+        return Objects.equals(AbnormalFilter.fromValue(abnormal), AbnormalFilter.ALL) ? null : Objects.equals(AbnormalFilter.fromValue(abnormal), AbnormalFilter.NORMAL_ONLY) ? false : true;
     }
 
     public Boolean getViewMode() {
@@ -226,15 +314,15 @@ public class InboxhubQuery extends ActionForm {
         this.patientFirstName = "";
         this.patientLastName = "";
         this.patientHealthNumber = "";
-        this.status = "N";
+        this.status = StatusFilter.NEW.getValue();
         this.startDate = "";
         this.endDate = "";
         this.doc = false;
         this.lab = false;
         this.hrm = false;
         this.unmatched = false;
-        this.abnormal = "all";
-        this.searchAll = "";
+        this.abnormal = AbnormalFilter.ALL.getValue();
+        this.searchAll = ProviderSearchFilter.SPECIFIC_PROVIDER.getValue();
         this.viewMode = false;
         super.reset(mapping, request);
     }
