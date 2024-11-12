@@ -479,7 +479,7 @@ if(!authed) {
         <textarea 
             id="consultResponseIds" 
             class="form-control" 
-            placeholder="Enter HRM document IDs in CSV format" 
+            placeholder="Enter consult response IDs in CSV format" 
             style="width: 100%; margin: 10px 0;" 
             rows="10"></textarea>
     </div>
