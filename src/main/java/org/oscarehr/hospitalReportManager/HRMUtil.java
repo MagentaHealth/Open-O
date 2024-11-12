@@ -408,10 +408,10 @@ public class HRMUtil {
 
 		if (dob != null && reportDate != null) {
 			long diffInDays = calculateDateDifferenceInDays(dob, reportDate);
-			if (diffInDays <= 14) {
+			if (diffInDays <= 14 && (hrmReport.getHCN() == null || hrmReport.getHCN().trim().isEmpty())) {
 				result.get("newbornsForManualReview").add(hrmDocument);
 			} else {
-				HRMReportParser.routeReportToDemographic(hrmDocument.getId(), 511);
+				HRMReportParser.routeReportToDemographic(hrmDocument.getId(), 61464);
 				result.get("unmatchedToPatient").add(hrmDocument);
 			}
 		} else {
