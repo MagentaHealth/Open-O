@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -59,6 +60,11 @@ public class HRMMappingAction extends DispatchAction {
 				generateUnlinkedHRMsFile(request, response);
 				return null;
 			}
+
+			if (request.getParameter("linkHrmDocumentIds") != null && request.getParameter("linkHrmDocumentIds").trim().length() > 0) {
+				linkHrmDocumentIds(request, response);
+				return null;
+			}
 			
 			String className = request.getParameter("class"); 
 			String subClass = request.getParameter("subclass");
@@ -98,6 +104,56 @@ public class HRMMappingAction extends DispatchAction {
 
 		// Pass the list to HRMUtil.processUnlinkedHRMs
 		Map<String, List<HRMDocument>> hrmResults = HRMUtil.processUnlinkedHRMs(loggedInInfo, limit);
+
+		response.setContentType("application/zip");
+		response.setHeader("Content-Disposition", "attachment;filename=\"hrm_results.zip\"");
+
+		// Get the base URL from the request
+		String baseUrl = getBaseUrl(request);
+
+		try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+			 PrintWriter writer = new PrintWriter(new OutputStreamWriter(zos, StandardCharsets.UTF_8))) {
+
+			writeCSVToZip(zos, writer, "Successfully_Routed_to_Patient.csv", hrmResults.get("matchedToPatient"), baseUrl);
+			writeCSVToZip(zos, writer, "Unmatched_Documents_Routed_to_NotPatient.csv", hrmResults.get("unmatchedToPatient"), baseUrl);
+			writeCSVToZip(zos, writer, "Newborns_for_Manual_Review.csv", hrmResults.get("newbornsForManualReview"), baseUrl);
+			writeCSVToZip(zos, writer, "Failed_to_Route_Invalid_Report_Path_or_Unparsable_Report.csv", hrmResults.get("failedDueToMissingOrUnparsableReport"), baseUrl);
+			writeCSVToZip(zos, writer, "Failed_to_Route_Missing_DOB_or_Report_Date.csv", hrmResults.get("failedDueToMissingDOBOrReportDate"), baseUrl);
+
+		} catch (IOException e) {
+			log.error("Error generating HRM CSV files", e);
+		}
+	}
+
+	private void linkHrmDocumentIds(HttpServletRequest request, HttpServletResponse response) {
+		LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+
+		// Retrieve ids from the request
+		String hrmIdsInput = request.getParameter("hrmIds");
+    
+		// Validate hrmIdsInput
+		if (hrmIdsInput == null || hrmIdsInput.trim().isEmpty()) {
+			// Handle empty input
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return; // or send an error message
+		}
+	
+		// Split the input by commas and trim whitespace
+		String[] hrmIdsArray = hrmIdsInput.split(",");
+		List<Integer> hrmIds = new ArrayList<>();
+
+		// Validate each ID
+		for (String id : hrmIdsArray) {
+			String trimmedId = id.trim();
+			// Check if each ID is numeric
+			if (trimmedId.matches("\\d+")) {
+				// If valid, add to the list as an Integer
+				hrmIds.add(Integer.valueOf(trimmedId));
+			}
+		} 
+
+		// Pass the list to HRMUtil.processUnlinkedHRMs
+		Map<String, List<HRMDocument>> hrmResults = HRMUtil.processUnlinkedHRMs(loggedInInfo, hrmIds);
 
 		response.setContentType("application/zip");
 		response.setHeader("Content-Disposition", "attachment;filename=\"hrm_results.zip\"");

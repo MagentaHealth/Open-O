@@ -378,6 +378,23 @@ public class HRMUtil {
 		return result;
 	}
 
+	public static Map<String, List<HRMDocument>> processUnlinkedHRMs(LoggedInInfo loggedInInfo, List<Integer> hrmIds) {
+		Map<String, List<HRMDocument>> result = initializeResultMap();
+		int startIndex = 0;
+		int batchSize = 20;
+		List<HRMDocument> unlinkedHRMs;
+
+		do {
+			unlinkedHRMs = hrmDocumentDao.findHRMDocumentsWithoutDemographicLink(startIndex, batchSize, hrmIds);
+			for (HRMDocument hrmDocument : unlinkedHRMs) {
+				processHRMDocument(loggedInInfo, hrmDocument, result);
+			}
+			startIndex += batchSize;
+		} while (!unlinkedHRMs.isEmpty());
+
+		return result;
+	}
+
 	private static Map<String, List<HRMDocument>> initializeResultMap() {
 		Map<String, List<HRMDocument>> result = new HashMap<>();
 		result.put("matchedToPatient", new ArrayList<>());
