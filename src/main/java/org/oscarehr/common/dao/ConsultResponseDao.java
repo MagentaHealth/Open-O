@@ -33,5 +33,5 @@ import org.oscarehr.consultations.ConsultationResponseSearchFilter;
 public interface ConsultResponseDao extends AbstractDao<ConsultationResponse> {
     int getConsultationCount(ConsultationResponseSearchFilter filter);
     List<Object[]> search(ConsultationResponseSearchFilter filter);
-    List<ConsultationResponse> fetchConsultationResponses(int startIndex, int limit);
+    List<ConsultationResponse> fetchConsultationResponses(int startIndex, int limit, List<Integer> consultResponseIds);
 }

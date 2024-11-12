@@ -27,6 +27,7 @@
 package org.oscarehr.common.dao;
 
 import java.util.List;
+import java.util.Collections;
 
 import javax.persistence.Query;
 
@@ -147,13 +148,24 @@ public class ConsultResponseDaoImpl extends AbstractDaoImpl<ConsultationResponse
 		return sql.toString();
 	}
 
-	public List<ConsultationResponse> fetchConsultationResponses(int startIndex, int limit) {
-        String queryString = "SELECT c FROM ConsultationResponse c ORDER BY c.id";
-        Query query = entityManager.createQuery(queryString);
-        query.setFirstResult(startIndex);
-        query.setMaxResults(limit);
+	public List<ConsultationResponse> fetchConsultationResponses(int startIndex, int limit, List<Integer> consultResponseIds) {
+		if (consultResponseIds == null || consultResponseIds.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-        List<ConsultationResponse> results = query.getResultList();
-        return results;
+		// Build the query string with the IN clause
+		String queryString = "SELECT c FROM ConsultationResponse c WHERE c.id IN :consultResponseIds ORDER BY c.id";
+		
+		// Create the query
+		Query query = entityManager.createQuery(queryString);
+		
+		// Set the query parameters
+		query.setParameter("consultResponseIds", consultResponseIds);
+		query.setFirstResult(startIndex);
+		query.setMaxResults(limit);
+
+		// Execute the query and return the results
+		List<ConsultationResponse> results = query.getResultList();
+		return results;
     }
 }
