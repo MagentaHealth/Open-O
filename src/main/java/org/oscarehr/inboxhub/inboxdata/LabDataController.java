@@ -170,7 +170,8 @@ public class LabDataController {
         }
         if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
             HRMResultsData hrmResult = new HRMResultsData();
-            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, StringEscapeUtils.escapeSql(query.getSearchProviderNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
+            String searchProvider = query.getProviderSearchFilter().equals(ProviderSearchFilter.ANY_PROVIDER) ? "" : query.getSearchProviderNo();
+            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, StringEscapeUtils.escapeSql(searchProvider), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
                 StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), StringEscapeUtils.escapeSql(query.getDemographicNo()), query.getStatusFilter().getValue(), startDate, endDate, isPaged, page, pageSize));
         }
         return labDocs;
