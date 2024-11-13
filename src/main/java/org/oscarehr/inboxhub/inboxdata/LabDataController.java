@@ -34,6 +34,9 @@ import oscar.oscarLab.ca.on.LabResultData;
 import oscar.oscarMDS.data.CategoryData;
 import oscar.oscarMDS.data.ProviderData;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -102,23 +105,23 @@ public class LabDataController {
                     duplicateLabIds.append(duplicateLabId);
                 }
                 url.append("duplicateLabIds=");
-                url.append((duplicateLabIds.toString()));
+                url.append(encodeURL(duplicateLabIds.toString()));
                 url.append("&id=");
-                url.append((labResult.getSegmentID()));
+                url.append(encodeURL(labResult.getSegmentID()));
             }
             else {
                 url.append("/lab/CA/BC/labDisplay.jsp?");
             }
             url.append("&segmentID=");
-            url.append((labResult.getSegmentID()));
+            url.append(encodeURL(labResult.getSegmentID()));
             url.append("&providerNo=");
-            url.append(providerNo);
+            url.append(encodeURL(providerNo));
             url.append("&searchProviderNo=");
-            url.append((query.getSearchProviderNo()));
+            url.append(encodeURL(query.getSearchProviderNo()));
             url.append("&status=");
-            url.append((labResult.resultStatus));
+            url.append(encodeURL(labResult.resultStatus));
             url.append("&demoName=");
-            url.append((labResult.getPatientName()));
+            url.append(encodeURL(labResult.getPatientName()));
             labLinks.add(url.toString());
         }
         return labLinks;
@@ -235,5 +238,15 @@ public class LabDataController {
             totalResultsCount += (categoryData.getMatchedHRMCount() + categoryData.getUnmatchedHRMCount());
         }
         return totalResultsCount;
+    }
+
+    private String encodeURL(String url) {
+        String encodedUrl = "";
+        try {
+            encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            MiscUtils.getLogger().error(e);
+        }
+        return encodedUrl;
     }
 }
