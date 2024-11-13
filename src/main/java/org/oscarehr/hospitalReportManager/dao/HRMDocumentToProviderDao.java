@@ -9,6 +9,7 @@
 
 package org.oscarehr.hospitalReportManager.dao;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -49,8 +50,12 @@ public class HRMDocumentToProviderDao extends AbstractDaoImpl<HRMDocumentToProvi
 		return documentToProviders;
 	}
 
-	public List<HRMDocumentToProvider> findByProviderNoLimit(String providerNo, List<Integer> demographicNumbers, Date newestDate, Date oldestDate,
+	public List<HRMDocumentToProvider> findByProviderNoLimit(String providerNo, List<Integer> demographicNumbers, boolean patientSearch, Date newestDate, Date oldestDate,
 				Integer viewed, Integer signedOff, boolean isPaged, Integer page, Integer pageSize) {
+
+		if (patientSearch && (demographicNumbers == null || demographicNumbers.isEmpty())) {
+			return Collections.emptyList();
+		}
 		
 		String hrmToDemographicTableName = "";
 		
