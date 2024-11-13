@@ -19,6 +19,7 @@
 
 package org.oscarehr.inboxhub.inboxdata;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.oscarehr.common.dao.InboxResultsDao;
 import org.oscarehr.common.model.Provider;
@@ -137,7 +138,7 @@ public class LabDataController {
             patientSearch = false;
         }
 
-        CategoryData categoryData = new CategoryData(query.getPatientLastName(), query.getPatientFirstName(), query.getPatientHealthNumber(), patientSearch, providerSearch, query.getSearchProviderNo(), query.getStatusFilter().getValue(), query.getAbnormalFilter().getValue(), query.getStartDate(), query.getEndDate());
+        CategoryData categoryData = new CategoryData(StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientFirstName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), patientSearch, providerSearch, StringEscapeUtils.escapeSql(query.getSearchProviderNo()), query.getStatusFilter().getValue(), query.getAbnormalFilter().getValue(), StringEscapeUtils.escapeSql(query.getStartDate()), StringEscapeUtils.escapeSql(query.getEndDate()));
         try {
             categoryData.populateCountsAndPatients();
         } catch (SQLException e) {
@@ -160,17 +161,17 @@ public class LabDataController {
 
         Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
         if (query.getDoc() || all) {
-            labDocs.addAll(inboxResultsDao.populateDocumentResultsData(query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
-                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));
+            labDocs.addAll(inboxResultsDao.populateDocumentResultsData(StringEscapeUtils.escapeSql(query.getSearchProviderNo()), StringEscapeUtils.escapeSql(query.getDemographicNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
+                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));
         }
         if (query.getLab() || all) {
-            labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), query.getDemographicNo(), query.getPatientFirstName(),
-                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
+            labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), StringEscapeUtils.escapeSql(query.getDemographicNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
+                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
         }
         if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
             HRMResultsData hrmResult = new HRMResultsData();
-            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, query.getSearchProviderNo(), query.getPatientFirstName(),
-                    query.getPatientLastName(), query.getPatientHealthNumber(), query.getDemographicNo(), query.getStatusFilter().getValue(), startDate, endDate, isPaged, page, pageSize));
+            labDocs.addAll(hrmResult.populateHRMdocumentsResultsData(loggedInInfo, StringEscapeUtils.escapeSql(query.getSearchProviderNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
+                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), StringEscapeUtils.escapeSql(query.getDemographicNo()), query.getStatusFilter().getValue(), startDate, endDate, isPaged, page, pageSize));
         }
         return labDocs;
     }
