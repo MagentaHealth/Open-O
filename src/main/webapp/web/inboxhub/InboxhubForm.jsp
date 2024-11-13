@@ -95,7 +95,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             <!-- All Patients (including unmatched) -->
                             <input type="hidden" name="unmatched" id="unmatchedId" value="${query.unmatched}"/>
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" ${query.unmatched eq 'false' and query.patientFirstName eq '' ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'false');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);"/>
+                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption1" id="allPatients" ${query.unmatched eq 'false' and query.patientFirstName eq '' and query.patientLastName eq '' and query.patientHealthNumber eq '' ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'false');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);"/>
                                 <label class="form-check-label" for="allPatients"><bean:message key="oscarMDS.search.formAllPatients"/></label>
                             </div>
                             <!-- Unmatched to Existing Patient -->
@@ -105,7 +105,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                             </div>
                             <!-- Specific Patient(s) -->
                             <div class="form-check">
-                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients" ${query.unmatched eq 'false' and query.patientFirstName ne '' ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'false');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);"/>
+                                <input class="btn-check-input" type="radio" name="patientsRadios" value="patientsOption3" id="specificPatients" ${query.unmatched eq 'false' and (query.patientFirstName ne '' or query.patientLastName ne '' or query.patientHealthNumber ne '') ? 'checked' : ''} onClick="changeValueElementByName('unmatched', 'false');toggleInputVisibility('specificPatients', 'specificPatientsId', 200);"/>
                                 <label class="form-check-label" for="specificPatients"><bean:message key="oscarMDS.search.formSpecificPatients"/></label> <br>
                                 <div id="specificPatientsId" class="d-grid ms-3">
                                     <div class="input-group input-group-sm">

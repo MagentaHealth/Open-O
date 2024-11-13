@@ -134,7 +134,7 @@ public class LabDataController {
         if (Objects.equals(query.getSearchProviderNo(), "-1")) {
             providerSearch = false;
         }
-        if (query.getDemographicNo() == null || query.getPatientFirstName().isEmpty() || query.getPatientLastName().isEmpty() || query.getPatientHealthNumber().isEmpty()) {
+        if (query.getDemographicNo() == null && query.getPatientFirstName().isEmpty() && query.getPatientLastName().isEmpty() && query.getPatientHealthNumber().isEmpty()) {
             patientSearch = false;
         }
 
