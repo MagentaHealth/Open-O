@@ -19,6 +19,7 @@
 
 package org.oscarehr.inboxhub.inboxdata;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.oscarehr.common.dao.InboxResultsDao;
 import org.oscarehr.common.model.Provider;
 import org.oscarehr.inboxhub.query.InboxhubQuery;
@@ -34,9 +35,11 @@ import oscar.oscarMDS.data.CategoryData;
 import oscar.oscarMDS.data.ProviderData;
 
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -49,11 +52,12 @@ public class LabDataController {
     //Converts given string date to date object. Returns null if not in yyyy-MM-dd format or blank.
     public Date convertDate(String stringDate) {
         if (!stringDate.isEmpty()) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
             try {
-                Date date = df.parse(stringDate);
-                return date;
-            } catch (ParseException e) {
+                LocalDate localDate = LocalDate.parse(stringDate, formatter);
+                Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+                return Date.from(instant);
+            } catch (DateTimeParseException e) {
                 MiscUtils.getLogger().error(e);
                 return null;
             }
