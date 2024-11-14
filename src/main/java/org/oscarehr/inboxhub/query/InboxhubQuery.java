@@ -25,23 +25,29 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class InboxhubQuery extends ActionForm {
-    public enum TypeFilter {
+    public enum TypeFilter implements FilterEnum {
         ALL("all"),
         DOC("doc"),
         LAB("lab"),
         HRM("hrm");
-
+    
         private final String value;
-        TypeFilter(String value) { this.value = value; }
-        public String getValue() { return value; }
+    
+        TypeFilter(String value) {
+            this.value = value;
+        }
+    
+        @Override
+        public String getValue() {
+            return value;
+        }
+    
         public static TypeFilter fromValue(String value) {
-            return "doc".equals(value) ? DOC :
-                   "lab".equals(value) ? LAB :
-                   "hrm".equals(value) ? HRM : ALL;
+            return FilterEnum.fromValue(value, TypeFilter.class, ALL);
         }
     }
 
-    public enum AbnormalFilter {
+    public enum AbnormalFilter implements FilterEnum {
         ALL("all"),
         NORMAL_ONLY("normalOnly"),
         ABNORMAL_ONLY("abnormalOnly");
@@ -51,48 +57,40 @@ public class InboxhubQuery extends ActionForm {
         AbnormalFilter(String value) {
             this.value = value;
         }
-
+    
+        @Override
         public String getValue() {
             return value;
         }
     
         public static AbnormalFilter fromValue(String value) {
-            for (AbnormalFilter filter : values()) {
-                if (filter.value.equals(value)) {
-                    return filter;
-                }
-            }
-            return ALL;
+            return FilterEnum.fromValue(value, AbnormalFilter.class, ALL);
         }
     }
 
-    public enum StatusFilter {
+    public enum StatusFilter implements FilterEnum {
         ALL(""),
         NEW("N"),
         ACKNOWLEDGED("A"),
         FILED("F");
-
+    
         private final String value;
-
+    
         StatusFilter(String value) {
             this.value = value;
         }
-
+    
+        @Override
         public String getValue() {
             return value;
         }
-
+    
         public static StatusFilter fromValue(String value) {
-            for (StatusFilter filter : values()) {
-                if (filter.value.equals(value)) {
-                    return filter;
-                }
-            }
-            return ALL;
+            return FilterEnum.fromValue(value, StatusFilter.class, ALL);
         }
     }
 
-    public enum ProviderSearchFilter {
+    public enum ProviderSearchFilter implements FilterEnum {
         ANY_PROVIDER("true"),
         NO_PROVIDER("false"),
         SPECIFIC_PROVIDER("");
@@ -103,17 +101,13 @@ public class InboxhubQuery extends ActionForm {
             this.value = value;
         }
     
+        @Override
         public String getValue() {
             return value;
         }
     
         public static ProviderSearchFilter fromValue(String value) {
-            for (ProviderSearchFilter filter : values()) {
-                if (filter.value.equals(value)) {
-                    return filter;
-                }
-            }
-            return SPECIFIC_PROVIDER;
+            return FilterEnum.fromValue(value, ProviderSearchFilter.class, SPECIFIC_PROVIDER);
         }
     }
     
@@ -325,6 +319,22 @@ public class InboxhubQuery extends ActionForm {
         this.searchAll = ProviderSearchFilter.SPECIFIC_PROVIDER.getValue();
         this.viewMode = false;
         super.reset(mapping, request);
+    }
+
+    public interface FilterEnum {
+        String getValue();
+        
+        static <T extends Enum<T> & FilterEnum> T fromValue(String value, Class<T> enumClass, T defaultValue) {
+            if (value == null) {
+                return defaultValue;
+            }
+            for (T filter : enumClass.getEnumConstants()) {
+                if (filter.getValue().equals(value)) {
+                    return filter;
+                }
+            }
+            return defaultValue;
+        }
     }
 
 }
