@@ -37,7 +37,6 @@ import oscar.oscarLab.ca.on.LabResultData;
 import oscar.oscarMDS.data.CategoryData;
 
 public class ManageInboxhubAction extends DispatchAction {
-    private ArrayList<LabResultData> labDocs;
     private SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
 
     public ActionForward undefined(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
@@ -100,7 +99,7 @@ public class ManageInboxhubAction extends DispatchAction {
 
         LabDataController labDataController = new LabDataController();
         labDataController.sanitizeInboxFormQuery(loggedInInfo, query, demographicFilter, typeFilter);
-        labDocs = labDataController.getLabData(loggedInInfo, query);
+        ArrayList<LabResultData> labDocs = labDataController.getLabData(loggedInInfo, query);
         if (labDocs.size() > 0) {
             String providerNo = request.getSession().getAttribute("user").toString();
             ArrayList<String> labLinks = labDataController.getLabLink(labDocs, query, request.getContextPath(), providerNo);
