@@ -408,7 +408,7 @@ public class HRMUtil {
 	private static void processHRMDocument(LoggedInInfo loggedInInfo, HRMDocument hrmDocument, Map<String, List<HRMDocument>> result) {
 		HRMReport hrmReport = HRMReportParser.parseReport(loggedInInfo, hrmDocument.getReportFile());
 		if (hrmReport != null) {
-			boolean routed = HRMReportParser.routeReportToDemographic(hrmReport, hrmDocument);
+			boolean routed = HRMReportParser.routeReportToDemographicWithoutMatchingDOB(hrmReport, hrmDocument);
 			if (routed) {
 				result.get("matchedToPatient").add(hrmDocument);
 			} else {
