@@ -32,6 +32,7 @@ import org.oscarehr.inboxhub.inboxdata.LabDataController;
 import org.oscarehr.inboxhub.query.InboxhubQuery;
 import org.oscarehr.managers.SecurityInfoManager;
 import org.oscarehr.util.LoggedInInfo;
+import org.oscarehr.util.MiscUtils;
 import org.oscarehr.util.SpringUtils;
 import oscar.oscarLab.ca.on.LabResultData;
 import oscar.oscarMDS.data.CategoryData;
@@ -40,6 +41,7 @@ public class ManageInboxhubAction extends DispatchAction {
     private SecurityInfoManager securityInfoManager = SpringUtils.getBean(SecurityInfoManager.class);
 
     public ActionForward undefined(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+        MiscUtils.getLogger().error("Undefined action attempted for ManageInboxhubAction");
         return mapping.findForward("error");
     }
 
