@@ -126,8 +126,7 @@ public class NotesService extends AbstractServiceImpl {
 	private IssueDAO issueDao;
 	
 	@Autowired
-	private SecurityInfoManager securityInfoManager;
-	
+	private SecurityInfoManager securityInfoManager;	
 	
 	@POST
 	@Path("/{demographicNo}/all")
