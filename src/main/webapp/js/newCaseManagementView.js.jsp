@@ -1982,6 +1982,7 @@ function editNote(e) {
 
     Element.remove(txtId);
     caseNote = "caseNote_note" + nId;
+    console.log("(editNote) caseNote set - ", caseNote);
 
     var input = "<textarea tabindex='7' cols='84' rows='10' wrap='hard' class='txtArea boxsizingBorder edit-textarea' style='line-height:1.1em;' name='caseNote_note' id='" + caseNote + "'>" + payload + "<\/textarea>";
     new Insertion.Top(txt, input);
@@ -2050,6 +2051,7 @@ function editNote(e) {
         $("saveImg").style.visibility = "visible";
 
     //start AutoSave
+    console.log("starting autosave timer (editNote)");
     setTimer();
 }
 
@@ -2368,7 +2370,7 @@ function ajaxSaveNote(div,noteId,noteTxt) {
 }
 
 function saveNoteAjax(method, chain) {
-
+    console.log("saveNoteAjax triggered");
 	var noteStr;
 	noteStr = $F(caseNote);
     /*
@@ -2543,17 +2545,17 @@ function subResident() {
 
 
 function savePage(method, chain) {
-       
-        if( typeof jQuery("form[name='resident'] input[name='residentMethod']").val() != "undefined" && 
-            jQuery("form[name='resident'] input[name='residentMethod']").val().trim().length == 0 &&
-            method.match(/.*[Ee]xit$/g) != null  ) { 
-            jQuery("#residentChain").val(chain);
-            jQuery("#residentMethod").val(method);
-            jQuery("#showResident").css('z-index',1);
-            jQuery("#showResident").fadeIn(2000);
-            jQuery("#reviewed").focus();
-            return false;
-        }
+    console.log("savePage triggered");
+    if( typeof jQuery("form[name='resident'] input[name='residentMethod']").val() != "undefined" && 
+        jQuery("form[name='resident'] input[name='residentMethod']").val().trim().length == 0 &&
+        method.match(/.*[Ee]xit$/g) != null  ) { 
+        jQuery("#residentChain").val(chain);
+        jQuery("#residentMethod").val(method);
+        jQuery("#showResident").css('z-index',1);
+        jQuery("#showResident").fadeIn(2000);
+        jQuery("#reviewed").focus();
+        return false;
+    }
 
 
 	if ((typeof jQuery("form[name='caseManagementEntryForm'] input[name='_note_program_no']").val() != "undefined") &&
@@ -2912,6 +2914,7 @@ function newNote(e) {
     if( changeToView(caseNote) ) {
 
         caseNote = "caseNote_note" + newNoteIdx;
+        console.log("(newNote) setting caseNote - ", caseNote);
         document.forms["caseManagementEntryForm"].note_edit.value = "new";
         document.forms["caseManagementEntryForm"].noteId.value = "0";
         document.forms["caseManagementEntryForm"].newNoteIdx.value = newNoteIdx;
@@ -2942,6 +2945,7 @@ function newNote(e) {
         $("saveImg").style.visibility = "visible";
 
         //start AutoSave
+        console.log("starting autosave timer (newNote)");
         setTimer();
     }
     else
@@ -2968,6 +2972,7 @@ var month=new Array(12);
 var msgDraftSaved;
 var lostNoteLock = false;
 function autoSave(async) {
+    console.log("running autoSave");
     sanitizeElementByPattern(document.getElementById(caseNote), CONTROL_CHAR_PATTERN_2);
     var url = ctx + "/CaseManagementEntry.do";
     var programId = case_program_id;
@@ -3722,7 +3727,7 @@ function autoCompleteShowMenuCPP(element, update) {
 	}
 
 function assignNoteAjax(method, chain,programId,demographicNo) {
-
+    console.log("assignNoteAjax called");
 	var noteStr;
 	noteStr = $F(caseNote);
     /*
