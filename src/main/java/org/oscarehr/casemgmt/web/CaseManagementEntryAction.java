@@ -56,8 +56,10 @@ import org.oscarehr.eyeform.model.Macro;
 import org.oscarehr.eyeform.web.FollowUpAction;
 import org.oscarehr.eyeform.web.ProcedureBookAction;
 import org.oscarehr.eyeform.web.TestBookAction;
+import org.oscarehr.managers.ConsultationManager;
 import org.oscarehr.managers.TicklerManager;
 import org.oscarehr.util.*;
+import org.oscarehr.ws.rest.NotesService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.WebApplicationContext;
 import oscar.OscarProperties;
@@ -96,6 +98,11 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 	private CaseManagementNoteExtDAO caseManagementNoteExtDao = (CaseManagementNoteExtDAO) SpringUtils.getBean(CaseManagementNoteExtDAO.class);
 	private IssueDAO issueDao = (IssueDAO) SpringUtils.getBean(IssueDAO.class);
 	private CasemgmtNoteLockDao casemgmtNoteLockDao = SpringUtils.getBean(CasemgmtNoteLockDao.class);
+	private ConsultResponseDao consultResponseDao = SpringUtils.getBean(ConsultResponseDao.class);
+	private CaseManagementNoteDAO caseManagementNoteDAO = SpringUtils.getBean(CaseManagementNoteDAO.class);
+	private ProviderDao providerDao = SpringUtils.getBean(ProviderDao.class);
+	private ClinicDAO clinicDAO = SpringUtils.getBean(ClinicDAO.class);
+	private ConsultationManager consultationManager = SpringUtils.getBean(ConsultationManager.class);
 	private TicklerManager ticklerManager = SpringUtils.getBean(TicklerManager.class);
 
 	public ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -3486,5 +3493,216 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 			}
 		}
 		return programSet;
+	}
+
+	public void convertConsultResponseToNote(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+		int startIndex = 0, fetchLimit = 40, saveBatchSize = 20;
+		List<ConsultationResponse> consultationResponses;
+
+		ProgramProviderDAO programProviderDao = (ProgramProviderDAO) SpringUtils.getBean(ProgramProviderDAO.class);
+		ProgramProvider programProviders = programProviderDao.getAllProgramProviders().get(0);
+
+		// Retrieve ids from the request
+		String consultResponseIdsInput = request.getParameter("consultResponseIds");
+    
+		// Validate consultResponseIdsInput
+		if (consultResponseIdsInput == null || consultResponseIdsInput.trim().isEmpty()) {
+			// Handle empty input
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return; // or send an error message
+		}
+	
+		// Split the input by commas and trim whitespace
+		String[] consultResponseIdsArray = consultResponseIdsInput.split(",");
+		List<Integer> consultResponseIds = new ArrayList<>();
+
+		// Validate each ID
+		for (String id : consultResponseIdsArray) {
+			String trimmedId = id.trim();
+			// Check if each ID is numeric
+			if (trimmedId.matches("\\d+")) {
+				// If valid, add to the list as an Integer
+				consultResponseIds.add(Integer.valueOf(trimmedId));
+			}
+		}
+
+		do {
+			consultationResponses = consultResponseDao.fetchConsultationResponses(startIndex, fetchLimit, consultResponseIds);
+			List<CaseManagementNote> caseManagementNotes = convertConsultResposeToNote(loggedInInfo, consultationResponses, programProviders.getProgramId().toString(), programProviders.getRoleId().toString());
+			caseManagementNoteDAO.saveNotesInBatch(caseManagementNotes, saveBatchSize);
+			startIndex += fetchLimit;
+		} while (!consultationResponses.isEmpty());
+	}
+
+	private List<CaseManagementNote> convertConsultResposeToNote(LoggedInInfo loggedInInfo, List<ConsultationResponse> consultationResponses, String programNo, String roleId) {
+		String providerNo = loggedInInfo.getLoggedInProviderNo();
+        Date updateDate = new Date();
+
+		List<CaseManagementNote> caseManagementNotes = new ArrayList<>();
+		for (ConsultationResponse consultationResponse : consultationResponses) {
+			CaseManagementNote caseManagementNote = new CaseManagementNote();
+			String note = generateCounsultResponseNote(loggedInInfo, consultationResponse);
+			if (note == null) continue;
+			caseManagementNote.setUpdate_date(updateDate);
+			caseManagementNote.setObservation_date(consultationResponse.getResponseDate() == null ? updateDate : consultationResponse.getResponseDate());
+			caseManagementNote.setDemographic_no(String.valueOf(consultationResponse.getDemographicNo()));
+			caseManagementNote.setProviderNo(consultationResponse.getProviderNo());
+			caseManagementNote.setNote(note);
+			caseManagementNote.setSigned(true);
+			caseManagementNote.setIncludeissue(false);
+			caseManagementNote.setEncounter_type("");
+			caseManagementNote.setBilling_code("");
+			caseManagementNote.setSigning_provider_no("-1");
+			caseManagementNote.setReporter_program_team("null");
+			caseManagementNote.setHistory(note);
+			caseManagementNote.setProgram_no(programNo);
+			caseManagementNote.setReporter_caisi_role(roleId);
+
+			caseManagementNotes.add(caseManagementNote);
+		}
+		return caseManagementNotes;
+	}
+
+	private String generateCounsultResponseNote(LoggedInInfo loggedInInfo, ConsultationResponse consultationResponse) {
+		if (consultationResponse == null) return null;
+
+		ProfessionalSpecialist referringDoctorD = null;
+		if (consultationResponse.getReferringDocId() != null) {
+			referringDoctorD = consultationManager.getProfessionalSpecialist(consultationResponse.getReferringDocId());
+		}
+		String referringDoctor = referringDoctorD != null ? referringDoctorD.getLastName() + ", " + referringDoctorD.getFirstName() : null;
+		String providerName = getLetterhead(consultationResponse.getProviderNo());
+		String letterheadName = getLetterhead(consultationResponse.getLetterheadName());
+		String urgency = getUrgencyText(Integer.valueOf(consultationResponse.getUrgency()));
+		String status = getStatusText(Integer.valueOf(consultationResponse.getStatus()));
+
+		String appointmentNote = consultationResponse.getAppointmentNote();
+		String examination = consultationResponse.getExamination();
+		String impression = consultationResponse.getImpression();
+		String plan = consultationResponse.getPlan();
+		String clinicalInfo = consultationResponse.getClinicalInfo();
+		String currentMeds = consultationResponse.getCurrentMeds();
+		String allergies = consultationResponse.getAllergies();
+		String concurrentProblems = consultationResponse.getConcurrentProblems();
+
+		if (appointmentNote == null && examination == null && impression == null && 
+			plan == null && clinicalInfo == null && currentMeds == null && 
+			allergies == null && concurrentProblems == null) {
+			return null;
+		}
+
+		StringBuilder note = new StringBuilder();
+
+		note.append("The Consult Response module is no longer in use in this version of the EMR, therefore, to allow access to previously written completed or incomplete consult response notes, this chart note has been created from information pulled from the Consult Response table.\n" +
+						"The named editor of this note is pulled from the listed creator of the original Consult Response entry but this note was generated by computer script.\n")
+			.append(consultationResponse.getId() != null 
+						? "Response ID: " + consultationResponse.getId() + "\n" 
+						: "Response ID: No Response ID available\n")
+			.append(consultationResponse.getResponseDate() != null 
+						? "Response Date: " + consultationResponse.getResponseDate() + "\n" 
+						: "Response Date: No Response Date available\n")
+			.append(consultationResponse.getReferralDate() != null 
+						? "Referral Date: " + consultationResponse.getReferralDate() + "\n" 
+						: "Referral Date: No Referral Date available\n")
+			.append(referringDoctor != null 
+						? "Referring Doctor: " + referringDoctor + "\n" 
+						: "Referring Doctor: No Referring Doctor available\n")
+			.append(consultationResponse.getAppointmentDate() != null 
+						? "Appointment Date: " + consultationResponse.getAppointmentDate() + "\n" 
+						: "Appointment Date: No Appointment Date available\n")
+			.append(consultationResponse.getAppointmentTime() != null 
+						? "Appointment Time: " + consultationResponse.getAppointmentTime() + "\n" 
+						: "Appointment Time: No Appointment Time available\n")
+			.append(appointmentNote != null 
+						? "Appointment Note: " + appointmentNote + "\n\n" 
+						: "Appointment Note: No Appointment Note available\n\n")
+			.append(consultationResponse.getReferralReason() != null 
+						? "Referral Reason: " + consultationResponse.getReferralReason() + "\n\n" 
+						: "Referral Reason: No Referral Reason available\n\n")
+			.append(examination != null 
+						? "Examination: " + examination + "\n\n" 
+						: "Examination: No Examination available\n\n")
+			.append(impression != null 
+						? "Impression: " + impression + "\n" 
+						: "Impression: No Impression info notes available\n")
+			.append(plan != null 
+						? "Plan: " + plan + "\n" 
+						: "Plan: No Plan info notes available\n")
+			.append(clinicalInfo != null 
+						? "Clinical Info: " + clinicalInfo + "\n" 
+						: "Clinical Info: No Clinical Info notes available\n")
+			.append(currentMeds != null 
+						? "Current Meds: " + currentMeds + "\n" 
+						: "Current Meds: No Current Medication info notes available\n")
+			.append(allergies != null 
+						? "Allergies: " + allergies + "\n" 
+						: "Allergies: No Allergy info notes available\n")
+			.append(concurrentProblems != null
+						? "Concurrent Problems: " + concurrentProblems + "\n" 
+						: "Concurrent Problems: No concurrent problems info notes available\n")
+			.append(letterheadName != null 
+						? "Letterhead Name: " + letterheadName + "\n" 
+						: "Letterhead Name: No Letterhead Name available\n")
+			.append(consultationResponse.getLetterheadAddress() != null 
+						? "Letterhead Address: " + consultationResponse.getLetterheadAddress() + "\n" 
+						: "Letterhead Address: No Letterhead Address available\n")
+			.append(consultationResponse.getLetterheadPhone() != null 
+						? "Letterhead Phone: " + consultationResponse.getLetterheadPhone() + "\n" 
+						: "Letterhead Phone: No Letterhead Phone available\n")
+			.append(consultationResponse.getLetterheadFax() != null 
+						? "Letterhead Fax: " + consultationResponse.getLetterheadFax() + "\n" 
+						: "Letterhead Fax: No Letterhead Fax available\n")
+			.append(status != null 
+						? "Status: " + status + "\n" 
+						: "Status: No Status available\n")
+			.append(urgency != null 
+						? "Urgency: " + urgency + "\n" 
+						: "Urgency: No Urgency available\n")
+			.append(consultationResponse.getFollowUpDate() != null 
+						? "Follow Up Date: " + consultationResponse.getFollowUpDate() + "\n" 
+						: "Follow Up Date: No Follow Up Date available\n");
+
+		return note.toString();
+	}
+
+	// Helper method to map urgency value to text
+	private String getUrgencyText(Integer urgency) {
+		if (urgency == null) return null;
+		switch (urgency) {
+			case 2: return "Non-Urgent";
+			case 1: return "Urgent";
+			case 3: return "Return";
+			default: return ""+urgency;
+		}
+	}
+
+	// Helper method to map status value to text
+	private String getStatusText(Integer status) {
+		if (status == null) return null;
+		switch (status) {
+			case 1: return "Not Complete";
+			case 2: return "Pending Referring Doctor Callback";
+			case 3: return "Pending Patient Callback";
+			case 4: return "Completed";
+			case 5: return "Cancelled";
+			default: return ""+status;
+		}
+	}
+
+	private String getLetterhead(String letterHead) {
+		if (letterHead == null) return null;
+		//clinic letterhead
+		Clinic clinic = clinicDAO.getClinic();
+		if (letterHead.equals(clinic.getClinicName().trim())) {
+			return clinic.getClinicName();
+		}
+		
+		Provider provider = providerDao.getProvider(letterHead);
+		if (provider != null) {
+			return provider.getFormattedName();
+		}
+		
+		return null;
 	}
 }

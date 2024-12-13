@@ -566,6 +566,29 @@ public class CaseManagementNoteDAOImpl extends HibernateDaoSupport implements Ca
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public void saveNotesInBatch(List<CaseManagementNote> notes, int batchSize) {
+        for (int i = 0; i < notes.size(); i++) {
+            CaseManagementNote note = notes.get(i);
+            if (note.getUuid() == null) {
+                UUID uuid = UUID.randomUUID();
+                note.setUuid(uuid.toString());
+            }
+            note.setUpdate_date(new Date());
+
+            this.getHibernateTemplate().save(note);
+
+            if (i > 0 && i % batchSize == 0) {
+                this.getHibernateTemplate().flush();
+                this.getHibernateTemplate().clear();
+            }
+        }
+
+        this.getHibernateTemplate().flush();
+        this.getHibernateTemplate().clear();
+    }
+
+    @Override
     public List<CaseManagementNote> search(CaseManagementSearchBean searchBean) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 

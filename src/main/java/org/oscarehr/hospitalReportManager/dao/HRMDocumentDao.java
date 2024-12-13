@@ -10,6 +10,7 @@
 package org.oscarehr.hospitalReportManager.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -266,5 +267,41 @@ public class HRMDocumentDao extends AbstractDaoImpl<HRMDocument> {
 		
 
 		return count;
+	}
+
+	public List<HRMDocument> findHRMDocumentsWithoutDemographicLink(int startIndex, int limit) {
+		String sql = "select DISTINCT h from HRMDocumentToProvider x " +
+					"JOIN HRMDocument h ON h.id = x.hrmDocumentId " +
+					"LEFT JOIN HRMDocumentToDemographic d ON x.hrmDocumentId = d.hrmDocumentId " +
+					"where d.hrmDocumentId IS NULL and x.providerNo != '-1' ORDER BY h.id ASC";
+    
+		Query query = entityManager.createQuery(sql);
+		query.setFirstResult(startIndex);
+		query.setMaxResults(limit);
+		@SuppressWarnings("unchecked")
+		List<HRMDocument> hrmDocuments = query.getResultList();
+		return hrmDocuments;
+	}
+
+	public List<HRMDocument> findHRMDocumentsWithoutDemographicLink(int startIndex, int limit, List<Integer> hrmIds) {
+		// Ensure hrmIds is not null or empty to avoid SQL errors
+		if (hrmIds == null || hrmIds.isEmpty()) {
+			return new ArrayList<>(); // Return an empty list if hrmIds is null or empty
+		}
+
+		String sql = "select DISTINCT h from HRMDocumentToProvider x " +
+					"JOIN HRMDocument h ON h.id = x.hrmDocumentId " +
+					"LEFT JOIN HRMDocumentToDemographic d ON x.hrmDocumentId = d.hrmDocumentId " +
+					"where d.hrmDocumentId IS NULL and x.providerNo != '-1' " +
+					"AND h.id IN :hrmIds ORDER BY h.id ASC"; // Added condition for hrmIds
+
+		Query query = entityManager.createQuery(sql);
+		query.setParameter("hrmIds", hrmIds); // Set the hrmIds parameter
+		query.setFirstResult(startIndex);
+		query.setMaxResults(limit);
+		
+		@SuppressWarnings("unchecked")
+		List<HRMDocument> hrmDocuments = query.getResultList();
+		return hrmDocuments;
 	}
 }
