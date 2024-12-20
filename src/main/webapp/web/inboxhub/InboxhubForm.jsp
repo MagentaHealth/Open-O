@@ -32,6 +32,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 <%@ page import="oscar.oscarMDS.data.CategoryData" %>
 <!DOCTYPE html>
 
+<input type="hidden" class="totalDocsCount" id="totalDocsCount" value="${totalDocsCount}" />
+<input type="hidden" class="totalLabsCount" id="totalLabsCount" value="${totalLabsCount}" />
+<input type="hidden" class="totalHRMCount" id="totalHRMCount" value="${totalHRMCount}" />
 <input type="hidden" class="totalResultsCount" id="totalResultsCount" value="${totalResultsCount}" />
 
 <!-- Preview button -->
@@ -597,6 +600,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
         if (page == 1) {
             jQuery("#inboxhubMode").html(data);
             jQuery('#inbox_table').DataTable().draw(false); // `draw(false)` prevents resetting the scroll position
+            showInboxhubStats();
             startInboxhubListProgress();
             updateInboxhubListProgress();
             return;
@@ -677,6 +681,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     jQuery('#ajaxErrorToast').on('hidden.bs.toast', function () {
         jQuery(this).parent().css('display', 'none'); // Hide the wrapper to prevent background blocking
     });
+
+    function showInboxhubStats() {
+        jQuery('#totalDocsCountStat').text(jQuery('#totalDocsCount').val());
+        jQuery('#totalLabssCountStat').text(jQuery('#totalLabsCount').val());
+        jQuery('#totalHRMsCountStat').text(jQuery('#totalHRMCount').val());
+    }
 
     function startInboxhubListProgress() {
         const totalResultsCount = jQuery("#totalResultsCount").val();
