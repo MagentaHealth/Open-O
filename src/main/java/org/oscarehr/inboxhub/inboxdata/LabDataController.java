@@ -225,21 +225,42 @@ public class LabDataController {
         query.setStatus(StatusFilter.NEW.getValue());
     }
 
-    public int getTotalResultsCountBasedOnQuery(InboxhubQuery query, CategoryData categoryData) {
+    public int[] getTotalResultsCountBasedOnQuery(InboxhubQuery query, CategoryData categoryData) {
+        int totalDocsCount = 0;
+        int totalLabsCount = 0;
+        int totalHRMCount = 0;
         int totalResultsCount = 0;
+
         Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
+
+        // Documents
         if (query.getDoc() || all) {
             // Subtracting MatchedHRMCount and UnmatchedHRMCount from total docs 
             // because totalDocs include both documents and HRMs
-            totalResultsCount += (categoryData.getTotalDocs() - categoryData.getMatchedHRMCount() - categoryData.getUnmatchedHRMCount());
+            totalDocsCount = categoryData.getTotalDocs() - categoryData.getMatchedHRMCount() - categoryData.getUnmatchedHRMCount();
+            totalResultsCount += totalDocsCount;
         }
+
+        // Labs
         if (query.getLab() || all) {
-            totalResultsCount += categoryData.getTotalLabs();
+            totalLabsCount = categoryData.getTotalLabs();
+            totalResultsCount += totalLabsCount;
         }
+
+        // HRMs
         if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
-            totalResultsCount += (categoryData.getMatchedHRMCount() + categoryData.getUnmatchedHRMCount());
+            totalHRMCount = categoryData.getMatchedHRMCount() + categoryData.getUnmatchedHRMCount();
+            totalResultsCount += totalHRMCount;
         }
-        return totalResultsCount;
+
+        int[] resultCounts = {0, 0, 0, 0};
+        // Set values in the result array
+        resultCounts[0] = totalDocsCount;   // Docs count
+        resultCounts[1] = totalLabsCount;   // Labs count
+        resultCounts[2] = totalHRMCount;    // HRMs count
+        resultCounts[3] = totalResultsCount; // Total count
+
+        return resultCounts;
     }
 
     private String encodeURL(String url) {

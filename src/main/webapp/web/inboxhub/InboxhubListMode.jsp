@@ -1,4 +1,5 @@
 <%@ page import="java.util.*" %>
+<%@ page import="oscar.OscarProperties" %>
 <%@ page import="oscar.oscarLab.ca.on.*" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
@@ -16,7 +17,12 @@
         <input id="topFBtn" type="button" class="btn btn-primary btn-sm ms-1" value="<bean:message key="oscarMDS.index.btnForward"/>" onclick="submitForward('${sessionScope.user}')">
         <input id="topFileBtn" type="button" class="btn btn-primary btn-sm" value="File" onclick="submitFile('${sessionScope.user}')"/>
         <div class="d-flex align-items-center position-relative float-end">
-            <div id="loadingLabel" class="loading-label me-2 text-dark">Loading Search Results:</div>
+            <span class="d-inline me-2 py-1 text-dark fw-bold">Documents <span id="totalDocsCountStat" class="badge" style="background-color: #5a9bd3; color: white;">0</span></span>
+            <span class="d-inline me-2 py-1 text-dark fw-bold">Labs <span id="totalLabssCountStat" class="badge" style="background-color: #8cbfda; color: white;">0</span></span>
+            <c:if test="${!OscarProperties.getInstance().isBritishColumbiaBillingRegion()}">
+                <span class="d-inline py-1 text-dark fw-bold">HRMs <span id="totalHRMsCountStat" class="badge" style="background-color: #b3d9eb; color: black;">0</span></span>
+            </c:if>
+            <div id="loadingLabel" class="loading-label ms-2 me-2 text-dark">Loading Search Results:</div>
             <div class="progress me-2 position-relative" id="loadInboxListProgress" style="width: 15vw; height: 25px; display: none; flex-grow: 1; background-color: #c7c7c7;">
                 <div id="loadInboxListProgressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                     <span id="inboxListProgressCount" class="count text-white" style="position: absolute; width: 100%; text-align: center; font-weight: 600;">0% Complete</span>
