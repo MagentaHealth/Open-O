@@ -40,8 +40,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                     width="100%" 
                     height="100%"
                     style="padding-bottom: 25px;"
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"
-                    referrerpolicy="no-referrer"
                     loading="lazy"
                     title="Lab Result Document">
                     <p>Your browser does not support iframes. Unable to display the document.</p>
