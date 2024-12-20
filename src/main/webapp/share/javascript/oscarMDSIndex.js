@@ -1799,7 +1799,10 @@ function updateStatus(formid){//acknowledge
 
 			jQuery.post(url,data).success(function() {
 				updateDocStatusInQueue(doclabid);
-				if (typeof _in_window !== 'undefined' && _in_window) {
+				if (window.frameElement) {
+					// Hide the parent <div> of the iframe only for new inbox previews loaded in an iframe
+					jQuery(window.frameElement).closest('.document-card.card').slideUp();
+				} else if (typeof _in_window !== 'undefined' && _in_window) {
 					if (typeof self.opener.removeReport !== 'undefined') {
 						self.opener.removeReport(doclabid);
 					}
