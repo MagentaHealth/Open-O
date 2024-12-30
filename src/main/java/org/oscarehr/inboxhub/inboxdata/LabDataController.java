@@ -44,8 +44,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class LabDataController {
@@ -166,8 +170,9 @@ public class LabDataController {
                 StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));
         }
         if (query.getLab() || all) {
-            labDocs.addAll(comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), StringEscapeUtils.escapeSql(query.getDemographicNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
-                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate));
+            List<LabResultData> labs = comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), StringEscapeUtils.escapeSql(query.getDemographicNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
+                                                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate);
+            labDocs.addAll(filterOldLabVersions(labs));
         }
         if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
             HRMResultsData hrmResult = new HRMResultsData();
@@ -272,5 +277,71 @@ public class LabDataController {
             MiscUtils.getLogger().error(e);
         }
         return encodedUrl;
+    }
+
+    private List<LabResultData> filterOldLabVersions(List<LabResultData> labs) {
+        HashMap<String, LabResultData> labMap = new HashMap<>();
+
+        // Maps unique accession keys to a list of associated segment IDs
+        LinkedHashMap<String, ArrayList<String>> accessionMap = new LinkedHashMap<>();
+
+        // Counter to handle cases where accession numbers are missing
+        int accessionNumCount = 0;
+
+        for (LabResultData result : labs) {
+            String segmentId = result.getSegmentID();
+            labMap.put(segmentId, result);
+
+            String accessionKey;
+            ArrayList<String> labNums = new ArrayList<>();
+
+            if (Objects.isNull(result.accessionNumber) || result.accessionNumber.equalsIgnoreCase("null") || result.accessionNumber.isEmpty()) {
+                accessionNumCount++;
+                accessionKey = "noAccessionNum" + accessionNumCount + result.labType;
+                labNums.add(segmentId);
+                accessionMap.put(accessionKey, labNums);
+                continue;
+            }
+
+            accessionKey = result.accessionNumber + result.labType;
+            labNums = accessionMap.getOrDefault(accessionKey, new ArrayList<>());
+            
+            boolean isMatchFound = false;
+
+            // Compare the current lab result with existing ones in the same accession group
+            for (String labSegmentId : labNums) {
+                LabResultData matchingResult = labMap.get(labSegmentId);
+
+                LocalDate dateA = result.getDateObj().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate dateB = matchingResult.getDateObj().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                // Calculate the difference in months between the two dates
+                long monthsBetween = (dateA == null || dateB == null) ? 5 : Math.abs(ChronoUnit.MONTHS.between(dateA, dateB));
+
+                // Skip if the difference in months is 4 or more
+                if (monthsBetween >= 4) { continue; }
+
+                // Mark a match as found and break the loop
+                isMatchFound = true;
+                break;
+            }
+
+            // Skip adding this result if a match is found
+            if (isMatchFound) { continue; }
+
+            labNums.add(segmentId);
+            accessionMap.put(accessionKey, labNums);
+        }
+
+        labs.clear();
+
+        // Collect filtered lab results based on the accessionMap
+        for (ArrayList<String> labNums : accessionMap.values()) {
+            for (int j = 0; j < labNums.size(); j++) {
+                labs.add(labMap.get(labNums.get(j)));
+            }
+        }
+        
+        return labs;
     }
 }
