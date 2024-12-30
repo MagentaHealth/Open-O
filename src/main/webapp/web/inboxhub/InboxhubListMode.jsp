@@ -128,6 +128,13 @@
             return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
         }
     });
+
+    function removeReport(reportId) {
+        const el = jQuery("#labdoc_" + reportId);
+        if (el != null) {
+            el.remove();
+        }
+    }
 </script>
 </c:if>
 <c:if test="${!hasMoreData}">
