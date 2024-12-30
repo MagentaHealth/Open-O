@@ -75,7 +75,13 @@
                     <td><c:out value="${labResult.requestingClient}" /></td>
                     <td><c:out value="${labResult.document ? (labResult.description == null ? '' : labResult.description) : labResult.disciplineDisplayString}" /></td>
                     <td><c:out value="${labResult.reportStatus}" /></td>
-                    <td><c:out value="${labResult.acknowledgedStatus == 'Y' ? 1 : 0}" /></td>
+                    <td>
+                        <c:set var="multiLabCount" value="${labResult.multipleAckCount}" />
+                        <c:out value="${labResult.ackCount}" />&nbsp;
+                        <c:if test="${multiLabCount >= 0}">
+                            (<c:out value="${labResult.multipleAckCount}" />)
+                        </c:if>
+                    </td>
                 </tr>
             </c:forEach>
             </c:if>
