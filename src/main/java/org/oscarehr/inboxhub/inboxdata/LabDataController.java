@@ -160,6 +160,7 @@ public class LabDataController {
         ArrayList<LabResultData> labDocs = new ArrayList<LabResultData>();
 
         Boolean all = (!query.getDoc() && !query.getLab() && !query.getHrm());
+        mixLabsAndDocs = query.getDoc() && query.getLab();
         if (query.getDoc() || all) {
             labDocs.addAll(inboxResultsDao.populateDocumentResultsData(StringEscapeUtils.escapeSql(query.getSearchProviderNo()), StringEscapeUtils.escapeSql(query.getDemographicNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
                 StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate , endDate));

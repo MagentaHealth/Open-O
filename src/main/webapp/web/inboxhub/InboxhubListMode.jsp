@@ -73,7 +73,7 @@
                     <td><c:out value="${labResult.dateTime}" /></td>
                     <td><c:out value="${labResult.priority}" /></td>
                     <td><c:out value="${labResult.requestingClient}" /></td>
-                    <td><c:out value="${labResult.disciplineDisplayString == 'D' ? '' : labResult.disciplineDisplayString}" /></td>
+                    <td><c:out value="${labResult.document ? (labResult.description == null ? '' : labResult.description) : labResult.disciplineDisplayString}" /></td>
                     <td><c:out value="${labResult.reportStatus}" /></td>
                     <td><c:out value="${labResult.acknowledgedStatus == 'Y' ? 1 : 0}" /></td>
                 </tr>
