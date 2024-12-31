@@ -68,14 +68,20 @@
                             <e:forHtmlContent value='${labRead}${labResult.patientName}' />
                         </a>
                     </td>
-                    <td>${labResult.sex}</td>
-                    <td>${labResult.resultStatus == 'A' ? 'Abnormal' : ''}</td>
-                    <td>${labResult.dateTime}</td>
-                    <td>${labResult.priority}</td>
-                    <td>${labResult.requestingClient}</td>
-                    <td>${labResult.disciplineDisplayString == 'D' ? '' : labResult.disciplineDisplayString}</td>
-                    <td>${labResult.reportStatus}</td>
-                    <td>${labResult.acknowledgedStatus == 'Y' ? 1 : 0}</td>
+                    <td><c:out value="${labResult.sex}" /></td>
+                    <td><c:out value="${labResult.resultStatus == 'A' ? 'Abnormal' : ''}" /></td>
+                    <td><c:out value="${labResult.dateTime}" /></td>
+                    <td><c:out value="${labResult.priority}" /></td>
+                    <td><c:out value="${labResult.requestingClient}" /></td>
+                    <td><c:out value="${labResult.document ? (labResult.description == null ? '' : labResult.description) : labResult.disciplineDisplayString}" /></td>
+                    <td><c:out value="${labResult.reportStatus}" /></td>
+                    <td>
+                        <c:set var="multiLabCount" value="${labResult.multipleAckCount}" />
+                        <c:out value="${labResult.ackCount}" />&nbsp;
+                        <c:if test="${multiLabCount >= 0}">
+                            (<c:out value="${labResult.multipleAckCount}" />)
+                        </c:if>
+                    </td>
                 </tr>
             </c:forEach>
             </c:if>
@@ -128,6 +134,13 @@
             return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
         }
     });
+
+    function removeReport(reportId) {
+        const el = jQuery("#labdoc_" + reportId);
+        if (el != null) {
+            el.remove();
+        }
+    }
 </script>
 </c:if>
 <c:if test="${!hasMoreData}">
