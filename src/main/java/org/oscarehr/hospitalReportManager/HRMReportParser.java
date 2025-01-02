@@ -315,6 +315,13 @@ public class HRMReportParser {
 		// Search the demographics on the system for a likely match and route it to them automatically
 		DemographicDao demographicDao = (DemographicDao) SpringUtils.getBean(DemographicDao.class);
 
+		// If the HCN (Health Card Number) is null or empty, attach the HRM document to demographic ID 3.
+		if (report.getHCN() == null || report.getHCN().trim().isEmpty()) { 
+			HRMReportParser.routeReportToDemographic(mergedDocument.getId(), 3);
+			foundMatch = true;
+			return foundMatch;
+		}
+
 		List<Demographic> matchingDemographicListByHin = demographicDao.searchDemographicByHIN(report.getHCN());
 
 		if (matchingDemographicListByHin.size() > 0) {
