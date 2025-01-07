@@ -243,7 +243,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
     <c:set var="allTypes" value="${!query.doc and !query.lab and !query.hrm}" />
     <c:set var="showHRM" value="${(query.hrm or allTypes) and (query.abnormalBool == null or !query.abnormalBool)}" />
 
-    <c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 }">
+    <c:if test="${ categoryData.unmatchedDocs gt 0 or categoryData.unmatchedLabs gt 0 or categoryData.unmatchedHRMCount gt 0}">
     <!-- Unmatched List Accordion -->
     <div class="accordion mt-1" id="inbox-hub-unmatched-list">
         <div class="accordion-item">

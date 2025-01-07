@@ -54,7 +54,12 @@ import java.util.Objects;
 
 public class LabDataController {
 
+    private boolean providerSearch;
+    private boolean patientSearch;
+
     public LabDataController() {
+        providerSearch = true;
+        patientSearch = true;
     }
 
     //Converts given string date to date object. Returns null if not in yyyy-MM-dd format or blank.
@@ -133,12 +138,10 @@ public class LabDataController {
     }
     //Gets inbox CategoryData for given query. CategoryData includes document counts for all document types & patient lists.
     public CategoryData getCategoryData(InboxhubQuery query) {
-        Boolean providerSearch = true;
-        Boolean patientSearch = true;
         if (Objects.equals(query.getSearchProviderNo(), "-1")) {
             providerSearch = false;
         }
-        if (query.getDemographicNo() == null && query.getPatientFirstName().isEmpty() && query.getPatientLastName().isEmpty() && query.getPatientHealthNumber().isEmpty()) {
+        if ((query.getDemographicNo() == null || query.getDemographicNo().equals("0")) && query.getPatientFirstName().isEmpty() && query.getPatientLastName().isEmpty() && query.getPatientHealthNumber().isEmpty()) {
             patientSearch = false;
         }
 
@@ -241,21 +244,19 @@ public class LabDataController {
 
         // Documents
         if (query.getDoc() || all) {
-            // Subtracting MatchedHRMCount and UnmatchedHRMCount from total docs 
-            // because totalDocs include both documents and HRMs
-            totalDocsCount = categoryData.getTotalDocs() - categoryData.getMatchedHRMCount() - categoryData.getUnmatchedHRMCount();
+            totalDocsCount = getDocumentCount(query, categoryData);
             totalResultsCount += totalDocsCount;
         }
 
         // Labs
         if (query.getLab() || all) {
-            totalLabsCount = categoryData.getTotalLabs();
+            totalLabsCount = getLabCount(query, categoryData);
             totalResultsCount += totalLabsCount;
         }
 
         // HRMs
         if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
-            totalHRMCount = categoryData.getMatchedHRMCount() + categoryData.getUnmatchedHRMCount();
+            totalHRMCount = getHRMCount(query, categoryData);
             totalResultsCount += totalHRMCount;
         }
 
@@ -343,5 +344,44 @@ public class LabDataController {
         }
         
         return labs;
+    }
+
+    /*
+     * Subtracting MatchedHRMCount and UnmatchedHRMCount from total docs because totalDocs include both documents and HRMs
+     */
+    private int getDocumentCount(InboxhubQuery query, CategoryData categoryData) {
+        int documentCount = 0;
+        if (patientSearch) {
+            documentCount = (categoryData.getTotalDocs() - categoryData.getUnmatchedDocs()) - categoryData.getMatchedHRMCount() - categoryData.getUnmatchedHRMCount();
+        } else if (query.getUnmatched()) {
+            documentCount = categoryData.getUnmatchedDocs();
+        } else {
+            documentCount = categoryData.getTotalDocs() - categoryData.getMatchedHRMCount() - categoryData.getUnmatchedHRMCount();
+        }
+        return documentCount;
+    }
+
+    private int getLabCount(InboxhubQuery query, CategoryData categoryData) {
+        int labCount = 0;
+        if (patientSearch) {
+            labCount = categoryData.getTotalLabs() - categoryData.getUnmatchedLabs();
+        } else if (query.getUnmatched()) {
+            labCount = categoryData.getUnmatchedLabs();
+        } else {
+            labCount = categoryData.getTotalLabs();
+        }
+        return labCount;
+    }
+
+    private int getHRMCount(InboxhubQuery query, CategoryData categoryData) {
+        int hrmCount = 0;
+        if (patientSearch) {
+            hrmCount = categoryData.getMatchedHRMCount();
+        } else if (query.getUnmatched()) {
+            hrmCount = categoryData.getUnmatchedHRMCount();
+        } else {
+            hrmCount = categoryData.getMatchedHRMCount() + categoryData.getUnmatchedHRMCount();
+        }
+        return hrmCount;
     }
 }
