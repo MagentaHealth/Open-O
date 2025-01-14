@@ -104,7 +104,7 @@
             {type: 'custom-date', targets: 5},
             {orderable: false, targets: 0}
         ],
-        order: [[1, 'asc']],
+        order: [[5, 'desc']],
     });
 
     //Opens a popup window to a given inbox item.
