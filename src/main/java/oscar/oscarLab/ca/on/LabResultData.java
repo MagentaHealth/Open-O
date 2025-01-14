@@ -254,6 +254,14 @@ public class LabResultData implements Comparable<LabResultData> {
 		return this.resultStatus;
 	}
 
+	public String getLastUpdateDate() {
+		return lastUpdateDate;
+	}
+	
+	public void setLastUpdateDate(String lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
+	}	
+
 	public boolean isMatchedToPatient(){
 		//       if (EXCELLERIS.equals(this.labType)){
 			//          PathnetResultsData prd = new PathnetResultsData();
