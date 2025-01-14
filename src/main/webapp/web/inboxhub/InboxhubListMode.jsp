@@ -70,7 +70,7 @@
                     </td>
                     <td><c:out value="${labResult.sex}" /></td>
                     <td><c:out value="${labResult.resultStatus == 'A' ? 'Abnormal' : ''}" /></td>
-                    <td><c:out value="${labResult.dateTime}" /></td>
+                    <td><c:out value="${labResult.dateTime}" /><c:out value="${labResult.document ? ' / ' : ''}" /><c:out value="${labResult.document ?  labResult.lastUpdateDate : ''}"/></td>
                     <td><c:out value="${labResult.priority}" /></td>
                     <td><c:out value="${labResult.requestingClient}" /></td>
                     <td><c:out value="${labResult.document ? (labResult.description == null ? '' : labResult.description) : labResult.disciplineDisplayString}" /></td>
@@ -169,6 +169,7 @@
             // Normalize names: trim spaces, remove special characters, convert to lowercase
             let nameA = normalizeString(str1);
             let nameB = normalizeString(str2);
+            console.log(str1)
 
             // Compare normalized values
             if (nameA < nameB) return 1;
