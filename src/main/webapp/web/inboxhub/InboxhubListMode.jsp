@@ -100,7 +100,8 @@
         scrollCollapse: true,
         paging: false,
         columnDefs: [
-            {type: 'non-empty-string', targets: "_all"},
+            {type: 'non-empty-string', targets: [1, 2, 3, 4, 6, 7, 8, 9, 10]},
+            {type: 'custom-date', targets: 5},
             {orderable: false, targets: 0}
         ],
         order: [[1, 'asc']],
@@ -116,22 +117,91 @@
         var popup = window.open(encodeURI(page), "labreport", windowprops);
         popup.focus();
     }
+
+    // Function to remove only <a> tags while keeping their inner text
+    function removeATags(str) {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(str, 'text/html');
+
+        // Extract the inner text of the <a> element
+        return doc.body.textContent.trim();
+    }
+
+    // Function to normalize strings: remove <a> tags, special characters, trim spaces, and convert to lowercase
+    function normalizeString(str) {
+        // Remove <a> tags and keep inner text if present
+        str = removeATags(str);
+
+        // Normalize the string: remove special characters, convert to lowercase, and trim
+        return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
+    }
+
+    //this code assumes the following:
+    //in this scenario (2023-09-21 / 2023-09-21), use the 10 characters following the /
+    //in any other scenario, just use the original string
+    function stringToDate(str) {
+        return new Date(str.includes("/") ? str.split(" / ")[0] : str);
+    }
     
-    //Data table custom sorting to move empty or null slots on any selected sort to the bottom.
+    // Data table custom sorting to move empty or null slots on any selected sort to the bottom.
     jQuery.extend(jQuery.fn.dataTableExt.oSort, {
         "non-empty-string-asc": function (str1, str2) {
-            if (str1 == "")
-                return 1;
-            if (str2 == "")
-                return -1;
-            return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+            // Handle empty values: empty values go to the end
+            if (!str1.trim()) return 1; // 'str1' is empty, move it to the end
+            if (!str2.trim()) return -1; // 'str2' is empty, move it to the end
+
+            // Normalize names: trim spaces, remove special characters, convert to lowercase
+            let nameA = normalizeString(str1);
+            let nameB = normalizeString(str2);
+
+            // Compare normalized values
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+
+            // If normalized values are equal, retain original order
+            return 0;
         },
         "non-empty-string-desc": function (str1, str2) {
-            if (str1 == "")
-                return 1;
-            if (str2 == "")
-                return -1;
-            return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+            // Handle empty values: empty values go to the end
+            if (!str1.trim()) return 1; // 'str1' is empty, move it to the end
+            if (!str2.trim()) return -1; // 'str2' is empty, move it to the end
+
+            // Normalize names: trim spaces, remove special characters, convert to lowercase
+            let nameA = normalizeString(str1);
+            let nameB = normalizeString(str2);
+
+            // Compare normalized values
+            if (nameA < nameB) return 1;
+            if (nameA > nameB) return -1;
+
+            // If normalized values are equal, retain original order
+            return 0;
+        },
+        "custom-date-asc": function (str1, str2) {
+            // Handle empty strings for dates: empty strings go to the end
+            if (!str1.trim()) return 1; // 'str1' is empty, move it to the end
+            if (!str2.trim()) return -1; // 'str2' is empty, move it to the end
+
+            //this code assumes the following:
+            //in this scenario (2023-09-21 / 2023-09-21), use the 10 characters following the /
+            //in any other scenario, just use the original string
+            let dateA = stringToDate(str1);
+            let dateB = stringToDate(str2);
+
+            return dateA - dateB;
+        },
+        "custom-date-desc": function (str1, str2) {
+            // Handle empty strings for dates: empty strings go to the end
+            if (!str1.trim()) return 1; // 'str1' is empty, move it to the end
+            if (!str2.trim()) return -1; // 'str2' is empty, move it to the end
+
+            //this code assumes the following:
+            //in this scenario (2023-09-21 / 2023-09-21), use the 10 characters following the /
+            //in any other scenario, just use the original string
+            let dateA = stringToDate(str1);
+            let dateB = stringToDate(str2);
+
+            return dateB - dateA; // Reverse order for descending
         }
     });
 
