@@ -60,7 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 </script>
 <input type="hidden" id="ctx" value="<e:forHtmlAttribute value='${pageContext.request.contextPath}' />";/>
 
-<div class="container-fluid">
+<div class="container-fluid overflow-hidden">
     <div class="row">
         <nav class="navbar navbar-light d-flex justify-content-center" style="background-color: #e3f2fd;">
             <jsp:include page="InboxhubTopbar.jsp"/>
@@ -72,7 +72,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
                 <jsp:include page="InboxhubForm.jsp"/>
             </div>
         </div>
-        <div class="col px-0 m-1">
+        <div class="col px-0 m-1" style="overflow-y: auto;">
             <div class="bg-light text-dark">
                 <div id="inboxhubMode"> 
                 </div>

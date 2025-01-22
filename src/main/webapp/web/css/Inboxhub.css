@@ -246,3 +246,9 @@ input {
     font-weight: 600;
     color: #000;
 }
+
+@media (max-width: 1300px) {
+    .inbox-table-responsive {
+        overflow-x: auto;
+    }
+}
