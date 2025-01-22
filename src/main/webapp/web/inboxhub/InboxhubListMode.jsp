@@ -39,12 +39,11 @@
                 <th>
                     <input type="checkbox" onclick="checkAllLabs(0);" name="checkA"/>
                 </th>
-                <th><bean:message key="oscarMDS.index.msgHealthNumber"/></th>
                 <th><bean:message key="oscarMDS.index.msgPatientName"/></th>
                 <th><bean:message key="oscarMDS.index.msgSex"/></th>
                 <th><bean:message key="oscarMDS.index.msgResultStatus"/></th>
+                <th><bean:message key="oscarMDS.index.msgLabel"/></th>
                 <th><bean:message key="oscarMDS.index.msgDateTest"/></th>
-                <th><bean:message key="oscarMDS.index.msgOrderPriority"/></th>
                 <th><bean:message key="oscarMDS.index.msgRequestingClient"/></th>
                 <th><bean:message key="oscarMDS.index.msgDiscipline"/></th>
                 <th><bean:message key="oscarMDS.index.msgReportStatus"/></th>
@@ -60,7 +59,6 @@
                         <c:set var="disabled" value="${!labResult.matchedToPatient && labResult.labType != 'DOC' ? 'disabled' : ''}"/>
                         <input type="checkbox" name="flaggedLabs" value="${labResult.segmentID}:${labResult.labType}" ${disabled}>
                     </td>
-                    <td><e:forHtmlContent value='${labResult.healthNumber}' /></td>
                     <td>
                         <c:set var="labRead" value="${labResult.hasRead(sessionScope.user) ? '' : '*'}"/>
                         <a href="javascript:void(0);" 
@@ -70,8 +68,8 @@
                     </td>
                     <td><c:out value="${labResult.sex}" /></td>
                     <td><c:out value="${labResult.resultStatus == 'A' ? 'Abnormal' : ''}" /></td>
+                    <td><c:out value="${labResult.label}" /></td>
                     <td><c:out value="${labResult.dateTime}" /><c:out value="${labResult.document ? ' / ' : ''}" /><c:out value="${labResult.document ?  labResult.lastUpdateDate : ''}"/></td>
-                    <td><c:out value="${labResult.priority}" /></td>
                     <td><c:out value="${labResult.requestingClient}" /></td>
                     <td><c:out value="${labResult.document ? (labResult.description == null ? '' : labResult.description) : labResult.disciplineDisplayString}" /></td>
                     <td><c:out value="${labResult.reportStatus}" /></td>
