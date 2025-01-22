@@ -98,8 +98,9 @@
         scrollCollapse: true,
         paging: false,
         columnDefs: [
-            {type: 'non-empty-string', targets: [1, 2, 3, 4, 6, 7, 8, 9, 10]},
+            {type: 'non-empty-string', targets: [1, 2, 3, 4, 6, 7, 8, 9]},
             {type: 'custom-date', targets: 5},
+            {className: 'text-nowrap', targets: [1, 5, 6, 7, 8]},
             {orderable: false, targets: 0}
         ],
         order: [[5, 'desc']],
