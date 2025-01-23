@@ -441,11 +441,11 @@
 <script type="text/javascript" src="${pageContext.servletContext.contextPath}/library/jquery/jquery-ui-1.12.1.min.js"></script>
 <%-- TODO: new dialog window for the user preferences --%>
 <script>
-    var originalInboxLinkClickEvent = "popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=<%=curUser_no%>', 'Lab');return false;";
-    var newInboxLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm');return false;";
+    var originalInboxLinkClickEvent = "popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=<%=curUser_no%>');return false;";
+    var newInboxLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm', 800);return false;";
 
-    var originalUnclaimedLabLinkClickEvent = "popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=0&searchProviderNo=0&status=N&lname=&fname=&hnum=&pageNum=1&startIndex=0', 'Lab');return false;";
-    var newUnclaimedLabLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm&unclaimed=1');return false;";
+    var originalUnclaimedLabLinkClickEvent = "popupInboxManager('../documentManager/inboxManage.do?method=prepareForIndexPage&providerNo=0&searchProviderNo=0&status=N&lname=&fname=&hnum=&pageNum=1&startIndex=0');return false;";
+    var newUnclaimedLabLinkClickEvent = "popupInboxManager('../web/inboxhub/Inboxhub.do?method=displayInboxForm&unclaimed=1', 800);return false;";
 
      document.getElementById("inboxLink").addEventListener("mouseup", function(event) {
         if(event.altKey) {
