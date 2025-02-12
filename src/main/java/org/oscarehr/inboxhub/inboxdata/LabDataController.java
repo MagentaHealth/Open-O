@@ -157,6 +157,10 @@ public class LabDataController {
     public ArrayList<LabResultData> getLabData(LoggedInInfo loggedInInfo, InboxhubQuery query) {
         Integer page = query.getPage() - 1;
         Integer pageSize = query.getPageSize();
+
+        // Increase page size to 100 to reduce older versions
+        Integer labPageSize = 100;
+
         //Whether to use the paging functionality. Currently setting this to false does not function and crashes the inbox.
         Boolean isPaged = true;
         Boolean mixLabsAndDocs = true;
@@ -174,7 +178,7 @@ public class LabDataController {
         }
         if (query.getLab() || all) {
             List<LabResultData> labs = comLab.populateLabResultsData(loggedInInfo,query.getSearchProviderNo(), StringEscapeUtils.escapeSql(query.getDemographicNo()), StringEscapeUtils.escapeSql(query.getPatientFirstName()),
-                                                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, pageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate);
+                                                StringEscapeUtils.escapeSql(query.getPatientLastName()), StringEscapeUtils.escapeSql(query.getPatientHealthNumber()), query.getStatusFilter().getValue(), isPaged, page, labPageSize, mixLabsAndDocs, query.getAbnormalBool(), startDate, endDate);
             labDocs.addAll(filterOldLabVersions(labs));
         }
         if ((query.getHrm() || all) && (query.getAbnormalBool() == null || !query.getAbnormalBool())) {
@@ -342,7 +346,7 @@ public class LabDataController {
                 labs.add(labMap.get(labNums.get(j)));
             }
         }
-        
+
         return labs;
     }
 
