@@ -122,9 +122,10 @@ public class LabVersionComparator {
         return IntStream.range(0, excellerisOntarioHandler.getOBRCount())
                 .boxed()
                 .collect(Collectors.toMap(
-                    excellerisOntarioHandler::getOBRName, 
+                    i -> excellerisOntarioHandler.getOBRName(i) + " (" + excellerisOntarioHandler.getOBRIdentifier(i) + ")", 
                     i -> excellerisOntarioHandler.getOrderStatusEnum(i)
-                            .orElseThrow(() -> new IllegalArgumentException("Order Status not found!"))
+                            .orElseThrow(() -> new IllegalArgumentException("Order Status not found!")),
+                    (existingValue, newValue) -> newValue // Resolve duplicates by keeping the new value
                 ));
     }
 
@@ -141,7 +142,11 @@ public class LabVersionComparator {
         // Step 1: Find tests missing in currentLabTestStatusMap
         Map<String, OrderStatus> missingEntries = overallLabTestStatusMap.entrySet().stream()
             .filter(entry -> !currentLabTestStatusMap.containsKey(entry.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey, 
+                Map.Entry::getValue,
+                (existingValue, newValue) -> newValue // Resolve duplicates by keeping the new value
+            ));
 
         if (addCanceledLabs) {
             // Step 2: Find tests in currentLabTestStatusMap with OrderStatus.DELETED
