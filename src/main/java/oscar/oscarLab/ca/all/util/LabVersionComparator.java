@@ -48,13 +48,18 @@ public class LabVersionComparator {
      * @return The index (as a String) of the first duplicate lab version, or null if no duplicate is found.
      */
     public String isLabDuplicate(String currentSegmentID) {
-        String currentLabHash = DigestUtils.md5Hex(((ExcellerisOntarioHandler) handlerMap.get(currentSegmentID)).getHl7Body());
+        // Get the HL7 body for the current lab and remove the first line
+        String currentLabBody = ((ExcellerisOntarioHandler) handlerMap.get(currentSegmentID)).getHl7Body();
+        String currentLabHash = DigestUtils.md5Hex(removeFirstLine(currentLabBody));
+
         int currentLabIndex = labVersionIds.indexOf(currentSegmentID);
 
         // Compare the current lab's hash with all previous versions
         OptionalInt optionalIndex = IntStream.range(0, currentLabIndex)
                 .filter(i -> {
-                    String labHash = DigestUtils.md5Hex(((ExcellerisOntarioHandler) handlerMap.get(labVersionIds.get(i))).getHl7Body());
+                    // Get the HL7 body for the previous lab version and remove the first line
+                    String labBody = ((ExcellerisOntarioHandler) handlerMap.get(labVersionIds.get(i))).getHl7Body();
+                    String labHash = DigestUtils.md5Hex(removeFirstLine(labBody));
                     return labHash.equals(currentLabHash);
                 })
                 .findFirst();
@@ -156,5 +161,21 @@ public class LabVersionComparator {
         }
 
         return missingEntries;
+    }
+
+    /**
+     * Removes the first line from a multi-line string.
+     *
+     * @param input The input string (e.g., HL7 body).
+     * @return The input string with the first line removed.
+     */
+    private String removeFirstLine(String input) {
+        if (input == null || input.isEmpty()) {
+            return input; // Return the input as-is if it's null or empty
+        }
+
+        // Split the string into lines and skip the first line
+        String[] lines = input.split("\n", 2); // Split into at most 2 parts
+        return lines.length > 1 ? lines[1] : ""; // Return the second part (or an empty string if no second part exists)
     }
 }
