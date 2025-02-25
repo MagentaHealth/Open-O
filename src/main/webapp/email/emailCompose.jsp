@@ -2,6 +2,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" prefix="e" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/oscar-tag.tld" prefix="oscar"%>
 <%@ taglib uri="/WEB-INF/security.tld" prefix="security"%>
@@ -308,7 +309,7 @@
 							<div class="row">	
 							<div class="col-sm-12">	
 								<c:set var="subjectEmail" value="${ empty param.subjectEmail ? subjectEmail : param.subjectEmail }" />
-								<input class="form-control" type="text" name="subjectEmail" id="subjectEmail" placeholder="Subject" value="<c:out value='${subjectEmail}' />" autocomplete="off" />			
+								<input class="form-control" type="text" name="subjectEmail" id="subjectEmail" placeholder="Subject" value="<e:forHtmlAttribute value="${subjectEmail}" />" autocomplete="off" />			
 							  <div class="error-message" id="subjectError"></div>
 							</div>
 							</div>
@@ -324,7 +325,7 @@
 						<div class="container">
 							<div class="row">	
 							<div class="col-sm-12">				
-							  <textarea class="form-control" name="bodyEmail" id="bodyEmail" rows="7" placeholder="@message..."><c:out value="${ empty param.bodyEmail ? bodyEmail : param.bodyEmail }" /></textarea>
+							  <textarea class="form-control" name="bodyEmail" id="bodyEmail" rows="7" placeholder="@message..."><e:forHtmlContent value="${ empty param.bodyEmail ? bodyEmail : param.bodyEmail }" /></textarea>
 							  <div class="error-message" id="bodyError"></div>
 							</div>
 							</div>
@@ -350,7 +351,7 @@
 							<div class="row">	
 								<div class="col-sm-12 form-group"> 
 									<label>Encrypted message <span id="encryptedMessageInfo" class="icon-info-sign" data-toggle="tooltip" data-placement="auto right" title="Message will be added into the encrypted pdf"></span></label>
-									<textarea class="form-control" name="encryptedMessage" id="encryptedMessage" rows="5" placeholder="..."><c:out value="${ empty param.encryptedMessageEmail ? encryptedMessageEmail : param.encryptedMessageEmail }" /></textarea>
+									<textarea class="form-control" name="encryptedMessage" id="encryptedMessage" rows="5" placeholder="..."><e:forHtmlContent value="${ empty param.encryptedMessageEmail ? encryptedMessageEmail : param.encryptedMessageEmail }" /></textarea>
 									<div class="error-message" id="encryptedMessageError"></div>
 								</div>
 							</div>
@@ -359,7 +360,7 @@
 									<label>Password</label>
 								</div>
 								<div class="col-sm-10"> 
-									<input class="form-control" type="text" name="emailPDFPassword" id="emailPDFPassword" placeholder="YYYYMMDDHIN" value='${ not empty param.passwordEmail ? param.passwordEmail : emailPDFPassword }' autocomplete="off" /> 
+									<input class="form-control" type="text" name="emailPDFPassword" id="emailPDFPassword" placeholder="YYYYMMDDHIN" value="<e:forHtmlAttribute value='${ not empty param.passwordEmail ? param.passwordEmail : emailPDFPassword }' />" autocomplete="off" /> 
 									<div class="error-message" id="emailPDFPasswordError"></div>
 								</div>
 							</div>
@@ -368,7 +369,7 @@
 									<label>Clue <span id="clueInfo" class="icon-info-sign" data-toggle="tooltip" data-placement="auto right" title="Clue will be added into the email body (visible)"></span></label>
 								</div>
 								<div class="col-sm-10">
-									<textarea class="form-control" name="emailPDFPasswordClue" id="emailPDFPasswordClue" rows="2" placeholder="..."><c:out value="${ not empty param.passwordClueEmail ? param.passwordClueEmail : emailPDFPasswordClue }" /></textarea>
+									<textarea class="form-control" name="emailPDFPasswordClue" id="emailPDFPasswordClue" rows="2" placeholder="..."><e:forHtmlContent value="${ not empty param.passwordClueEmail ? param.passwordClueEmail : emailPDFPasswordClue }" /></textarea>
 									<div class="error-message" id="emailPDFPasswordClueError"></div>
 								</div>	
 							</div>
@@ -415,7 +416,7 @@
 											</label>
 										</div>
 										<div id="internalCommentContainer" class="d-none">
-											<textarea class="form-control" id="internalComment" name="internalComment" placeholder="Internal comment to include" rows="3"><c:out value="${ not empty param.internalComment ? param.internalComment : internalComment }" /></textarea>
+											<textarea class="form-control" id="internalComment" name="internalComment" placeholder="Internal comment to include" rows="3"><e:forHtmlContent value="${ not empty param.internalComment ? param.internalComment : internalComment }" /></textarea>
 										</div>
 									</div>
 								</div>
