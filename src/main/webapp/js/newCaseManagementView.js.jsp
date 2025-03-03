@@ -1214,6 +1214,13 @@ function loadDiv(div,url,limit) {
     }
 
     function pasteToEncounterNote(txt) {
+        console.log("[Added by Deval] ---------------------------------------------------------");
+        console.log("[Added by Deval] In pasteToEncounterNote");
+        console.log("[Added by Deval] caseNote: " + caseNote);
+        console.log("[Added by Deval] caseNote caseNote element: ", document.getElementById(caseNote));
+        if(document.getElementById(caseNote)) { console.log("[Added by Deval] caseNote note: ", document.getElementById(caseNote).value); }
+        console.log("[Added by Deval] using prototype caseNote note: ", $(caseNote));
+        console.log("[Added by Deval] ---------------------------------------------------------");
         $(caseNote).value += "\n" + txt;
         adjustCaseNote();
         setCaretPosition($(caseNote),$(caseNote).value.length);
@@ -2380,6 +2387,15 @@ function ajaxSaveNote(div,noteId,noteTxt) {
 function saveNoteAjax(method, chain) {
     console.log("saveNoteAjax triggered");
 	var noteStr;
+
+    console.log("[Added by Deval] ---------------------------------------------------------");
+    console.log("[Added by Deval] In saveNoteAjax");
+    console.log("[Added by Deval] caseNote: " + caseNote);
+    console.log("[Added by Deval] caseNote caseNote element: ", document.getElementById(caseNote));
+    if(document.getElementById(caseNote)) { console.log("[Added by Deval] caseNote note: ", document.getElementById(caseNote).value); }
+    console.log("[Added by Deval] using prototype caseNote note: ", $(caseNote));
+    console.log("[Added by Deval] ---------------------------------------------------------");
+
 	noteStr = $F(caseNote);
     /*
     if( noteStr.replace(/^\s+|\s+$/g,"").length == 0 ) {

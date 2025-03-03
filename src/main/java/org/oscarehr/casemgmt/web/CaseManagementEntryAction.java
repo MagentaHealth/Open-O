@@ -280,7 +280,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 			}
 
 			resetTemp(providerNo, demono, programIdString);
-
+			System.out.println("[Added by Deval] CaseManagementEntryAction:edit() new noteId: " + note.getId() + " session.getAttribute('newNote'): " + session.getAttribute("newNote") + " providerNo: " + providerNo + " demographicNo: " + demographicNo + " Note text: " + note.getNote());
 		}
 		// get the last temp note?
 		else if (tmpsavenote != null && !forceNote.equals("true")) {
@@ -303,7 +303,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 
 			note.setNote(tmpsavenote.getNote());
 			logger.debug("Setting note to " + note.getNote());
-
+			System.out.println("[Added by Deval] CaseManagementEntryAction:edit() temp noteId: " + note.getId() + " session.getAttribute('newNote'): " + session.getAttribute("newNote") + " providerNo: " + providerNo + " demographicNo: " + demographicNo + " Note text: " + note.getNote());
 		}
 		// get an existing non-temp note?
 		else if (nId != null && !"null".equalsIgnoreCase(nId) && Integer.parseInt(nId) > 0) {
@@ -318,7 +318,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 				caseManagementMgr.saveNoteSimple(note);
 				caseManagementMgr.addNewNoteLink(Long.parseLong(nId));
 			}
-
+			System.out.println("[Added by Deval] CaseManagementEntryAction:edit() existing non temp noteId: " + note.getId() + " session.getAttribute('newNote'): " + session.getAttribute("newNote") + " providerNo: " + providerNo + " demographicNo: " + demographicNo + " Note text: " + note.getNote());
 		}
 		// no note specified, get last unsigned
 		else {
@@ -331,6 +331,7 @@ public class CaseManagementEntryAction extends BaseCaseManagementEntryAction {
 			} else {
 				session.setAttribute("newNote", "false"); // should be able to get getLatSaved from the manager now
 			}
+			System.out.println("[Added by Deval] CaseManagementEntryAction:edit() no note specified noteId: " + note.getId() + " session.getAttribute('newNote'): " + session.getAttribute("newNote") + " providerNo: " + providerNo + " demographicNo: " + demographicNo + " Note text: " + note.getNote());
 		}
 		current = System.currentTimeMillis();
 		logger.debug("Get note to edit " + String.valueOf(current - start));
