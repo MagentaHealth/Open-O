@@ -605,13 +605,13 @@ function navBarLoader() {
             var numDivs = 0;
             var arrDivs;
             if( navBar == "leftNavBar" ) {
-                this.leftTotal += parseInt($F(div+"num")) + 1;
+                this.leftTotal += parseInt(document.getElementById(div+"num").value) + 1;
                 reported = ++this.leftReported;
                 numDivs = this.leftDivs;
                 arrDivs = this.arrLeftDivs;
             }
             else if( navBar == "rightNavBar" ) {
-                this.rightTotal += parseInt($F(div+"num")) + 1;
+                this.rightTotal += parseInt(document.getElementById(div+"num").value) + 1;
                 reported = ++this.rightReported;
                 numDivs = this.rightDivs;
                 arrDivs = this.arrRightDivs;
@@ -641,7 +641,7 @@ function navBarLoader() {
             var threshold;
 
             for( var idx = 0; idx < divs.length; ++idx ) {
-                numLines = parseInt($F(divs[idx].id + "num"));
+                numLines = parseInt(document.getElementById(divs[idx].id + "num").value);
                 num2reduce = Math.ceil(overflow * (numLines/total));
                 if( num2reduce == numLines && num2reduce > 0 )
                     --num2reduce;
@@ -774,14 +774,14 @@ function showEdit(e,title, noteId, editors, date, revision, note, url, container
 
     //Set note position order
     var elementNum = containerDiv + "num";
-    var numNotes = $F(elementNum);
+    var numNotes = document.getElementById(elementNum).value;
     var positionElement = containerDiv + noteId;
     var position;
     if( noteId === "" ) {
         position = 0;
     }
     else {
-        position = $F(positionElement);
+        position = document.getElementById(positionElement).value;
     }
 
     var curElem;
@@ -1150,10 +1150,10 @@ function loadDiv(div,url,limit) {
          if(document.all) {
 
             text = document.selection.createRange().text;
-            if(text != "" && $F("keyword") == "") {
+            if(text != "" && document.getElementById("keyword").value == "") {
               $("keyword").value += text;
             }
-            if(text != "" && $F("keyword") != "") {
+            if(text != "" && document.getElementById("keyword").value != "") {
               $("keyword").value = text;
             }
           } else {
@@ -1366,7 +1366,7 @@ function changeToView(id) {
     // check if case note has been changed
     // if so, warn user that changes will be lost if not saved
 
-    if( origCaseNote != $F(id)  || origObservationDate != $("observationDate").value) {
+    if( origCaseNote != document.getElementById(id).value  || origObservationDate != $("observationDate").value) {
         if( !confirm(unsavedNoteWarning))
             return false;
         else {
@@ -1441,7 +1441,7 @@ function changeToView(id) {
 
     if( $(selectEnc) != null ) {
         var encTypeId = "encType" + nId;
-        var content = $F(selectEnc);
+        var content = document.getElementById(selectEnc).value;
         var encType;
         if( content.length > 0 )
             encType = "&quot;" + content + "&quot;";
@@ -1472,7 +1472,7 @@ function changeToView(id) {
 
         var func;
         var editWarn = "editWarn" + nId;
-        if( $F(editWarn) == "true" ) {
+        if( document.getElementById(editWarn).value == "true" ) {
             func = "noPrivs(event);";
         }
         else {
@@ -1512,7 +1512,7 @@ function completeChangeToView(note,newId) {
     var selectEnc = "encTypeSelect" + newId;
     if( $(selectEnc) != null ) {
         var encTypeId = "encType" + newId;
-        var content = $F(selectEnc);
+        var content = document.getElementById(selectEnc).value;
         var encType;
         if( content.length > 0 )
             encType = "&quot;" + content + "&quot;";
@@ -1541,7 +1541,7 @@ function completeChangeToView(note,newId) {
 
     var func;
     var editWarn = "editWarn" + newId;
-    if( $F(editWarn) == "true" ) {
+    if( document.getElementById(editWarn).value == "true" ) {
         func = "noPrivs(event);";
     }
     else {
@@ -1603,7 +1603,7 @@ function minView(e) {
     var print = 'print' + nId;
     var func;
     var editWarn = "editWarn" + nId;
-    if( $F(editWarn) === "true" ) {
+    if( document.getElementById(editWarn).value === "true" ) {
         func = "noPrivs(event);";
     }
     else {
@@ -1676,7 +1676,7 @@ function fetchNote(nId) {
                             adjustCaseNote();
                                 $(noteTxtArea).focus();
                             setCaretPosition($(noteTxtArea),$(noteTxtArea).value.length);
-                            origCaseNote = $F(noteTxtArea);
+                            origCaseNote = document.getElementById(noteTxtArea).value;
                             $(fullId).value = "true";
                         }
                     }
@@ -1806,7 +1806,7 @@ var unlockNoteError;
 function unlock_ajax(id) {
     var url = ctx + "/CaseManagementView.do";
     var noteId = id.substr(1);
-    var params = "method=do_unlock_ajax&noteId=" + noteId + "&password=" + $F("passwd");
+    var params = "method=do_unlock_ajax&noteId=" + noteId + "&password=" + document.getElementById("passwd").value;
 
     var objAjax = new Ajax.Request (
                     url,
@@ -1979,7 +1979,7 @@ function editNote(e) {
     var isFull = "full" + nId;
     var txtId = "txt" + nId;
 
-    if( $F(isFull) == "true" ) {
+    if( document.getElementById(isFull).value == "true" ) {
         payload = $(txtId).innerHTML;
         payload = payload.replace(/^\s+|\s+$/g,"");
         payload = payload.replace(/<br>/gi,"\n");
@@ -1999,12 +1999,12 @@ function editNote(e) {
     if( strNid.substr(0,1) != "0" )
         new Insertion.Top(txt, printimg);
 
-    if( $F(isFull) == "true" ) {
+    if( document.getElementById(isFull).value == "true" ) {
         //position cursor at end of text
         adjustCaseNote();
         setCaretPosition($(caseNote),$(caseNote).value.length);
         $(caseNote).focus();
-        origCaseNote = $F(caseNote);
+        origCaseNote = document.getElementById(caseNote).value;
         
     }
     else {
@@ -2052,7 +2052,7 @@ function editNote(e) {
 
     //if note is already signed, remove save button to force edits to be signed
     var sign = "signed" + nId;
-    if( $F(sign) == "true" )
+    if( document.getElementById(sign).value == "true" )
         $("saveImg").style.visibility = "hidden";
     else
         $("saveImg").style.visibility = "visible";
@@ -2344,7 +2344,7 @@ function ajaxSaveNote(div,noteId,noteTxt) {
     var issue = "noteIssue" + idx;
     var issueParams = "";
     while($(issue) != null) {
-        issueParams += "&issue" + idx + "=" + $F(issue);
+        issueParams += "&issue" + idx + "=" + document.getElementById(issue).value;
         ++idx;
         issue = "noteIssue" + idx;
     }
@@ -2353,7 +2353,7 @@ function ajaxSaveNote(div,noteId,noteTxt) {
     var encType = "encTypeSelect" + noteId;
     var caseMgtEntryfrm = document.forms["caseManagementEntryForm"];
     var url = ctx + "/CaseManagementEntry.do";
-    var params = "nId="+noteId+issueParams+"&demographicNo=" + demographicNo +"&providerNo=" + providerNo + "&numIssues="+idx+"&obsDate="+$F("observationDate")+"&encType="+encodeURI($F(encType))+"&noteTxt="+encodeURI(noteTxt);
+    var params = "nId="+noteId+issueParams+"&demographicNo=" + demographicNo +"&providerNo=" + providerNo + "&numIssues="+idx+"&obsDate="+document.getElementById("observationDate").value+"&encType="+encodeURI(document.getElementById(encType).value)+"&noteTxt="+encodeURI(noteTxt);
     params += "&" + Form.serialize(caseMgtEntryfrm);
 
     var objAjax = new Ajax.Updater (
@@ -2378,7 +2378,7 @@ function ajaxSaveNote(div,noteId,noteTxt) {
 function saveNoteAjax(method, chain) {
 
 	var noteStr;
-	noteStr = $F(caseNote);
+	noteStr = document.getElementById(caseNote).value;
     /*
     if( noteStr.replace(/^\s+|\s+$/g,"").length == 0 ) {
         alert("Please enter a note before saving");
@@ -2580,7 +2580,7 @@ function savePage(method, chain) {
 	}
 
 	var noteStr;
-	noteStr = $F(caseNote);
+	noteStr = document.getElementById(caseNote).value;
     /*
     if( noteStr.replace(/^\s+|\s+$/g,"").length == 0 ) {
         alert("Please enter a note before saving");
@@ -2650,7 +2650,7 @@ function savePage(method, chain) {
     	needToReleaseLock = true;
     }
 
-	origCaseNote = $F(caseNote);
+	origCaseNote = document.getElementById(caseNote).value;
     caseMgtEntryfrm.submit();
 
 	jQuery("span[note_addon]").each(function(i){
@@ -2728,10 +2728,10 @@ function changeDiagnosisUnresolved(issueId) {
     var closeWithoutSaveMsg;
     function closeEnc(e) {
         Event.stop(e);
-        if( !lostNoteLock && (origCaseNote != $F(caseNote)  || origObservationDate != $("observationDate").value)) {
+        if( !lostNoteLock && (origCaseNote != document.getElementById(caseNote).value  || origObservationDate != $("observationDate").value)) {
             if( confirm(closeWithoutSaveMsg) ) {
                 var frm = document.forms["caseManagementEntryForm"];
-                origCaseNote = $F(caseNote);
+                origCaseNote = document.getElementById(caseNote).value;
                 frm.method.value = "cancel";
                 frm.submit();
             }
@@ -2795,7 +2795,7 @@ function updateIssues(e) {
     else
         ajaxUpdateIssues(args[0], args[1]);
 
-    if( $F("asgnIssues") !== assignIssueMsg ) {
+    if( document.getElementById("asgnIssues").value !== assignIssueMsg ) {
         $("asgnIssues").value= assignIssueMsg;
         Element.stopObserving('asgnIssues', 'click', changeIssueFunc);
         Element.observe('asgnIssues', 'click', addIssueFunc);
@@ -2934,7 +2934,7 @@ function newNote(e) {
         Element.observe(caseNote, 'keyup', monitorCaseNote);
         Element.observe(caseNote, 'click', getActiveText);
 
-        origCaseNote = $F(caseNote);
+        origCaseNote = document.getElementById(caseNote).value;
         ajaxUpdateIssues("edit", sigId);
         addIssueFunc = updateIssues.bindAsEventListener(obj, makeIssue, sigId);
         Element.observe('asgnIssues', 'click', addIssueFunc);
@@ -2982,7 +2982,7 @@ function autoSave(async) {
     var demoNo = demographicNo;
     var cmeFrm = document.forms["caseManagementEntryForm"];
     var nId = cmeFrm.noteId.value < 0 ? 0 : cmeFrm.noteId.value;
-    var params = "method=autosave&demographicNo=" + demoNo + "&programId=" + programId + "&note_id=" + nId + "&note=" + escape($F(caseNote));
+    var params = "method=autosave&demographicNo=" + demoNo + "&programId=" + programId + "&note_id=" + nId + "&note=" + escape(document.getElementById(caseNote).value);
 
     new Ajax.Request( url, {
                                 method: 'post',
@@ -3183,7 +3183,7 @@ function autoCompleteShowMenuCPP(element, update) {
         var unselected = ctx + "/oscarEncounter/graphics/printer.png";
 
 
-        if( $F(item) == "true" ) {
+        if( document.getElementById(item).value == "true" ) {
             $(img).src = unselected;
             $(item).value = "false";
         }
@@ -3198,7 +3198,7 @@ function autoCompleteShowMenuCPP(element, update) {
     function noteIsQeued(noteId) {
         var foundIdx = -1;
         var curpos = 0;
-        var arrNoteIds = $F("notes2print").split(",");
+        var arrNoteIds = document.getElementById("notes2print").value.split(",");
 
         for( var idx = 0; idx < arrNoteIds.length; ++idx ) {
             if( arrNoteIds[idx] == noteId ) {
@@ -3234,21 +3234,21 @@ function autoCompleteShowMenuCPP(element, update) {
 
             //if we're slicing first note off list
             if( idx == 0 ) {
-                idx2 = $F("notes2print").indexOf(",");
+                idx2 = document.getElementById("notes2print").value.indexOf(",");
                 if( idx2 > 0 )
-                    tmp = $F("notes2print").substring(idx2+1);
+                    tmp = document.getElementById("notes2print").value.substring(idx2+1);
             }
             //or we're slicing after first element
             else {
-                idx2 = $F("notes2print").indexOf(",",idx);
+                idx2 = document.getElementById("notes2print").value.indexOf(",",idx);
                 //are we in the middle of the list?
                 if( idx2 > 0 ) {
-                    tmp = $F("notes2print").substring(0,idx);
-                    tmp += $F("notes2print").substring(idx2+1);
+                    tmp = document.getElementById("notes2print").value.substring(0,idx);
+                    tmp += document.getElementById("notes2print").value.substring(idx2+1);
                 }
                 //or are we at the end of the list; don't copy comma
                 else
-                    tmp = $F("notes2print").substring(0,idx-1);
+                    tmp = document.getElementById("notes2print").value.substring(0,idx-1);
 
            }
 
@@ -3256,7 +3256,7 @@ function autoCompleteShowMenuCPP(element, update) {
         }
         else {
             $(imgId).src = selected;
-            if( $F("notes2print").length > 0 )
+            if( document.getElementById("notes2print").value.length > 0 )
                 $("notes2print").value += "," + noteId;
             else
                $("notes2print").value = noteId;
@@ -3271,7 +3271,7 @@ function autoCompleteShowMenuCPP(element, update) {
 
         //$(imgId).src = ctx + "/oscarEncounter/graphics/printerGreen.png"; //imgPrintgreen.src;
         $(imgId).src = imgPrintgreen.src;
-        if( $F("notes2print").length > 0 )
+        if( document.getElementById("notes2print").value.length > 0 )
             $("notes2print").value += "," + noteId;
         else
            $("notes2print").value = noteId;
@@ -3288,21 +3288,21 @@ function autoCompleteShowMenuCPP(element, update) {
 
         //if we're slicing first note off list
         if( idx == 0 ) {
-            idx2 = $F("notes2print").indexOf(",");
+            idx2 = document.getElementById("notes2print").value.indexOf(",");
             if( idx2 > 0 )
-                tmp = $F("notes2print").substring(idx2+1);
+                tmp = document.getElementById("notes2print").value.substring(idx2+1);
         }
         //or we're slicing after first element
         else {
-            idx2 = $F("notes2print").indexOf(",",idx);
+            idx2 = document.getElementById("notes2print").value.indexOf(",",idx);
             //are we in the middle of the list?
             if( idx2 > 0 ) {
-                tmp = $F("notes2print").substring(0,idx);
-                tmp += $F("notes2print").substring(idx2+1);
+                tmp = document.getElementById("notes2print").value.substring(0,idx);
+                tmp += document.getElementById("notes2print").value.substring(idx2+1);
             }
             //or are we at the end of the list; don't copy comma
             else
-                tmp = $F("notes2print").substring(0,idx-1);
+                tmp = document.getElementById("notes2print").value.substring(0,idx-1);
 
         }
 
@@ -3314,8 +3314,8 @@ function autoCompleteShowMenuCPP(element, update) {
     var printDateMsg;
     var printDateOrderMsg;
     function printDateRange() {
-        var sdate = $F("printStartDate");
-        var edate = $F("printEndDate");
+        var sdate = document.getElementById("printStartDate").value;
+        var edate = document.getElementById("printEndDate").value;
         if( sdate.length == 0 || edate.length == 0 ) {
             alert(printDateMsg);
             return false;
@@ -3357,7 +3357,7 @@ function autoCompleteShowMenuCPP(element, update) {
             if( $("obs"+noteId) != null )
                 noteDate = $("obs"+noteId).innerHTML;
             else if( $("observationDate") != null )
-                noteDate = $F("observationDate");
+                noteDate = document.getElementById("observationDate").value;
 
             //trim leading and trailing whitespace from date
             noteDate = noteDate.replace(/^\s+|\s+$/g,"");
@@ -3384,7 +3384,7 @@ function autoCompleteShowMenuCPP(element, update) {
     }
 
     function printSetup(e) {
-        if( $F("notes2print").length > 0 )
+        if( document.getElementById("notes2print").value.length > 0 )
             $("printopSelected").checked = true;
         else
             $("printopAll").checked = true;
@@ -3403,7 +3403,7 @@ function autoCompleteShowMenuCPP(element, update) {
             printAll();
         }
 		
-		if( $F("notes2print").length == 0 && $F("printCPP") == "false" && $F("printRx") == "false" && $F("printLabs") == "false" && $F("printPreventions") == "false" ) {
+		if( document.getElementById("notes2print").value.length == 0 && document.getElementById("printCPP").value == "false" && document.getElementById("printRx").value == "false" && document.getElementById("printLabs").value == "false" && document.getElementById("printPreventions").value == "false" ) {
             alert(nothing2PrintMsg);
             return false;
         }
@@ -3413,9 +3413,9 @@ function autoCompleteShowMenuCPP(element, update) {
 
         frm.method.value = "print";
 
-        frm.pStartDate.value = $F("printStartDate");
-        frm.pEndDate.value = $F("printEndDate");
-        frm.pType.value = $F("printopDates");
+        frm.pStartDate.value = document.getElementById("printStartDate").value;
+        frm.pEndDate.value = document.getElementById("printEndDate").value;
+        frm.pType.value = document.getElementById("printopDates").value;
         
         frm.submit();
 
@@ -3429,7 +3429,7 @@ function autoCompleteShowMenuCPP(element, update) {
         else if( $("printopAll").checked )
             printAll();
 
-        if( $F("notes2print").length == 0 && $F("printCPP") == "false" && $F("printRx") == "false" ) {
+        if( document.getElementById("notes2print").value.length == 0 && document.getElementById("printCPP").value == "false" && document.getElementById("printRx").value == "false" ) {
             alert(nothing2PrintMsg);
             return false;
         }
@@ -3462,9 +3462,9 @@ function autoCompleteShowMenuCPP(element, update) {
     function printToday(e) {
         clearAll(e);
 
-        var today = $F("serverDate").split(" ");
+        var today = document.getElementById("serverDate").value.split(" ");
         $("printStartDate").value = today[1].substr(0,today[1].indexOf(",")) + "-" + today[0] + "-" + today[2];
-        $("printEndDate").value = $F("printStartDate");
+        $("printEndDate").value = document.getElementById("printStartDate").value;
         $("printopDates").checked = true;
 
         printNotes();
@@ -3497,10 +3497,10 @@ function autoCompleteShowMenuCPP(element, update) {
             }
         }
 
-        if( $F("printCPP") == "true" )
+        if( document.getElementById("printCPP").value == "true" )
             printInfo("imgPrintCPP","printCPP");
 
-        if( $F("printRx") == "true" )
+        if( document.getElementById("printRx").value == "true" )
             printInfo("imgPrintRx","printRx");
 
         return false;
@@ -3561,7 +3561,7 @@ function autoCompleteShowMenuCPP(element, update) {
 
 
   	function assign(programId,demographicNo) {
-        if( origCaseNote != $F(caseNote)  || origObservationDate != $("observationDate").value) {
+        if( origCaseNote != document.getElementById(caseNote).value  || origObservationDate != $("observationDate").value) {
     var sumaryId = "sumary";
     var sumary;
     var saving = false;
@@ -3655,7 +3655,7 @@ function autoCompleteShowMenuCPP(element, update) {
 
                 if( $(selectEnc) != null ) {
                     var encTypeId = "encType" + nId;
-                    var content = $F(selectEnc);
+                    var content = document.getElementById(selectEnc).value;
                     var encType;
                     if( content.length > 0 )
                         encType = "&quot;" + content + "&quot;";
@@ -3685,7 +3685,7 @@ function autoCompleteShowMenuCPP(element, update) {
 
                     var func;
                     var editWarn = "editWarn" + nId;
-                    if( $F(editWarn) == "true" ) {
+                    if( document.getElementById(editWarn).value == "true" ) {
                         func = "noPrivs(event);";
                     }
                     else {
@@ -3732,7 +3732,7 @@ function autoCompleteShowMenuCPP(element, update) {
 function assignNoteAjax(method, chain,programId,demographicNo) {
 
 	var noteStr;
-	noteStr = $F(caseNote);
+	noteStr = document.getElementById(caseNote).value;
     /*
     if( noteStr.replace(/^\s+|\s+$/g,"").length == 0 ) {
         alert("Please enter a note before saving");

@@ -922,7 +922,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 <script type="text/javascript">	
 	caseNote = "caseNote_note" + "<%=savedId%>";
 	//save initial note to determine whether save is necessary
-	origCaseNote = $F(caseNote);
+	origCaseNote = document.getElementById(caseNote).value;
 <%
 
 	if( casemgmtNoteLock.isLocked() ) {
