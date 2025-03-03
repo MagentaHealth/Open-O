@@ -2378,6 +2378,14 @@ function ajaxSaveNote(div,noteId,noteTxt) {
 function saveNoteAjax(method, chain) {
 
 	var noteStr;
+
+    console.log("[Added by Deval] ---------------------------------------------------------");
+    console.log("[Added by Deval] Inside saveNoteAjax");
+    console.log("[Added by Deval] caseNote: " + caseNote);
+    console.log("[Added by Deval] caseNote element: ", document.getElementById(caseNote));
+    console.log("[Added by Deval] caseNote note: ", document.getElementById(caseNote).value);
+    console.log("[Added by Deval] ---------------------------------------------------------");
+
 	noteStr = document.getElementById(caseNote).value;
     /*
     if( noteStr.replace(/^\s+|\s+$/g,"").length == 0 ) {
