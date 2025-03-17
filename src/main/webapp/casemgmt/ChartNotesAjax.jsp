@@ -928,7 +928,9 @@ caseNote = "caseNote_note" + "<%=savedId%>";
 console.log("[Added by Deval] ChartNotesAjax caseNote: " + caseNote);
 
 	//save initial note to determine whether save is necessary
-	origCaseNote = $F(caseNote);
+	if (document.getElementById(caseNote)) {
+		origCaseNote = document.getElementById(caseNote).value;
+	}
 <%
 
 	if( casemgmtNoteLock.isLocked() ) {
@@ -1059,7 +1061,11 @@ console.log("[Added by Deval] ChartNotesAjax caseNote: " + caseNote);
    changeIssueFunc;  //set in changeDiagnosis function above
    addIssueFunc = updateIssues.bindAsEventListener(obj, makeIssue, defaultDiv);
    Element.observe('asgnIssues', 'click', addIssueFunc);
-   new Autocompleter.Local('enTemplate', 'enTemplate_list', autoCompList, { colours: itemColours, afterUpdateElement: menuAction }  );
+   try {
+		new Autocompleter.Local('enTemplate', 'enTemplate_list', autoCompList, { colours: itemColours, afterUpdateElement: menuAction }  );
+   } catch(error) {
+		console.error("Failed to initialize Autocompleter.Local:", error);
+   }
 
    //start timer for autosave
    setTimer();
