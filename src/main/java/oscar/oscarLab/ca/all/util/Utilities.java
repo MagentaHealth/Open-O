@@ -42,6 +42,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -113,38 +117,29 @@ public class Utilities {
      * @param filename
      * @return String
      */
-    public static String saveFile(InputStream stream,String filename ){
+    public static String saveFile(InputStream stream, String filename) {
         String retVal = null;
-        
         
         try {
             OscarProperties props = OscarProperties.getInstance();
-            //properties must exist
-            String place= props.getProperty("DOCUMENT_DIR");
+            String place = props.getProperty("DOCUMENT_DIR");
             
-            if(!place.endsWith("/"))
-                place = new StringBuilder(place).insert(place.length(),"/").toString();
-            retVal = place+"LabUpload."+filename.replaceAll(".enc", "")+"."+(new Date()).getTime();
-            
-            logger.debug("saveFile place="+place+", retVal="+retVal);
-            //write the  file to the file specified
-            OutputStream os = new FileOutputStream(retVal);
-            
-            int bytesRead = 0;
-            while ((bytesRead = stream.read()) != -1){
-                os.write(bytesRead);
+            Path directory = Paths.get(place).toAbsolutePath().normalize();
+            if (!Files.exists(directory)) {
+                Files.createDirectories(directory);
             }
-            os.close();
-            
-            //close the stream
-            stream.close();
-        }catch (FileNotFoundException fnfe) {
-        	logger.error("Error", fnfe);
-            return retVal;
-            
-        }catch (IOException ioe) {
-        	logger.error("Error", ioe);
-            return retVal;
+    
+            retVal = directory.resolve("LabUpload." + filename.replaceAll("\\.enc$", "") + "." + System.currentTimeMillis()).toString();
+            logger.debug("saveFile place=" + directory + ", retVal=" + retVal);
+    
+            try (OutputStream os = new FileOutputStream(retVal)) {
+                Files.copy(stream, Paths.get(retVal), StandardCopyOption.REPLACE_EXISTING);
+            }
+    
+        } catch (FileNotFoundException fnfe) {
+            logger.error("Unable to create or write to file: " + filename, fnfe);
+        } catch (IOException ioe) {
+            logger.error("Error processing file: " + filename, ioe);
         }
         return retVal;
     }    
