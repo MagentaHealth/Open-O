@@ -23,26 +23,52 @@
  */
 package org.oscarehr.ws.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Logger;
 import org.oscarehr.common.model.Hl7TextMessage;
 import org.oscarehr.managers.LabManager;
+import org.oscarehr.managers.SecurityInfoManager;
+import org.oscarehr.util.LoggedInInfo;
 import org.oscarehr.ws.rest.conversion.Hl7TextMessageConverter;
 import org.oscarehr.ws.rest.to.LabResponse;
+import org.oscarehr.ws.rest.to.model.Hl7TextMessageTo1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import oscar.oscarLab.FileUploadCheck;
+import oscar.oscarLab.ca.all.upload.HandlerClassFactory;
+import oscar.oscarLab.ca.all.upload.handlers.MessageHandler;
+import oscar.oscarLab.ca.all.util.Utilities;
 
 @Path("/labs")
 @Component("labService")
 public class LabService extends AbstractServiceImpl {
+	private static Logger logger = org.oscarehr.util.MiscUtils.getLogger();
 
 	@Autowired
-	LabManager labManager;
+	private LabManager labManager;
+	@Autowired
+	private SecurityInfoManager securityInfoManager;
 	
 	@GET
 	@Path("/hl7LabsByDemographicNo")
@@ -58,6 +84,65 @@ public class LabService extends AbstractServiceImpl {
 		response.setMessages(converter.getAllAsTransferObjects(getLoggedInInfo(), hl7TextMessages));
 		
 		return response;
+	}
+
+	@POST
+	@Path("/hl7LabUpload")
+	@Produces("application/json")
+	@Consumes("application/json")
+	public Response uploadHl7Lab(Hl7TextMessageTo1 labT, @Context HttpServletRequest request) {
+		LoggedInInfo loggedInInfo = getLoggedInInfo();
+
+		if (!securityInfoManager.hasPrivilege(loggedInInfo, "_lab", SecurityInfoManager.WRITE, "")) {
+			logger.error("Write Access Denied _lab for provider {}", loggedInInfo.getLoggedInProviderNo());
+			return Response.status(Response.Status.FORBIDDEN).entity(createResponseMap(labT.getFileName(), "Failed", "Access Denied")).build();
+		}
+
+		// Validate input
+        if (isInvalidHl7TextMessageTo1(labT)) { return Response.status(Response.Status.BAD_REQUEST).entity(createResponseMap(labT.getFileName(), "Failed", "Missing required fields: fileName, message, or type")).build(); }
+
+		String filePath;
+		try (InputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(labT.getBase64EncodedeMessage()))) {
+			filePath = Utilities.saveFile(inputStream, labT.getFileName());
+		} catch (IOException e) {
+			logger.error("Error occurred while saving " + labT.getFileName() + " file", e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(createResponseMap(labT.getFileName(), "Failed", "File save failed due to server error")).build();
+		}
+
+		int checkFileUploadedSuccessfully;
+        try (InputStream localFileInputStream = Files.newInputStream(Paths.get(filePath))) {
+            checkFileUploadedSuccessfully = FileUploadCheck.addFile(Paths.get(filePath).getFileName().toString(), localFileInputStream, loggedInInfo.getLoggedInProviderNo());
+        } catch (IOException e) {
+            logger.error("Error occurred while processing " + labT.getFileName() + " file", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(createResponseMap(labT.getFileName(), "Failed", "Error occurred while processing the file")).build();
+        }
+
+		if (checkFileUploadedSuccessfully == FileUploadCheck.UNSUCCESSFUL_SAVE) { 
+			return Response.status(Response.Status.CONFLICT).entity(createResponseMap(labT.getFileName(), "Failed", "The lab already exists")).build(); 
+		}
+
+        MessageHandler msgHandler = HandlerClassFactory.getHandler(labT.getType());
+        if ((msgHandler.parse(loggedInInfo, getClass().getSimpleName(), filePath, checkFileUploadedSuccessfully, request.getRemoteAddr())) != null) {
+            return Response.ok(createResponseMap(labT.getFileName(), "Success", "The lab uploaded successfully")).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).entity(createResponseMap(labT.getFileName(), "Failed", "File processing failed. Invalid file")).build();
+	}
+
+	private Map<String, String> createResponseMap(String fileName, String status, String message) {
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("status", status);
+        responseMap.put("message", message);
+        if (fileName != null) {
+            responseMap.put("fileName", fileName);
+        }
+        return responseMap;
+    }
+
+	private boolean isInvalidHl7TextMessageTo1(Hl7TextMessageTo1 labT) {
+		return labT == null || 
+			   StringUtils.isEmpty(labT.getFileName()) || 
+			   StringUtils.isEmpty(labT.getBase64EncodedeMessage()) || 
+			   StringUtils.isEmpty(labT.getType());
 	}
 	
 }
