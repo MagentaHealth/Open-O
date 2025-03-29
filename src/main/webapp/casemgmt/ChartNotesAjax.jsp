@@ -155,8 +155,6 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 			savedId = cform.getCaseNote().getId();
 		}
 
-		System.out.println("[Added by Deval] ChartNotesAjax notesToDisplay not empty, savedId: " + savedId + "\n");
-
 		//Check user property for stale date and show appropriately
 		UserProperty uProp = (UserProperty)request.getAttribute(UserProperty.STALE_NOTEDATE);
 
@@ -918,15 +916,11 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
 <script type="text/javascript">
 	maxNcId = <%=maxId%>;		
 </script>
-<script type="text/javascript">
-    console.log("[Added by Deval] ChartNotesAjax request.getAttribute('moreNotes'): <%= request.getAttribute("moreNotes") %>");
-    console.log("[Added by Deval] ChartNotesAjax savedId: <%= savedId %>");
-</script>
+
+
 <% if (request.getAttribute("moreNotes") == null) { %>
 <script type="text/javascript">	
-caseNote = "caseNote_note" + "<%=savedId%>";
-console.log("[Added by Deval] ChartNotesAjax caseNote: " + caseNote);
-
+	caseNote = "caseNote_note" + "<%=savedId%>";
 	//save initial note to determine whether save is necessary
 	if (document.getElementById(caseNote)) {
 		origCaseNote = document.getElementById(caseNote).value;
