@@ -3035,28 +3035,22 @@ function autoSave(async) {
 
 
 function backup() {
-	try {
-        if(origCaseNote != $(caseNote).value || origObservationDate != $("observationDate").value) {
-            autoSave(true);        
-        }
+	
+    if(origCaseNote != $(caseNote).value || origObservationDate != $("observationDate").value) {
+        autoSave(true);        
+    }
 
-        if( !lostNoteLock ) {
-            console.log("starting autosave timer (backup)");
-            setTimer();
-        }
-    } catch (e) { 
-        alert("Autosave has failed. Please copy your note to an external editor (e.g. Notepad), then refresh the page before continuing to edit.");
+	if( !lostNoteLock ) {
+    	setTimer();
     }
 }
 
 var autoSaveTimer;
 function setTimer() {
     autoSaveTimer = setTimeout("backup()", 5000);
-    console.log("timer", autoSaveTimer, "started");
 }
 
 function clearAutoSaveTimer() {
-    console.log("clearing autoSave timer", autoSaveTimer);
     clearTimeout(autoSaveTimer);
 }
 
