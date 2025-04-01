@@ -105,7 +105,7 @@ public class EmailLog extends AbstractModel<Integer> implements Comparable<Email
         this.emailConfig = emailConfig;
         this.fromEmail = fromEmail;
         this.toEmail = toEmail != null ? String.join(";", toEmail) : "";
-        this.subject = subject;
+        this.setSubject(subject);
         this.body = Base64.encodeBase64(body.getBytes(StandardCharsets.UTF_8));
         this.status = status;
         this.timestamp = new Date();
@@ -140,11 +140,11 @@ public class EmailLog extends AbstractModel<Integer> implements Comparable<Email
     }
 
     public String getSubject() {
-        return subject;
+        return subject == null || subject.isEmpty() ? "" : new String(Base64.decodeBase64(subject), StandardCharsets.UTF_8);
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
+        this.subject = subject == null || subject.isEmpty() ? "" : new String(Base64.encodeBase64(subject.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
 
     public String getBody() {
@@ -188,19 +188,19 @@ public class EmailLog extends AbstractModel<Integer> implements Comparable<Email
     }
 
     public String getPassword() {
-        return password;
+        return password == null || password.isEmpty() ? "" : new String(Base64.decodeBase64(password), StandardCharsets.UTF_8);
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password == null || password.isEmpty() ? "" : new String(Base64.encodeBase64(password.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
 
     public String getPasswordClue() {
-        return passwordClue;
+        return passwordClue == null || passwordClue.isEmpty() ? "" : new String(Base64.decodeBase64(passwordClue), StandardCharsets.UTF_8);
     }
 
     public void setPasswordClue(String passwordClue) {
-        this.passwordClue = passwordClue;
+        this.passwordClue = passwordClue == null || passwordClue.isEmpty() ? "" : new String(Base64.encodeBase64(passwordClue.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
 
     public boolean getIsEncrypted() {
