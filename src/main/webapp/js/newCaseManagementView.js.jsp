@@ -1403,7 +1403,7 @@ function changeToView(id) {
         Element.remove("notePasswd");
     }
 
-    Element.stopObserving(id, 'keyup', monitorCaseNote);
+    jQuery('#' + id).off('input', monitorCaseNote);
     Element.stopObserving(id, 'click', getActiveText);
 
     Element.remove(id);
@@ -2013,7 +2013,7 @@ function editNote(e) {
         Element.stopObserving(txt, 'click', fullView);
     }
 
-    Element.observe(caseNote, 'keyup', monitorCaseNote);
+    jQuery('#' + caseNote).on('input', monitorCaseNote);
     Element.observe(caseNote, 'click', getActiveText);
 
     if( passwordEnabled ) {
@@ -2932,7 +2932,7 @@ function newNote(e) {
         if( reason.length > 0 )
             setCaretPosition($(caseNote),$(caseNote).value.length);
 
-        Element.observe(caseNote, 'keyup', monitorCaseNote);
+        jQuery('#' + caseNote).on('input', monitorCaseNote);
         Element.observe(caseNote, 'click', getActiveText);
 
         origCaseNote = $F(caseNote);
@@ -3624,7 +3624,7 @@ function autoCompleteShowMenuCPP(element, update) {
                     Element.remove("notePasswd");
                 }
 
-                Element.stopObserving(caseNote, 'keyup', monitorCaseNote);
+                jQuery('#' + caseNote).off('input', monitorCaseNote);
                 Element.stopObserving(caseNote, 'click', getActiveText);
 
                 Element.remove(caseNote);

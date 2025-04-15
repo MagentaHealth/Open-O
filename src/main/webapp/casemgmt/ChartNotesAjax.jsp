@@ -1012,7 +1012,7 @@ CasemgmtNoteLock casemgmtNoteLock = (CasemgmtNoteLock)session.getAttribute("case
         document.forms["caseManagementEntryForm"].note_edit.value = "existing";
     <%}%>
     setupNotes();
-    Element.observe(caseNote, "keyup", monitorCaseNote);
+	jQuery('#' + caseNote).on('input', monitorCaseNote);
     Element.observe(caseNote, 'click', getActiveText);
     <%Integer num;
 			Iterator<Integer> iterator = lockedNotes.iterator();
