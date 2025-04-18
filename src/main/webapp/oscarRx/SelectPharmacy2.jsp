@@ -92,27 +92,26 @@
 			(function ($) {
 				$(function () {
 					var demo = $("#demographicNo").val();
-					if(demo != null && demo !== "") {
-						$.post("<%=request.getContextPath() + "/oscarRx/managePharmacy.do?method=getPharmacyFromDemographic&demographicNo="%>" + demo,
-								function (data) {
-									if (data && data.length && data.length > 0) {
-										$("#preferredList").html("");
-										var json;
-										var preferredPharmacyInfo;
-										for (var idx = 1; idx <= data.length; ++idx) {  //deliberately using idx = 1 to start to match the preferredOrder in db which is 1 counting instead of 0 counting
-											preferredPharmacyInfo = data[idx - 1];
-											json = JSON.stringify(preferredPharmacyInfo);
-											var pharm = "<div prefOrder='" + idx + "' pharmId='" + preferredPharmacyInfo.id + "'><table style='width: 100%'><tr><td class='prefAction prefUp'> Move Up </td>";
-											pharm += "<td rowspan='3' style='padding-left: 5px'>" + preferredPharmacyInfo.name + "<br /> ";
-											pharm += preferredPharmacyInfo.address + ", " + preferredPharmacyInfo.city + " " + preferredPharmacyInfo.province + "<br /> ";
-											pharm += preferredPharmacyInfo.postalCode + "<br />";
-											pharm += "Main Phone: " + preferredPharmacyInfo.phone1 + "<br />";
-											pharm += "Fax: " + preferredPharmacyInfo.fax + "<br />";
-											pharm += "<a href='#'  onclick='viewPharmacy(" + preferredPharmacyInfo.id + ");'>View More</a>";
-											pharm += "<p class='add-date' style='color: grey; font-size: 12px; text-align: right; margin: 0;'><i><span style='font-style: italic;'>Added: </span><span style='font-style: italic;'>" + formatTimestamp(preferredPharmacyInfo.addDate) + "</span></i></p>" + "</td>";
-											pharm += "</tr><tr><td class='prefAction prefUnlink'> Remove from List </td></tr><tr><td class='prefAction prefDown'> Move Down </td></tr></table></div>";
-											$("#preferredList").append(pharm);
-										}
+					$.get("<%=request.getContextPath() + "/oscarRx/managePharmacy.do?method=getPharmacyFromDemographic&demographicNo="%>" + demo,
+						function (data) {
+							if (data && data.length && data.length > 0) {
+								$("#preferredList").html("");
+								var json;
+								var preferredPharmacyInfo;
+								for (var idx = 1; idx <= data.length; ++idx) {  //deliberately using idx = 1 to start to match the preferredOrder in db which is 1 counting instead of 0 counting
+									preferredPharmacyInfo = data[idx - 1];
+									json = JSON.stringify(preferredPharmacyInfo);
+									var pharm = "<div prefOrder='" + idx + "' pharmId='" + preferredPharmacyInfo.id + "'><table style='width: 100%'><tr><td class='prefAction prefUp'> Move Up </td>";
+									pharm += "<td rowspan='3' style='padding-left: 5px'>" + preferredPharmacyInfo.name + "<br /> ";
+									pharm += preferredPharmacyInfo.address + ", " + preferredPharmacyInfo.city + " " + preferredPharmacyInfo.province + "<br /> ";
+									pharm += preferredPharmacyInfo.postalCode + "<br />";
+									pharm += "Main Phone: " + preferredPharmacyInfo.phone1 + "<br />";
+									pharm += "Fax: " + preferredPharmacyInfo.fax + "<br />";
+									pharm += "<a href='#'  onclick='viewPharmacy(" + preferredPharmacyInfo.id + ");'>View More</a>";
+									pharm += "<p class='add-date' style='color: grey; font-size: 12px; text-align: right; margin: 0;'><i><span style='font-style: italic;'>Added: </span><span style='font-style: italic;'>" + formatTimestamp(preferredPharmacyInfo.addDate) + "</span></i></p>" + "</td>";
+									pharm += "</tr><tr><td class='prefAction prefUnlink'> Remove from List </td></tr><tr><td class='prefAction prefDown'> Move Down </td></tr></table></div>";
+									$("#preferredList").append(pharm);
+								}
 
 								$(".prefUnlink").click(function () {
 									var data = "pharmacyId=" + $(this).closest("div").attr("pharmId") + "&demographicNo=" + demo;
