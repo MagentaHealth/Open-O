@@ -448,8 +448,8 @@
 		</security:oscarSec> <!-- Rights --> <security:oscarSec roleName="<%=roleName$%>"
 			objectName="_rx" rights="r">
 			<a class="rxBtn" title="Prescriptions"  href="javascript:void(0)" onclick="popup(700,1027,'<c:out value="${ctx}"/>/oscarRx/choosePatient.do?providerNo=<%=demo.getProviderNo()%>&demographicNo=<%=dem_no%>')">Rx</a>
-			<a class="ticklerBtn" title="Tickler"  href="javascript:void(0)" onclick="popup(500,900,'<c:out value="${ctx}"/>/tickler/ticklerMain.jsp?demoview=<%=dem_no%>')">T</a>
-			<a class="consultBtn" title="Consultation"  href="javascript:void(0)" onclick="popup(700,960,'<c:out value="${ctx}"/>/oscarEncounter/oscarConsultationRequest/DisplayDemographicConsultationRequests.jsp?de=<%=dem_no%>')">C</a>
+			<a class="ticklerBtn" title="Tickler"  href="javascript:void(0)" onclick="popup(700,1027,'<c:out value="${ctx}"/>/tickler/ticklerMain.jsp?demoview=<%=dem_no%>')">T</a>
+			<a class="consultBtn" title="Consultation"  href="javascript:void(0)" onclick="popup(700,1027,'<c:out value="${ctx}"/>/oscarEncounter/oscarConsultationRequest/DisplayDemographicConsultationRequests.jsp?de=<%=dem_no%>')">C</a>
 		</security:oscarSec></td>
 
 	<%	
