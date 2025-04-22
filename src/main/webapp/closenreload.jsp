@@ -10,7 +10,7 @@
 <center>Closing Window, Please Wait....</center>
 <script type="text/javascript" language="javascript">
     const parentAjaxId = "<e:forHtml value="${parentAjaxId}" />";
-    if (!window.opener.closed) {
+    if (window.opener && !window.opener.closed) {
         if (parentAjaxId !== "") {
             window.opener.reloadNav(parentAjaxId);
         } else {
