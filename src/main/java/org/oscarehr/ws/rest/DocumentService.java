@@ -38,6 +38,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -100,7 +102,7 @@ public class DocumentService extends AbstractServiceImpl{
     @Path("/uploadPendingDocuments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response uploadPendingDocuments(DocumentTo1 documentTo1, @Context HttpServletRequest request) {
+    public Response uploadPendingDocuments(DocumentTo1 documentTo1, @Context HttpServletRequest request) throws JsonProcessingException {
         LoggedInInfo loggedInInfo = getLoggedInInfo();
         
         // Validate access
@@ -134,7 +136,9 @@ public class DocumentService extends AbstractServiceImpl{
         documentTo1 = documentConverter.getAsTransferObject(loggedInInfo, document);
         if (queueId != null) { documentTo1.setQueue(queueId); }
 
-        return Response.ok(documentTo1).build();
+        System.out.println("Returning documentTo1: " + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(documentTo1));
+
+        return Response.ok(documentTo1, MediaType.APPLICATION_JSON).build();
     }
 
     private boolean isInvalidDocument(DocumentTo1 doc) {
