@@ -581,11 +581,7 @@ public class EForm extends EFormBase {
                 field.text(value);
                 break;
             case "checkbox":
-                if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value)) {
-                    field.attr("checked", "checked");
-                } else {
-                    field.removeAttr("checked");
-                }
+                field.attr("checked", "checked");
                 break;
             case "radio":
                 // For radio buttons, find all radios with the same name and check the correct one based on value
