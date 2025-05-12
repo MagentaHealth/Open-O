@@ -200,7 +200,15 @@ public class AddEFormAction extends Action {
 			
 		}
 
+		System.out.println("==================================================================================================================================");
+		System.out.println("fid: " + fid);
+		System.out.println("demographic_no: " + demographic_no);
+		for (int i = 0; i < paramNames.size(); i++) {
+			System.out.println(paramNames.get(i) + ": " + paramValues.get(i));
+		}
+		
 		EForm curForm = new EForm(fid, demographic_no, providerNo);
+		System.out.println("--------------------------------------------------------------------------------------------------------------\nEForm HTML [Fetched from the database]: " + curForm.getFormHtml());
 
 		//add eform_link value from session attribute
 		ArrayList<String> openerNames = curForm.getOpenerNames();
@@ -216,9 +224,11 @@ public class AddEFormAction extends Action {
 		ActionMessages errors = curForm.setMeasurements(paramNames, paramValues);
 		curForm.setFormSubject(subject);
 		curForm.setValues(paramNames, paramValues);
+		System.out.println("--------------------------------------------------------------------------------------------------------------\nEForm HTML [After setting values]: " + curForm.getFormHtml());
 		if (!openerNames.isEmpty()) curForm.setOpenerValues(openerNames, openerValues);
 		if (eform_link!=null) curForm.setEformLink(eform_link);
 		curForm.setImagePath();
+		System.out.println("--------------------------------------------------------------------------------------------------------------\nEForm HTML [Set Image Path]: " + curForm.getFormHtml());
 		curForm.setAction();
 		curForm.setNowDateTime();
 		if (!errors.isEmpty()) {
@@ -249,6 +259,7 @@ public class AddEFormAction extends Action {
 			 * of the eform_data database table.
 			 */
 			curForm.addImagePathPlaceholders(imagePathPlaceHolders);
+			System.out.println("EForm HTML [Update image in path place holders]: " + curForm.getFormHtml());
 
 			String fdid = eformDataManager.saveEformData( loggedInInfo, curForm ) + "";
 
