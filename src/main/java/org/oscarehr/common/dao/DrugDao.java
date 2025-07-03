@@ -114,11 +114,11 @@ public interface DrugDao extends AbstractDao<Drug> {
 	public List<Drug> findLongTermDrugsByDemographic(Integer demographicId);
 
 	/**
-	 * Finds special instructions that match a given string.
+	 * Retrieves a list of Drug objects based on the provided script number and demographic number.
 	 *
-	 * @param spInstructQuery The string to match against special instructions.
-	 * @return A list of special instructions that contain the given string.
+	 * @param scriptNo the script number associated with the drugs to be retrieved
+	 * @param demographicNo the demographic number associated with the drugs to be retrieved
+	 * @return a list of Drug objects matching the provided script number and demographic number
 	 */
-	List<String> findSpecialInstructionsMatching(String spInstructQuery);
-
+	List<Drug> findBy(int scriptNo, int demographicNo);
 }

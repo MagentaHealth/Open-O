@@ -621,24 +621,4 @@ public class DrugDaoImpl extends AbstractDaoImpl<Drug> implements DrugDao {
 
     }
 
-    /**
-     * Finds special instructions that match a given query string.
-     *
-     * @param spInstructQuery The query string to search for within special instructions.
-     *                        The search is case-insensitive and matches substrings.
-     * @return A list of special instruction strings that match the query.
-     *         Returns an empty list if no matching special instructions are found.
-     *         Returns a list of all special instructions if the query is null or empty.
-     */
-    @Override
-    public List<String> findSpecialInstructionsMatching(String spInstructQuery) {
-        String query = "SELECT x.special_instruction FROM Drug x WHERE " +
-                "x.special_instruction IS NOT NULL AND x.special_instruction LIKE :searchString";
-
-        TypedQuery<String> typedQuery = super.entityManager.createQuery(query, String.class);
-        typedQuery.setParameter("searchString", "%" + spInstructQuery + "%");
-
-        return typedQuery.getResultList();
-    }
-
 }
