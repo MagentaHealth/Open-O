@@ -2633,3 +2633,6 @@ update ServiceClient set lifetime = -1 where lifetime is null;
 INSERT INTO `property`(`name`, `value`, `provider_no`) VALUES ('email_communication', 'electronic_communication_consent', NULL);
 INSERT INTO `property` (`name`, `value`, `provider_no`) VALUES ('default_ref_prac', '1', '999998');
 INSERT INTO `property` (`name`, `value`, `provider_no`) VALUES ('consultation_letterheadname_default', '1', '999998');
+
+INSERT INTO `property`(`name`, `value`, `provider_no`) VALUES ('hl7_offer_file_for_others', 'true', '999998');
+INSERT INTO `property`(`name`, `value`, `provider_no`) VALUES ('hl7_allow_others_file_for_you', 'false', '999998');

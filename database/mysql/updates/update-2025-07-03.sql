@@ -1,0 +1,2 @@
+INSERT INTO `property`(`name`, `value`, `provider_no`) VALUES ('hl7_offer_file_for_others', 'true', '999998');
+INSERT INTO `property`(`name`, `value`, `provider_no`) VALUES ('hl7_allow_others_file_for_you', 'false', '999998');
