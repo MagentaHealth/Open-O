@@ -641,4 +641,16 @@ public class DrugDaoImpl extends AbstractDaoImpl<Drug> implements DrugDao {
         return typedQuery.getResultList();
     }
 
+    @Override
+    public List<Drug> findBy(int scriptNo, int demographicNo) {
+        TypedQuery<Drug> drugQuery = entityManager.createQuery(
+                "SELECT d FROM Drug d WHERE d.scriptNo = :scriptNo AND d.demographicId = :demoId " +
+                        "ORDER BY d.position DESC, d.rxDate DESC, d.id ASC", Drug.class
+        );
+        drugQuery.setParameter("scriptNo", scriptNo);
+        drugQuery.setParameter("demoId", demographicNo);
+
+        return drugQuery.getResultList();
+    }
+
 }
