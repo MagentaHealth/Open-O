@@ -1844,7 +1844,7 @@ function updateDeleteOnCloseRxBox(){
 
             modalBodyElement.innerHTML = ' <div class="d-flex justify-content-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
 
-            let pharmacyData = JSON.parse(document.getElementById('Calcs').value);
+            let pharmacyData = JSON.parse(document.getElementById('Calcs').value || '{}');
             let pharmacyId = pharmacyData.id ? pharmacyData.id : null;
             let url = '${ctx}/oscarRx/printPreview.do?method=printPreview&scriptId=' + scriptId + '&pharmacyId=' + pharmacyId;
             fetch(url)
@@ -2695,11 +2695,16 @@ function updateQty(element){
             onSuccess:function(transport){
             	
                 callReplacementWebService("ListDrugs.jsp",'drugProfile');
-                const hasDrugs = jQuery("[id^='drugName_']").length > 0;
-                if (hasDrugs) {
-                    popForm2(null);
-                } else {
-                    alert("Please add at least one drug first");
+                try {
+                    let saveResponse = JSON.parse(transport.response);
+                    let scriptId = saveResponse && saveResponse.scriptId;
+                    if (scriptId) {
+                        popForm2(scriptId);
+                    } else {
+                        console.warn("No valid script ID received from server");
+                    }
+                } catch (err) {
+                    console.error("Error parsing script ID response:", err);
                 }
                 resetReRxDrugList();
             }});
