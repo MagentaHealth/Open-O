@@ -56,8 +56,10 @@ import oscar.util.ConversionUtils;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommonLabResultData {
 
@@ -608,24 +610,45 @@ public class CommonLabResultData {
 		
 	}
 	public static boolean fileLabs(ArrayList<String[]> flaggedLabs, String provider) {
-		return fileLabs(flaggedLabs, provider, "");
+		return fileLabs(flaggedLabs, provider, "", false);
 	}
 
-	public static boolean fileLabs(ArrayList<String[]> flaggedLabs, String provider, String comment) {
+	/**
+	 * Files the lab reports for the given flagged labs.
+	 *
+	 * @param flaggedLabs   List of String arrays, each containing lab ID and lab type.
+	 * @param provider      The provider performing the filing.
+	 * @param comment       Optional comment to attach to the filing.
+	 * @param fileUpToLabNo If true, files all labs from the oldest version up to and including the current lab.
+	 *                      Labs will be in order from older version to latest version (e.g., [v1, v2, v3, ..., vn]).
+	 * @return true if filing was attempted for all labs; false otherwise.
+	 */
+	public static boolean fileLabs(ArrayList<String[]> flaggedLabs, String provider, String comment, boolean fileUpToLabNo) {
 		CommonLabResultData data = new CommonLabResultData();
 		boolean success = Boolean.FALSE;
+
 		for (int i = 0; i < flaggedLabs.size(); i++) {
-			
 			String[] strarr = flaggedLabs.get(i);
 			String lab = strarr[0];
 			String labType = strarr[1];
+			int currentLabId = Integer.parseInt(lab);
+
+			// Gets lab IDs in order from oldest to latest (e.g., v1, v2, ..., vn)
 			String labs = data.getMatchingLabs(lab, labType);
 
-			if (labs != null && !labs.equals("")) {
+			if (labs != null && !labs.isEmpty()) {
 				String[] labArray = labs.split(",");
-				for (int j = 0; j < labArray.length; j++) {
-					success = updateReportStatus(Integer.parseInt(labArray[j]), provider, 'F', comment, labType);
-					removeFromQueue(Integer.parseInt(labArray[j]));
+
+				// Filter the labs if fileUpToLabNo is true: only include lab IDs <= currentLabId
+				List<Integer> filteredLabs = Arrays.stream(labArray)
+						.map(String::trim)
+						.map(Integer::parseInt)
+						.filter(labId -> !fileUpToLabNo || labId <= currentLabId)
+						.collect(Collectors.toList());
+
+				for (Integer labId : filteredLabs) {
+					success = updateReportStatus(labId, provider, 'F', comment, labType);
+					removeFromQueue(labId);
 				}
 
 			} else {
@@ -633,8 +656,7 @@ public class CommonLabResultData {
 				removeFromQueue(Integer.parseInt(lab));
 			}
 			
-			if(! success)
-			{
+			if(!success) {
 				flaggedLabs.remove(i);
 			}
 		}

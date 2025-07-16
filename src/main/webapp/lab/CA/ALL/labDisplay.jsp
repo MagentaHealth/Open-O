@@ -811,7 +811,8 @@ input[type=button], button, input[id^='acklabel_']{ font-size:12px !important;pa
                             providerNo: providerNo,
                             flaggedLabId: flaggedLabId,
                             labType: labType,
-                            comment: comment
+                            comment: comment,
+                            fileUpToLabNo: true
                         },
                         success: function(response) {
                             console.log("Filed lab for provider: " + providerNo);
