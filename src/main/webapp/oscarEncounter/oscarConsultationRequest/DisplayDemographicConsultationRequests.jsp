@@ -245,7 +245,7 @@ theRequests.estConsultationVecByDemographic(LoggedInInfo.getLoggedInInfoFromSess
 						String specialist = (String) theRequests.vSpecialist.get(i);
 						String date     = (String) theRequests.date.get(i);
 						//String ptToBook = (String) theRequests.patientWillBook.elementAt(i);
-						String urgency  = (String) theRequests.urgency.elementAt(i);
+						String urgency  = (String) theRequests.urgency.get(i);
 						Provider cProv  = (Provider) theRequests.consultProvider.get(i);
 					%>
 					<tr>
@@ -275,7 +275,7 @@ theRequests.estConsultationVecByDemographic(LoggedInInfo.getLoggedInInfoFromSess
 						<td class="stat<%= Encode.forHtmlAttribute(status) %>"><a
 							href="javascript:popupOscarRx(700,960,'../../oscarEncounter/ViewRequest.do?de=<%= Encode.forUriComponent(demo) %>&requestId=<%= Encode.forUriComponent(id) %>')">
 						<%= Encode.forHtml(patient) %> </a></td>
-						<td class="stat<%= Encode.forHtmlAttribute(status) %>"><%= Encode.forHtml(provide) %></td>
+						<td class="stat<%= Encode.forHtmlAttribute(status) %>"><%= Encode.forHtml(provider) %></td>
 						<td class="stat<%= Encode.forHtmlAttribute(status) %>"><%= (cProv != null) ? Encode.forHtml(cProv.getFormattedName()) : "" %></td>
 						<td class="stat<%= Encode.forHtmlAttribute(status) %>">
 							<a href="javascript:popupOscarRx(700,960,'../../oscarEncounter/ViewRequest.do?de=<%= Encode.forUriComponent(demo) %>&requestId=<%= Encode.forUriComponent(id) %>')">
