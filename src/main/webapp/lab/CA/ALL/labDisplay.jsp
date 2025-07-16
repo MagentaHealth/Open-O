@@ -832,7 +832,7 @@ input[type=button], button, input[id^='acklabel_']{ font-size:12px !important;pa
                         <!-- Missing Tests Information Section -->
                         <div class="info-section">
                             <div class="modal-title">Missing Test Results</div>
-                            <p>Warning: The following tests were not included in this version of the lab results:</p>
+                            <p>Warning: At least the following tests were not included in this version of the lab results:</p>
                             <div class="test-list">
                                 <c:forEach var="entry" items="${missingTests}">
                                     <div class="test-item">
