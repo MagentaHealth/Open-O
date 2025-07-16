@@ -102,6 +102,7 @@ public class DemographicTo1 implements Serializable {
 	private String pronoun;
 	private Integer genderId;
 	private Integer pronounId;
+	private String prefName;
 
 	private String cellPhone;
 	private String phoneComment;
@@ -739,6 +740,14 @@ public class DemographicTo1 implements Serializable {
 
 	public void setPhoneComment(String phoneComment) {
 		this.phoneComment = phoneComment;
+	}
+
+	public String getPrefName() {
+		return prefName;
+	}
+	
+	public void setPrefName(String prefName) {
+		this.prefName = prefName;
 	}
 
 	public List<AllergyTo1> getAllergies() {
