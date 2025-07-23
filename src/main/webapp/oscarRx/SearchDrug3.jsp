@@ -2028,6 +2028,7 @@ YAHOO.example.FnMultipleFields = function(){
                     var ran_number=Math.round(Math.random()*1000000);
                     var name=encodeURIComponent(arr.name);
                     var params = "demographicNo=<%=demoNo%>&drugId="+arr.id+"&text="+name+"&randomId="+ran_number;  //hack to get around ie caching the page
+                    
                    new Ajax.Updater('rxText',url, {method:'get',parameters:params,evalScripts:true,
                         insertion: Insertion.Bottom,onSuccess:function(transport){
                             // updateCurrentInteractions();
@@ -2190,6 +2191,7 @@ function setSearchedDrug(drugId,name){
     var ran_number=Math.round(Math.random()*1000000);
     name=encodeURIComponent(name);
     var params = "demographicNo=<%=demoNo%>&drugId="+drugId+"&text="+name+"&randomId="+ran_number;
+    
     new Ajax.Updater('rxText',url, {method:'get',parameters:params,asynchronous:true,evalScripts:true,insertion: Insertion.Bottom,onSuccess:function(transport){
                             // updateCurrentInteractions();
             }});

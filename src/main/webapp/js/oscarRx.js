@@ -1179,6 +1179,7 @@ function setSearchedDrug(drugId,name){
     var ran_number=Math.round(Math.random()*1000000);
     name=encodeURIComponent(name);
     var params = "demographicNo=<%=demoNo%>&drugId="+drugId+"&text="+name+"&randomId="+ran_number;
+    console.log("in oscarRx", drugId, name, ran_number);
     new Ajax.Updater('rxText',url, {method:'get',parameters:params,asynchronous:true,evalScripts:true,insertion: Insertion.Bottom,onSuccess:function(transport){
                             updateCurrentInteractions();
             }});
