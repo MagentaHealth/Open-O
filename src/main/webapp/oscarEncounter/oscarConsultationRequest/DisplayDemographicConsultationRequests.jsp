@@ -134,7 +134,7 @@ theRequests.estConsultationVecByDemographic(LoggedInInfo.getLoggedInInfoFromSess
 	jQuery(document).ready( function () {
 	    jQuery('#consultTable').DataTable({
 			"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "<bean:message key="oscarEncounter.LeftNavBar.AllLabs"/>"] ],
-			"order": [[6,'desc']],
+			"order": [[7,'desc']],
 			"language": {
 				"url": "<%=request.getContextPath() %>/library/DataTables/i18n/<bean:message key="global.i18nLanguagecode"/>.json"
 			},
