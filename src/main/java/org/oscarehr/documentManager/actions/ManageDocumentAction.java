@@ -313,9 +313,20 @@ public class ManageDocumentAction extends DispatchAction {
 		try {
 
 			CtlDocument ctlDocument = ctlDocumentDao.getCtrlDocument(Integer.parseInt(documentId));
-			if(ctlDocument != null) {
-				ctlDocument.getId().setModuleId(Integer.parseInt(demog));
-				ctlDocumentDao.merge(ctlDocument);
+			int demographicNumber = Integer.parseInt(demog);
+			// If this ctlDocument is a document module type and is not for the demographic being saved then create a new entry and remove the old one
+			if(ctlDocument != null && (ctlDocument.isDemographicDocument() && demographicNumber != ctlDocument.getId().getModuleId())) {
+				
+				CtlDocument matchedCtlDocument = new CtlDocument();
+				matchedCtlDocument.getId().setDocumentNo(ctlDocument.getId().getDocumentNo());
+				matchedCtlDocument.getId().setModule(ctlDocument.getId().getModule());
+				matchedCtlDocument.getId().setModuleId(Integer.parseInt(demog));
+				matchedCtlDocument.setStatus(ctlDocument.getStatus());
+				
+				ctlDocumentDao.persist(matchedCtlDocument);
+				
+				ctlDocumentDao.remove(ctlDocument.getId());
+				
 				// save a document created note
 				if (ctlDocument.isDemographicDocument()) {
 					// save note
@@ -983,14 +994,26 @@ public class ManageDocumentAction extends DispatchAction {
             try {
 
                 CtlDocument ctlDocument = ctlDocumentDao.getCtrlDocument(Integer.parseInt(doc_no));
-
-                ctlDocument.getId().setModuleId(Integer.parseInt(demographic_no));
-                ctlDocumentDao.merge(ctlDocument);
-                //save a document created note
-                if (ctlDocument.isDemographicDocument()) {
-                    //save note
-                    saveDocNote(request, documentDescription, demographic_no, doc_no);
-                }
+				int demographicNumber = Integer.parseInt(demographic_no);
+				// If this ctlDocument is a document module type and is not for the demographic being saved then create a new entry and remove the old one
+				if(ctlDocument != null && (ctlDocument.isDemographicDocument() && demographicNumber != ctlDocument.getId().getModuleId())) {
+					
+					CtlDocument matchedCtlDocument = new CtlDocument();
+					matchedCtlDocument.getId().setDocumentNo(ctlDocument.getId().getDocumentNo());
+					matchedCtlDocument.getId().setModule(ctlDocument.getId().getModule());
+					matchedCtlDocument.getId().setModuleId(Integer.parseInt(demographic_no));
+					matchedCtlDocument.setStatus(ctlDocument.getStatus());
+					
+					ctlDocumentDao.persist(matchedCtlDocument);
+					
+					ctlDocumentDao.remove(ctlDocument.getId());
+					
+					// save a document created note
+					if (ctlDocument.isDemographicDocument()) {
+						// save note
+						saveDocNote(request, documentDescription, demographic_no, doc_no);
+					}
+				}
             } catch (Exception e) {
                 MiscUtils.getLogger().error("Error", e);
             }
