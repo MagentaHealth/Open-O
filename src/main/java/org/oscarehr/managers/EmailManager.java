@@ -148,34 +148,24 @@ public class EmailManager {
         return updateEmailStatus(loggedInInfo, emailLog, emailStatus, errorMessage);
     }
 
-    public EmailLog updateEmailStatus(LoggedInInfo loggedInInfo, EmailLog emailLog, EmailStatus emailStatus, String errorMessage) {
-        long startTime = System.currentTimeMillis();
-    
+    public EmailLog updateEmailStatus(LoggedInInfo loggedInInfo, EmailLog emailLog,
+                                  EmailStatus emailStatus, String errorMessage) {
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_email", SecurityInfoManager.WRITE, null)) {
             throw new RuntimeException("missing required security object (_email)");
         }
-    
-        try {
-            long t1 = System.currentTimeMillis();
-            emailLog.setStatus(emailStatus);
-            if (errorMessage != null) {
-                emailLog.setErrorMessage(errorMessage);
-            }
-            if (!emailStatus.equals(EmailStatus.RESOLVED)) {
-                emailLog.setTimestamp(new Date());
-            }
-    
-            long t2 = System.currentTimeMillis();
-            emailLogDao.merge(emailLog);
-            System.out.println("updateEmailStatus(): emailLogDao.merge() took "
-                    + (System.currentTimeMillis() - t2) + " ms");
-    
-        } catch (Exception e) {
-            System.out.println("updateEmailStatus() failed after " + (System.currentTimeMillis() - startTime) + " ms");
-            throw e;
-        }
-    
+
+        Date newTimestamp = (!emailStatus.equals(EmailStatus.RESOLVED)) ? new Date() : emailLog.getTimestamp();
+
+        long t2 = System.currentTimeMillis();
+        int rows = emailLogDao.updateEmailStatus(emailLog.getId(), emailStatus, errorMessage, newTimestamp);
+        System.out.println("updateEmailStatus(): JPQL update took " + (System.currentTimeMillis() - t2) + " ms, rows=" + rows);
         System.out.println("===================");
+
+        // Update object in memory so caller still has the right values
+        emailLog.setStatus(emailStatus);
+        emailLog.setErrorMessage(errorMessage);
+        emailLog.setTimestamp(newTimestamp);
+
         return emailLog;
     }
 
