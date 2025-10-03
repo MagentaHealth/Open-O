@@ -48,9 +48,11 @@ public class SMTPEmailSender {
     }
 
     public void send() throws EmailSendingException {
+        long startTime = System.currentTimeMillis();
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_email", SecurityInfoManager.WRITE, null)) {
 			throw new RuntimeException("missing required security object (_email)");
 		}
+        System.out.println("===================");
 
         javaMailSender = createTLSMailSender(emailConfig);
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -61,10 +63,15 @@ public class SMTPEmailSender {
             helper.setSubject(subject);
             helper.setText(body, false);
             addAttachments(helper, attachments);
+
+            long t5 = System.currentTimeMillis();
+            System.out.println("Delegating to JavaMailSender dependency to handle the email sending process...");
             javaMailSender.send(message);
+            System.out.println("JavaMailSender internal send process took: " + (System.currentTimeMillis() - t5) + " ms");
         } catch (Exception e) {
             throw new EmailSendingException(e.getMessage(), e);
         }
+        System.out.println("===================");
     }
 
     private JavaMailSender createTLSMailSender(EmailConfig emailConfig) throws EmailSendingException {

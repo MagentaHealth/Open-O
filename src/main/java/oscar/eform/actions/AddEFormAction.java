@@ -328,6 +328,8 @@ public class AddEFormAction extends Action {
 			}
 
 			else if (isEmailEForm) {
+				System.out.println("===================================================================================================");
+				System.out.println("Preparing email compose page for the EForm id: " + fdid);
 				ActionForward emailForward = new ActionForward(mapping.findForward("emailCompose"));
 				String path = emailForward.getPath() + "?method=prepareComposeEFormMailer";
 				addEmailAttachments(request, attachedEForms, attachedDocuments, attachedLabs, attachedHRMDocuments, attachedForms); 

@@ -76,14 +76,29 @@ public class EmailManager {
 			throw new RuntimeException("missing required security object (_email)");
 		}
 
+        long startTime = System.currentTimeMillis();
         sanitizeEmailFields(emailData);
+        
+        long t2 = System.currentTimeMillis();
         EmailLog emailLog = prepareEmailForOutbox(loggedInInfo, emailData);
+        System.out.println("prepareEmailForOutbox took: " + (System.currentTimeMillis() - t2) + " ms");
+
         try {
-            if (emailData.getIsEncrypted()) { encryptEmail(emailData); }
+            if (emailData.getIsEncrypted()) {
+                long t3 = System.currentTimeMillis();
+                encryptEmail(emailData);
+                System.out.println("encryptEmail took: " + (System.currentTimeMillis() - t3) + " ms");
+            }
+
             EmailSender emailSender = new EmailSender(loggedInInfo, emailLog.getEmailConfig(), emailData);
+            
             emailSender.send();
+
             updateEmailStatus(loggedInInfo, emailLog, EmailStatus.SUCCESS, "");
-            if (emailLog.getChartDisplayOption().equals(ChartDisplayOption.WITH_FULL_NOTE)) { addEmailNote(loggedInInfo, emailLog); }
+
+            if (emailLog.getChartDisplayOption().equals(ChartDisplayOption.WITH_FULL_NOTE)) {
+                addEmailNote(loggedInInfo, emailLog);
+            }
         } catch (EmailSendingException e) {
             updateEmailStatus(loggedInInfo, emailLog, EmailStatus.FAILED, e.getMessage());
             logger.error("Failed to send email", e);

@@ -30,7 +30,11 @@ public class EmailSendAction extends DispatchAction {
         boolean deleteEFormAfterEmail = request.getParameter("deleteEFormAfterEmail") != null && "true".equalsIgnoreCase(request.getParameter("deleteEFormAfterEmail"));
 
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
+        long sendEmailStart = System.currentTimeMillis();
         EmailLog emailLog = sendEmail(request);
+        long totalDuration = System.currentTimeMillis() - sendEmailStart;
+        System.out.println("Email sent successfully for the EForm id: " + request.getParameter("fdid") + ". Total duration: " + totalDuration + " ms");
+        System.out.println("===================================================================================================");
 
         boolean isEmailSuccessful = emailLog.getStatus() == EmailStatus.SUCCESS;
         request.setAttribute("isEmailSuccessful", isEmailSuccessful);

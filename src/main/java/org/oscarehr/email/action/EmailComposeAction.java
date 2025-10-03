@@ -51,18 +51,46 @@ public class EmailComposeAction extends DispatchAction {
             emailPDFPasswordClue = "To protect your privacy, the PDF attachments in this email have been encrypted with a 18 digit password - your date of birth in the format YYYYMMDD followed by the 10 digits of your health insurance number.";
         }
 
+        
         List<EmailAttachment> emailAttachmentList = new ArrayList<>();
+        long startTime = System.currentTimeMillis(); // whole block timer
+        
+        System.out.println("===================");
         try {
+            long t1 = System.currentTimeMillis();
             emailAttachmentList.addAll(emailComposeManager.prepareEFormAttachments(loggedInInfo, fdid, attachedEForms));
+            System.out.println("prepareEFormAttachments took: " + (System.currentTimeMillis() - t1) + " ms");
+
+            long t2 = System.currentTimeMillis();
             emailAttachmentList.addAll(emailComposeManager.prepareEDocAttachments(loggedInInfo, attachedDocuments));
+            System.out.println("prepareEDocAttachments took: " + (System.currentTimeMillis() - t2) + " ms");
+
+            long t3 = System.currentTimeMillis();
             emailAttachmentList.addAll(emailComposeManager.prepareLabAttachments(loggedInInfo, attachedLabs));
+            System.out.println("prepareLabAttachments took: " + (System.currentTimeMillis() - t3) + " ms");
+
+            long t4 = System.currentTimeMillis();
             emailAttachmentList.addAll(emailComposeManager.prepareHRMAttachments(loggedInInfo, attachedHRMDocuments));
+            System.out.println("prepareHRMAttachments took: " + (System.currentTimeMillis() - t4) + " ms");
+
+            long t5 = System.currentTimeMillis();
             emailAttachmentList.addAll(emailComposeManager.prepareFormAttachments(request, response, attachedForms, Integer.parseInt(demographicId)));
+            System.out.println("prepareFormAttachments took: " + (System.currentTimeMillis() - t5) + " ms");
+
         } catch (PDFGenerationException e) {
             logger.error(e.getMessage(), e);
-            return emailComposeError(request, mapping, "This eForm (and attachments, if applicable) could not be emailed. \\n\\n" + e.getMessage(), "eFormError");
+            return emailComposeError(request, mapping, 
+                "This eForm (and attachments, if applicable) could not be emailed. \n\n" + e.getMessage(),
+                "eFormError");
         }
+
+        long sanitizeStart = System.currentTimeMillis();
         emailComposeManager.sanitizeAttachments(emailAttachmentList);
+        System.out.println("sanitizeAttachments took: " + (System.currentTimeMillis() - sanitizeStart) + " ms");
+
+        System.out.println("Total email attachment preparation took: " + (System.currentTimeMillis() - startTime) + " ms");
+        System.out.println("===================");
+
 
         request.setAttribute("transactionType", TransactionType.EFORM);
         request.setAttribute("emailConsentName", emailConsent[0]);
