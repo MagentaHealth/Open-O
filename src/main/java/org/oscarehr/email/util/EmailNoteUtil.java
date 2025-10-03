@@ -46,15 +46,40 @@ public class EmailNoteUtil {
     }
     
     public String createNote() {
+        long startTime = System.currentTimeMillis();
         StringBuilder noteBuilder = new StringBuilder();
+    
+        long t1 = System.currentTimeMillis();
         addHeader(emailLog, noteBuilder);
+        System.out.println("createNote(): addHeader() took " + (System.currentTimeMillis() - t1) + " ms");
+    
+        long t2 = System.currentTimeMillis();
         addBody(emailLog, noteBuilder);
+        System.out.println("createNote(): addBody() took " + (System.currentTimeMillis() - t2) + " ms");
+    
+        long t3 = System.currentTimeMillis();
         addEncryptionInformation(emailLog, noteBuilder);
+        System.out.println("createNote(): addEncryptionInformation() took " + (System.currentTimeMillis() - t3) + " ms");
+    
+        long t4 = System.currentTimeMillis();
         addAttachments(emailLog, noteBuilder);
+        System.out.println("createNote(): addAttachments() took " + (System.currentTimeMillis() - t4) + " ms");
+    
+        long t5 = System.currentTimeMillis();
         addEncryptedBody(emailLog, noteBuilder);
+        System.out.println("createNote(): addEncryptedBody() took " + (System.currentTimeMillis() - t5) + " ms");
+    
+        long t6 = System.currentTimeMillis();
         addTechnicalInformation(emailLog, noteBuilder);
+        System.out.println("createNote(): addTechnicalInformation() took " + (System.currentTimeMillis() - t6) + " ms");
+    
+        long t7 = System.currentTimeMillis();
         addInternalComment(emailLog, noteBuilder);
-        return noteBuilder.toString();
+        System.out.println("createNote(): addInternalComment() took " + (System.currentTimeMillis() - t7) + " ms");
+    
+        String note = noteBuilder.toString();
+    
+        return note;
     }
 
     private void addHeader(EmailLog emailLog, StringBuilder noteBuilder) {

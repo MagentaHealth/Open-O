@@ -141,19 +141,41 @@ public class EmailManager {
 			throw new RuntimeException("missing required security object (_email)");
 		}
         
+        long t1 = System.currentTimeMillis();
         EmailLog emailLog = emailLogDao.find(emailLogId);
+        System.out.println("updateEmailStatus(): emailLogDao.find(" + emailLogId + ") took "
+                + (System.currentTimeMillis() - t1) + " ms");
         return updateEmailStatus(loggedInInfo, emailLog, emailStatus, errorMessage);
     }
 
     public EmailLog updateEmailStatus(LoggedInInfo loggedInInfo, EmailLog emailLog, EmailStatus emailStatus, String errorMessage) {
+        long startTime = System.currentTimeMillis();
+    
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_email", SecurityInfoManager.WRITE, null)) {
-			throw new RuntimeException("missing required security object (_email)");
-		}
-        
-        emailLog.setStatus(emailStatus);
-        if(errorMessage != null) { emailLog.setErrorMessage(errorMessage); }
-        if (!emailStatus.equals(EmailStatus.RESOLVED)) { emailLog.setTimestamp(new Date()); }
-        emailLogDao.merge(emailLog);
+            throw new RuntimeException("missing required security object (_email)");
+        }
+    
+        try {
+            long t1 = System.currentTimeMillis();
+            emailLog.setStatus(emailStatus);
+            if (errorMessage != null) {
+                emailLog.setErrorMessage(errorMessage);
+            }
+            if (!emailStatus.equals(EmailStatus.RESOLVED)) {
+                emailLog.setTimestamp(new Date());
+            }
+    
+            long t2 = System.currentTimeMillis();
+            emailLogDao.merge(emailLog);
+            System.out.println("updateEmailStatus(): emailLogDao.merge() took "
+                    + (System.currentTimeMillis() - t2) + " ms");
+    
+        } catch (Exception e) {
+            System.out.println("updateEmailStatus() failed after " + (System.currentTimeMillis() - startTime) + " ms");
+            throw e;
+        }
+    
+        System.out.println("===================");
         return emailLog;
     }
 
@@ -182,38 +204,67 @@ public class EmailManager {
     }
 
     public void addEmailNote(LoggedInInfo loggedInInfo, EmailLog emailLog) {
+        long startTime = System.currentTimeMillis();
+    
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_email", SecurityInfoManager.READ, null)) {
-			throw new RuntimeException("missing required security object (_email)");
-		}
-
-        EmailNoteUtil emailNoteUtil = new EmailNoteUtil(loggedInInfo, emailLog);
-        String emailNote = emailNoteUtil.createNote();
-
-        String providerNo = loggedInInfo.getLoggedInProviderNo();
-        String programId = new EctProgram(loggedInInfo.getSession()).getProgram(providerNo);
-        Date creationDate = new Date();
-
-        ProgramProvider programProvider = programManager.getProgramProvider(providerNo, programId);
-        SecRole doctorRole = caseManagementManager.getSecRoleByRoleName("doctor");
-        String role = programProvider != null ? String.valueOf(programProvider.getRoleId()) : String.valueOf(doctorRole.getId());
-
-        CaseManagementNote caseManagementNote = new CaseManagementNote();
-		caseManagementNote.setUpdate_date(creationDate);
-		caseManagementNote.setObservation_date(creationDate);
-		caseManagementNote.setDemographic_no(String.valueOf(emailLog.getDemographic().getDemographicNo()));
-		caseManagementNote.setProviderNo(providerNo);
-		caseManagementNote.setNote(emailNote);
-		caseManagementNote.setSigned(true);
-		caseManagementNote.setSigning_provider_no(providerNo);
-		caseManagementNote.setProgram_no(programId);
-        caseManagementNote.setReporter_caisi_role(role);
-		caseManagementNote.setReporter_program_team("0");
-		caseManagementNote.setHistory(emailNote);
-		Long noteId = caseManagementManager.saveNoteSimpleReturnID(caseManagementNote);
-				 
-		CaseManagementNoteLink caseManagementNoteLink = new CaseManagementNoteLink(CaseManagementNoteLink.EMAIL, Long.valueOf(emailLog.getId()), noteId);
-        caseManagementManager.saveNoteLink(caseManagementNoteLink);
+            throw new RuntimeException("missing required security object (_email)");
+        }
+    
+        try {
+            long t1 = System.currentTimeMillis();
+            EmailNoteUtil emailNoteUtil = new EmailNoteUtil(loggedInInfo, emailLog);
+            String emailNote = emailNoteUtil.createNote();
+            System.out.println("EmailNoteUtil initialization and createNote() took: " + (System.currentTimeMillis() - t1) + " ms");
+    
+            long t2 = System.currentTimeMillis();
+            String providerNo = loggedInInfo.getLoggedInProviderNo();
+            String programId = new EctProgram(loggedInInfo.getSession()).getProgram(providerNo);
+            Date creationDate = new Date();
+            System.out.println("Provider/program lookup took: " + (System.currentTimeMillis() - t2) + " ms");
+    
+            long t3 = System.currentTimeMillis();
+            ProgramProvider programProvider = programManager.getProgramProvider(providerNo, programId);
+            SecRole doctorRole = caseManagementManager.getSecRoleByRoleName("doctor");
+            String role = programProvider != null
+                    ? String.valueOf(programProvider.getRoleId())
+                    : String.valueOf(doctorRole.getId());
+            System.out.println("ProgramProvider and SecRole lookup took: " + (System.currentTimeMillis() - t3) + " ms");
+    
+            long t4 = System.currentTimeMillis();
+            CaseManagementNote caseManagementNote = new CaseManagementNote();
+            caseManagementNote.setUpdate_date(creationDate);
+            caseManagementNote.setObservation_date(creationDate);
+            caseManagementNote.setDemographic_no(String.valueOf(emailLog.getDemographic().getDemographicNo()));
+            caseManagementNote.setProviderNo(providerNo);
+            caseManagementNote.setNote(emailNote);
+            caseManagementNote.setSigned(true);
+            caseManagementNote.setSigning_provider_no(providerNo);
+            caseManagementNote.setProgram_no(programId);
+            caseManagementNote.setReporter_caisi_role(role);
+            caseManagementNote.setReporter_program_team("0");
+            caseManagementNote.setHistory(emailNote);
+            System.out.println("CaseManagementNote object creation and setup took: " + (System.currentTimeMillis() - t4) + " ms");
+    
+            long t5 = System.currentTimeMillis();
+            Long noteId = caseManagementManager.saveNoteSimpleReturnID(caseManagementNote);
+            System.out.println("Delegated to caseManagementManager.saveNoteSimpleReturnID() dependency, took: " 
+                    + (System.currentTimeMillis() - t5) + " ms");
+    
+            long t6 = System.currentTimeMillis();
+            CaseManagementNoteLink caseManagementNoteLink =
+                    new CaseManagementNoteLink(CaseManagementNoteLink.EMAIL, Long.valueOf(emailLog.getId()), noteId);
+            caseManagementManager.saveNoteLink(caseManagementNoteLink);
+            System.out.println("Delegated to caseManagementManager.saveNoteLink() dependency, took: " 
+                    + (System.currentTimeMillis() - t6) + " ms");
+    
+        } catch (Exception e) {
+            System.out.println("addEmailNote() failed after: " + (System.currentTimeMillis() - startTime) + " ms");
+            throw e;
+        }
+    
+        System.out.println("===================");
     }
+    
 
     private void setEmailAttachments(EmailLog emailLog, List<EmailAttachment> emailAttachments) {
         List<EmailAttachment> emailAttachmentList = new ArrayList<>();
