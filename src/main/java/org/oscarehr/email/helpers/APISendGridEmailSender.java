@@ -64,28 +64,51 @@ public class APISendGridEmailSender {
     }
 
     public void send() throws EmailSendingException {
+        System.out.println("===================");
+        long startTime = System.currentTimeMillis(); // total timer
+    
         if (!securityInfoManager.hasPrivilege(loggedInInfo, "_email", SecurityInfoManager.WRITE, null)) {
-			throw new RuntimeException("missing required security object (_email)");
-		} 
-        
+            throw new RuntimeException("missing required security object (_email)");
+        }
+    
         try {
+            long t1 = System.currentTimeMillis();
             SSLContext sslContext = SSLContexts.custom().build();
             sslContext.getDefaultSSLParameters().setNeedClientAuth(true);
             sslContext.getDefaultSSLParameters().setWantClientAuth(true);
+            System.out.println("SSLContext initialization took: " + (System.currentTimeMillis() - t1) + " ms");
+    
+            long t2 = System.currentTimeMillis();
             SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext);
             HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
-
+            System.out.println("HttpClient creation took: " + (System.currentTimeMillis() - t2) + " ms");
+    
+            long t3 = System.currentTimeMillis();
             HttpPost httpPost = new HttpPost(getEndPoint());
             httpPost.setHeader("Content-Type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + getAPIKey());
-
+    
             StringEntity entity = new StringEntity(createEmailJSON());
             httpPost.setEntity(entity);
+            System.out.println("HttpPost setup (headers + JSON entity) took: " + (System.currentTimeMillis() - t3) + " ms");
+    
+            long t4 = System.currentTimeMillis();
+            System.out.println("Delegating to HttpClient dependency to execute request...");
             HttpResponse response = httpClient.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() >= 400) { throw new EmailSendingException(response.getStatusLine() + "\n" + EntityUtils.toString(response.getEntity())); }
+            System.out.println("HttpClient internal execute() took: " + (System.currentTimeMillis() - t4) + " ms");
+    
+            if (response.getStatusLine().getStatusCode() >= 400) {
+                String errorBody = EntityUtils.toString(response.getEntity());
+                throw new EmailSendingException(response.getStatusLine() + "\n" + errorBody);
+            }
+    
         } catch (Exception e) {
+            System.out.println("send() failed after: " + (System.currentTimeMillis() - startTime) + " ms");
             throw new EmailSendingException(e.getMessage(), e);
         }
+    
+        System.out.println("Email sending over HTTP completed successfully.");
+        System.out.println("===================");
     }
 
     private String createEmailJSON() throws EmailSendingException {
