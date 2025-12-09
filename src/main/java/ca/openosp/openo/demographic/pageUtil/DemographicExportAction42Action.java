@@ -3349,7 +3349,7 @@ public class DemographicExportAction42Action extends ActionSupport {
         if (StringUtils.filled(labMea.get("name"))) labResults.setTestNameReportedByLab(labMea.get("name"));
 
         //laboratory name
-        labResults.setLaboratoryName(StringUtils.noNull(labMea.get("labname")) + "^" + StringUtils.noNull(labMea.get("labType")));
+        labResults.setLaboratoryName(StringUtils.noNull(labMea.get("labname")));
         addOneEntry(LABS);
         if (StringUtils.empty(labResults.getLaboratoryName())) {
             exportError.add("Error! No Laboratory Name for Lab Test " + labResults.getLabTestCode() + " for Patient " + demoNo);
