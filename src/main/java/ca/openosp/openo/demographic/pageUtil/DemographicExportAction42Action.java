@@ -3345,8 +3345,10 @@ public class DemographicExportAction42Action extends ActionSupport {
         //lab test code, test name, test name reported by lab
         if (StringUtils.filled(labMea.get("identifier"))) labResults.setLabTestCode(labMea.get("identifier"));
         // TODO: populate TestName as maintained by EMR properly.  The key "name_internal" isn't used anywhere.
-        if (StringUtils.filled(labMea.get("name_internal"))) labResults.setTestName(labMea.get("name_internal"));
-        if (StringUtils.filled(labMea.get("name"))) labResults.setTestNameReportedByLab(labMea.get("name"));
+        if (StringUtils.filled(labMea.get("name"))) {
+            labResults.setTestNameReportedByLab(labMea.get("name"));
+            labResults.setTestName(labMea.get("name"));
+        }
 
         //laboratory name
         labResults.setLaboratoryName(StringUtils.noNull(labMea.get("labname")) + "^" + StringUtils.noNull(labMea.get("labType")));
