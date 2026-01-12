@@ -44,7 +44,7 @@
         return;
     }
 %>
-
+<!DOCTYPE HTML>
 <html>
     <head>
         <script type="text/javascript" src="<%= request.getContextPath() %>/js/global.js"></script>
@@ -97,7 +97,7 @@
             boolean isNKDA = "No Known Drug Allergies".equals(name);
         %>
 
-        <link rel="stylesheet" type="text/css" href="oscarRx/styles.css">
+        <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/oscarRx/styles.css">
 
     </head>
     <body topmargin="0" leftmargin="0" vlink="#0000FF">
@@ -115,8 +115,8 @@
                        height="100%">
                     <tr>
                         <td width="0%" valign="top">
-                            <div class="DivCCBreadCrumbs"><a href="SearchDrug3.jsp"> <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.title"/></a>&nbsp;&gt;&nbsp; <a
-                                    href="ShowAllergies2.jsp"> <fmt:setBundle basename="oscarResources"/><fmt:message key="EditAllergies.title"/></a>&nbsp;&gt;&nbsp; <b><fmt:setBundle basename="oscarResources"/><fmt:message key="AddReaction.title"/></b></div>
+                            <div class="DivCCBreadCrumbs"><a href="<%= request.getContextPath() %>/oscarRx/SearchDrug3.jsp"> <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.title"/></a>&nbsp;&gt;&nbsp; <a
+                                    href="<%= request.getContextPath() %>/oscarRx/ShowAllergies2.jsp"> <fmt:setBundle basename="oscarResources"/><fmt:message key="EditAllergies.title"/></a>&nbsp;&gt;&nbsp; <b><fmt:setBundle basename="oscarResources"/><fmt:message key="AddReaction.title"/></b></div>
                         </td>
                     </tr>
                     <!----Start new rows here-->
@@ -160,23 +160,70 @@
                                     }
                                 }
 
-                                function doSubmit() {
 
-                                    if (document.forms.RxAddAllergyForm.nonDrug.value == '') {
+
+<%--						<tr>--%>
+<%--							<td ><html:submit property="submit"--%>
+<%--								value="Add Allergy" styleClass="ControlPushButton" /> <input--%>
+<%--								type=button class="ControlPushButton" id="cancelAddReactionButton"--%>
+<%--								onclick="javascript:document.forms.RxAddAllergyForm.reactionDescription.value='';document.forms.RxAddAllergyForm.startDate.value='';document.forms.RxAddAllergyForm.ageOfOnset.value='';document.forms.RxAddAllergyForm.reactionDescription.focus();"--%>
+<%--								value="Reset" /></td>--%>
+<%--						</tr>--%>
+<%--					</table>--%>
+<%--        --%>
+<%--                      </html:form></td>--%>
+<%--			</tr>--%>
+
+<%--			<tr>--%>
+<%--				<td>--%>
+<%--				<%--%>
+<%--                        String sBack="ShowAllergies2.jsp";--%>
+<%--                      %> <input type=button class="ControlPushButton"--%>
+<%--					onclick="javascript:window.location.href='<%=sBack%>';"--%>
+<%--					value="Back to View Allergies" /></td>--%>
+<%--			</tr>--%>
+<%--			<!----End new rows here-->--%>
+<%--			<tr height="100%">--%>
+<%--				<td></td>--%>
+<%--			</tr>--%>
+<%--		</table>--%>
+<%--		</td>--%>
+<%--	</tr>--%>
+<%--	<tr>--%>
+<%--		<td height="0%"--%>
+<%--			style="border-bottom: 2px solid #A9A9A9; border-top: 2px solid #A9A9A9;"></td>--%>
+<%--		<td height="0%"--%>
+<%--			style="border-bottom: 2px solid #A9A9A9; border-top: 2px solid #A9A9A9;"></td>--%>
+<%--	</tr>--%>
+<%--	<tr>--%>
+<%--		<td width="100%" height="0%" colspan="2">&nbsp;</td>--%>
+<%--	</tr>--%>
+<%--	<tr>--%>
+<%--		<td width="100%" height="0%" style="padding: 5px" bgcolor="#DCDCDC"--%>
+<%--			colspan="2"></td>--%>
+<%--	</tr>--%>
+<%--</table>--%>
+
+                                  function doSubmit() {
+
+                                    var nonDrugSelect = document.forms.RxAddAllergyForm.nonDrug;
+                                    if (nonDrugSelect) {
+                                      var nonDrugValue = (nonDrugSelect.selectedIndex !== -1) ? nonDrugSelect.options[nonDrugSelect.selectedIndex].value : '';
+
+                                      if (nonDrugValue === '') {
                                         alert("Please choose value for non-drug");
                                         return false;
+                                      }
+                                      confirmRemoveNKDA();
+
+                                      return true;
                                     }
-
-                                    confirmRemoveNKDA();
-
-                                    return true;
                                 }
+
 
                                 function confirmRemoveNKDA() {
                                     <% if (nkdaId!=null && !nkdaId.isEmpty()) { %>
-                                    if (<%=nkdaId%>>
-                                    0
-                                )
+                                    if (parseInt("<%=nkdaId%>") > 0)
                                     {
                                         var yes = confirm("Remove \"No Known Drug Allergies\" from list?");
                                         if (!yes) document.forms.RxAddAllergyForm.allergyToArchive.value = "";
@@ -304,7 +351,7 @@
                                     <td>
                                         <input type="submit" name="submit" value="Add Allergy" class="ControlPushButton" onclick="return doSubmit()"/>
                                         <input type=button class="ControlPushButton" id="cancelAddReactionButton"
-                                               onclick="window.location='ShowAllergies2.jsp?demographicNo=<%=bean.getDemographicNo() %>'"
+                                               onclick="window.location='<%= request.getContextPath() %>/oscarRx/ShowAllergies2.jsp?demographicNo=<%=bean.getDemographicNo() %>'"
                                                value="Cancel"/>
                                     </td>
                                 </tr>
@@ -338,7 +385,7 @@
             <td width="100%" height="0%" colspan="2">&nbsp;</td>
         </tr>
         <tr>
-            <td width="100%" height="0%" style="padding: 5" bgcolor="#DCDCDC"
+            <td width="100%" height="0%" style="padding: 5px" bgcolor="#DCDCDC"
                 colspan="2"></td>
         </tr>
     </table>
