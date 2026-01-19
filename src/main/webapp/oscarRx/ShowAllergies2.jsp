@@ -274,7 +274,7 @@
                 var iNKDA = document.forms.searchAllergy2.iNKDA.value;
                 if (param.indexOf(paramNKDA) >= 0) {
                     var hasDrugAllergy = document.forms.searchAllergy2.hasDrugAllergy.value;
-                    if (hasDrugAllergy == "true") {
+                    if (hasDrugAllergy === "true") {
                         alert("Active drug allergy exists!");
                         return;
                     }
@@ -363,7 +363,7 @@
                     name = name.toUpperCase();
                     confirm("Adding custom allergy: " + name);
                     sendSearchRequest("${ pageContext.servletContext.contextPath }/oscarRx/addReaction2.do",
-                        "ID=0&type=0&name=" + name, "#addAllergyDialogue");
+                        "ID=0&type=0&name=" + encodeURIComponent(name), "#addAllergyDialogue");
                     $("input[value='Custom Allergy']").addClass("highLightButton");
                 }
             }
@@ -728,10 +728,6 @@
                     </tr>
                 </table>
             </td>
-        </tr>
-
-        <tr class="lastRow">
-            <td colspan="2"></td>
         </tr>
     </table>
 
