@@ -138,7 +138,7 @@ public final class RxWriteScript2Action extends ActionSupport {
 
         //RxWriteScriptForm frm = (RxWriteScriptForm) form;
         String fwd = "refresh";
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
 
         if (bean == null) {
             response.sendRedirect("error.html");
@@ -266,7 +266,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     public String updateReRxDrug() throws IOException {
         checkPrivilege(LoggedInInfo.getLoggedInInfoFromSession(request), PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -302,7 +302,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     public String saveCustomName() throws IOException {
         checkPrivilege(LoggedInInfo.getLoggedInInfoFromSession(request), PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -363,7 +363,7 @@ public final class RxWriteScript2Action extends ActionSupport {
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
         checkPrivilege(loggedInInfo, PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -429,7 +429,7 @@ public final class RxWriteScript2Action extends ActionSupport {
         // if din is null, use BN to find it
         // if prescript is custom drug, use customName to find it.
         // append results to a list.
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -451,7 +451,7 @@ public final class RxWriteScript2Action extends ActionSupport {
         // set default quantity;
         setDefaultQuantity(request);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -513,7 +513,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     public String normalDrugSetCustom() throws IOException {
         checkPrivilege(LoggedInInfo.getLoggedInInfoFromSession(request), PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -565,7 +565,7 @@ public final class RxWriteScript2Action extends ActionSupport {
         String success = "newRx";
         // set default quantity
         setDefaultQuantity(request);
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -754,7 +754,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     public String updateDrug() throws IOException {
         checkPrivilege(LoggedInInfo.getLoggedInInfoFromSession(request), PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         if (bean == null) {
             response.sendRedirect("error.html");
             return null;
@@ -810,6 +810,15 @@ public final class RxWriteScript2Action extends ActionSupport {
                 String randomId = request.getParameter("randomId");
                 RxPrescriptionData.Prescription rx = bean.getStashItem2(Integer.parseInt(randomId));
                 // get prescript from randomId
+                if (rx == null) {
+                    logger.error("Prescription not found in stash for randomId: " + randomId +
+                                 ". Session may have been reset or prescription was not properly staged.");
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    ObjectNode errorResponse = objectMapper.createObjectNode();
+                    errorResponse.put("error", "Prescription not found. Please refresh and try again.");
+                    response.getOutputStream().write(errorResponse.toString().getBytes());
+                    return null;
+                }
                 if (quantity == null || quantity.equalsIgnoreCase("null")) {
                     quantity = "";
                 }
@@ -893,7 +902,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     }
 
     public String iterateStash() {
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         List<RxPrescriptionData.Prescription> listP = Arrays.asList(bean.getStash());
         if (listP.size() == 0) {
             return null;
@@ -912,7 +921,7 @@ public final class RxWriteScript2Action extends ActionSupport {
         // prescript.setspecialisntruction
         String randomId = request.getParameter("randomId");
         String specialInstruction = request.getParameter("specialInstruction");
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         RxPrescriptionData.Prescription rx = bean.getStashItem2(Integer.parseInt(randomId));
         if (specialInstruction.trim().length() > 0 && !specialInstruction.trim().equalsIgnoreCase("Enter Special Instruction")) {
             rx.setSpecialInstruction(specialInstruction.trim());
@@ -926,7 +935,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     public String updateProperty() throws Exception {
         checkPrivilege(LoggedInInfo.getLoggedInInfoFromSession(request), PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         String elem = request.getParameter("elementId");
         String val = request.getParameter("propertyValue");
         val = val.trim();
@@ -966,7 +975,7 @@ public final class RxWriteScript2Action extends ActionSupport {
     public String updateSaveAllDrugs() throws IOException, ServletException, Exception {
         checkPrivilege(LoggedInInfo.getLoggedInInfoFromSession(request), PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         request.getSession().setAttribute("rePrint", null);// set to print.
         List<String> paramList = new ArrayList<String>();
         Enumeration em = request.getParameterNames();
@@ -1291,7 +1300,7 @@ public final class RxWriteScript2Action extends ActionSupport {
 	        hm.put("success", false);
 		} else {
             int drugId = Integer.parseInt(strId);
-            RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+            RxSessionBean bean = RxSessionBean.getFromSession(request);
             if (bean == null) {
                 response.sendRedirect("error.html");
                 return null;
@@ -1320,7 +1329,7 @@ public final class RxWriteScript2Action extends ActionSupport {
         LoggedInInfo loggedInInfo = LoggedInInfo.getLoggedInInfoFromSession(request);
         checkPrivilege(loggedInInfo, PRIVILEGE_WRITE);
 
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
 
         RxPrescriptionData.Prescription rx = null;
         RxPrescriptionData prescription = new RxPrescriptionData();
@@ -1427,7 +1436,7 @@ public final class RxWriteScript2Action extends ActionSupport {
 	}
 
     public String checkNoStashItem() throws IOException, Exception {
-        RxSessionBean bean = (RxSessionBean) request.getSession().getAttribute("RxSessionBean");
+        RxSessionBean bean = RxSessionBean.getFromSession(request);
         int n = bean.getStashSize();
         HashMap hm = new HashMap();
         hm.put("NoStashItem", n);
