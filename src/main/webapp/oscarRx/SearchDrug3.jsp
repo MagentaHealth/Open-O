@@ -202,7 +202,6 @@ if (rx_enhance!=null && rx_enhance.equals("true")) {
         
         <script type="text/javascript" >
         	var ctx = '${ ctx }';
-        	var currentDemographicNo = '<%=demoNo%>';
         </script>
 <script type="text/javascript" src="${ ctx }/library/jquery/jquery-3.6.4.min.js" ></script>
 <script type="text/javascript" src="${ ctx }/library/jquery/jquery-ui-1.12.1.min.js" ></script>
@@ -236,7 +235,11 @@ if (rx_enhance!=null && rx_enhance.equals("true")) {
         <script type="text/javascript" src="<c:out value="${ctx}/js/checkDate.js"/>"></script>
 		<link rel="stylesheet" type="text/css" href="${ctx}/library/jquery/jquery-ui-1.12.1.min.css"/>
 
-        <script type="text/javascript" src="<c:out value="${ctx}/oscarRx/js/rxSessionInterceptor.js"/>"></script>
+        <%-- RxSessionInterceptor: Enables multi-patient tab support by adding demographicNo to AJAX calls --%>
+        <script type="text/javascript">
+            var currentDemographicNo = '<%= rxSessionBean.getDemographicNo() %>';
+        </script>
+        <script type="text/javascript" src="${ctx}/oscarRx/js/rxSessionInterceptor.js"></script>
 
         <script type="text/javascript">
             let selectedReRxIDs = [];
@@ -789,7 +792,7 @@ function renderRxStage() {
                                 <form action="${pageContext.request.contextPath}/oscarRx/searchDrug.do"  onsubmit="return checkEnterSendRx();" style="display: inline; margin-bottom:0;" id="drugForm" name="drugForm" method="post">
 
 
-                                    <input type="hidden" property="demographicNo" value="<%=Integer.toString(patient.getDemographicNo())%>" />
+                                    <input type="hidden" name="demographicNo" value="<%=Integer.toString(patient.getDemographicNo())%>" />
                                     <table>
                                         <tr id="prescriptionStageRow">
                                             <td colspan="2">
@@ -802,7 +805,7 @@ function renderRxStage() {
                                                         <%-- Prescriptions are staged here via the prescribe.jsp widget --%>
 
                                                     <input type="hidden" id="deleteOnCloseRxBox" value="false"/>
-                                                    <input type="hidden" property="demographicNo" value="<%=patient.getDemographicNo()%>"/>
+                                                    <input type="hidden" name="demographicNo" value="<%=patient.getDemographicNo()%>"/>
 
                                                 </div>
                                                 <input type="hidden" id="rxPharmacyId" name="rxPharmacyId" value="" />
@@ -1743,9 +1746,10 @@ function popForm2(scriptId){
         try{
             //oscarLog("popForm2 called");
             var url1=ctx+"/oscarRx/WriteScript.do?parameterValue=checkNoStashItem&rand="+ Math.floor(Math.random()*10001);
+            var data="";
             var h=900;
 					console.log(url1);
-            new Ajax.Request(url1, {method: 'get', onSuccess:function(transport){
+            new Ajax.Request(url1, {method: 'get',parameters:data, onSuccess:function(transport){
                 //output default instructions
                 var json=transport.responseText.evalJSON();
                 var n=json.NoStashItem;
@@ -1755,20 +1759,22 @@ function popForm2(scriptId){
                 //oscarLog("h="+h+"--n="+n);
                 var url;
                 var json = jQuery("#Calcs").val();
+                // Get demographicNo for multi-patient tab support
+                var demoNo = (typeof currentDemographicNo !== 'undefined') ? currentDemographicNo : '';
                 //oscarLog(json);
                 if( json != null && json != "" ) {
 
                 	var pharmacy = JSON.parse(json);
 
                     if( pharmacy != null ) {
-                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&pharmacyId="+pharmacy.id+"&demographicNo="+currentDemographicNo;
+                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&pharmacyId="+pharmacy.id+"&demographicNo="+demoNo;
                     }
                     else {
-                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&demographicNo="+currentDemographicNo;
+                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&demographicNo="+demoNo;
                     }
                 }
                 else {
-                	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&demographicNo="+currentDemographicNo;
+                	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&demographicNo="+demoNo;
                 }
                 
                 //oscarLog( "preview2 done");
@@ -2176,9 +2182,9 @@ function represcribe(element, toArchive){
     var ar=elemId.split("_");
     var drugId=ar[1];
     if(drugId!=null && $("reRxCheckBox_"+drugId).checked === true){
-
+    	        	
         var url= ctx + "/oscarRx/rePrescribe2.do?method=represcribeMultiple&rand="+Math.floor(Math.random()*10001);
-        new Ajax.Updater('rxText',url, {method:'get',asynchronous:false,evalScripts:true,
+        new Ajax.Updater('rxText',url, {method:'get',parameters:data,asynchronous:false,evalScripts:true,
             insertion: Insertion.Bottom,onSuccess:function(transport){
 		        renderRxStage();
             }
@@ -2683,7 +2689,7 @@ function updateQty(element){
         {method: 'post',postBody:data,asynchronous:false,
           requestHeaders: { 'Accept': 'application/json' },
             onSuccess:function(transport){
-
+            	
                 callReplacementWebService("ListDrugs.jsp",'drugProfile');
                 const hasDrugs = jQuery("[id^='drugName_']").length > 0;
                 if (hasDrugs) {
