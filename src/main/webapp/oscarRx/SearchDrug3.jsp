@@ -43,6 +43,7 @@
 <%@page import="ca.openosp.openo.casemgmt.model.CaseManagementNote" %>
 <%@page import="ca.openosp.openo.casemgmt.model.Issue" %>
 <%@ page import="ca.openosp.openo.services.security.SecurityManager" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="ca.openosp.openo.prescript.pageUtil.RxSessionBean" %>
 <%@ page import="ca.openosp.openo.prescript.data.RxPharmacyData" %>
 <%@ page import="ca.openosp.openo.casemgmt.model.CaseManagementNoteLink" %>
@@ -237,7 +238,7 @@ if (rx_enhance!=null && rx_enhance.equals("true")) {
 
         <%-- RxSessionInterceptor: Enables multi-patient tab support by adding demographicNo to AJAX calls --%>
         <script type="text/javascript">
-            var currentDemographicNo = '<%= rxSessionBean.getDemographicNo() %>';
+            var currentDemographicNo = '<%= Encode.forJavaScript(Integer.toString(rxSessionBean.getDemographicNo())) %>';
         </script>
         <script type="text/javascript" src="${ctx}/oscarRx/js/rxSessionInterceptor.js"></script>
 
@@ -792,7 +793,7 @@ function renderRxStage() {
                                 <form action="${pageContext.request.contextPath}/oscarRx/searchDrug.do"  onsubmit="return checkEnterSendRx();" style="display: inline; margin-bottom:0;" id="drugForm" name="drugForm" method="post">
 
 
-                                    <input type="hidden" name="demographicNo" value="<%=Integer.toString(patient.getDemographicNo())%>" />
+                                    <input type="hidden" name="demographicNo" value="<%=Encode.forHtmlAttribute(Integer.toString(patient.getDemographicNo()))%>" />
                                     <table>
                                         <tr id="prescriptionStageRow">
                                             <td colspan="2">
@@ -805,7 +806,7 @@ function renderRxStage() {
                                                         <%-- Prescriptions are staged here via the prescribe.jsp widget --%>
 
                                                     <input type="hidden" id="deleteOnCloseRxBox" value="false"/>
-                                                    <input type="hidden" name="demographicNo" value="<%=patient.getDemographicNo()%>"/>
+                                                    <input type="hidden" name="demographicNo" value="<%=Encode.forHtmlAttribute(Integer.toString(patient.getDemographicNo()))%>"/>
 
                                                 </div>
                                                 <input type="hidden" id="rxPharmacyId" name="rxPharmacyId" value="" />
