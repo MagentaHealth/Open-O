@@ -42,4 +42,6 @@ public interface FaxJobDao extends AbstractDao<FaxJob> {
 
     public List<FaxJob> getInprogressFaxesByJobId();
 
+    public List<FaxJob> findByIds(List<Integer> ids);
+
 }
