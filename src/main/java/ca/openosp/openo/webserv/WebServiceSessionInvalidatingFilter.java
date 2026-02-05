@@ -52,7 +52,14 @@ public class WebServiceSessionInvalidatingFilter implements javax.servlet.Filter
 
         System.out.println("========== REQUEST LOGGING ==========");
         System.out.println(request.getMethod() + " " + request.getRequestURL());
-        System.out.println("Parameters: " + request.getParameterMap());
+        System.out.print("Parameters: {");
+        boolean first = true;
+        for (java.util.Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+            if (!first) System.out.print(", ");
+            System.out.print(entry.getKey() + "=" + java.util.Arrays.toString(entry.getValue()));
+            first = false;
+        }
+        System.out.println("}");
         System.out.println("=====================================");
 
         try {
