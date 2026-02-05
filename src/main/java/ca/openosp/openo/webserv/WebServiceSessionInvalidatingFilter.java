@@ -50,6 +50,11 @@ public class WebServiceSessionInvalidatingFilter implements javax.servlet.Filter
     public void doFilter(ServletRequest tmpRequest, ServletResponse tmpResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) tmpRequest;
 
+        System.out.println("========== REQUEST LOGGING ==========");
+        System.out.println(request.getMethod() + " " + request.getRequestURL());
+        System.out.println("Parameters: " + request.getParameterMap());
+        System.out.println("=====================================");
+
         try {
             chain.doFilter(tmpRequest, tmpResponse);
         } finally {
