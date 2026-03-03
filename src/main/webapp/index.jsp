@@ -631,7 +631,6 @@
                             - pin: "one-time-code" — signal browsers this is a session code, not a saveable credential
                         --%>
                         <form action="login.do" method="POST" name="loginForm">
-<input type="hidden" name="${empty _csrf.parameterName ? 'none' : _csrf.parameterName}" value="${_csrf.token}">
 
                             <div class="form-group ${ login_error }">
                                 <input type="text" name="username" id="username" placeholder="<fmt:setBundle basename="oscarResources"/><fmt:message key="Logon.userName"/>"
@@ -641,7 +640,7 @@
 
                             <div class="input-wrapper form-group ${ login_error }">
                               <input type="password" name="password" id="password" placeholder="<fmt:message key="Logon.passWord"/>" autocomplete="current-password" class="form-control toggle-input" required>
-                              <button type="button" class="toggle-btn" aria-label="Toggle visibility" onclick="console.log('toggle clicked'); togglepwd();" >
+                              <button type="button" class="toggle-btn" aria-label="Toggle visibility" onclick="togglepwd();" >
                             </button>
                             </div>
 
@@ -652,7 +651,7 @@
                                   <!-- The input starts with the secure-text class -->
                                   <input type="text" id="pin" class="form-control secure-text toggle-input" name="pin" autocomplete="one-time-code"
                                                inputmode="numeric"  placeholder="<fmt:message key="admin.securityrecord.formPIN"/>">
-                                    <button type="button" class="toggle-btn" aria-label="Toggle visibility" onclick="console.log('toggle clicked'); togglepin();"></button>
+                                    <button type="button" class="toggle-btn" aria-label="Toggle visibility" onclick="togglepin()"></button>
                                     <span class="extrasmall">
 										    <fmt:message key="loginApplication.formCmt"/>
                                     </span>
