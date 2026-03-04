@@ -269,6 +269,16 @@ public class ScheduleService extends AbstractServiceImpl {
         }
 
         response.setAppointments(appts);
+
+        try {
+            String json = new com.fasterxml.jackson.databind.ObjectMapper()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(response);
+            System.out.println("[findExistAppointments] response for demographicNo=" + demographicNo + ":\n" + json.substring(0, Math.min(json.length(), 3000)));
+        } catch (Exception e) {
+            System.out.println("[findExistAppointments] could not serialize response: " + e.getMessage());
+        }
+
         return response;
     }
 
