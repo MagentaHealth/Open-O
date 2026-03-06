@@ -90,7 +90,6 @@ import ca.openosp.openo.webserv.rest.to.model.ProviderPeriodAppsTo;
 import ca.openosp.openo.webserv.rest.to.model.ScheduleTemplateCodeTo;
 import ca.openosp.openo.webserv.rest.to.model.SearchConfigTo1;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
@@ -113,9 +112,6 @@ public class ScheduleService extends AbstractServiceImpl {
     private AppointmentSearchDao appointmentSearchDao;
     @Autowired
     private BillingONCHeader1Dao billingONCHeader1Dao;
-    @Autowired
-    @Qualifier("jacksonObjectMapper")
-    private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper;
 
     @GET
     @Path("/day/{date}")
@@ -275,7 +271,7 @@ public class ScheduleService extends AbstractServiceImpl {
         response.setAppointments(appts);
 
         try {
-            String json = jacksonObjectMapper
+            String json = new com.fasterxml.jackson.databind.ObjectMapper()
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(response);
             System.out.println("[findExistAppointments] response for demographicNo=" + demographicNo + ":\n" + json.substring(0, Math.min(json.length(), 3000)));
