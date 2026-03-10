@@ -240,6 +240,10 @@
   <script type="text/javascript" src="<c:out value="${ctx}/js/checkDate.js"/>"></script>
   <link rel="stylesheet" type="text/css" href="${ctx}/library/jquery/jquery-ui-1.12.1.min.css"/>
 
+  <script type="text/javascript" src="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.js"></script>
+
+  <link href="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+
   <script type="text/javascript">
     let selectedReRxIDs = [];
 
@@ -380,202 +384,202 @@
       return display;
     };
 
-    addEvent(window, "load", sortables_init);
+    // addEvent(window, "load", sortables_init);
+    //
+    // let SORT_COLUMN_INDEX;
+    //
+    // function sortables_init() {
+    //   // Find all tables with class sortable and make them sortable
+    //
+    //   if (!document.getElementsByTagName) return;
+    //
+    //   tbls = document.getElementsByTagName("table");
+    //
+    //   for (ti = 0; ti < tbls.length; ti++) {
+    //     thisTbl = tbls[ti];
+    //
+    //     if (((' ' + thisTbl.className + ' ').indexOf("sortable") != -1) && (thisTbl.id)) {
+    //       //initTable(thisTbl.id);
+    //       ts_makeSortable(thisTbl);
+    //     }
+    //   }
+    // }
 
-    let SORT_COLUMN_INDEX;
-
-    function sortables_init() {
-      // Find all tables with class sortable and make them sortable
-
-      if (!document.getElementsByTagName) return;
-
-      tbls = document.getElementsByTagName("table");
-
-      for (ti = 0; ti < tbls.length; ti++) {
-        thisTbl = tbls[ti];
-
-        if (((' ' + thisTbl.className + ' ').indexOf("sortable") != -1) && (thisTbl.id)) {
-          //initTable(thisTbl.id);
-          ts_makeSortable(thisTbl);
-        }
-      }
-    }
-
-    function ts_makeSortable(table) {
-      oscarLog('making ' + table + ' sortable');
-      if (table.rows && table.rows.length > 0) {
-        let firstRow = table.rows[0];
-      }
-      if (!firstRow) return;
-      oscarLog('Gets past here');
-
-      // We have a first row: assume it's the header, and make its contents clickable links
-      for (let i = 0; i < firstRow.cells.length; i++) {
-        let cell = firstRow.cells[i];
-        let txt = ts_getInnerText(cell);
-        cell.innerHTML = '<a href="#"  class="sortheader" ' +
-          'onclick="ts_resortTable(this, ' + i + ');return false;">' +
-          txt + '<span class="sortarrow"></span></a>';
-      }
-    }
-
-    function ts_getInnerText(el) {
-      if (typeof el == "string") return el;
-      if (typeof el == "undefined") {
-        return el
-      }
-      ;
-      if (el.innerText) return el.innerText;	//Not needed but it is faster
-      let str = "";
-
-      let cs = el.childNodes;
-      let l = cs.length;
-      for (let i = 0; i < l; i++) {
-        switch (cs[i].nodeType) {
-          case 1: //ELEMENT_NODE
-            str += ts_getInnerText(cs[i]);
-            break;
-          case 3:	//TEXT_NODE
-            str += cs[i].nodeValue;
-            break;
-        }
-      }
-      return str;
-    }
-
-    function ts_resortTable(lnk, clid) {
-      // get the span
-      let span;
-      for (let ci = 0; ci < lnk.childNodes.length; ci++) {
-        if (lnk.childNodes[ci].tagName && lnk.childNodes[ci].tagName.toLowerCase() == 'span') span = lnk.childNodes[ci];
-      }
-      let spantext = ts_getInnerText(span);
-      let td = lnk.parentNode;
-      let column = clid;
-      let table = getParent(td, 'TABLE');
-
-      // Work out a type for the column
-      if (table.rows.length <= 1) return;
-
-
-      let itm = ts_getInnerText(table.rows[1].cells[column]).trim();
-      sortfn = ts_sort_caseinsensitive;
-      if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d\d\d$/)) sortfn = ts_sort_date;
-      if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
-      if (itm.match(/^[\Uffffffff$]/)) sortfn = ts_sort_currency;
-      if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
-      SORT_COLUMN_INDEX = column;
-      let firstRow = new Array();
-      let newRows = new Array();
-      for (i = 0; i < table.rows[0].length; i++) {
-        firstRow[i] = table.rows[0][i];
-      }
-      for (j = 1; j < table.rows.length; j++) {
-        newRows[j - 1] = table.rows[j];
-      }
-
-      newRows.sort(sortfn);
-
-      if (span.getAttribute("sortdir") == 'down') {
-        ARROW = '&nbsp;&nbsp;&uarr;';
-        newRows.reverse();
-        span.setAttribute('sortdir', 'up');
-      } else {
-        ARROW = '&nbsp;&nbsp;&darr;';
-        span.setAttribute('sortdir', 'down');
-      }
-
-      // We appendChild rows that already exist to the tbody, so it moves them rather than creating new ones
-      // don't do sortbottom rows
-      for (i = 0; i < newRows.length; i++) {
-        if (!newRows[i].className || (newRows[i].className && (newRows[i].className.indexOf('sortbottom') == -1))) table.tBodies[0].appendChild(newRows[i]);
-      }
-      // do sortbottom rows only
-      for (i = 0; i < newRows.length; i++) {
-        if (newRows[i].className && (newRows[i].className.indexOf('sortbottom') != -1)) table.tBodies[0].appendChild(newRows[i]);
-      }
-
-      // Delete any other arrows there may be showing
-      let allspans = document.getElementsByTagName("span");
-      for (let ci = 0; ci < allspans.length; ci++) {
-        if (allspans[ci].className == 'sortarrow') {
-          if (getParent(allspans[ci], "table") == getParent(lnk, "table")) { // in the same table as us?
-            allspans[ci].innerHTML = '';
-          }
-        }
-      }
-
-      span.innerHTML = ARROW;
-    }
-
-    function getParent(el, pTagName) {
-      if (el == null) return null;
-      else if (el.nodeType == 1 && el.tagName.toLowerCase() == pTagName.toLowerCase())	// Gecko bug, supposed to be uppercase
-        return el;
-      else
-        return getParent(el.parentNode, pTagName);
-    }
-
-    function ts_sort_date(a, b) {
-      // y2k notes: two digit years less than 50 are treated as 20XX, greater than 50 are treated as 19XX
-      aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
-      bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
-      if (aa.length == 10) {
-        dt1 = aa.substr(6, 4) + aa.substr(3, 2) + aa.substr(0, 2);
-      } else {
-        yr = aa.substr(6, 2);
-        if (parseInt(yr) < 50) {
-          yr = '20' + yr;
-        } else {
-          yr = '19' + yr;
-        }
-        dt1 = yr + aa.substr(3, 2) + aa.substr(0, 2);
-      }
-      if (bb.length == 10) {
-        dt2 = bb.substr(6, 4) + bb.substr(3, 2) + bb.substr(0, 2);
-      } else {
-        yr = bb.substr(6, 2);
-        if (parseInt(yr) < 50) {
-          yr = '20' + yr;
-        } else {
-          yr = '19' + yr;
-        }
-        dt2 = yr + bb.substr(3, 2) + bb.substr(0, 2);
-      }
-      if (dt1 == dt2) return 0;
-      if (dt1 < dt2) return -1;
-      return 1;
-    }
-
-    function ts_sort_currency(a, b) {
-      aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).replace(/[^0-9.]/g, '');
-      bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).replace(/[^0-9.]/g, '');
-      return parseFloat(aa) - parseFloat(bb);
-    }
-
-    function ts_sort_numeric(a, b) {
-      aa = parseFloat(ts_getInnerText(a.cells[SORT_COLUMN_INDEX]));
-      if (isNaN(aa)) aa = 0;
-      bb = parseFloat(ts_getInnerText(b.cells[SORT_COLUMN_INDEX]));
-      if (isNaN(bb)) bb = 0;
-      return aa - bb;
-    }
-
-    function ts_sort_caseinsensitive(a, b) {
-      aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).toLowerCase();
-      bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).toLowerCase();
-      if (aa == bb) return 0;
-      if (aa < bb) return -1;
-      return 1;
-    }
-
-    function ts_sort_default(a, b) {
-      aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
-      bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
-      if (aa == bb) return 0;
-      if (aa < bb) return -1;
-      return 1;
-    }
+    // function ts_makeSortable(table) {
+    //   oscarLog('making ' + table + ' sortable');
+    //   if (table.rows && table.rows.length > 0) {
+    //     let firstRow = table.rows[0];
+    //   }
+    //   if (!firstRow) return;
+    //   oscarLog('Gets past here');
+    //
+    //   // We have a first row: assume it's the header, and make its contents clickable links
+    //   for (let i = 0; i < firstRow.cells.length; i++) {
+    //     let cell = firstRow.cells[i];
+    //     let txt = ts_getInnerText(cell);
+    //     cell.innerHTML = '<a href="#"  class="sortheader" ' +
+    //       'onclick="ts_resortTable(this, ' + i + ');return false;">' +
+    //       txt + '<span class="sortarrow"></span></a>';
+    //   }
+    // }
+    //
+    // function ts_getInnerText(el) {
+    //   if (typeof el == "string") return el;
+    //   if (typeof el == "undefined") {
+    //     return el
+    //   }
+    //   ;
+    //   if (el.innerText) return el.innerText;	//Not needed but it is faster
+    //   let str = "";
+    //
+    //   let cs = el.childNodes;
+    //   let l = cs.length;
+    //   for (let i = 0; i < l; i++) {
+    //     switch (cs[i].nodeType) {
+    //       case 1: //ELEMENT_NODE
+    //         str += ts_getInnerText(cs[i]);
+    //         break;
+    //       case 3:	//TEXT_NODE
+    //         str += cs[i].nodeValue;
+    //         break;
+    //     }
+    //   }
+    //   return str;
+    // }
+    //
+    // function ts_resortTable(lnk, clid) {
+    //   // get the span
+    //   let span;
+    //   for (let ci = 0; ci < lnk.childNodes.length; ci++) {
+    //     if (lnk.childNodes[ci].tagName && lnk.childNodes[ci].tagName.toLowerCase() == 'span') span = lnk.childNodes[ci];
+    //   }
+    //   let spantext = ts_getInnerText(span);
+    //   let td = lnk.parentNode;
+    //   let column = clid;
+    //   let table = getParent(td, 'TABLE');
+    //
+    //   // Work out a type for the column
+    //   if (table.rows.length <= 1) return;
+    //
+    //
+    //   let itm = ts_getInnerText(table.rows[1].cells[column]).trim();
+    //   sortfn = ts_sort_caseinsensitive;
+    //   if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d\d\d$/)) sortfn = ts_sort_date;
+    //   if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
+    //   if (itm.match(/^[\Uffffffff$]/)) sortfn = ts_sort_currency;
+    //   if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
+    //   SORT_COLUMN_INDEX = column;
+    //   let firstRow = new Array();
+    //   let newRows = new Array();
+    //   for (i = 0; i < table.rows[0].length; i++) {
+    //     firstRow[i] = table.rows[0][i];
+    //   }
+    //   for (j = 1; j < table.rows.length; j++) {
+    //     newRows[j - 1] = table.rows[j];
+    //   }
+    //
+    //   newRows.sort(sortfn);
+    //
+    //   if (span.getAttribute("sortdir") == 'down') {
+    //     ARROW = '&nbsp;&nbsp;&uarr;';
+    //     newRows.reverse();
+    //     span.setAttribute('sortdir', 'up');
+    //   } else {
+    //     ARROW = '&nbsp;&nbsp;&darr;';
+    //     span.setAttribute('sortdir', 'down');
+    //   }
+    //
+    //   // We appendChild rows that already exist to the tbody, so it moves them rather than creating new ones
+    //   // don't do sortbottom rows
+    //   for (i = 0; i < newRows.length; i++) {
+    //     if (!newRows[i].className || (newRows[i].className && (newRows[i].className.indexOf('sortbottom') == -1))) table.tBodies[0].appendChild(newRows[i]);
+    //   }
+    //   // do sortbottom rows only
+    //   for (i = 0; i < newRows.length; i++) {
+    //     if (newRows[i].className && (newRows[i].className.indexOf('sortbottom') != -1)) table.tBodies[0].appendChild(newRows[i]);
+    //   }
+    //
+    //   // Delete any other arrows there may be showing
+    //   let allspans = document.getElementsByTagName("span");
+    //   for (let ci = 0; ci < allspans.length; ci++) {
+    //     if (allspans[ci].className == 'sortarrow') {
+    //       if (getParent(allspans[ci], "table") == getParent(lnk, "table")) { // in the same table as us?
+    //         allspans[ci].innerHTML = '';
+    //       }
+    //     }
+    //   }
+    //
+    //   span.innerHTML = ARROW;
+    // }
+    //
+    // function getParent(el, pTagName) {
+    //   if (el == null) return null;
+    //   else if (el.nodeType == 1 && el.tagName.toLowerCase() == pTagName.toLowerCase())	// Gecko bug, supposed to be uppercase
+    //     return el;
+    //   else
+    //     return getParent(el.parentNode, pTagName);
+    // }
+    //
+    // function ts_sort_date(a, b) {
+    //   // y2k notes: two digit years less than 50 are treated as 20XX, greater than 50 are treated as 19XX
+    //   aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
+    //   bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
+    //   if (aa.length == 10) {
+    //     dt1 = aa.substr(6, 4) + aa.substr(3, 2) + aa.substr(0, 2);
+    //   } else {
+    //     yr = aa.substr(6, 2);
+    //     if (parseInt(yr) < 50) {
+    //       yr = '20' + yr;
+    //     } else {
+    //       yr = '19' + yr;
+    //     }
+    //     dt1 = yr + aa.substr(3, 2) + aa.substr(0, 2);
+    //   }
+    //   if (bb.length == 10) {
+    //     dt2 = bb.substr(6, 4) + bb.substr(3, 2) + bb.substr(0, 2);
+    //   } else {
+    //     yr = bb.substr(6, 2);
+    //     if (parseInt(yr) < 50) {
+    //       yr = '20' + yr;
+    //     } else {
+    //       yr = '19' + yr;
+    //     }
+    //     dt2 = yr + bb.substr(3, 2) + bb.substr(0, 2);
+    //   }
+    //   if (dt1 == dt2) return 0;
+    //   if (dt1 < dt2) return -1;
+    //   return 1;
+    // }
+    //
+    // function ts_sort_currency(a, b) {
+    //   aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).replace(/[^0-9.]/g, '');
+    //   bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).replace(/[^0-9.]/g, '');
+    //   return parseFloat(aa) - parseFloat(bb);
+    // }
+    //
+    // function ts_sort_numeric(a, b) {
+    //   aa = parseFloat(ts_getInnerText(a.cells[SORT_COLUMN_INDEX]));
+    //   if (isNaN(aa)) aa = 0;
+    //   bb = parseFloat(ts_getInnerText(b.cells[SORT_COLUMN_INDEX]));
+    //   if (isNaN(bb)) bb = 0;
+    //   return aa - bb;
+    // }
+    //
+    // function ts_sort_caseinsensitive(a, b) {
+    //   aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).toLowerCase();
+    //   bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).toLowerCase();
+    //   if (aa == bb) return 0;
+    //   if (aa < bb) return -1;
+    //   return 1;
+    // }
+    //
+    // function ts_sort_default(a, b) {
+    //   aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
+    //   bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
+    //   if (aa == bb) return 0;
+    //   if (aa < bb) return -1;
+    //   return 1;
+    // }
 
 
     function addEvent(elm, evType, fn, useCapture)
@@ -598,7 +602,7 @@
       //console.log("****** in checkFav");
       let usefav = '<%=Encode.forJavaScript(usefav)%>';
       let favid = '<%=Encode.forJavaScript(favid)%>';
-      if (usefav == "true" && favid != null && favid != 'null') {
+      if (usefav === "true" && favid !== null && favid !== 'null') {
         //console.log("****** favid "+favid);
         useFav2(favid);
       } else {
@@ -606,9 +610,9 @@
     }
 
     function renderRxStage() {
-      $('rxText').show();
-      $('prescriptionStageSet').show();
-      $('savePrescriptionButtonSet').show();
+      jQuery('#rxText').show();
+      jQuery('#prescriptionStageSet').show();
+      jQuery('#savePrescriptionButtonSet').show();
     }
 
     //not used , represcribe a drug
@@ -1164,7 +1168,7 @@
                             } else {
 
                                          if(i != 0) { %>
-</div> <!-- closes the reprintRxItem wrapper -->
+</div>
 <%}%>
 <div class="reprintRxItem">
   <div class="reprintRxItemHeading">
@@ -1197,105 +1201,11 @@
 
 </td>
 </tr>
-<tr><!--move this left-->
+<tr>
   <td>
     <table>
       <tr>
         <td>
-          <table class="legend">
-            <tr>
-              <td class="legend-change-view">
-                <a href="#"
-                   title="<fmt:setBundle basename="oscarResources"/><fmt:message key="provider.rxChangeProfileViewMessage"/>"
-                   onclick="popupPage(230,860,'../setProviderStaleDate.do?method=viewRxProfileView');"
-                   class="link-red-no-decoration">
-                  <fmt:message key="provider.rxChangeProfileView"/>
-                </a>
-              </td>
-
-              <td>
-
-                <table class="legend_items" align="left">
-                  <tr>
-                    <%if (show_current) {%>
-                    <td>
-                      <a href="javascript:void(0);"
-                         onclick="callReplacementWebService('ListDrugs.jsp','drugProfile');CngClass(this);"
-                         id="selected_default" class="link-default-selected"
-                         TITLE="<fmt:setBundle basename="oscarResources"/><fmt:message key='SearchDrug.msgShowCurrentDesc'/>">
-                        <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgShowCurrent"/>
-                      </a>
-                    </td>
-                    <%
-                      }
-                      if (show_all) {
-                    %>
-                    <td>
-                      <a href="javascript:void(0);"
-                         onclick="callReplacementWebService('ListDrugs.jsp?show=all','drugProfile');CngClass(this);"
-                         Title="<fmt:setBundle basename="oscarResources"/><fmt:message key='SearchDrug.msgShowAllDesc'/>">
-                        <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgShowAll"/>
-                      </a>
-                    </td>
-                    <%
-                      }
-                      if (active) {
-                    %>
-                    <td>
-                      <a href="javascript:void(0);"
-                         onclick="callReplacementWebService('ListDrugs.jsp?status=active','drugProfile');CngClass(this);"
-                         TITLE="<fmt:setBundle basename="oscarResources"/><fmt:message key='SearchDrug.msgActiveDesc'/>">
-                        <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgActive"/>
-                      </a>
-                    </td>
-                    <%
-                      }
-                      if (inactive) {
-                    %>
-                    <td>
-                      <a href="javascript:void(0);"
-                         onclick="callReplacementWebService('ListDrugs.jsp?status=inactive','drugProfile');CngClass(this);"
-                         TITLE="<fmt:setBundle basename="oscarResources"/><fmt:message key='SearchDrug.msgInactiveDesc'/>">
-                        <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgInactive"/>
-                      </a>
-                    </td>
-                    <%
-                      }
-                      if (!OscarProperties.getInstance().getProperty("rx.profile_legend.hide", "false").equals("true")) {
-
-                        if (longterm_acute) {
-                    %>
-                    <td>
-                      <a href="javascript:void(0);"
-                         onclick="callReplacementWebService('ListDrugs.jsp?longTermOnly=true&heading=Long Term Meds','drugProfile'); callAdditionWebService('ListDrugs.jsp?longTermOnly=acute&heading=Acute','drugProfile');CngClass(this);"
-                         TITLE="<fmt:setBundle basename='oscarResources'/><fmt:message key='SearchDrug.msgLongTermAcuteDesc'/>">
-                        <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgLongTermAcute"/>
-                      </a>
-                    </td>
-                    <%
-                      }
-                      if (longterm_acute_inactive_external) {
-                    %>
-                    <td>
-                      <a href="javascript:void(0);"
-                         onclick="callReplacementWebService('ListDrugs.jsp?longTermOnly=true&heading=Long Term Meds','drugProfile'); callAdditionWebService('ListDrugs.jsp?longTermOnly=acute&heading=Acute&status=active','drugProfile');callAdditionWebService('ListDrugs.jsp?longTermOnly=acute&heading=Inactive&status=inactive','drugProfile');callAdditionWebService('ListDrugs.jsp?heading=External&drugLocation=external','drugProfile');CngClass(this);"
-                         TITLE="<fmt:setBundle basename='oscarResources'/><fmt:message key='SearchDrug.msgLongTermAcuteInactiveExternalDesc'/>">
-                        <fmt:setBundle basename="oscarResources"/><fmt:message
-                        key="SearchDrug.msgLongTermAcuteInactiveExternal"/>
-                      </a>
-                    </td>
-                    <%
-                        }
-                      }
-                    %>
-                  </tr>
-                </table>
-
-              </td>
-
-            </tr>
-          </table>
-
           <div id="drugProfile"></div>
 
           <div id="themeLegend">
