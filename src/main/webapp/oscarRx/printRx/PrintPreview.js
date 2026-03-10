@@ -34,19 +34,22 @@ function resetStash(ctx, myDrugRefEnabled) {
 }
 
 function updateCurrentInteractions(myDrugRefEnabled) {
-    fetch("GetmyDrugrefInfo.do?method=findInteractingDrugList")
+
+    if(myDrugRefEnabled){
+      fetch("GetmyDrugrefInfo.do?method=findInteractingDrugList")
         .then(response => {
-            return fetch("UpdateInteractingDrugs.jsp")
-                .then(response => response.text())
-                .then(str => {
-                    str = str.replace('<script type="text/javascript">', '');
-                    str = str.replace(/<\/script>/, '');
-                    eval(str);
-                    if (myDrugRefEnabled) {
-                        callReplacementWebService("GetmyDrugrefInfo.do?method=view", 'interactionsRxMyD');
-                    }
-                });
+          return fetch("UpdateInteractingDrugs.jsp")
+            .then(response => response.text())
+            .then(str => {
+              str = str.replace('<script type="text/javascript">', '');
+              str = str.replace('\<\/script\>', '');
+              eval(str);
+              if (myDrugRefEnabled) {
+                callReplacementWebService("GetmyDrugrefInfo.do?method=view", 'interactionsRxMyD');
+              }
+            });
         });
+    }
 }
 
 function resetReRxDrugList(ctx) {

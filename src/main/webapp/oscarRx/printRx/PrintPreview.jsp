@@ -268,9 +268,8 @@
                             <div class="col">
                                 <button type="button"
                                         class="btn btn-outline-success"
-                                        onClick="resetStash('<c:out
-                                                value="${ctx}"/>', '${myDrugRefEnabled}' === 'yes' ? 'true' : 'false');
-                                                resetReRxDrugList('<c:out value="${ctx}"/>');
+                                        onClick="resetStash(false);
+                                                resetReRxDrugList(ctx);
                                                 closeRxPreviewBootstrapModal();">
                                     <fmt:message key="ViewScript.msgCreateNewRx"/>
                                 </button>

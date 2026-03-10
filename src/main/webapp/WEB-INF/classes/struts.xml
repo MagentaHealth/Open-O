@@ -230,11 +230,7 @@
             <result name="addAnother">/oscarRx/SearchDrug.jsp</result>
             <result name="viewScript">/oscarRx/ViewScript.jsp</result>
         </action>
-        <action name="oscarRx/writeScript" class="ca.openosp.openo.prescript.pageUtil.RxWriteScript2Action">
-            <result name="refresh">/oscarRx/WriteScript.jsp</result>
-            <result name="addAnother">/oscarRx/SearchDrug.jsp</result>
-            <result name="viewScript">/oscarRx/ViewScript.jsp</result>
-        </action>
+
         <action name="oscarRx/stash" class="ca.openosp.openo.prescript.pageUtil.RxStash2Action">
             <result name="success">/oscarRx/WriteScript.jsp</result>
         </action>

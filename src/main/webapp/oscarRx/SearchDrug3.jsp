@@ -204,7 +204,7 @@
     href="<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/" %>">
 
   <script type="text/javascript">
-    let ctx = '${ ctx }';
+    const ctx = '${ ctx }';
   </script>
   <script type="text/javascript" src="${ ctx }/library/jquery/jquery-3.6.4.min.js"></script>
   <script type="text/javascript" src="${ ctx }/library/jquery/jquery-ui-1.12.1.min.js"></script>
@@ -599,11 +599,10 @@
     }
 
     function checkFav() {
-      //console.log("****** in checkFav");
+
       let usefav = '<%=Encode.forJavaScript(usefav)%>';
       let favid = '<%=Encode.forJavaScript(favid)%>';
       if (usefav === "true" && favid !== null && favid !== 'null') {
-        //console.log("****** favid "+favid);
         useFav2(favid);
       } else {
       }
@@ -631,27 +630,27 @@
     }
 
 
-    function moveDrugDown(drugId, swapDrugId, demographicNo) {
-      new Ajax.Request('<c:out value="${ctx}"/>/oscarRx/reorderDrug.do?method=update&direction=down&drugId=' + encodeURIComponent(drugId) + '&swapDrugId=' + encodeURIComponent(swapDrugId) + '&demographicNo=' + demographicNo + "&rand=" + Math.floor(Math.random() * 10001), {
-        method: 'get',
-        onSuccess: function (transport) {
-          callReplacementWebService("ListDrugs.jsp", 'drugProfile');
-          resetReRxDrugList();
-          resetStash();
-        }
-      });
-    }
+    <%--function moveDrugDown(drugId, swapDrugId, demographicNo) {--%>
+    <%--  new Ajax.Request('<c:out value="${ctx}"/>/oscarRx/reorderDrug.do?method=update&direction=down&drugId=' + encodeURIComponent(drugId) + '&swapDrugId=' + encodeURIComponent(swapDrugId) + '&demographicNo=' + demographicNo + "&rand=" + Math.floor(Math.random() * 10001), {--%>
+    <%--    method: 'get',--%>
+    <%--    onSuccess: function (transport) {--%>
+    <%--      callReplacementWebService("ListDrugs.jsp", 'drugProfile');--%>
+    <%--      resetReRxDrugList();--%>
+    <%--      resetStash();--%>
+    <%--    }--%>
+    <%--  });--%>
+    <%--}--%>
 
-    function moveDrugUp(drugId, swapDrugId, demographicNo) {
-      new Ajax.Request('<c:out value="${ctx}"/>/oscarRx/reorderDrug.do?method=update&direction=up&drugId=' + encodeURIComponent(drugId) + '&swapDrugId=' + encodeURIComponent(swapDrugId) + '&demographicNo=' + demographicNo + "&rand=" + Math.floor(Math.random() * 10001), {
-        method: 'get',
-        onSuccess: function (transport) {
-          callReplacementWebService("ListDrugs.jsp", 'drugProfile');
-          resetReRxDrugList();
-          resetStash();
-        }
-      });
-    }
+    <%--function moveDrugUp(drugId, swapDrugId, demographicNo) {--%>
+    <%--  new Ajax.Request('<c:out value="${ctx}"/>/oscarRx/reorderDrug.do?method=update&direction=up&drugId=' + encodeURIComponent(drugId) + '&swapDrugId=' + encodeURIComponent(swapDrugId) + '&demographicNo=' + demographicNo + "&rand=" + Math.floor(Math.random() * 10001), {--%>
+    <%--    method: 'get',--%>
+    <%--    onSuccess: function (transport) {--%>
+    <%--      callReplacementWebService("ListDrugs.jsp", 'drugProfile');--%>
+    <%--      resetReRxDrugList();--%>
+    <%--      resetStash();--%>
+    <%--    }--%>
+    <%--  });--%>
+    <%--}--%>
 
     function showPreviousPrints(scriptNo) {
       popupWindow(720, 700, ctx + '/oscarRx/ShowPreviousPrints.jsp?scriptNo=' + scriptNo, 'ShowPreviousPrints')
@@ -1681,7 +1680,9 @@
     let url = ctx + "/oscarRx/deleteRx.do?parameterValue=clearStash";
     let data = "rand=" + Math.floor(Math.random() * 10001);
     new Ajax.Request(url, {
-      method: 'post', parameters: data, onSuccess: function (transport) {
+      method: 'post', parameters: data,
+      requestHeaders: {'Accept': 'application/json'},
+      onSuccess: function (transport) {
         // updateCurrentInteractions();
       }
     });
@@ -2733,7 +2734,6 @@
         requestHeaders: {'Accept': 'application/json'},
         onSuccess: function (transport) {
               let json = transport.responseText.evalJSON();
-              console.log(json);
               $(methodStr).innerHTML = json.method;
               $(routeStr).innerHTML = json.route;
               $(frequencyStr).innerHTML = json.frequency;
@@ -3072,7 +3072,6 @@
 
             try {
               let saveResponse = JSON.parse(transport.response);
-              console.log(saveResponse);
               let scriptId = saveResponse && saveResponse.savedScriptId;
               if (scriptId) {
                 popForm2(scriptId);
@@ -3107,9 +3106,13 @@
       new Ajax.Request(url,
         {
           method: 'post', postBody: data, asynchronous: false,
+          requestHeaders: {'Accept': 'application/json'},
           onSuccess: function (transport) {
+
             callReplacementWebService("ListDrugs.jsp", 'drugProfile');
+
             resetReRxDrugList();
+
             resetStash();
           }
         });
