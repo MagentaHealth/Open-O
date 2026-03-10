@@ -208,15 +208,16 @@
   </script>
   <script type="text/javascript" src="${ ctx }/library/jquery/jquery-3.6.4.min.js"></script>
   <script type="text/javascript" src="${ ctx }/library/jquery/jquery-ui-1.12.1.min.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.js"></script>
 
   <script type="text/javascript">
     jQuery.noConflict();
   </script>
 
   <link href="${ ctx }/css/searchDrug3.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" type="text/css" href="${ctx}/library/jquery/jquery-ui-1.12.1.min.css"/>
+  <link href="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 
-  <link rel="stylesheet" href="<c:out value="${ctx}/share/lightwindow/css/lightwindow.css"/>" type="text/css"
-        media="screen"/>
   <script type="text/javascript" src="${ctx}/js/global.js"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/share/javascript/prototype.js"/>"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/share/javascript/screen.js"/>"></script>
@@ -226,10 +227,7 @@
   <script type="text/javascript" src="<c:out value="${ctx}/share/javascript/controls.js"/>"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/share/javascript/Oscar.js"/>"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/share/javascript/dragiframe.js"/>"></script>
-  <script type="text/javascript" src="<c:out value="${ctx}/share/lightwindow/javascript/lightwindow.js"/>"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/js/checkDate.js"/>"></script>
-  <script src="${pageContext.request.contextPath}/csrfguard"></script>
-
 
   <link rel="stylesheet" type="text/css" href="<c:out value="${ctx}/share/yui/css/autocomplete.css"/>">
   <script type="text/javascript" src="<c:out value="${ctx}/share/yui/js/yahoo-dom-event.js"/>"></script>
@@ -238,11 +236,6 @@
   <script type="text/javascript" src="<c:out value="${ctx}/share/yui/js/datasource-min.js"/>"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/share/yui/js/autocomplete-min.js"/>"></script>
   <script type="text/javascript" src="<c:out value="${ctx}/js/checkDate.js"/>"></script>
-  <link rel="stylesheet" type="text/css" href="${ctx}/library/jquery/jquery-ui-1.12.1.min.css"/>
-
-  <script type="text/javascript" src="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/js/jquery.dataTables.js"></script>
-
-  <link href="${pageContext.request.contextPath}/library/DataTables/DataTables-1.13.4/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 
   <script type="text/javascript">
     let selectedReRxIDs = [];
@@ -712,6 +705,7 @@
 
   </script>
   <style media="screen">
+
     #Layer1 {
       position: absolute;
       left: 130px;
@@ -748,7 +742,6 @@
       font-size: x-small;
       display: flex;
       flex-direction: row;
-      justify-content: flex-end;
       gap: 5px;
 
     }
@@ -948,7 +941,7 @@
     }
 
     .rightColumnAdjust {
-      padding-right: 15px;
+      padding-left: 10px;
     }
   </style>
 
@@ -982,7 +975,7 @@
   <table id="AutoNumber1">
     <%@ include file="TopLinks2.jspf" %><!-- Row On included here-->
     <tr>
-      <td height="100%">
+      <td style="vertical-align: top;">
         <%@ include file="SideLinksEditFavorites2.jsp" %>
       </td>
       <td class="rightColumnAdjust"><!--Column Two Row Two-->
@@ -1013,7 +1006,7 @@
                        value="<%=Integer.toString(patient.getDemographicNo())%>"/>
                 <table>
                   <tr id="prescriptionStageRow">
-                    <td colspan="2">
+                    <td>
 
                       <div id="prescriptionStageSet">
 
@@ -1075,33 +1068,33 @@
                     </td>
                     <td>
                       <div id="searchDrugsButtonSet">
-                        <input type="button" name="search" class="ControlPushButton"
+                        <input type="button" name="search" class="btn btn-primary  ControlPushButton"
                                value="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgSearch"/>"
                                onclick="popupRxSearchWindow();"
                                title="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.help.Search"/>">
-                        <input id="customDrug" type="button" class="ControlPushButton" onclick="customWarning2();"
+                        <input id="customDrug" type="button" class="btn btn-primary  ControlPushButton" onclick="customWarning2();"
                                value="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgCustomDrugRx3"/>"
                                title="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.help.CustomDrug"/>"/>
-                        <input id="customNote" type="button" class="ControlPushButton" onclick="customNoteWarning();"
+                        <input id="customNote" type="button" class="btn btn-primary  ControlPushButton" onclick="customNoteWarning();"
                                value="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgNoteRx3"/>"
                                title="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.help.CustomNote"/>"/>
-                        <input id="reset" type="button" class="ControlPushButton" title="Clear pending prescriptions"
+                        <input id="reset" type="button" class="btn btn-primary  ControlPushButton" title="Clear pending prescriptions"
                                onclick="resetStash();"
                                value="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgResetPrescriptionRx3"/>"/>
 
                         <%if (OscarProperties.getInstance().hasProperty("ONTARIO_MD_INCOMINGREQUESTOR")) {%>
-                        <a href="javascript:goOMD();"
+                        <a href="javascript:goOMD();" class="btn btn-primary  ControlPushButton"
                            title="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.help.OMD"/>"><fmt:setBundle
                           basename="oscarResources"/><fmt:message key="SearchDrug.msgOMDLookup"/></a>
                         <%}%>
                         <security:oscarSec roleName="<%=roleName2$%>" objectName="_rx" rights="x">
-                          <input id="saveButton" type="button" class="ControlPushButton"
+                          <input id="saveButton" type="button" class="btn btn-primary  ControlPushButton"
                                  onclick="updateSaveAllDrugsPrintCheckContinue();"
                                  value="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgSaveAndPrint"/>"
                                  title="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.help.SaveAndPrint"/>"/>
                         </security:oscarSec>
 
-                        <input id="saveOnlyButton" type="button" class="ControlPushButton"
+                        <input id="saveOnlyButton" type="button" class="btn btn-primary  ControlPushButton"
                                onclick="updateSaveAllDrugsCheckContinue();"
                                value="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.msgSaveOnly"/>"
                                title="<fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.help.Save"/>"/>
@@ -1122,24 +1115,23 @@
                 <tr>
                   <td>
                     <div class="DivContentSectionHead">
-                      <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.section2Title"/>
-                      &nbsp;
-                      <a href="javascript:void(0)" onClick="printDrugProfile();"><fmt:setBundle
+<%--                      <fmt:setBundle basename="oscarResources"/><fmt:message key="SearchDrug.section2Title"/>--%>
+<%--                 \--%>
+                      <a href="javascript:void(0)" class="btn btn-link" onClick="printDrugProfile();"><fmt:setBundle
                         basename="oscarResources"/><fmt:message key="SearchDrug.Print"/></a>
-                      &nbsp;
+
                       <%if (securityManager.hasWriteAccess("_rx", roleName2$, true)) {%>
-                      <a href="#" onclick="$('reprint').toggle();return false;"><fmt:setBundle
+                      <a href="javascript:void(0);"  class="btn btn-link"  onclick="$('reprint').toggle();return false;"><fmt:setBundle
                         basename="oscarResources"/><fmt:message key="SearchDrug.Reprint"/></a>
-                      &nbsp;
-                      <a href="javascript:void(0);" id="cmdRePrescribe" onclick="RePrescribeLongTerm();"><fmt:setBundle basename="oscarResources"/><fmt:message
+
+                      <a href="javascript:void(0);"  class="btn btn-link"  id="cmdRePrescribe" onclick="RePrescribeLongTerm();"><fmt:setBundle basename="oscarResources"/><fmt:message
                         key="SearchDrug.msgReprescribeLongTermMed"/></a>
-                      &nbsp;
+
                       <% } %>
-                      <a
-                        href="javascript:popupWindow(720,920, ctx + '/oscarRx/chartDrugProfile.jsp?demographic_no=<%=demoNo%>','PrintDrugProfile2')">Timeline
+                      <a  class="btn btn-link"
+                          href="javascript:popupWindow(720,920, ctx + '/oscarRx/chartDrugProfile.jsp?demographic_no=<%=demoNo%>','PrintDrugProfile2')">Timeline
                         Drug Profile</a>
-                      &nbsp;
-                      &nbsp;&nbsp;
+
                     </div>
 
                   </td>
@@ -1157,7 +1149,7 @@
                                                     %>
 
 
-                    <div class="text-indent-5">
+                    <div class="btn btn-link text-indent-5">
                       <a href="javascript:void(0);" onclick="reprint2('<%=drug.getScript_no()%>')">
                         <%=drug.getRxDisplay()%>
                       </a>
@@ -1177,7 +1169,7 @@
     </div>
     <div>
       <a href="javascript:void(0)" onclick="showPreviousPrints(<%=drug.getScript_no() %>);return false;">
-        <%=drug.getNumPrints()%>&nbsp;Print(s)
+        <%=drug.getNumPrints()%>Print(s)
       </a>
     </div>
   </div>
