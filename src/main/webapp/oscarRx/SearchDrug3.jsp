@@ -1744,16 +1744,6 @@ function updateDeleteOnCloseRxBox(){
     $('deleteOnCloseRxBox').value='true';
 }
 
-// Flag to track if stash should be cleared when lightwindow closes (set by Save & Print)
-var clearStashOnLightwindowClose = false;
-
-function handleLightwindowClose() {
-    updateDeleteOnCloseRxBox();
-    if (clearStashOnLightwindowClose) {
-        clearStashOnLightwindowClose = false;
-        resetStash();
-    }
-}
 function popForm2(scriptId){
         try{
             //oscarLog("popForm2 called");
@@ -1797,7 +1787,7 @@ function popForm2(scriptId){
                 });
                 var editRxMsg = '<fmt:setBundle basename="oscarResources"/><fmt:message key="oscarRx.Preview.EditRx"/>';
                 $('lightwindow_title_bar_close_link').update(editRxMsg);
-                $('lightwindow_title_bar_close_link').onclick=handleLightwindowClose;
+                $('lightwindow_title_bar_close_link').onclick=updateDeleteOnCloseRxBox;
             }});
 
         }
@@ -2705,8 +2695,6 @@ function updateQty(element){
                 callReplacementWebService("ListDrugs.jsp",'drugProfile');
                 const hasDrugs = jQuery("[id^='drugName_']").length > 0;
                 if (hasDrugs) {
-                    // Set flag to clear stash when lightwindow closes
-                    clearStashOnLightwindowClose = true;
                     popForm2(null);
                 } else {
                     alert("Please add at least one drug first");
