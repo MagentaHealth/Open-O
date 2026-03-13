@@ -41,6 +41,7 @@
 
 <%@page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="csrf" uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" %>
 <%@ page import="java.util.*, ca.openosp.openo.util.*, ca.openosp.OscarProperties" %>
 <!DOCTYPE HTML >
 
@@ -889,8 +890,8 @@
             docNo = docNo.replace(' ', '');//trim
             var type = checkType(docNo);
 
-            var placeholder = $('docPlaceholder_' + docNo);
-            var div = placeholder || $(childId);
+            var placeholder = document.getElementById('docPlaceholder_' + docNo);
+            var div = placeholder || document.getElementById(childId);
             var url = '';
             if (type == 'DOC')
                 url = "<%= request.getContextPath() %>/documentManager/showDocument.jsp";
@@ -904,20 +905,34 @@
                 url = "";
 
             var data = "segmentID=" + docNo + "&providerNo=" + providerNo + "&searchProviderNo=" + searchProviderNo + "&status=" + status + "&demoName=" + demoName;
-            if (inQueue)
+            if (inQueue) {
                 data += "&inQueue=" + inQueue;
-            var ajaxOptions = {
-                method: 'get',
-                parameters: data,
-                evalScripts: true,
-                onSuccess: function (transport) {
-                    focusFirstDocLab();
-                }
-            };
-            if (!placeholder) {
-                ajaxOptions.insertion = Insertion.Bottom;
             }
-            new Ajax.Updater(div, url, ajaxOptions);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    '<csrf:tokenname/>': '<csrf:tokenvalue/>'
+                },
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(function (response) {
+                if (!response.ok) { throw new Error('Failed to load document'); }
+                return response.text();
+            })
+            .then(function (html) {
+                if (placeholder) {
+                    jQuery(div).html(html);
+                } else {
+                    jQuery(div).append(html);
+                }
+                focusFirstDocLab();
+            })
+            .catch(function (err) {
+                console.error('Error loading document/lab:', err);
+            });
 
         }
 
