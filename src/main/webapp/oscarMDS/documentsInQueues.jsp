@@ -892,6 +892,10 @@
 
             var placeholder = document.getElementById('docPlaceholder_' + docNo);
             var div = placeholder || document.getElementById(childId);
+            if (!div) {
+                console.error('showDocLab: target element not found for docNo=' + docNo);
+                return;
+            }
             var url = '';
             if (type == 'DOC')
                 url = "<%= request.getContextPath() %>/documentManager/showDocument.jsp";
@@ -904,15 +908,20 @@
             else
                 url = "";
 
-            var data = "segmentID=" + docNo + "&providerNo=" + providerNo + "&searchProviderNo=" + searchProviderNo + "&status=" + status + "&demoName=" + demoName;
+            var data = "segmentID=" + encodeURIComponent(docNo)
+                + "&providerNo=" + encodeURIComponent(providerNo)
+                + "&searchProviderNo=" + encodeURIComponent(searchProviderNo)
+                + "&status=" + encodeURIComponent(status)
+                + "&demoName=" + encodeURIComponent(demoName);
             if (inQueue) {
-                data += "&inQueue=" + inQueue;
+                data += "&inQueue=" + encodeURIComponent(inQueue);
             }
 
             fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
                     '<csrf:tokenname/>': '<csrf:tokenvalue/>'
                 },
                 credentials: 'same-origin',
