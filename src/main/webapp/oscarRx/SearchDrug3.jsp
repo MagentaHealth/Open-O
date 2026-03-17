@@ -44,6 +44,7 @@
 <%@page import="ca.openosp.openo.casemgmt.model.CaseManagementNote" %>
 <%@page import="ca.openosp.openo.casemgmt.model.Issue" %>
 <%@ page import="ca.openosp.openo.services.security.SecurityManager" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="ca.openosp.openo.prescript.pageUtil.RxSessionBean" %>
 <%@ page import="ca.openosp.openo.prescript.data.RxPharmacyData" %>
 <%@ page import="ca.openosp.openo.casemgmt.model.CaseManagementNoteLink" %>
@@ -236,6 +237,12 @@ if (rx_enhance!=null && rx_enhance.equals("true")) {
         <script type="text/javascript" src="<c:out value="${ctx}/share/yui/js/autocomplete-min.js"/>"></script>
         <script type="text/javascript" src="<c:out value="${ctx}/js/checkDate.js"/>"></script>
 		<link rel="stylesheet" type="text/css" href="${ctx}/library/jquery/jquery-ui-1.12.1.min.css"/>
+
+        <%-- RxSessionInterceptor: Enables multi-patient tab support by adding demographicNo to AJAX calls --%>
+        <script type="text/javascript">
+            var currentDemographicNo = '<%= Encode.forJavaScript(Integer.toString(rxSessionBean.getDemographicNo())) %>';
+        </script>
+        <script type="text/javascript" src="${ctx}/oscarRx/js/rxSessionInterceptor.js"></script>
 
         <script type="text/javascript">
             let selectedReRxIDs = [];
@@ -788,7 +795,7 @@ function renderRxStage() {
                                 <form action="${pageContext.request.contextPath}/oscarRx/searchDrug.do"  onsubmit="return checkEnterSendRx();" style="display: inline; margin-bottom:0;" id="drugForm" name="drugForm" method="post">
                                     <input type="hidden" name="<csrf:tokenname/>" value="<csrf:tokenvalue/>"/>
 
-                                    <input type="hidden" property="demographicNo" value="<%=Integer.toString(patient.getDemographicNo())%>" />
+                                    <input type="hidden" name="demographicNo" value="<%=Encode.forHtmlAttribute(Integer.toString(demoNo))%>" />
                                     <table>
                                         <tr id="prescriptionStageRow">
                                             <td colspan="2">
@@ -801,7 +808,7 @@ function renderRxStage() {
                                                         <%-- Prescriptions are staged here via the prescribe.jsp widget --%>
 
                                                     <input type="hidden" id="deleteOnCloseRxBox" value="false"/>
-                                                    <input type="hidden" property="demographicNo" value="<%=patient.getDemographicNo()%>"/>
+                                                    <input type="hidden" name="demographicNo" value="<%=Encode.forHtmlAttribute(Integer.toString(demoNo))%>"/>
 
                                                 </div>
                                                 <input type="hidden" id="rxPharmacyId" name="rxPharmacyId" value="" />
@@ -1630,7 +1637,7 @@ function renderRxStage() {
 
     function Discontinue2(id,reason,comment,drugSpecial){
         var url=ctx + "/oscarRx/deleteRx.do?parameterValue=Discontinue"  ;
-        var demoNo='<%=patient.getDemographicNo()%>';
+        var demoNo='<%=demoNo%>';
         var data="drugId="+encodeURIComponent(id)+"&reason="+encodeURIComponent(reason)+"&comment="+encodeURIComponent(comment)+"&demoNo="+demoNo+"&drugSpecial="+encodeURIComponent(drugSpecial)+"&rand="+ Math.floor(Math.random()*10001);
             new Ajax.Request(url,{method: 'post',postBody:data,onSuccess:function(transport){
                   var json=transport.responseText.evalJSON();
@@ -1666,7 +1673,7 @@ function renderRxStage() {
 
 //represcribe long term meds
     function RePrescribeLongTerm(){
-       var demoNo='<%=patient.getDemographicNo()%>';
+       var demoNo='<%=demoNo%>';
         var data="demoNo="+demoNo+"&showall=<%=showall%>&rand=" +  Math.floor(Math.random()*10001);
         var url= ctx + "/oscarRx/rePrescribe2.do?method=repcbAllLongTerm";
         new Ajax.Updater('rxText',url, {method:'get',parameters:data,asynchronous:true,insertion: Insertion.Bottom,onSuccess:function(transport){
@@ -1738,6 +1745,7 @@ function saveCustomName(element){
 function updateDeleteOnCloseRxBox(){
     $('deleteOnCloseRxBox').value='true';
 }
+
 function popForm2(scriptId){
         try{
             //oscarLog("popForm2 called");
@@ -1755,20 +1763,22 @@ function popForm2(scriptId){
                 //oscarLog("h="+h+"--n="+n);
                 var url;
                 var json = jQuery("#Calcs").val();
+                // Get demographicNo for multi-patient tab support
+                var demoNo = (typeof currentDemographicNo !== 'undefined') ? currentDemographicNo : '';
                 //oscarLog(json);
                 if( json != null && json != "" ) {
 
                 	var pharmacy = JSON.parse(json);
 
                     if( pharmacy != null ) {
-                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&pharmacyId="+pharmacy.id;
+                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&pharmacyId="+pharmacy.id+"&demographicNo="+demoNo;
                     }
                     else {
-                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId;
+                    	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&demographicNo="+demoNo;
                     }
                 }
                 else {
-                	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId;
+                	url= ctx + "/oscarRx/ViewScript2.jsp?scriptId="+scriptId+"&demographicNo="+demoNo;
                 }
                 
                 //oscarLog( "preview2 done");
@@ -2683,7 +2693,7 @@ function updateQty(element){
         {method: 'post',postBody:data,asynchronous:false,
           requestHeaders: { 'Accept': 'application/json' },
             onSuccess:function(transport){
-            	
+
                 callReplacementWebService("ListDrugs.jsp",'drugProfile');
                 const hasDrugs = jQuery("[id^='drugName_']").length > 0;
                 if (hasDrugs) {
