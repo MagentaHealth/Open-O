@@ -58,19 +58,19 @@
   }, {
     "groupId" : "ca.uhn.hapi.fhir",
     "artifactId" : "org.hl7.fhir.dstu3",
-    "version" : "6.1.2.2",
+    "version" : "6.4.0",
     "scope" : "compile",
     "type" : "jar",
     "optional" : false,
-    "integrity" : "sha512:FWmTxJBRTMOK8eV+EvfqIBpdyR8O9SEu1Ht6pdC0d8+Xd29mJc6f+u1uRl/iLHm0tik9qGqqpTeokGidbfwtbg=="
+    "integrity" : "sha512:jsXA+nxwtcREDusL853GitoYNywUJULdej+gWT0Wc7zo01zAPhblaiRS3UeBcFJ/5vWV0tD3LQhG7OTPnTIx+A=="
   }, {
     "groupId" : "ca.uhn.hapi.fhir",
     "artifactId" : "org.hl7.fhir.utilities",
-    "version" : "6.1.2.2",
+    "version" : "6.4.0",
     "scope" : "compile",
     "type" : "jar",
     "optional" : false,
-    "integrity" : "sha512:NfYQE5mn7hz70Yee6W/FhI8InLxl68U0hYqjcMURlTkZQ+LqpFnOGU7nvtj617lkGFOVm+d4ginIannacM61qQ=="
+    "integrity" : "sha512:0HVxuI390ovXEuMjSTpKyjTIgcUyDpxXb9/4kioGcIBQJTq80sz7Q1/HzOEEW8KOQpmhUEZc8ac3PS1NRQXiSw=="
   }, {
     "groupId" : "ca.uhn.hapi",
     "artifactId" : "hapi-base",
