@@ -1,4 +1,4 @@
-<%@ taglib uri="http://displaytag.sf.net/el" prefix="display-el" %>
+<%@ taglib uri="http://displaytag.sf.net" prefix="display-el" %>
 <%@ page import="ca.openosp.openo.PMmodule.model.ProgramClientRestriction" %>
 <%@ page import="ca.openosp.openo.commn.model.Provider" %>
 
