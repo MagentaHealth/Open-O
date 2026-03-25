@@ -34,7 +34,7 @@ import ca.openosp.openo.prescript.data.RxPatientData;
 import ca.openosp.openo.utility.LoggedInInfo;
 import ca.openosp.openo.utility.MiscUtils;
 import ca.openosp.openo.utility.SpringUtils;
-import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.ActionSupport;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.web.context.WebApplicationContext;
