@@ -28,7 +28,6 @@
 <%--<%@ taglib prefix="logic" uri="http://struts.apache.org/tags-logic" %>--%>
 <%@ taglib prefix="oscar" uri="/oscarPropertiestag" %>
 <%--<%@ taglib prefix="bean" uri="http://struts.apache.org/tags-bean" %>--%>
-<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="ca.openosp.openo.prescript.data.RxPatientData" %>
 <%@ page import="ca.openosp.OscarProperties, ca.openosp.openo.utility.DigitalSignatureUtils" %>
@@ -103,9 +102,9 @@
                                     <c:when test="${empty infirmaryView_programAddress}">
                                         <%-- Phone number is now set in the action --%>
                                         <input type="hidden" name="clinicName"
-                                               value="<%= StringEscapeUtils.escapeHtml(((String)request.getAttribute("clinicTitle")).replaceAll("(<br>)","\\\n")) %>"/>
+                                               value="<%= Encode.forHtml(((String)request.getAttribute("clinicTitle")).replaceAll("(<br>)","\\\n")) %>"/>
                                         <input type="hidden" name="clinicPhone"
-                                               value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("phone")) %>"/>
+                                               value="<%= Encode.forHtml((String)request.getAttribute("phone")) %>"/>
                                         <input type="hidden" id="finalFax" name="clinicFax" value=""/>
                                     </c:when>
                                     <c:otherwise>
@@ -117,30 +116,30 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <input type="hidden" name="patientName"
-                                       value="<%= StringEscapeUtils.escapeHtml(((RxPatientData.Patient)request.getAttribute("patient")).getFirstName())+ " " +StringEscapeUtils.escapeHtml(((RxPatientData.Patient)request.getAttribute("patient")).getSurname()) %>"/>
+                                       value="<%= Encode.forHtml(((RxPatientData.Patient)request.getAttribute("patient")).getFirstName())+ " " +Encode.forHtml(((RxPatientData.Patient)request.getAttribute("patient")).getSurname()) %>"/>
                                 <input type="hidden" name="patientDOB"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("patientDOBStr")) %>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("patientDOBStr")) %>"/>
                                 <input type="hidden" name="pharmaFax" value="${requestScope.pharmacyFax}"/>
                                 <input type="hidden" name="pharmaName" value="${requestScope.pharmacyName}"/>
                                 <input type="hidden" name="pracNo"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("pracNo")) %>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("pracNo")) %>"/>
                                 <input type="hidden" name="showPatientDOB" value="${requestScope.showPatientDOB}"/>
                                 <input type="hidden" name="pdfId" id="pdfId" value=""/>
                                 <input type="hidden" name="patientAddress"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("patientAddress")) %>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("patientAddress")) %>"/>
                                 <input type="hidden" name="patientCityPostal"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("patientCityPostal"))%>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("patientCityPostal"))%>"/>
                                 <input type="hidden" name="patientHIN"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("patientHin")) %>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("patientHin")) %>"/>
                                 <input type="hidden" name="patientChartNo"
-                                       value="<%=StringEscapeUtils.escapeHtml((String)request.getAttribute("patientChartNo"))%>"/>
+                                       value="<%=Encode.forHtml((String)request.getAttribute("patientChartNo"))%>"/>
                                 <input type="hidden" name="bandNumber" value="${requestScope.bandNumber}"/>
                                 <input type="hidden" name="patientPhone"
-                                       value="<fmt:message key="RxPreview.msgTel"/><%=StringEscapeUtils.escapeHtml((String)request.getAttribute("patientPhone")) %>"/>
+                                       value="<fmt:message key="RxPreview.msgTel"/><%=Encode.forHtml((String)request.getAttribute("patientPhone")) %>"/>
                                 <input type="hidden" name="rxDate"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("rxDateFormatted")) %>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("rxDateFormatted")) %>"/>
                                 <input type="hidden" name="sigDoctorName"
-                                       value="<%= StringEscapeUtils.escapeHtml((String)request.getAttribute("doctorName")) %>"/>
+                                       value="<%= Encode.forHtml((String)request.getAttribute("doctorName")) %>"/>
                                 <!--img src="img/rx.gif" border="0"-->
                             </th>
                             <th valign=top height="100px" id="clinicAddress">
