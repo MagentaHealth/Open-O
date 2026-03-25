@@ -38,6 +38,8 @@
         <cxf.version>3.6.9</cxf.version>
         <!-- Netty Version (for transitive dependency security fixes) -->
         <netty.version>4.1.129.Final</netty.version>
+        <!-- Jackson Version -->
+        <jackson.version>2.21.1</jackson.version>
         <struts.devMode>false</struts.devMode>
         <!-- Test properties -->
         <skipModernTests>false</skipModernTests>
@@ -668,28 +670,28 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.19.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Jackson Java 8 Date/Time support -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.19.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Jackson JAXB annotations support - provides JaxbAnnotationIntrospector used in Spring configs -->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>2.19.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Jackson XML support - explicit version to override older transitive from jasperreports -->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.19.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
 
@@ -1172,7 +1174,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>2.19.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- OWASP Encoder -->
