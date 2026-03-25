@@ -47,7 +47,11 @@ import ca.openosp.openo.commn.model.Hl7TextMessage;
 import ca.openosp.openo.commn.model.PatientLabRouting;
 import ca.openosp.openo.commn.model.ProviderLabRoutingModel;
 import ca.openosp.openo.utility.LoggedInInfo;
+import ca.openosp.openo.managers.ProviderManager2;
+import ca.openosp.openo.utility.MiscUtils;
 import ca.openosp.openo.utility.PDFGenerationException;
+import org.apache.logging.log4j.Logger;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +66,7 @@ import ca.openosp.openo.util.StringUtils;
 @Service
 public class LabManagerImpl implements LabManager {
 
+    private static final Logger logger = MiscUtils.getLogger();
     private static final String TEMP_PDF_DIRECTORY = "hl7PDF";
     private static final String DEFAULT_FILE_SUFFIX = ".pdf";
 
@@ -82,6 +87,9 @@ public class LabManagerImpl implements LabManager {
 
     @Autowired
     SecurityInfoManager securityInfoManager;
+
+    @Autowired
+    ProviderManager2 providerManager2;
 
     public List<Hl7TextMessage> getHl7Messages(LoggedInInfo loggedInInfo, Integer demographicNo, int offset, int limit) {
         checkPrivilege(loggedInInfo, "r");
@@ -143,6 +151,17 @@ public class LabManagerImpl implements LabManager {
         return path;
     }
 
+    /**
+     * Returns all {@link ProviderLabRoutingModel} records that match the given lab number,
+     * lab type, and provider number.
+     *
+     * @param loggedInInfo LoggedInInfo the currently logged-in user; used to enforce {@code _lab} read privilege
+     * @param labId        Integer the unique lab segment ID to look up
+     * @param labType      String the lab type (e.g. {@code "HL7"}, {@code "MDS"})
+     * @param providerNo   String the provider number to filter routing records by
+     * @return List&lt;ProviderLabRoutingModel&gt; matching routing records; empty list if none exist
+     * @throws RuntimeException if the logged-in user lacks {@code _lab} read privilege
+     */
     @Override
     public List<ProviderLabRoutingModel> findByLabNoAndLabTypeAndProviderNo(LoggedInInfo loggedInInfo, Integer labId, String labType, String providerNo) {
         checkPrivilege(loggedInInfo, "r");
@@ -169,16 +188,34 @@ public class LabManagerImpl implements LabManager {
     public void fileLabsForProviderUpToFlaggedLab(LoggedInInfo loggedInInfo, String providerNo, String flaggedLabId, String labType, String comment, boolean fileUpToLabNo, boolean onBehalfOfOtherProvider) {
         checkPrivilege(loggedInInfo, "w");
 
+        int parsedFlaggedLabId;
+        try {
+            parsedFlaggedLabId = Integer.parseInt(flaggedLabId.trim());
+        } catch (NumberFormatException e) {
+            logger.error("fileLabsForProviderUpToFlaggedLab: invalid flaggedLabId='" + Encode.forJava(flaggedLabId) + "'");
+            return;
+        }
+
         CommonLabResultData commonLabResultData = new CommonLabResultData();
 
         // Gets lab IDs in order from oldest to latest (e.g., v1, v2, ..., vn)
         String labs = commonLabResultData.getMatchingLabs(flaggedLabId, labType);
 
+        if (labs == null || labs.trim().isEmpty()) {
+            logger.warn("fileLabsForProviderUpToFlaggedLab: no matching labs for flaggedLabId=" + Encode.forJava(flaggedLabId) + ", labType=" + Encode.forJava(labType));
+            return;
+        }
+
+        // The UI disables the checkbox, but this guards against crafted requests.
+        if (onBehalfOfOtherProvider && !providerManager2.isHl7AllowOthersFileForYou(loggedInInfo, providerNo)) {
+            throw new SecurityException("Provider " + providerNo + " has not allowed others to file on their behalf");
+        }
+
         // Filter labs: if fileUpToLabNo is true, include only those <= flaggedLabId
         List<Integer> filteredLabs = Arrays.stream(labs.split(","))
                 .map(String::trim)
                 .map(Integer::parseInt)
-                .filter(labId -> !fileUpToLabNo || labId <= Integer.parseInt(flaggedLabId))
+                .filter(labId -> !fileUpToLabNo || labId <= parsedFlaggedLabId)
                 .collect(Collectors.toList());
 
         for (Integer labId : filteredLabs) {
@@ -203,7 +240,14 @@ public class LabManagerImpl implements LabManager {
             // Update report status and remove it from the queue
             CommonLabResultData.updateReportStatus(labId, providerNo, ProviderLabRoutingDao.STATUS.F.name().charAt(0),comment, labType, skipCommentOnUpdate);
             CommonLabResultData.removeFromQueue(labId);
+            LogAction.addLogSynchronous(loggedInInfo, "LabManager.fileLabsForProviderUpToFlaggedLab",
+                    "labId=" + labId + ", filedForProviderNo=" + providerNo + ", onBehalf=" + onBehalfOfOtherProvider);
         }
+    }
+
+    public List<ProviderLabRoutingModel> getProviderLabRouting(LoggedInInfo loggedInInfo, int labNo, String labType, String provider) {
+        checkPrivilege(loggedInInfo, "r");
+        return providerLabRoutingDao.findByLabNoAndLabTypeAndProviderNo(labNo, labType, provider);
     }
 
     private void checkPrivilege(LoggedInInfo loggedInInfo, String privilege) {
