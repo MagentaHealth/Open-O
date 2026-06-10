@@ -26,6 +26,8 @@
 package ca.openosp.openo.webserv;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -49,6 +51,23 @@ public class WebServiceSessionInvalidatingFilter implements javax.servlet.Filter
     @Override
     public void doFilter(ServletRequest tmpRequest, ServletResponse tmpResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) tmpRequest;
+        String qs = request.getQueryString();
+        String filteredQs = null;
+        if (qs != null) {
+            String decoded = URLDecoder.decode(qs, StandardCharsets.UTF_8);
+            StringBuilder sb = new StringBuilder();
+            for (String param : decoded.split("&")) {
+                String key = param.contains("=") ? param.substring(0, param.indexOf('=')) : param;
+                if (!key.startsWith("oauth_")) {
+                    if (sb.length() > 0) sb.append("&");
+                    sb.append(param);
+                }
+            }
+            if (sb.length() > 0) filteredQs = sb.toString();
+        }
+        String url = request.getRequestURL().toString() + (filteredQs != null ? "?" + filteredQs : "");
+        System.out.println("[" + request.getMethod() + "] " + url);
+        System.out.println("=================================================================================================================");
 
         try {
             chain.doFilter(tmpRequest, tmpResponse);
