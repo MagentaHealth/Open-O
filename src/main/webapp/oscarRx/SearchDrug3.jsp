@@ -846,8 +846,8 @@
     };
 
     const VIGILANCE_DESCRIPTIONS = {
-      'alert1': 'Avoid this medication. The risk of serious problems outweighs any potential benefit.',
-      'alert2': 'If possible, avoid involved medication. If not, adjust therapy to prevent potential problems.',
+      'alert1': 'This medication carries a high risk of serious adverse effects that may outweigh potential benefits.',
+      'alert2': 'There is potential for significant interaction or risk with added medications.',
       'alert3': 'Evaluate specific risk based on the clinical situation. Adjust therapy or monitor as needed.'
     };
 
@@ -1152,6 +1152,25 @@
       color: #65181f;
     }
 
+    .alert-level-helper {
+      display: none;
+      margin-top: 2px;
+      margin-bottom: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: #6c757d;
+      text-align: right;
+    }
+
+    .alert-level-helper a {
+      color: #6c757d;
+      text-decoration: underline;
+    }
+
+    .alert-level-helper a:hover {
+      color: #333;
+    }
+
     #previewForm {
       display: none;
     }
@@ -1362,7 +1381,7 @@
 
                         <div id="interactingDrugErrorMsg"></div>
 
-                        <div id="allergyWarningBanner" class="alert alert-warning" role="status" aria-live="polite" onclick="openAllergyWarningModal()" tabindex="0">
+                        <div id="allergyWarningBanner" class="alert alert-warning" role="status" aria-live="polite" onclick="openDrugsInteractionWarningModal()" tabindex="0">
                              <div class="warning-content">
                                <svg id="bannerIcon" class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="#664d03" stroke-width="2" aria-hidden="true">
                                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -1374,9 +1393,14 @@
                                  <span class="warning-cta"><fmt:message key="SearchDrug.allergyWarningCta"/></span>
                                </div>
                              </div>
-                           </div>
+                            </div>
 
-                         <div id="rxText"></div>
+                          <div id="alertLevelHelper" class="alert-level-helper">
+                              To adjust your alert level threshold, visit
+                              <a href="${pageContext.request.contextPath}/provider/providerpreference.jsp" target="_blank">Preferences</a>.
+                          </div>
+
+                          <div id="rxText"></div>
                         <%-- Prescriptions are staged here via the prescribe.jsp widget --%>
 
                         <input type="hidden" id="deleteOnCloseRxBox" value="false"/>
@@ -2195,8 +2219,11 @@
       if (!response.ok) {
         console.error('Failed to remove drug from stash (HTTP ' + response.status + ')');
       }
-      // updateCurrentInteractions();
-      hideAllergyBanner();
+      if (VIGILANCE_ENABLED) {
+        recheckStashAlerts();
+      } else {
+        hideAllergyBanner();
+      }
       document.getElementById("set_" + randomId)?.remove();
       document.getElementById("prescriptionMoreLessLink_" + randomId)?.remove();
       document.getElementById("deleteMedicationFromPrescription_" + randomId)?.remove();
@@ -2261,7 +2288,7 @@
   }
 
   function checkAllergy(id, atcCode) {
-    performAllergyCheck(id);
+    performDrugsInteractionChecks(id);
     const url = ctx + "/oscarRx/showAllergy.do"
     const data = "method=allergyData&atcCode=" + encodeURIComponent(atcCode) + "&id=" + encodeURIComponent(id) + "&rand=" + generateSecureRandomId();
     new Ajax.Request(url, {
@@ -2300,12 +2327,12 @@
      });
   }
 
-  function performAllergyCheck(id) {
+  function performDrugsInteractionChecks(id) {
     if (!VIGILANCE_ENABLED) return;
     let allegSpan = document.getElementById('alleg_vigilance_div' + id);
     if (allegSpan) {
       allegSpan.style.display = 'flex';
-      allegSpan.innerHTML = '<span class="shimmer">Checking drug allergies...</span>';
+      allegSpan.innerHTML = '<span class="shimmer">Checking drug interactions...</span>';
     }
 
     let banner = document.getElementById('allergyWarningBanner');
@@ -2369,6 +2396,11 @@
       banner.classList.remove('pulse-animation');
     }, 3000);
     banner.focus();
+
+    let helper = document.getElementById('alertLevelHelper');
+    if (helper) {
+      helper.style.display = 'block';
+    }
   }
 
   function hideAllergyBanner() {
@@ -2378,24 +2410,41 @@
       delete banner._vigilanceResponse;
       delete banner._token;
     }
+
+    let helper = document.getElementById('alertLevelHelper');
+    if (helper) {
+      helper.style.display = 'none';
+    }
   }
 
-  function openAllergyWarningModal() {
+  function recheckStashAlerts() {
+    let remainingCards = document.querySelectorAll('#rxText [id^="set_"]');
+    if (remainingCards.length === 0) {
+      hideAllergyBanner();
+      return;
+    }
+    remainingCards.forEach(function(card) {
+      let id = card.id.replace('set_', '');
+      performDrugsInteractionChecks(id);
+    });
+  }
+
+  function openDrugsInteractionWarningModal() {
     let banner = document.getElementById('allergyWarningBanner');
     if (!banner || !banner._vigilanceResponse) return;
-    openWarningModal(null, banner._vigilanceResponse, banner._token);
+    openInteractionWarningModal(banner._vigilanceResponse, banner._token);
   }
 
-  function openWarningModal(id, rawVigilanceResponse, token) {
+  function openInteractionWarningModal(rawVigilanceResponse, token) {
     if (!VIGILANCE_ENABLED) return;
     if (!rawVigilanceResponse || rawVigilanceResponse.trim() === '') {
       return;
     }
 
-    const safeId = (id != null && String(id).trim() !== '') ? String(id).replace(/[^a-zA-Z0-9_-]/g, '') : 'allergy';
+    const winName = 'vigilanceWarningModal';
     const newWin = window.open(
             '',
-            `warningModal_${safeId}`,
+            winName,
             'width=1000,height=700,scrollbars=yes,resizable=yes'
     );
 
@@ -2404,29 +2453,34 @@
     }
 
     const doc = newWin.document;
+    doc.title = 'Vigilance Analysis';
 
-    doc.open();
-    doc.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Warning</title></head><body></body></html>');
-    doc.close();
+    const iframe = doc.createElement('iframe');
+    iframe.id = 'vigFrame';
+    iframe.name = 'vigFrame';
+    iframe.style.cssText = 'width:100%;height:100%;border:none;position:absolute;top:0;left:0;';
+    doc.body.appendChild(iframe);
 
-    const form = doc.createElement('form');
+    const frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+    frameDoc.body.style.display = 'none';
+
+    const form = frameDoc.createElement('form');
     form.method = 'post';
-    form.id = 'myForm';
+    form.target = 'vigFrame';
     form.action = 'https://rx.int.vigilance.ca/module/perspectives/perspectives-ndx.html';
 
-    const tokenInput = doc.createElement('input');
+    const tokenInput = frameDoc.createElement('input');
     tokenInput.type = 'hidden';
     tokenInput.name = 'token';
-
     tokenInput.value = token;
 
-    const textarea = doc.createElement('textarea');
+    const textarea = frameDoc.createElement('textarea');
     textarea.name = 'intrant';
     textarea.value = rawVigilanceResponse;
 
     form.appendChild(tokenInput);
     form.appendChild(textarea);
-    doc.body.appendChild(form);
+    frameDoc.body.appendChild(form);
 
     newWin.opener = null;
 
